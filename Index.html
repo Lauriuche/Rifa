@@ -1,0 +1,397 @@
+<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rifa Master Camino</title>
+
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://drive.google.com/thumbnail?id=1q27xBm87ewP3GKczQ8x7iS6fyH4eMQeO&sz=w512">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        :root {
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.3);
+            --bg: #000000;
+            --surface: rgba(15, 15, 15, 0.9);
+            --surface-accent: rgba(25, 25, 25, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #a0a0a0;
+            --reserved: #ffcc00;
+            --paid: #00ff88;
+            --available: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            background: radial-gradient(circle at center, #001a0d 0%, #000000 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .ambient-glow {
+            position: fixed; width: 80vw; height: 80vw;
+            background: var(--primary-glow); filter: blur(150px);
+            border-radius: 50%; top: 50%; left: 50%;
+            transform: translate(-50%, -50%); z-index: 0; pointer-events: none;
+        }
+
+        .container {
+            width: 100%; max-width: 480px; height: 92vh;
+            border-radius: 40px; padding: 30px 20px;
+            background: var(--surface); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border: 1px solid var(--border);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            display: flex; flex-direction: column; position: relative; z-index: 1;
+        }
+
+        .scrollable-content { overflow-y: auto; scrollbar-width: none; flex: 1; padding-bottom: 20px; }
+        .scrollable-content::-webkit-scrollbar { display: none; }
+
+        .header { text-align: center; margin-bottom: 25px; }
+        .hero-badge { 
+            background: rgba(0, 255, 136, 0.1); color: var(--primary); 
+            padding: 8px 18px; border-radius: 100px; font-size: 0.7rem; 
+            font-weight: 800; border: 1px solid rgba(0, 255, 136, 0.2); 
+            margin-bottom: 15px; display: inline-block; text-transform: uppercase;
+        }
+
+        .logo-img { width: 100%; max-width: 180px; border-radius: 20px; margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--primary-glow)); }
+        
+        .prize-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 24px; padding: 25px 20px; margin-bottom: 20px; text-align: center;
+            position: relative; overflow: hidden;
+        }
+        .prize-title { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
+        .prize-subtitle { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* DESTAQUE DE PREÇO ÚNICO */
+        .price-tag-highlight {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6d 100%);
+            color: #000;
+            display: inline-flex;
+            flex-direction: column;
+            padding: 10px 25px;
+            border-radius: 20px;
+            margin-top: 10px;
+            box-shadow: 0 10px 20px var(--primary-glow);
+            border: 2px solid rgba(255,255,255,0.2);
+            animation: pulse-price 2s infinite ease-in-out;
+        }
+        .price-label { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; margin-bottom: -2px; opacity: 0.8; }
+        .price-value { font-size: 1.6rem; font-weight: 900; letter-spacing: -1px; }
+
+        @keyframes pulse-price {
+            0% { transform: scale(1); box-shadow: 0 10px 20px var(--primary-glow); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 30px var(--primary-glow); }
+            100% { transform: scale(1); box-shadow: 0 10px 20px var(--primary-glow); }
+        }
+
+        /* Grid de Números */
+        .numbers-grid {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+            margin-bottom: 30px;
+        }
+        .num-item {
+            aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+            background: var(--available); border: 1px solid var(--border);
+            border-radius: 12px; font-size: 0.9rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s; position: relative;
+        }
+        .num-item.selected { background: var(--primary); color: #000; transform: scale(0.95); box-shadow: 0 0 15px var(--primary-glow); }
+        .num-item.reserved { background: var(--reserved); color: #000; opacity: 0.8; cursor: not-allowed; }
+        .num-item.paid { background: #333; color: var(--text-dim); cursor: not-allowed; text-decoration: line-through; }
+
+        /* Barra Inferior */
+        .selection-bar {
+            background: var(--surface-accent); border: 1px solid var(--border);
+            border-radius: 24px; padding: 15px 20px; margin-top: auto;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .selection-info { text-align: left; }
+        .selection-count { font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
+        .selection-price { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+
+        .btn-main { 
+            padding: 16px 25px; border-radius: 18px; background: var(--primary); 
+            color: #000; font-weight: 800; border: none; cursor: pointer; 
+            box-shadow: 0 10px 20px var(--primary-glow); font-size: 0.9rem; 
+            transition: 0.3s; display: flex; align-items: center; gap: 8px;
+        }
+        .btn-main:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
+
+        /* Modais */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 20px; }
+        .modal-box { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--border); border-radius: 35px; padding: 30px; text-align: center; }
+        
+        .form-input { 
+            width: 100%; padding: 16px; border-radius: 18px; border: 1px solid var(--border); 
+            background: rgba(255,255,255,0.04); color: #fff; text-align: center; font-size: 0.95rem; 
+            outline: none; margin-bottom: 12px;
+        }
+
+        .status-legend { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; font-size: 0.65rem; font-weight: 700; }
+        .legend-item { display: flex; align-items: center; gap: 5px; color: var(--text-dim); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        .admin-btn { background: transparent; border: none; color: var(--text-dim); font-size: 0.6rem; font-weight: 700; cursor: pointer; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(0,0,0,0.1); border-top: 2px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        #toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: #000; padding: 12px 25px;
+            border-radius: 100px; font-weight: 800; font-size: 0.8rem;
+            z-index: 9999; display: none; box-shadow: 0 10px 20px var(--primary-glow);
+        }
+
+        @media (max-width: 400px) {
+            .numbers-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="ambient-glow"></div>
+
+<div class="container">
+    <div class="scrollable-content">
+        <div class="header">
+            <div class="hero-badge">🍀 Rifa Premiada Camino</div>
+            <img src="https://drive.google.com/thumbnail?id=1q27xBm87ewP3GKczQ8x7iS6fyH4eMQeO&sz=w1000" class="logo-img">
+            
+            <div class="prize-card">
+                <p class="prize-subtitle">Vais Ganhar:</p>
+                <h2 class="prize-title" id="display-premio">Carregando...</h2>
+                
+                <div class="price-tag-highlight">
+                    <span class="price-label">Valor do Número</span>
+                    <span class="price-value" id="display-valor-destaque">R$ 0,00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-legend">
+            <div class="legend-item"><div class="dot" style="background:var(--available)"></div> Livre</div>
+            <div class="legend-item"><div class="dot" style="background:var(--reserved)"></div> Reservado</div>
+            <div class="legend-item"><div class="dot" style="background:#333"></div> Pago</div>
+        </div>
+
+        <div class="numbers-grid" id="grid-rifa"></div>
+
+        <center>
+            <button class="admin-btn" onclick="abrirAdmin()">⚙️ PAINEL ADMINISTRATIVO</button>
+        </center>
+    </div>
+
+    <div class="selection-bar">
+        <div class="selection-info">
+            <p class="selection-count" id="count-texto">00 NÚMEROS</p>
+            <p class="selection-price" id="total-texto">R$ 0,00</p>
+        </div>
+        <button class="btn-main" id="btn-finalizar" disabled onclick="abrirCheckout()">
+            RESERVAR <i data-lucide="chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Modal Checkout -->
+<div class="modal-overlay" id="modal-checkout">
+    <div class="modal-box">
+        <h2 style="color:var(--primary); margin-bottom:10px;">DADOS DA RESERVA</h2>
+        <p style="color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Após confirmar, será levado ao pagamento seguro.</p>
+        
+        <input type="text" id="nome" class="form-input" placeholder="NOME COMPLETO">
+        <input type="tel" id="telefone" class="form-input" placeholder="WHATSAPP (DDD)">
+        
+        <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:20px; margin: 15px 0;">
+            <p style="font-size:0.7rem; color:var(--text-dim); text-transform: uppercase;">NÚMEROS ESCOLHIDOS:</p>
+            <p id="resumo-numeros" style="font-weight:800; color:var(--primary); letter-spacing:1px; font-size: 1.1rem; margin-top: 5px;"></p>
+        </div>
+
+        <button class="btn-main" id="btn-pay-confirm" style="width:100%; justify-content: center; padding: 20px;" onclick="triggerCheckout()">
+            <i data-lucide="credit-card"></i> PAGAR AGORA VIA PIX
+        </button>
+        <button class="admin-btn" style="width:100%" onclick="fecharModal('modal-checkout')">VOLTAR</button>
+    </div>
+</div>
+
+<!-- Modal Admin -->
+<div class="modal-overlay" id="modal-admin">
+    <div class="modal-box" style="text-align: left;">
+        <h3 style="text-align:center; margin-bottom:20px;">AJUSTES DA RIFA</h3>
+        
+        <label style="font-size:0.6rem; color:var(--primary); font-weight:800; text-transform: uppercase;">Prémio Principal</label>
+        <input type="text" id="cfg-premio" class="form-input">
+        
+        <label style="font-size:0.6rem; color:var(--primary); font-weight:800; text-transform: uppercase;">Valor por Número (R$)</label>
+        <input type="number" id="cfg-valor" class="form-input">
+        
+        <label style="font-size:0.6rem; color:var(--primary); font-weight:800; text-transform: uppercase;">Quantidade Total de Números</label>
+        <input type="number" id="cfg-total" class="form-input">
+
+        <label style="font-size:0.6rem; color:var(--primary); font-weight:800; text-transform: uppercase;">Tag InfinitePay (Handle)</label>
+        <input type="text" id="cfg-handle" class="form-input">
+
+        <button class="btn-main" style="width:100%; justify-content:center; margin-top:10px;" onclick="salvarConfig()">SALVAR E REINICIAR</button>
+        <button class="admin-btn" style="width:100%" onclick="fecharModal('modal-admin')">FECHAR PAINEL</button>
+    </div>
+</div>
+
+<div id="toast">MENSAGEM</div>
+
+<script>
+    const DB = {
+        getConfig: () => JSON.parse(localStorage.getItem('rifa_master_config')) || { 
+            premio: "iPhone 15 Pro Max", 
+            valor: 5.00, 
+            total: 100, 
+            handle: 'lauriuche' 
+        },
+        setConfig: (cfg) => localStorage.setItem('rifa_master_config', JSON.stringify(cfg)),
+        getNumbers: () => JSON.parse(localStorage.getItem('rifa_master_numbers')) || {}
+    };
+
+    let config = DB.getConfig();
+    let selectedNumbers = new Set();
+    let dbNumbers = DB.getNumbers();
+
+    function init() {
+        lucide.createIcons();
+        applyConfigUI();
+        renderGrid();
+        updateUI();
+    }
+
+    function applyConfigUI() {
+        document.getElementById('display-premio').innerText = config.premio;
+        document.getElementById('display-valor-destaque').innerText = config.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        
+        document.getElementById('cfg-premio').value = config.premio;
+        document.getElementById('cfg-valor').value = config.valor;
+        document.getElementById('cfg-total').value = config.total;
+        document.getElementById('cfg-handle').value = config.handle;
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('grid-rifa');
+        grid.innerHTML = '';
+        for (let i = 1; i <= config.total; i++) {
+            const numStr = i.toString().padStart(2, '0');
+            const el = document.createElement('div');
+            el.className = 'num-item';
+            el.innerText = numStr;
+            if (dbNumbers[numStr]) el.classList.add(dbNumbers[numStr].status);
+            else el.onclick = () => toggleNumber(numStr, el);
+            grid.appendChild(el);
+        }
+    }
+
+    function toggleNumber(num, el) {
+        if (selectedNumbers.has(num)) {
+            selectedNumbers.delete(num);
+            el.classList.remove('selected');
+        } else {
+            selectedNumbers.add(num);
+            el.classList.add('selected');
+        }
+        updateUI();
+    }
+
+    function updateUI() {
+        const count = selectedNumbers.size;
+        const total = count * config.valor;
+        document.getElementById('count-texto').innerText = `${count.toString().padStart(2, '0')} NÚMEROS`;
+        document.getElementById('total-texto').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        document.getElementById('btn-finalizar').disabled = count === 0;
+    }
+
+    function abrirCheckout() {
+        document.getElementById('resumo-numeros').innerText = Array.from(selectedNumbers).sort().join(', ');
+        document.getElementById('modal-checkout').style.display = 'flex';
+    }
+
+    async function triggerCheckout() {
+        const nome = document.getElementById('nome').value.trim();
+        const telefone = document.getElementById('telefone').value.trim();
+        const btn = document.getElementById('btn-pay-confirm');
+
+        if (!nome || !telefone) return showToast("⚠️ Preencha nome e telefone!");
+
+        const qtyFinal = selectedNumbers.size;
+        const valorTotal = qtyFinal * config.valor;
+        const valorCentavos = Math.round(valorTotal * 100);
+
+        btn.disabled = true;
+        btn.innerHTML = `<div class="spinner"></div> PROCESSANDO...`;
+
+        const returnUrl = window.location.href.split('?')[0] + "?success=true";
+        const payload = {
+            "handle": config.handle.trim(),
+            "order_nsu": "RIFA-" + Date.now(),
+            "redirect_url": returnUrl,
+            "customer": { "name": nome, "phone_number": "55" + telefone.replace(/\D/g, '') },
+            "items": [{ 
+                "quantity": 1, 
+                "price": valorCentavos, 
+                "description": `Rifa ${config.premio} (Números: ${Array.from(selectedNumbers).join(',')})`,
+                "image": "https://drive.google.com/thumbnail?id=1q27xBm87ewP3GKczQ8x7iS6fyH4eMQeO&sz=w200"
+            }]
+        };
+
+        try {
+            const response = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), {
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' }, 
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (data.url) window.location.href = data.url;
+            else throw new Error();
+        } catch (e) {
+            showToast("❌ Erro ao conectar ao pagamento.");
+            btn.disabled = false;
+            btn.innerHTML = `<i data-lucide="credit-card"></i> PAGAR AGORA VIA PIX`;
+            lucide.createIcons();
+        }
+    }
+
+    function salvarConfig() {
+        const newCfg = {
+            premio: document.getElementById('cfg-premio').value,
+            valor: parseFloat(document.getElementById('cfg-valor').value),
+            total: parseInt(document.getElementById('cfg-total').value),
+            handle: document.getElementById('cfg-handle').value
+        };
+        DB.setConfig(newCfg);
+        localStorage.removeItem('rifa_master_numbers');
+        location.reload();
+    }
+
+    function abrirAdmin() { document.getElementById('modal-admin').style.display = 'flex'; }
+    function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg; t.style.display = 'block';
+        setTimeout(() => t.style.display = 'none', 3000);
+    }
+
+    window.onload = init;
+</script>
+
+</body>
+</html>
