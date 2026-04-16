@@ -78,7 +78,6 @@
         .prize-title { font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 12px; }
         .prize-subtitle { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 
-        /* DESTAQUE DE PREÇO ÚNICO */
         .price-tag-highlight {
             background: linear-gradient(135deg, #00ff88 0%, #00cc6d 100%);
             color: #000;
@@ -100,7 +99,6 @@
             100% { transform: scale(1); box-shadow: 0 10px 20px var(--primary-glow); }
         }
 
-        /* Grid de Números */
         .numbers-grid {
             display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
             margin-bottom: 30px;
@@ -115,7 +113,6 @@
         .num-item.reserved { background: var(--reserved); color: #000; opacity: 0.8; cursor: not-allowed; }
         .num-item.paid { background: #333; color: var(--text-dim); cursor: not-allowed; text-decoration: line-through; }
 
-        /* Barra Inferior */
         .selection-bar {
             background: var(--surface-accent); border: 1px solid var(--border);
             border-radius: 24px; padding: 15px 20px; margin-top: auto;
@@ -133,7 +130,6 @@
         }
         .btn-main:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
 
-        /* Modais */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 20px; }
         .modal-box { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--border); border-radius: 35px; padding: 30px; text-align: center; }
         
@@ -213,10 +209,10 @@
 <div class="modal-overlay" id="modal-checkout">
     <div class="modal-box">
         <h2 style="color:var(--primary); margin-bottom:10px;">DADOS DA RESERVA</h2>
-        <p style="color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Após confirmar, será levado ao pagamento seguro.</p>
+        <p style="color:var(--text-dim); font-size:0.8rem; margin-bottom:20px;">Insira seus dados reais para validarmos sua cota.</p>
         
-        <input type="text" id="nome" class="form-input" placeholder="NOME COMPLETO">
-        <input type="tel" id="telefone" class="form-input" placeholder="WHATSAPP (DDD)">
+        <input type="text" id="nome" class="form-input" placeholder="NOME E SOBRENOME">
+        <input type="tel" id="telefone" class="form-input" placeholder="(00) 0 0000-0000" oninput="maskPhone(this)">
         
         <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:20px; margin: 15px 0;">
             <p style="font-size:0.7rem; color:var(--text-dim); text-transform: uppercase;">NÚMEROS ESCOLHIDOS:</p>
@@ -287,6 +283,18 @@
         document.getElementById('cfg-handle').value = config.handle;
     }
 
+    // Função de Máscara de Telefone
+    function maskPhone(i) {
+        let v = i.value.replace(/\D/g, "");
+        v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+        v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+        // Suporte para o dígito 9 adicional (celular)
+        if (v.length > 14) {
+            v = v.replace(/(\d) (\d)(\d{4})/, "$1 $2 $3");
+        }
+        i.value = v;
+    }
+
     function renderGrid() {
         const grid = document.getElementById('grid-rifa');
         grid.innerHTML = '';
@@ -330,7 +338,16 @@
         const telefone = document.getElementById('telefone').value.trim();
         const btn = document.getElementById('btn-pay-confirm');
 
-        if (!nome || !telefone) return showToast("⚠️ Preencha nome e telefone!");
+        // VALIDAÇÕES EXIGIDAS
+        // 1. Mínimo de 2 nomes (nome e sobrenome)
+        if (nome.split(/\s+/).length < 2) {
+            return showToast("⚠️ Insira nome e sobrenome!");
+        }
+
+        // 2. Validação básica de telefone (mínimo de caracteres da máscara)
+        if (telefone.length < 14) {
+            return showToast("⚠️ Telefone incompleto!");
+        }
 
         const qtyFinal = selectedNumbers.size;
         const valorTotal = qtyFinal * config.valor;
