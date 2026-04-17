@@ -233,7 +233,25 @@
 
         .admin-card {
             background: var(--cell-bg); border: 1px solid var(--border); padding: 15px; border-radius: 20px; margin-bottom: 15px;
+            display: flex; flex-direction: column; gap: 0; overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .admin-card-header {
+            display: flex; justify-content: space-between; align-items: center; width: 100%;
+        }
+
+        .admin-card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s var(--transition), margin-top 0.3s;
             display: flex; flex-direction: column; gap: 12px;
+        }
+
+        .admin-card.expanded { background: rgba(255,255,255,0.06); }
+        .admin-card.expanded .admin-card-details {
+            max-height: 500px; /* Suficiente para o conteúdo */
+            margin-top: 15px;
         }
 
         .admin-actions {
@@ -251,6 +269,31 @@
         .btn-whatsapp { background: var(--whatsapp); color: #000; }
 
         .btn-admin-action:hover { transform: scale(1.02); filter: brightness(1.2); }
+
+        /* Filtros Administrativos */
+        .admin-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .filter-chip {
+            flex: 1;
+            background: var(--cell-bg);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 8px;
+            border-radius: 12px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+        }
+        
+        .filter-chip.active[data-filter="all"] { border-color: var(--secondary); color: var(--secondary); box-shadow: 0 0 10px var(--secondary-glow); }
+        .filter-chip.active[data-filter="paid"] { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 10px var(--primary-rgb); }
+        .filter-chip.active[data-filter="reserved"] { border-color: var(--reserved); color: var(--reserved); box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); }
 
         /* Estilo para cartões de resultado da busca */
         .result-card {
@@ -329,10 +372,24 @@
 
                 <div id="view-admin" style="display: none;">
                     <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"></div>
+                    
+                    <!-- Busca Admin -->
+                    <div style="margin-bottom: 12px;">
+                        <input type="text" id="admin-search" class="custom-input" style="margin-bottom:8px; padding:12px;" placeholder="Pesquisar por nome..." oninput="renderAdmin()">
+                        
+                        <!-- FILTROS DE ESTADO -->
+                        <div class="admin-filters">
+                            <div class="filter-chip active" data-filter="all" onclick="setAdminFilter('all')">TODOS</div>
+                            <div class="filter-chip" data-filter="paid" onclick="setAdminFilter('paid')">PAGOS</div>
+                            <div class="filter-chip" data-filter="reserved" onclick="setAdminFilter('reserved')">PENDENTES</div>
+                        </div>
+                    </div>
+
                     <div style="display: flex; gap: 8px; margin-bottom: 15px;">
                         <button class="btn-pay" style="flex:1; background:var(--secondary); color:#fff; box-shadow: 0 0 15px var(--secondary-glow);" onclick="openConfigModal()">CONFIGURAR</button>
                         <button class="btn-pay" style="flex:1; background:rgba(255, 77, 77, 0.1); color:var(--danger); border:1px solid var(--danger); box-shadow:none;" onclick="resetRifa()">RESET GERAL</button>
                     </div>
+                    
                     <div id="admin-list"></div>
                 </div>
             </div>
@@ -410,6 +467,7 @@
         let dbNumbers = {};
         let selected = new Set();
         let isAdmin = false;
+        let adminFilter = 'all'; // Filter state
 
         lucide.createIcons();
 
@@ -481,7 +539,7 @@
 
         window.quickPick = (qty) => {
             const available = [];
-            for(let i=0; i<config.total; i++){
+            for(let i=0; i<config.total; i++) {
                 const n = i.toString().padStart(2, '0');
                 if(!dbNumbers[n] && !selected.has(n)) available.push(n);
             }
@@ -512,10 +570,27 @@
             } else showToast("❌ PIN INVÁLIDO");
         };
 
+        window.setAdminFilter = (val) => {
+            adminFilter = val;
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                c.classList.toggle('active', c.getAttribute('data-filter') === val);
+            });
+            renderAdmin();
+        };
+
+        window.toggleAdminCard = (id) => {
+            const card = document.getElementById(`card-${id}`);
+            if (card) {
+                card.classList.toggle('expanded');
+            }
+        };
+
         window.renderAdmin = () => {
             const list = document.getElementById('admin-list');
             if(!list) return;
             list.innerHTML = '';
+            
+            const search = document.getElementById('admin-search').value.toLowerCase();
             let tPaid = 0;
             
             const groups = {};
@@ -528,29 +603,51 @@
 
             document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item">PAGO: <b>R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item">VENDAS: <b>${Object.keys(dbNumbers).length}</b></div>`;
             
-            Object.values(groups).forEach(p => {
+            // Transform object to array and filter
+            let filteredParticipants = Object.values(groups).filter(p => {
+                // Filter by Search Name
+                const matchesName = p.nome.toLowerCase().includes(search);
+                
+                // Filter by Status
+                let matchesStatus = true;
+                if (adminFilter !== 'all') {
+                    matchesStatus = p.cotas.some(c => c.status === adminFilter);
+                }
+                
+                return matchesName && matchesStatus;
+            });
+
+            if (filteredParticipants.length === 0) {
+                list.innerHTML = '<p style="text-align:center; color:var(--text-dim); padding:20px; font-size:0.8rem;">Nenhum participante encontrado.</p>';
+                return;
+            }
+
+            filteredParticipants.forEach(p => {
                 const phoneClean = p.telefone.replace(/\D/g, '');
-                const sortedCotas = p.cotas.sort((a,b) => a.n - b.n);
+                const sortedCotas = p.cotas.sort((a,b) => parseInt(a.n) - parseInt(b.n));
                 
                 const card = document.createElement('div');
                 card.className = 'admin-card';
+                card.id = `card-${phoneClean}`;
                 card.innerHTML = `
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                        <div>
-                            <b style="color:var(--primary); font-size:0.85rem;">${p.nome.toUpperCase()}</b><br>
-                            <span style="color:var(--text-dim); font-size:0.65rem;">${p.telefone}</span>
+                    <div class="admin-card-header">
+                        <div onclick="toggleAdminCard('${phoneClean}')" style="flex:1; padding: 5px 0; cursor: pointer;">
+                            <b style="color:var(--primary); font-size:0.85rem;">${p.nome.toUpperCase()}</b>
                         </div>
                         <button class="btn-admin-action btn-whatsapp" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')">
                             <i data-lucide="message-circle" style="width:14px;"></i>
                         </button>
                     </div>
-                    <div style="font-size:0.75rem; color:#fff; line-height:1.4;">
-                        ${sortedCotas.map(c => `<span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">${c.n}</span>`).join(', ')}
-                    </div>
-                    <div class="admin-actions">
-                        <button class="btn-admin-action btn-paid" onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGAS</button>
-                        <button class="btn-admin-action btn-unpaid" onclick="adminUpdateStatus('${p.telefone}', 'reserved')">MARCAR PENDENTES</button>
-                        <button class="btn-admin-action btn-delete" style="grid-column: span 2;" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR PARTICIPANTE</button>
+                    <div class="admin-card-details">
+                        <span style="color:var(--text-dim); font-size:0.7rem; font-weight:700;">${p.telefone}</span>
+                        <div style="font-size:0.75rem; color:#fff; line-height:1.4;">
+                            ${sortedCotas.map(c => `<span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">#${c.n}</span>`).join(', ')}
+                        </div>
+                        <div class="admin-actions">
+                            <button class="btn-admin-action btn-paid" onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGAS</button>
+                            <button class="btn-admin-action btn-unpaid" onclick="adminUpdateStatus('${p.telefone}', 'reserved')">MARCAR PENDENTES</button>
+                            <button class="btn-admin-action btn-delete" style="grid-column: span 2;" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR PARTICIPANTE</button>
+                        </div>
                     </div>
                 `;
                 list.appendChild(card);
@@ -647,7 +744,7 @@
                         `;
                     }
 
-                    filtered.sort((a,b) => a[0] - b[0]).forEach(([n, d]) => {
+                    filtered.sort((a,b) => parseInt(a[0]) - parseInt(b[0])).forEach(([n, d]) => {
                         const isPago = d.status === 'paid';
                         area.innerHTML += `
                             <div class="result-card">
@@ -675,7 +772,7 @@
             const oid = "RS" + num + Date.now().toString().slice(-6);
             showToast("Gerando Pix para" + num + "...");
             try {
-                await update(ref(db, `rifa_master/numeros/ ${num}`), { order_nsu: oid });
+                await update(ref(db, `rifa_master/numeros/${num}`), { order_nsu: oid });
                 const url = await triggerInfinite(nome, tel, oid, config.valor);
                 if(url) window.location.href = url;
             } catch(e) { showToast("❌ Erro ao gerar pagamento"); }
@@ -719,7 +816,7 @@
                 if(s.exists()){
                     const data = s.val(); const up = {}; let ok = false;
                     Object.entries(data).forEach(([n, info]) => {
-                        if(info.order_nsu === nsuParam && info.status === 'reserved') { up[` ${n}/status`] = "paid"; ok = true; }
+                        if(info.order_nsu === nsuParam && info.status === 'reserved') { up[`${n}/status`] = "paid"; ok = true; }
                     });
                     if(ok) update(numRef, up).then(() => {
                         window.history.replaceState({}, '', window.location.pathname);
