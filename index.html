@@ -1,10 +1,9 @@
-<html>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rifa Master - Premium Edition</title>
+    <title>Rifa Master - Neon Edition</title>
 
     <!-- PWA & Mobile Meta Tags -->
     <meta name="theme-color" content="#000000">
@@ -16,25 +15,41 @@
     
     <style>
         :root {
+            /* Neon Dark Theme (Padrão) */
             --primary: #00ff88;
             --primary-rgb: 0, 255, 136;
             --secondary: #007aff;
-            --bg: #000000;
-            --surface: rgba(20, 20, 20, 0.85);
-            --surface-bright: rgba(40, 40, 40, 0.9);
-            --border: rgba(255, 255, 255, 0.1);
+            --secondary-glow: rgba(0, 122, 255, 0.5);
+            --bg: #050505;
+            --surface: rgba(10, 10, 10, 0.9);
+            --surface-bright: rgba(25, 25, 25, 0.95);
+            --border: rgba(0, 255, 136, 0.3);
             --text-main: #ffffff;
             --text-dim: #94a3b8;
+            --cell-bg: rgba(255, 255, 255, 0.03);
             
-            --reserved: #fbbf24;
+            --reserved: #ffaa00;
             --paid: #00ff88;
             --selected: #007aff;
+            --whatsapp: #25d366;
+            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+            --neon-glow: 0 0 15px rgba(0, 255, 136, 0.4);
+        }
+
+        [data-theme="light"] {
+            --primary: #00cc6a;
+            --bg: #f8fafc;
+            --surface: rgba(255, 255, 255, 0.9);
+            --surface-bright: #ffffff;
+            --border: rgba(0, 204, 106, 0.4);
+            --text-main: #0f172a;
+            --text-dim: #64748b;
+            --cell-bg: rgba(0, 0, 0, 0.05);
+            --neon-glow: 0 0 10px rgba(0, 204, 106, 0.2);
         }
 
         * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
+            margin: 0; padding: 0; box-sizing: border-box; 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             -webkit-tap-highlight-color: transparent;
         }
@@ -42,401 +57,302 @@
         body {
             background: var(--bg);
             background-image: 
-                radial-gradient(circle at 0% 0%, rgba(var(--primary-rgb), 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(0, 122, 255, 0.15) 0%, transparent 50%);
+                radial-gradient(circle at 10% 10%, rgba(var(--primary-rgb), 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(0, 122, 255, 0.1) 0%, transparent 40%);
             color: var(--text-main);
-            height: 100dvh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            overflow: hidden;
+            height: 100dvh; width: 100vw;
+            display: flex; justify-content: center;
+            padding: 10px; overflow: hidden;
+            transition: background 0.4s var(--transition);
         }
 
-        .app-container {
-            width: 100%;
-            max-width: 440px;
+        .app-wrapper {
+            width: 100%; max-width: 440px;
             height: 100%;
-            max-height: 92dvh;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
+            gap: 15px;
             position: relative;
-            z-index: 1;
+        }
+
+        .block-container {
             background: var(--surface);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
             border: 1px solid var(--border);
-            border-radius: 40px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            overflow: hidden;
+            border-radius: 28px;
+            box-shadow: var(--neon-glow);
+            transition: all 0.4s var(--transition);
         }
 
-        .header {
-            padding: 25px 20px 10px;
-            text-align: center;
+        .header-block { padding: 15px; flex-shrink: 0; text-align: center; }
+        .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        
+        .icon-btn {
+            background: var(--cell-bg); border: 1px solid var(--border);
+            color: var(--primary); cursor: pointer;
+            width: 40px; height: 40px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 0 5px var(--border);
+            transition: 0.3s;
         }
+        .icon-btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.05); }
 
-        .logo-img {
-            width: 100px;
-            height: auto;
-            filter: drop-shadow(0 0 15px rgba(var(--primary-rgb), 0.4));
-            border-radius: 20px;
-            margin-bottom: 15px;
+        .logo-img { 
+            width: 65px; height: auto; border-radius: 16px; 
+            filter: drop-shadow(0 0 10px var(--primary));
         }
 
         .prize-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 18px;
-            margin-bottom: 10px;
+            background: rgba(var(--primary-rgb), 0.03);
+            border: 1px solid var(--border); border-radius: 20px; padding: 15px;
         }
+        .prize-title { 
+            font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; 
+            text-shadow: 0 0 10px var(--primary);
+        }
+        .prize-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; }
 
-        .prize-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; }
-        .prize-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; line-height: 1.4; }
-        
         .price-tag {
-            font-size: 1.15rem;
-            font-weight: 900;
-            color: var(--primary);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0,0,0,0.2);
-            padding: 6px 16px;
-            border-radius: 12px;
+            font-size: 1rem; font-weight: 900; color: var(--primary);
+            background: rgba(var(--primary-rgb), 0.1); padding: 6px 16px; border-radius: 10px;
+            display: inline-flex; align-items: center; gap: 8px;
+            box-shadow: 0 0 10px var(--border);
         }
 
-        .nav-tabs {
-            display: flex;
-            padding: 0 20px;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
+        .menu-block { padding: 8px; flex-shrink: 0; }
+        .nav-tabs { display: flex; gap: 8px; }
         .tab-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 14px;
-            border: 1px solid transparent;
-            background: rgba(255,255,255,0.03);
-            color: var(--text-dim);
-            font-size: 0.65rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.3s;
+            flex: 1; padding: 12px; border-radius: 18px; border: 1px solid transparent;
+            background: transparent; color: var(--text-dim);
+            font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn.active { 
+            background: var(--surface-bright); 
+            color: var(--primary); 
+            border-color: var(--primary);
+            box-shadow: 0 0 15px var(--border);
         }
 
-        .tab-btn.active {
-            background: var(--surface-bright);
-            color: var(--primary);
-            border-color: var(--border);
+        .content-block {
+            flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
         }
 
-        .tab-btn.admin-tab { border-color: rgba(var(--primary-rgb), 0.3); display: none; }
-
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 0 20px 100px;
-            scrollbar-width: none;
+        .scroll-area {
+            flex: 1; overflow-y: auto; padding: 20px 20px 110px 20px;
+            -webkit-overflow-scrolling: touch;
         }
-        .main-content::-webkit-scrollbar { display: none; }
+        .scroll-area::-webkit-scrollbar { width: 0; }
 
-        .quick-select {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-
-        .qs-btn {
-            flex: 1;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 0.65rem;
-            font-weight: 700;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
-            gap: 6px;
-            margin-bottom: 30px;
-        }
+        .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
 
         .num-cell {
-            aspect-ratio: 1/1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.15s;
+            aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
+            background: var(--cell-bg); border: 1px solid var(--border); border-radius: 8px;
+            font-size: 0.7rem; font-weight: 700; cursor: pointer; color: var(--text-main);
+            transition: all 0.2s ease;
+        }
+        .num-cell.selected { 
+            background: var(--selected); color: white; border-color: #fff; 
+            box-shadow: 0 0 15px var(--secondary-glow); transform: scale(1.1); z-index: 2; 
+        }
+        .num-cell.reserved { 
+            background: var(--reserved); color: #000; cursor: not-allowed; 
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); border-color: transparent; 
+        }
+        .num-cell.paid { 
+            background: var(--paid); color: #000; cursor: not-allowed; 
+            box-shadow: 0 0 15px var(--primary); border-color: transparent;
         }
 
-        .num-cell.selected { background: var(--selected); color: white; border-color: transparent; box-shadow: 0 0 10px rgba(0, 122, 255, 0.4); }
-        .num-cell.reserved { background: var(--reserved); color: #000; cursor: not-allowed; opacity: 0.7; }
-        .num-cell.paid { background: var(--paid); color: #000; cursor: not-allowed; }
-
-        .footer-action {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
+        .purchase-footer {
+            position: absolute; bottom: 15px; left: 15px; right: 15px;
             background: var(--surface-bright);
-            padding: 18px 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
+            border: 1px solid var(--primary);
+            border-radius: 25px;
+            padding: 15px 22px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
             z-index: 100;
         }
 
-        .price-summary { flex: 1; }
-        .summary-header { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
-        .summary-label { font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700; }
-        .btn-clear { background: none; border: none; color: #ff4d4d; font-size: 0.6rem; font-weight: 800; cursor: pointer; text-decoration: underline; }
-        .summary-value { font-size: 1.15rem; font-weight: 800; color: var(--primary); }
-
         .btn-pay {
-            background: var(--primary);
-            color: #000;
-            padding: 14px 24px;
-            border-radius: 16px;
-            font-weight: 800;
-            font-size: 0.85rem;
-            border: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.3);
-            transition: 0.3s;
+            background: var(--primary); color: #000; padding: 12px 24px; border-radius: 16px;
+            font-weight: 800; font-size: 0.85rem; border: none; display: flex; align-items: center; gap: 8px;
+            box-shadow: 0 0 15px var(--primary);
+            cursor: pointer; transition: 0.3s;
         }
+        .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 25px var(--primary); }
         .btn-pay:disabled { opacity: 0.3; box-shadow: none; }
 
-        /* Dashboard Styles */
-        .admin-card {
-            background: rgba(255,255,255,0.03);
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-        }
-        .admin-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .admin-name { font-weight: 800; font-size: 0.95rem; color: var(--primary); }
-        .admin-phone { font-size: 0.75rem; color: var(--text-dim); }
-        .admin-cotas { font-size: 0.8rem; font-weight: 600; color: #fff; margin-top: 5px; line-height: 1.5; }
-        .admin-actions { display: flex; gap: 8px; margin-top: 15px; }
-        .btn-small { padding: 8px 14px; border-radius: 10px; font-size: 0.65rem; font-weight: 800; border: none; cursor: pointer; }
-        .btn-paid { background: var(--paid); color: #000; }
-        .btn-del { background: rgba(255, 77, 77, 0.2); color: #ff4d4d; border: 1px solid rgba(255, 77, 77, 0.3); }
-
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(12px);
-            z-index: 1000;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-card {
-            background: var(--surface-bright);
-            width: 100%;
-            max-width: 400px;
-            border-radius: 32px;
-            padding: 30px;
-            border: 1px solid var(--border);
-            text-align: center;
-            max-height: 85dvh;
-            overflow-y: auto;
-        }
-
-        .custom-input {
-            width: 100%;
-            background: rgba(0,0,0,0.4);
-            border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 15px;
-            color: white;
-            font-size: 0.9rem;
-            outline: none;
-            margin-bottom: 15px;
-            text-align: left;
-        }
-        .custom-input:focus { border-color: var(--primary); }
+        .progress-bar-bg { width: 100%; height: 5px; background: var(--cell-bg); border-radius: 10px; margin-top: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: 1s ease; box-shadow: 0 0 10px var(--primary); }
         
-        textarea.custom-input { resize: none; min-height: 90px; }
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px);
+            z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-card {
+            background: var(--surface-bright); width: 100%; max-width: 380px; border-radius: 35px;
+            padding: 30px; border: 2px solid var(--primary); text-align: center;
+            box-shadow: 0 0 30px var(--border);
+        }
+        .custom-input {
+            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border);
+            padding: 16px; border-radius: 15px; color: var(--primary); font-size: 0.95rem; outline: none; margin-bottom: 18px;
+            box-shadow: inset 0 0 5px var(--border);
+            transition: 0.3s;
+        }
+        .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--border); }
 
         .toast {
-            position: fixed;
-            top: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--surface-bright);
-            border: 1px solid var(--primary);
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            z-index: 2000;
-            display: none;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); border: none; color: #000;
+            padding: 14px 28px; border-radius: 100px; font-size: 0.85rem; font-weight: 800; z-index: 2000; display: none;
+            box-shadow: 0 0 20px var(--primary);
         }
 
-        .spinner { width: 18px; height: 18px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .spinner { 
+            width: 22px; height: 22px; border: 3px solid rgba(0,255,136,0.1); 
+            border-top: 3px solid var(--primary); border-radius: 50%; 
+            animation: spin 0.8s linear infinite; 
+            filter: drop-shadow(0 0 5px var(--primary));
+        }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        .admin-stat-item {
+            background: var(--cell-bg); border: 1px solid var(--border); padding: 12px; border-radius: 15px; text-align: center;
+        }
+        .admin-stat-item b { color: var(--primary); text-shadow: 0 0 5px var(--primary); }
+
+        .whatsapp-btn {
+            background: var(--whatsapp); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 0.65rem; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s;
+        }
+        .whatsapp-btn:hover { box-shadow: 0 0 12px var(--whatsapp); transform: scale(1.05); }
+
+        /* Estilo para cartões de resultado da busca */
+        .result-card {
+            background: var(--cell-bg);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .result-header { display: flex; justify-content: space-between; align-items: center; }
+        .result-num { font-size: 1.2rem; font-weight: 900; color: #fff; }
+        .result-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; }
+        .btn-inline-pay {
+            background: var(--secondary); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: 800; font-size: 0.7rem; cursor: pointer;
+            box-shadow: 0 0 10px var(--secondary-glow);
+        }
     </style>
 </head>
-<body>
+<body data-theme="dark">
 
     <div id="toast" class="toast">Mensagem</div>
 
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <img src="1776393050679.png" alt="Rifa Logo" class="logo-img" onerror="this.src='https://placehold.co/120x120/000/00FF88?text=RIFA'">
+    <div class="app-wrapper">
+        <!-- BLOCO 1: CABEÇALHO -->
+        <header class="block-container header-block">
+            <div class="header-controls">
+                <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">
+                    <i data-lucide="moon"></i>
+                </button>
+                <img src="1776393050679.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/100x100/000/00FF88?text=RIFA'">
+                <button class="icon-btn" onclick="askAdmin()">
+                    <i data-lucide="settings"></i>
+                </button>
+            </div>
             <div class="prize-card">
                 <h1 class="prize-title" id="display-premio">Carregando...</h1>
-                <p class="prize-desc" id="display-descricao">Aguarde...</p>
+                <p class="prize-desc" id="display-descricao">Aguarde um momento...</p>
                 <div class="price-tag">
-                    <i data-lucide="ticket" style="width: 18px;"></i>
+                    <i data-lucide="ticket" style="width: 16px;"></i>
                     <span id="display-valor">R$ 0,00</span>
+                </div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progress-fill"></div>
                 </div>
             </div>
         </header>
 
-        <!-- Tabs -->
-        <nav class="nav-tabs">
-            <button class="tab-btn active" id="tab-rifa" onclick="switchTab('rifa')">RIFA</button>
-            <button class="tab-btn" id="tab-consulta" onclick="switchTab('consulta')">MINHAS COTAS</button>
-            <button class="tab-btn admin-tab" id="tab-admin" onclick="switchTab('admin')">DASHBOARD</button>
+        <!-- BLOCO 2: MENU -->
+        <nav class="block-container menu-block">
+            <div class="nav-tabs">
+                <button class="tab-btn active" id="tab-rifa" onclick="switchTab('rifa')">RIFA</button>
+                <button class="tab-btn" id="tab-consulta" onclick="switchTab('consulta')">MEUS NÚMEROS</button>
+                <button class="tab-btn" id="tab-admin" style="display:none;" onclick="switchTab('admin')">ADMIN</button>
+            </div>
         </nav>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            
-            <!-- VIEW: RIFA -->
-            <div id="view-rifa">
-                <div class="quick-select">
-                    <button class="qs-btn" onclick="quickPick(5)">+5 COTAS</button>
-                    <button class="qs-btn" onclick="quickPick(10)">+10 COTAS</button>
-                    <button class="qs-btn" onclick="quickPick(20)">+20 COTAS</button>
-                </div>
-                <div class="grid-container" id="grid"></div>
-            </div>
-
-            <!-- VIEW: CONSULTA -->
-            <div id="view-consulta" style="display: none;">
-                <input type="tel" id="search-phone" class="custom-input" placeholder="Seu Telefone (DDD)" oninput="maskPhone(this)">
-                <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="consultarMeusNumeros()">BUSCAR</button>
-                <div id="results-area" style="margin-top: 25px;"></div>
-            </div>
-
-            <!-- VIEW: ADMIN DASHBOARD -->
-            <div id="view-admin" style="display: none;">
-                <div style="display: flex; gap: 8px; margin-bottom: 20px;">
-                    <button class="btn-pay" style="padding:0 15px; background: rgba(255,255,255,0.08); color: #fff;" onclick="openConfigModal()">
-                        <i data-lucide="settings" style="width:20px;"></i>
-                    </button>
-                    <input type="text" id="admin-search" class="custom-input" style="margin-bottom:0;" placeholder="Filtrar por nome..." oninput="renderAdminDashboard()">
-                </div>
-                
-                <div id="admin-list">
-                    <!-- Cards de compradores serão injetados aqui -->
+        <!-- BLOCO 3: CONTEÚDO -->
+        <main class="block-container content-block">
+            <div class="scroll-area" id="main-scroll">
+                <div id="view-rifa">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button class="icon-btn" style="flex:1; font-size:0.6rem; font-weight:800;" onclick="quickPick(5)">+5 COTAS</button>
+                        <button class="icon-btn" style="flex:1; font-size:0.6rem; font-weight:800;" onclick="quickPick(10)">+10 COTAS</button>
+                    </div>
+                    <div class="grid-container" id="grid"></div>
                 </div>
 
-                <div style="margin-top: 30px; padding: 20px; border-top: 1px solid var(--border);">
-                    <p style="font-size:0.65rem; color:var(--text-dim); text-align:center; margin-bottom:12px; letter-spacing: 1px; font-weight: 700;">AÇÕES DE SISTEMA</p>
-                    <button class="btn-small btn-del" style="width:100%; padding:15px; border-radius: 16px;" onclick="resetRifa()">RESETAR TODA A RIFA</button>
+                <div id="view-consulta" style="display: none;">
+                    <input type="tel" id="search-phone" class="custom-input" placeholder="Seu WhatsApp (DDD)" oninput="maskPhone(this)">
+                    <button class="btn-pay" id="btn-search-client" style="width: 100%; justify-content: center;" onclick="consultarMeusNumeros()">BUSCAR NÚMEROS</button>
+                    <div id="results-area" style="margin-top: 25px;"></div>
+                </div>
+
+                <div id="view-admin" style="display: none;">
+                    <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"></div>
+                    <button class="btn-pay" style="width:100%; background:var(--secondary); color:#fff; margin-bottom:12px; box-shadow: 0 0 15px var(--secondary-glow);" onclick="openConfigModal()">CONFIGURAR</button>
+                    <div id="admin-list"></div>
                 </div>
             </div>
 
-            <div style="text-align: center; margin-top: 40px; padding-bottom: 30px;">
-                <button id="admin-lock-btn" onclick="askAdmin()" style="background:none; border:none; color:var(--text-dim); font-size:0.65rem; opacity:0.5; font-weight: 700; letter-spacing: 1px;">MODO ADMINISTRADOR</button>
-            </div>
+            <!-- Rodapé Neon -->
+            <footer class="purchase-footer" id="footer-purchase">
+                <div>
+                    <p style="font-size:0.55rem; color:var(--text-dim); font-weight:800; text-transform:uppercase;">COTAS: <span id="count-display" style="color:var(--primary)">0</span></p>
+                    <p id="footer-total" style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">R$ 0,00</p>
+                </div>
+                <button class="btn-pay" id="btn-checkout" disabled onclick="abrirCheckout()">
+                    RESERVAR
+                    <i data-lucide="zap" style="width: 16px; fill: currentColor;"></i>
+                </button>
+            </footer>
         </main>
-
-        <!-- Footer -->
-        <footer class="footer-action" id="footer-rifa">
-            <div class="price-summary">
-                <div class="summary-header">
-                    <p class="summary-label">Cotas: <span id="count-selected">0</span></p>
-                    <button class="btn-clear" id="btn-clear" style="display:none;" onclick="clearSelection()">Limpar</button>
-                </div>
-                <p class="summary-value" id="footer-total">R$ 0,00</p>
-            </div>
-            <button class="btn-pay" id="btn-checkout" disabled onclick="abrirCheckout()">
-                RESERVAR
-                <i data-lucide="chevron-right" style="width: 18px;"></i>
-            </button>
-        </footer>
     </div>
 
-    <!-- MODAL: Checkout -->
+    <!-- Modais -->
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
-            <h2 style="margin-bottom: 20px; font-weight: 800;">DADOS DA RESERVA</h2>
+            <h2 style="margin-bottom: 20px; font-weight: 800; color: var(--primary); text-shadow: 0 0 10px var(--primary);">RESERVAR AGORA</h2>
             <input type="text" id="cust-name" class="custom-input" placeholder="Nome Completo">
             <input type="tel" id="cust-phone" class="custom-input" placeholder="WhatsApp (DDD)" oninput="maskPhone(this)">
-            <div style="background: rgba(0,0,0,0.3); border-radius: 18px; padding: 18px; margin: 20px 0; text-align: left; font-size: 0.8rem;">
-                <p style="color:var(--text-dim); margin-bottom: 5px;">COTAS SELECIONADAS:</p>
-                <p id="checkout-summary" style="font-weight:800; color:var(--primary); line-height: 1.4;"></p>
-            </div>
-            <button class="btn-pay" id="btn-confirm-pay" style="width: 100%; justify-content: center;" onclick="confirmarReserva()">PAGAR COM PIX</button>
-            <button onclick="closeModal('modal-checkout')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size:0.75rem; font-weight: 700;">CANCELAR</button>
+            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="confirmarReserva()" id="btn-confirm-res">CONCLUIR RESERVA</button>
+            <button onclick="closeModal('modal-checkout')" style="margin-top: 20px; background:none; border:none; color:var(--text-dim); font-size:0.8rem; font-weight:700; cursor:pointer;">FECHAR</button>
         </div>
     </div>
 
-    <!-- MODAL: Configurações da Rifa -->
-    <div class="modal-overlay" id="modal-config">
-        <div class="modal-card">
-            <h2 style="margin-bottom: 25px; color: var(--primary); font-weight: 800;">AJUSTES DA RIFA</h2>
-            
-            <div style="text-align: left;">
-                <label style="font-size: 0.65rem; color: var(--text-dim); margin-left: 5px; font-weight: 700;">NOME DO PRÊMIO</label>
-                <input type="text" id="cfg-premio" class="custom-input" placeholder="Ex: iPhone 15 Pro Max">
-                
-                <label style="font-size: 0.65rem; color: var(--text-dim); margin-left: 5px; font-weight: 700;">DESCRIÇÃO</label>
-                <textarea id="cfg-descricao" class="custom-input" placeholder="Regras e detalhes..."></textarea>
-                
-                <div style="display: flex; gap: 12px;">
-                    <div style="flex: 1;">
-                        <label style="font-size: 0.65rem; color: var(--text-dim); margin-left: 5px; font-weight: 700;">VALOR (R$)</label>
-                        <input type="number" id="cfg-valor" class="custom-input" step="0.01" placeholder="0,00">
-                    </div>
-                    <div style="flex: 1;">
-                        <label style="font-size: 0.65rem; color: var(--text-dim); margin-left: 5px; font-weight: 700;">COTAS TOTAIS</label>
-                        <input type="number" id="cfg-total" class="custom-input" placeholder="100">
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn-pay" style="width: 100%; justify-content: center; margin-top: 15px;" onclick="saveRifaConfig()">SALVAR ALTERAÇÕES</button>
-            <button onclick="closeModal('modal-config')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size:0.75rem; font-weight: 700;">FECHAR</button>
-        </div>
-    </div>
-
-    <!-- MODAL: PIN Admin -->
     <div class="modal-overlay" id="modal-pin">
         <div class="modal-card" style="max-width: 320px;">
-            <h3 style="margin-bottom: 20px;">PIN DE ACESSO</h3>
-            <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="4" style="text-align:center; font-size:1.8rem; letter-spacing:12px; font-weight: 800; border-color: var(--primary);">
-            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="validateAdmin()">ENTRAR</button>
-            <button onclick="closeModal('modal-pin')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size: 0.8rem;">CANCELAR</button>
+            <h3 style="color:var(--primary); margin-bottom: 15px;">ACESSO RESTRITO</h3>
+            <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="4" style="text-align:center; font-size:1.8rem; letter-spacing:12px;">
+            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="validateAdmin()">ENTRAR NO SISTEMA</button>
+            <button onclick="closeModal('modal-pin')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); cursor:pointer;">CANCELAR</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-config">
+        <div class="modal-card">
+            <h3 style="color:var(--primary); margin-bottom: 20px;">AJUSTES DA RIFA</h3>
+            <input type="text" id="cfg-premio" class="custom-input" placeholder="Nome do Prémio">
+            <textarea id="cfg-descricao" class="custom-input" placeholder="Descrição" style="height: 100px; resize: none;"></textarea>
+            <input type="number" id="cfg-valor" class="custom-input" step="0.01" placeholder="Valor da Cota">
+            <input type="number" id="cfg-total" class="custom-input" placeholder="Total de Números">
+            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="saveRifaConfig()">SALVAR DADOS</button>
+            <button onclick="closeModal('modal-config')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); cursor:pointer;">VOLTAR</button>
         </div>
     </div>
 
@@ -463,17 +379,26 @@
         const PIN = "6261";
         const HANDLE = "vagner_lauriuche--inc";
 
-        let config = { premio: "Prêmio Master", descricao: "Carregando...", valor: 10, total: 100 };
+        let config = { premio: "...", descricao: "...", valor: 10, total: 100 };
         let dbNumbers = {};
         let selected = new Set();
         let isAdmin = false;
 
         lucide.createIcons();
 
-        // Database Sync
+        window.toggleTheme = () => {
+            const body = document.body;
+            const current = body.getAttribute('data-theme');
+            const next = current === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            document.getElementById('theme-btn').innerHTML = `<i data-lucide="${next === 'dark' ? 'moon' : 'sun'}"></i>`;
+            lucide.createIcons();
+        };
+
         onValue(cfgRef, (s) => { 
-            if(s.exists()) { 
+            if(s.exists()){ 
                 config = s.val(); 
+                if(!config.descricao) config.descricao = "Participe e concorra agora!";
                 renderUI(); 
             } 
         });
@@ -481,21 +406,27 @@
         onValue(numRef, (s) => { 
             dbNumbers = s.exists() ? s.val() : {}; 
             renderGrid(); 
-            if(isAdmin) renderAdminDashboard();
+            updateProgress();
+            if(isAdmin) renderAdmin();
         });
 
         function renderUI() {
             document.getElementById('display-premio').innerText = config.premio;
-            document.getElementById('display-descricao').innerText = config.descricao || "Participe!";
+            document.getElementById('display-descricao').innerText = config.descricao;
             document.getElementById('display-valor').innerText = config.valor.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             updateFooter();
         }
 
+        function updateProgress() {
+            const filledCount = Object.keys(dbNumbers).length;
+            const percent = (filledCount / config.total) * 100;
+            document.getElementById('progress-fill').style.width = percent + "%";
+        }
+
         function renderGrid() {
             const grid = document.getElementById('grid');
-            if(!grid) return;
-            grid.innerHTML = '';
-            for(let i=1; i<=config.total; i++) {
+            if(!grid) return; grid.innerHTML = '';
+            for(let i=0; i < config.total; i++) {
                 const n = i.toString().padStart(2, '0');
                 const el = document.createElement('div');
                 el.className = 'num-cell';
@@ -514,38 +445,22 @@
             updateFooter();
         }
 
-        window.clearSelection = () => {
-            selected.clear();
-            renderGrid();
-            updateFooter();
-            showToast("Seleção limpa!");
-        };
+        function updateFooter() {
+            const total = selected.size * config.valor;
+            document.getElementById('footer-total').innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('count-display').innerText = selected.size;
+            document.getElementById('btn-checkout').disabled = selected.size === 0;
+        }
 
         window.quickPick = (qty) => {
             const available = [];
-            for(let i=1; i<=config.total; i++) {
+            for(let i=0; i<config.total; i++){
                 const n = i.toString().padStart(2, '0');
                 if(!dbNumbers[n] && !selected.has(n)) available.push(n);
             }
             available.sort(() => Math.random() - 0.5).slice(0, qty).forEach(n => selected.add(n));
-            renderGrid();
-            updateFooter();
-            if(available.length > 0) showToast(`+${qty} cotas selecionadas!`);
+            renderGrid(); updateFooter();
         };
-
-        function updateFooter() {
-            const total = selected.size * config.valor;
-            const countEl = document.getElementById('count-selected');
-            const totalEl = document.getElementById('footer-total');
-            if(countEl) countEl.innerText = selected.size;
-            if(totalEl) totalEl.innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            
-            const btn = document.getElementById('btn-checkout');
-            if(btn) btn.disabled = selected.size === 0;
-            
-            const clearBtn = document.getElementById('btn-clear');
-            if(clearBtn) clearBtn.style.display = selected.size > 0 ? 'inline-block' : 'none';
-        }
 
         window.switchTab = (tab) => {
             ['rifa', 'consulta', 'admin'].forEach(v => {
@@ -554,274 +469,190 @@
                 const btn = document.getElementById(`tab-${v}`);
                 if(btn) btn.classList.remove('active');
             });
-            
-            const view = document.getElementById(`view-${tab}`);
-            if(view) view.style.display = 'block';
-            const btn = document.getElementById(`tab-${tab}`);
-            if(btn) btn.classList.add('active');
-            
-            const footer = document.getElementById('footer-rifa');
-            if(footer) footer.style.display = tab === 'rifa' ? 'flex' : 'none';
-
-            // Garante a renderização ao entrar no Dashboard
-            if(tab === 'admin' && isAdmin) renderAdminDashboard();
+            document.getElementById(`view-${tab}`).style.display = 'block';
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById('footer-purchase').style.display = tab === 'rifa' ? 'flex' : 'none';
+            document.getElementById('main-scroll').scrollTop = 0;
         };
 
-        // --- ADMIN DASHBOARD ---
         window.askAdmin = () => document.getElementById('modal-pin').style.display = 'flex';
-        
         window.validateAdmin = () => {
-            const pinVal = document.getElementById('admin-pin').value;
-            if(pinVal === PIN) {
+            if(document.getElementById('admin-pin').value === PIN) {
                 isAdmin = true;
                 document.getElementById('tab-admin').style.display = 'block';
-                document.getElementById('admin-lock-btn').style.display = 'none';
-                closeModal('modal-pin');
-                switchTab('admin');
-                showToast("Bem-vindo, Administrador!");
-            } else {
-                showToast("❌ PIN Inválido");
-            }
+                closeModal('modal-pin'); switchTab('admin');
+            } else showToast("❌ PIN INVÁLIDO");
+        };
+
+        window.renderAdmin = () => {
+            const list = document.getElementById('admin-list');
+            list.innerHTML = '';
+            let tPaid = 0;
+            const groups = {};
+            Object.entries(dbNumbers).forEach(([n, d]) => {
+                if(d.status === 'paid') tPaid += config.valor;
+                const phone = d.telefone || "0";
+                if(!groups[phone]) groups[phone] = { nome: d.nome, telefone: d.telefone, cotas: [] };
+                groups[phone].cotas.push(n);
+            });
+            document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item">PAGO: <b>R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item">VENDAS: <b>${Object.keys(dbNumbers).length}</b></div>`;
+            Object.values(groups).forEach(p => {
+                const phoneClean = p.telefone.replace(/\D/g, '');
+                list.innerHTML += `<div class="custom-input" style="text-align:left; font-size:0.75rem; height:auto; padding:12px; border-color:rgba(255,255,255,0.1);">
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+                        <div><b style="color:var(--primary);">${p.nome.toUpperCase()}</b><br><span style="color:var(--text-dim); font-size:0.65rem;">${p.telefone}</span></div>
+                        <button class="whatsapp-btn" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')"><i data-lucide="message-circle" style="width:14px;"></i></button>
+                    </div>
+                    <div style="color:#fff;">COTAS: ${p.cotas.sort().join(', ')}</div>
+                </div>`;
+            });
+            lucide.createIcons();
         };
 
         window.openConfigModal = () => {
             document.getElementById('cfg-premio').value = config.premio;
-            document.getElementById('cfg-descricao').value = config.descricao || "";
+            document.getElementById('cfg-descricao').value = config.descricao;
             document.getElementById('cfg-valor').value = config.valor;
             document.getElementById('cfg-total').value = config.total;
             document.getElementById('modal-config').style.display = 'flex';
         };
 
-        window.saveRifaConfig = async () => {
-            const newConfig = {
-                premio: document.getElementById('cfg-premio').value.trim(),
-                descricao: document.getElementById('cfg-descricao').value.trim(),
-                valor: parseFloat(document.getElementById('cfg-valor').value),
-                total: parseInt(document.getElementById('cfg-total').value)
-            };
-            if(!newConfig.premio || isNaN(newConfig.valor)) return showToast("⚠️ Verifique os dados");
-            await set(cfgRef, newConfig);
-            closeModal('modal-config');
-            showToast("✅ Rifa atualizada!");
+        window.saveRifaConfig = () => {
+            const up = { premio: document.getElementById('cfg-premio').value, descricao: document.getElementById('cfg-descricao').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value) };
+            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ DADOS SALVOS!"); });
         };
 
-        window.renderAdminDashboard = () => {
-            const list = document.getElementById('admin-list');
-            if (!list) return;
-
-            const searchInput = document.getElementById('admin-search');
-            const search = searchInput ? searchInput.value.toLowerCase() : "";
-            list.innerHTML = '';
-
-            const groups = {};
-            
-            // Lógica de agrupamento robusta
-            Object.entries(dbNumbers).forEach(([num, data]) => {
-                if (!data || !data.telefone) return; // Ignora registos corrompidos
-
-                const phoneKey = data.telefone;
-                if (!groups[phoneKey]) {
-                    groups[phoneKey] = { 
-                        nome: data.nome || "Sem Nome", 
-                        telefone: data.telefone, 
-                        cotas: [] 
-                    };
-                }
-                groups[phoneKey].cotas.push({ num, status: data.status });
-            });
-
-            // Converte objeto para array e filtra pelo nome
-            const groupsArray = Object.values(groups);
-            const filtered = groupsArray.filter(g => 
-                (g.nome || "").toLowerCase().includes(search) || 
-                (g.telefone || "").includes(search)
-            );
-
-            if (filtered.length === 0) {
-                list.innerHTML = `
-                    <div style="text-align:center; color:var(--text-dim); padding: 40px 20px;">
-                        <i data-lucide="users" style="width:40px; height:40px; margin-bottom:10px; opacity:0.3;"></i>
-                        <p style="font-size:0.8rem;">Nenhum comprador encontrado${search ? ' para esta busca' : ''}.</p>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
-            }
-
-            filtered.forEach(person => {
-                const card = document.createElement('div');
-                card.className = 'admin-card';
-                
-                // Ordena cotas numericamente
-                const sortedCotas = person.cotas.sort((a, b) => parseInt(a.num) - parseInt(b.num));
-                const cotasStr = sortedCotas.map(c => `
-                    <span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}; font-weight:800;">
-                        #${c.num}
-                    </span>`).join(', ');
-                
-                card.innerHTML = `
-                    <div class="admin-card-header">
-                        <div>
-                            <div class="admin-name">${(person.nome || "SEM NOME").toUpperCase()}</div>
-                            <div class="admin-phone">${person.telefone}</div>
-                        </div>
-                    </div>
-                    <div class="admin-cotas"><b>Cotas:</b> ${cotasStr}</div>
-                    <div class="admin-actions">
-                        <button class="btn-small btn-paid" onclick="updateStatusGroup('${person.telefone}', 'paid')">MARCAR PAGAS</button>
-                        <button class="btn-small btn-del" onclick="deleteGroup('${person.telefone}')">REMOVER</button>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-        };
-
-        window.updateStatusGroup = async (phone, status) => {
-            const updates = {};
-            let count = 0;
-            Object.entries(dbNumbers).forEach(([num, data]) => {
-                if(data && data.telefone === phone && data.status !== status) {
-                    updates[`${num}/status`] = status;
-                    count++;
-                }
-            });
-            if (count > 0) {
-                await update(numRef, updates);
-                showToast(`✅ ${count} cota(s) atualizada(s)!`);
-            }
-        };
-
-        window.deleteGroup = async (phone) => {
-            if(!confirm("Remover todas as cotas desta pessoa?")) return;
-            const updates = {};
-            Object.entries(dbNumbers).forEach(([num, data]) => {
-                if(data && data.telefone === phone) updates[num] = null;
-            });
-            await update(numRef, updates);
-            showToast("🗑️ Registos removidos.");
-        };
-
-        window.resetRifa = () => {
-            if(confirm("PERIGO: Isso apagará TODOS os compradores da rifa. Continuar?")) {
-                remove(numRef);
-                showToast("🔥 Rifa resetada!");
-            }
-        };
-
-        // --- PUBLIC FUNCTIONS ---
-        window.abrirCheckout = () => {
-            document.getElementById('checkout-summary').innerText = Array.from(selected).sort((a,b) => parseInt(a)-parseInt(b)).join(', ');
-            document.getElementById('modal-checkout').style.display = 'flex';
-        };
-
+        window.abrirCheckout = () => document.getElementById('modal-checkout').style.display = 'flex';
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
         window.confirmarReserva = async () => {
             const n = document.getElementById('cust-name').value.trim();
             const t = document.getElementById('cust-phone').value.trim();
-            if(n.split(' ').length < 2 || t.length < 14) return showToast("⚠️ Nome e WhatsApp obrigatórios");
-
-            const btn = document.getElementById('btn-confirm-pay');
+            const phoneClean = t.replace(/\D/g, '');
+            if(!n || n.split(' ').length < 2) return showToast("⚠️ INFORME NOME COMPLETO!");
+            if(phoneClean.length < 10) return showToast("⚠️ WHATSAPP INVÁLIDO!");
+            const btn = document.getElementById('btn-confirm-res');
             btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
-
-            const orderId = "RM" + Date.now().toString().slice(-8);
+            const oid = "RN" + Date.now().toString().slice(-8);
             try {
-                const updates = {};
-                selected.forEach(num => updates[num] = { 
-                    nome: n, 
-                    telefone: t, 
-                    status: 'reserved', 
-                    order_nsu: orderId, 
-                    timestamp: Date.now() 
-                });
-                await update(numRef, updates);
-                
-                const amountCents = Math.round(selected.size * config.valor * 100);
-                const payload = { 
-                    "handle": HANDLE, 
-                    "order_nsu": orderId, 
-                    "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, 
-                    "items": [{"quantity":1, "price": amountCents, "description": `Reserva Rifa ${config.premio}`}] 
-                };
-                
-                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { 
-                    method:'POST', 
-                    headers:{'Content-Type':'application/json'}, 
-                    body:JSON.stringify(payload) 
-                });
-                
-                const data = await res.json();
-                if(data.url || data.checkout_url) {
-                    selected.clear();
-                    window.location.href = data.url || data.checkout_url;
-                } else throw new Error();
-            } catch(e) {
-                showToast("❌ Erro de conexão com checkout");
-                btn.disabled = false; btn.innerText = "PAGAR COM PIX";
-            }
+                const up = {};
+                selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid });
+                await update(numRef, up);
+                const url = await triggerInfinite(n, t, oid, selected.size * config.valor);
+                if(url) { selected.clear(); window.location.href = url; }
+            } catch(e) { showToast("❌ ERRO NO PAGAMENTO!"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
         };
+
+        async function triggerInfinite(nome, tel, oid, val) {
+            const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": nome, "phone_number": "55" + tel.replace(/\D/g,'') }, "items": [{"quantity":1, "price": Math.round(val * 100), "description": `Rifa ${config.premio}`}] };
+            const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) });
+            const d = await res.json(); return d.url || d.checkout_url;
+        }
 
         window.consultarMeusNumeros = async () => {
             const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
             const area = document.getElementById('results-area');
-            if(tel.length < 10) return showToast("⚠️ WhatsApp incompleto");
+            const btnSearch = document.getElementById('btn-search-client');
+            if(!tel || tel.length < 10) return showToast("⚠️ INFORME WHATSAPP VÁLIDO");
             
-            area.innerHTML = '<center style="padding:20px;"><div class="spinner"></div></center>';
-            const s = await get(numRef);
-            area.innerHTML = '';
+            btnSearch.disabled = true;
+            btnSearch.innerHTML = '<div class="spinner"></div>';
+            
+            const s = await get(numRef); area.innerHTML = '';
+            btnSearch.disabled = false;
+            btnSearch.innerHTML = 'BUSCAR NÚMEROS';
             
             if(s.exists()){
-                const meus = Object.entries(s.val()).filter(([n, d]) => d && d.telefone && d.telefone.replace(/\D/g,'') === tel);
-                if(meus.length > 0) {
-                    meus.sort((a,b) => parseInt(a[0]) - parseInt(b[0])).forEach(([n, d]) => {
+                const data = s.val();
+                const filtered = Object.entries(data).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
+                
+                if(filtered.length > 0) {
+                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved');
+                    const nome = filtered[0][1].nome;
+                    
+                    // Se houver múltiplas pendências, mostrar botão Pagar Tudo
+                    if(pendentes.length > 1) {
+                        const totalPendentes = (pendentes.length * config.valor).toFixed(2);
                         area.innerHTML += `
-                        <div style="display:flex; justify-content:space-between; padding:15px; background:rgba(255,255,255,0.06); border-radius:15px; margin-bottom:8px; border:1px solid var(--border)">
-                            <b style="font-size:1.1rem;">#${n}</b> 
-                            <span style="font-weight:800; color:${d.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">
-                                ${d.status.toUpperCase()}
-                            </span>
-                        </div>`;
+                            <button class="btn-pay" style="width:100%; margin-bottom:15px; background:var(--secondary);" onclick="pagarPendentesBulk('${nome}', '${tel}', ${JSON.stringify(pendentes.map(p => p[0]))})">
+                                💳 PAGAR TODAS AS ${pendentes.length} PENDENTES (R$ ${totalPendentes})
+                            </button>
+                        `;
+                    }
+
+                    filtered.sort((a,b) => a[0] - b[0]).forEach(([n, d]) => {
+                        const isPago = d.status === 'paid';
+                        area.innerHTML += `
+                            <div class="result-card">
+                                <div class="result-header">
+                                    <span class="result-num">#${n}</span>
+                                    <span class="result-status" style="background:${isPago ? 'var(--paid)' : 'var(--reserved)'}; color:#000;">
+                                        ${d.status.toUpperCase()}
+                                    </span>
+                                </div>
+                                ${!isPago ? `
+                                    <button class="btn-inline-pay" onclick="pagarCotaUnica('${n}', '${d.nome}', '${tel}')">
+                                        PAGAR ESTA COTA
+                                    </button>
+                                ` : ''}
+                            </div>
+                        `;
                     });
-                } else area.innerHTML = '<p style="text-align:center; color:var(--text-dim); font-size:0.8rem; padding:20px;">Nenhuma cota encontrada para este número.</p>';
+                } else {
+                    area.innerHTML = '<p style="text-align:center; color:var(--text-dim); font-size:0.85rem;">NADA ENCONTRADO PARA ESTE NÚMERO</p>';
+                }
             }
         };
 
-        window.maskPhone = (i) => {
-            let v = i.value.replace(/\D/g, "");
-            v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
-            v = v.replace(/(\d)(\d{4})$/, "$1-$2");
-            i.value = v;
+        window.pagarCotaUnica = async (num, nome, tel) => {
+            const oid = "RS" + num + Date.now().toString().slice(-6);
+            showToast("Gerando Pix para #" + num + "...");
+            try {
+                await update(ref(db, `rifa_master/numeros/${num}`), { order_nsu: oid });
+                const url = await triggerInfinite(nome, tel, oid, config.valor);
+                if(url) window.location.href = url;
+            } catch(e) { showToast("❌ Erro ao gerar pagamento"); }
         };
 
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            if(!t) return;
-            t.innerText = msg; t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
+        window.pagarPendentesBulk = async (nome, tel, lista) => {
+            const oid = "RT" + Date.now().toString().slice(-8);
+            showToast("Agrupando " + lista.length + " cotas...");
+            try {
+                const updates = {};
+                lista.forEach(num => updates[`${num}/order_nsu`] = oid);
+                await update(numRef, updates);
+                const url = await triggerInfinite(nome, tel, oid, lista.length * config.valor);
+                if(url) window.location.href = url;
+            } catch(e) { showToast("❌ Erro no pagamento em lote"); }
+        };
+
+        window.maskPhone = i => { 
+            let v = i.value.replace(/\D/g,""); 
+            v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); 
+            v=v.replace(/(\d)(\d{4})$/,"$1-$2"); 
+            i.value = v; 
+        };
+
+        function showToast(msg) { 
+            const t = document.getElementById('toast'); 
+            t.innerText = msg; t.style.display = 'block'; 
+            setTimeout(() => t.style.display = 'none', 4000); 
         }
 
-        // Verificação de retorno do pagamento
-        const params = new URLSearchParams(window.location.search);
-        const order_nsu = params.get('order_nsu');
-        if(order_nsu) {
+        // Verifica NSU no retorno
+        const nsuParam = new URLSearchParams(window.location.search).get('order_nsu');
+        if(nsuParam) {
             get(numRef).then(s => {
                 if(s.exists()){
-                    const data = s.val();
-                    const updates = {}; 
-                    let ok = false;
-                    Object.entries(data).forEach(([num, info]) => {
-                        if(info && info.order_nsu === order_nsu && info.status === 'reserved') { 
-                            updates[`${num}/status`] = "paid"; 
-                            ok = true; 
-                        }
+                    const data = s.val(); const up = {}; let ok = false;
+                    Object.entries(data).forEach(([n, info]) => {
+                        if(info.order_nsu === nsuParam && info.status === 'reserved') { up[`${n}/status`] = "paid"; ok = true; }
                     });
-                    if(ok) {
-                        update(numRef, updates).then(() => {
-                            window.history.replaceState({}, '', window.location.pathname);
-                            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#00ff88', '#ffffff'] });
-                            showToast("🎉 PAGAMENTO CONFIRMADO!");
-                        });
-                    }
+                    if(ok) update(numRef, up).then(() => {
+                        window.history.replaceState({}, '', window.location.pathname);
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                        showToast("🎉 PAGAMENTO CONFIRMADO!");
+                    });
                 }
             });
         }
