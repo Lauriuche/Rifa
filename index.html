@@ -31,6 +31,7 @@
             --reserved: #ffaa00;
             --paid: #00ff88;
             --selected: #007aff;
+            --danger: #ff4d4d;
             --whatsapp: #25d366;
             --transition: cubic-bezier(0.4, 0, 0.2, 1);
             --neon-glow: 0 0 15px rgba(0, 255, 136, 0.4);
@@ -83,6 +84,7 @@
             transition: all 0.4s var(--transition);
         }
 
+        /* Cabeçalho */
         .header-block { padding: 15px; flex-shrink: 0; text-align: center; }
         .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         
@@ -118,6 +120,7 @@
             box-shadow: 0 0 10px var(--border);
         }
 
+        /* Menu */
         .menu-block { padding: 8px; flex-shrink: 0; }
         .nav-tabs { display: flex; gap: 8px; }
         .tab-btn {
@@ -132,6 +135,7 @@
             box-shadow: 0 0 15px var(--border);
         }
 
+        /* Conteúdo / Números */
         .content-block {
             flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
         }
@@ -163,6 +167,7 @@
             box-shadow: 0 0 15px var(--primary); border-color: transparent;
         }
 
+        /* Rodapé de Compra */
         .purchase-footer {
             position: absolute; bottom: 15px; left: 15px; right: 15px;
             background: var(--surface-bright);
@@ -183,9 +188,11 @@
         .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 25px var(--primary); }
         .btn-pay:disabled { opacity: 0.3; box-shadow: none; }
 
+        /* Progress */
         .progress-bar-bg { width: 100%; height: 5px; background: var(--cell-bg); border-radius: 10px; margin-top: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
         .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: 1s ease; box-shadow: 0 0 10px var(--primary); }
         
+        /* Modais Néon */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px);
             z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
@@ -218,15 +225,32 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
+        /* Admin Styles */
         .admin-stat-item {
             background: var(--cell-bg); border: 1px solid var(--border); padding: 12px; border-radius: 15px; text-align: center;
         }
         .admin-stat-item b { color: var(--primary); text-shadow: 0 0 5px var(--primary); }
 
-        .whatsapp-btn {
-            background: var(--whatsapp); color: #000; border: none; padding: 6px 12px; border-radius: 8px; font-weight: 800; font-size: 0.65rem; display: flex; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s;
+        .admin-card {
+            background: var(--cell-bg); border: 1px solid var(--border); padding: 15px; border-radius: 20px; margin-bottom: 15px;
+            display: flex; flex-direction: column; gap: 12px;
         }
-        .whatsapp-btn:hover { box-shadow: 0 0 12px var(--whatsapp); transform: scale(1.05); }
+
+        .admin-actions {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 5px;
+        }
+
+        .btn-admin-action {
+            border: none; padding: 8px; border-radius: 10px; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 4px;
+        }
+
+        .btn-paid { background: rgba(0, 255, 136, 0.1); color: var(--primary); border: 1px solid var(--primary); }
+        .btn-unpaid { background: rgba(255, 170, 0, 0.1); color: var(--reserved); border: 1px solid var(--reserved); }
+        .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .btn-whatsapp { background: var(--whatsapp); color: #000; }
+
+        .btn-admin-action:hover { transform: scale(1.02); filter: brightness(1.2); }
 
         /* Estilo para cartões de resultado da busca */
         .result-card {
@@ -305,7 +329,10 @@
 
                 <div id="view-admin" style="display: none;">
                     <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"></div>
-                    <button class="btn-pay" style="width:100%; background:var(--secondary); color:#fff; margin-bottom:12px; box-shadow: 0 0 15px var(--secondary-glow);" onclick="openConfigModal()">CONFIGURAR</button>
+                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+                        <button class="btn-pay" style="flex:1; background:var(--secondary); color:#fff; box-shadow: 0 0 15px var(--secondary-glow);" onclick="openConfigModal()">CONFIGURAR</button>
+                        <button class="btn-pay" style="flex:1; background:rgba(255, 77, 77, 0.1); color:var(--danger); border:1px solid var(--danger); box-shadow:none;" onclick="resetRifa()">RESET GERAL</button>
+                    </div>
                     <div id="admin-list"></div>
                 </div>
             </div>
@@ -391,7 +418,7 @@
             const current = body.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next);
-            document.getElementById('theme-btn').innerHTML = `<i data-lucide="${next === 'dark' ? 'moon' : 'sun'}"></i>`;
+            document.getElementById('theme-btn').innerHTML = `<i data-lucide=" ${next === 'dark' ? 'moon' : 'sun'}"></i>`;
             lucide.createIcons();
         };
 
@@ -473,6 +500,7 @@
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById('footer-purchase').style.display = tab === 'rifa' ? 'flex' : 'none';
             document.getElementById('main-scroll').scrollTop = 0;
+            if(tab === 'admin') renderAdmin();
         };
 
         window.askAdmin = () => document.getElementById('modal-pin').style.display = 'flex';
@@ -486,27 +514,67 @@
 
         window.renderAdmin = () => {
             const list = document.getElementById('admin-list');
+            if(!list) return;
             list.innerHTML = '';
             let tPaid = 0;
+            
             const groups = {};
             Object.entries(dbNumbers).forEach(([n, d]) => {
                 if(d.status === 'paid') tPaid += config.valor;
                 const phone = d.telefone || "0";
                 if(!groups[phone]) groups[phone] = { nome: d.nome, telefone: d.telefone, cotas: [] };
-                groups[phone].cotas.push(n);
+                groups[phone].cotas.push({ n, status: d.status });
             });
+
             document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item">PAGO: <b>R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item">VENDAS: <b>${Object.keys(dbNumbers).length}</b></div>`;
+            
             Object.values(groups).forEach(p => {
                 const phoneClean = p.telefone.replace(/\D/g, '');
-                list.innerHTML += `<div class="custom-input" style="text-align:left; font-size:0.75rem; height:auto; padding:12px; border-color:rgba(255,255,255,0.1);">
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                        <div><b style="color:var(--primary);">${p.nome.toUpperCase()}</b><br><span style="color:var(--text-dim); font-size:0.65rem;">${p.telefone}</span></div>
-                        <button class="whatsapp-btn" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')"><i data-lucide="message-circle" style="width:14px;"></i></button>
+                const sortedCotas = p.cotas.sort((a,b) => a.n - b.n);
+                
+                const card = document.createElement('div');
+                card.className = 'admin-card';
+                card.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <b style="color:var(--primary); font-size:0.85rem;">${p.nome.toUpperCase()}</b><br>
+                            <span style="color:var(--text-dim); font-size:0.65rem;">${p.telefone}</span>
+                        </div>
+                        <button class="btn-admin-action btn-whatsapp" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')">
+                            <i data-lucide="message-circle" style="width:14px;"></i>
+                        </button>
                     </div>
-                    <div style="color:#fff;">COTAS: ${p.cotas.sort().join(', ')}</div>
-                </div>`;
+                    <div style="font-size:0.75rem; color:#fff; line-height:1.4;">
+                        ${sortedCotas.map(c => `<span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">${c.n}</span>`).join(', ')}
+                    </div>
+                    <div class="admin-actions">
+                        <button class="btn-admin-action btn-paid" onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGAS</button>
+                        <button class="btn-admin-action btn-unpaid" onclick="adminUpdateStatus('${p.telefone}', 'reserved')">MARCAR PENDENTES</button>
+                        <button class="btn-admin-action btn-delete" style="grid-column: span 2;" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR PARTICIPANTE</button>
+                    </div>
+                `;
+                list.appendChild(card);
             });
             lucide.createIcons();
+        };
+
+        window.adminUpdateStatus = async (phone, newStatus) => {
+            const updates = {};
+            Object.entries(dbNumbers).forEach(([n, d]) => {
+                if(d.telefone === phone) updates[`${n}/status`] = newStatus;
+            });
+            await update(numRef, updates);
+            showToast("✅ STATUS ATUALIZADO!");
+        };
+
+        window.adminDeleteParticipant = async (phone) => {
+            if(!confirm("⚠️ REMOVER PARTICIPANTE E LIBERAR COTAS?")) return;
+            const updates = {};
+            Object.entries(dbNumbers).forEach(([n, d]) => {
+                if(d.telefone === phone) updates[n] = null;
+            });
+            await update(numRef, updates);
+            showToast("🗑️ PARTICIPANTE REMOVIDO!");
         };
 
         window.openConfigModal = () => {
@@ -519,7 +587,7 @@
 
         window.saveRifaConfig = () => {
             const up = { premio: document.getElementById('cfg-premio').value, descricao: document.getElementById('cfg-descricao').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value) };
-            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ DADOS SALVOS!"); });
+            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ CONFIGURAÇÃO SALVA!"); });
         };
 
         window.abrirCheckout = () => document.getElementById('modal-checkout').style.display = 'flex';
@@ -570,7 +638,6 @@
                     const pendentes = filtered.filter(([n, d]) => d.status === 'reserved');
                     const nome = filtered[0][1].nome;
                     
-                    // Se houver múltiplas pendências, mostrar botão Pagar Tudo
                     if(pendentes.length > 1) {
                         const totalPendentes = (pendentes.length * config.valor).toFixed(2);
                         area.innerHTML += `
@@ -585,7 +652,7 @@
                         area.innerHTML += `
                             <div class="result-card">
                                 <div class="result-header">
-                                    <span class="result-num">#${n}</span>
+                                    <span class="result-num">${n}</span>
                                     <span class="result-status" style="background:${isPago ? 'var(--paid)' : 'var(--reserved)'}; color:#000;">
                                         ${d.status.toUpperCase()}
                                     </span>
@@ -599,16 +666,16 @@
                         `;
                     });
                 } else {
-                    area.innerHTML = '<p style="text-align:center; color:var(--text-dim); font-size:0.85rem;">NADA ENCONTRADO PARA ESTE NÚMERO</p>';
+                    area.innerHTML = '<p style="text-align:center; color:var(--text-dim); font-size:0.85rem;">NENHUM NÚMERO ENCONTRADO</p>';
                 }
             }
         };
 
         window.pagarCotaUnica = async (num, nome, tel) => {
             const oid = "RS" + num + Date.now().toString().slice(-6);
-            showToast("Gerando Pix para #" + num + "...");
+            showToast("Gerando Pix para" + num + "...");
             try {
-                await update(ref(db, `rifa_master/numeros/${num}`), { order_nsu: oid });
+                await update(ref(db, `rifa_master/numeros/ ${num}`), { order_nsu: oid });
                 const url = await triggerInfinite(nome, tel, oid, config.valor);
                 if(url) window.location.href = url;
             } catch(e) { showToast("❌ Erro ao gerar pagamento"); }
@@ -624,6 +691,12 @@
                 const url = await triggerInfinite(nome, tel, oid, lista.length * config.valor);
                 if(url) window.location.href = url;
             } catch(e) { showToast("❌ Erro no pagamento em lote"); }
+        };
+
+        window.resetRifa = () => {
+            if(confirm("⚠️ PERIGO: ISSO APAGARÁ TODAS AS RESERVAS E VENDAS. CONTINUAR?")) {
+                remove(numRef).then(() => showToast("🔥 RIFA RESETADA!"));
+            }
         };
 
         window.maskPhone = i => { 
@@ -646,7 +719,7 @@
                 if(s.exists()){
                     const data = s.val(); const up = {}; let ok = false;
                     Object.entries(data).forEach(([n, info]) => {
-                        if(info.order_nsu === nsuParam && info.status === 'reserved') { up[`${n}/status`] = "paid"; ok = true; }
+                        if(info.order_nsu === nsuParam && info.status === 'reserved') { up[` ${n}/status`] = "paid"; ok = true; }
                     });
                     if(ok) update(numRef, up).then(() => {
                         window.history.replaceState({}, '', window.location.pathname);
