@@ -2,7 +2,7 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Rifa Master Camino</title>
 
 <!-- PWA Meta Tags -->
@@ -15,7 +15,7 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <style>
     :root {
-        --primary: #00ff88; /* Verde para botões e destaque principal */
+        --primary: #00ff88;
         --primary-glow: rgba(0, 255, 136, 0.3);
         --bg: #000000;
         --surface: rgba(15, 15, 15, 0.9);
@@ -24,11 +24,9 @@
         --text-main: #ffffff;
         --text-dim: #a0a0a0;
         
-        /* Cores dos Números solicitadas */
-        --reserved: #ff9500; /* Laranja */
-        --paid: #00ff88;     /* Verde */
-        --selected: #007aff; /* Azul */
-        --pending: #ff4d4d;
+        --reserved: #ff9500;
+        --paid: #00ff88;
+        --selected: #007aff;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -36,9 +34,14 @@
     body {
         background: radial-gradient(circle at center, #001a0d 0%, #000000 100%);
         color: var(--text-main);
-        min-height: 100vh;
-        display: flex; justify-content: center; align-items: center;
-        padding: 20px;
+        /* Usa dvh para garantir altura correta em navegadores mobile */
+        height: 100dvh; 
+        width: 100vw;
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+        /* Padding de segurança para nunca tocar as bordas */
+        padding: 15px; 
         overflow: hidden;
     }
 
@@ -50,17 +53,25 @@
     }
 
     .container {
-        width: 100%; max-width: 480px; height: 92vh;
-        border-radius: 40px; 
-        background: var(--surface); backdrop-filter: blur(20px);
+        width: 100%; 
+        max-width: 440px; 
+        /* Altura máxima descontando o padding do body */
+        max-height: 100%; 
+        border-radius: 35px; 
+        background: var(--surface); 
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border: 1px solid var(--border);
         box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-        display: flex; flex-direction: column; position: relative; z-index: 1;
+        display: flex; 
+        flex-direction: column; 
+        position: relative; 
+        z-index: 1;
         overflow: hidden;
     }
 
     .scrollable-content { 
-        padding: 30px 25px 10px 25px;
+        padding: 25px 20px 10px 20px;
         overflow-y: auto; 
         scrollbar-width: none; 
         flex: 1; 
@@ -70,11 +81,13 @@
     .footer-selection {
         background: var(--surface-accent);
         border-top: 1px solid var(--border);
-        padding: 20px 25px;
+        padding: 15px 20px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 15px;
+        gap: 12px;
+        border-bottom-left-radius: 35px;
+        border-bottom-right-radius: 35px;
     }
 
     .header { 
@@ -87,78 +100,77 @@
     
     .hero-badge { 
         background: rgba(0, 255, 136, 0.1); color: var(--primary); 
-        padding: 8px 18px; border-radius: 100px; font-size: 0.7rem; 
+        padding: 6px 14px; border-radius: 100px; font-size: 0.65rem; 
         font-weight: 800; border: 1px solid rgba(0, 255, 136, 0.2); 
-        margin-bottom: 15px; display: inline-block; text-transform: uppercase;
+        margin-bottom: 12px; display: inline-block; text-transform: uppercase;
     }
     
-    .logo-img { width: 100%; max-width: 160px; border-radius: 20px; margin-bottom: 15px; filter: drop-shadow(0 0 15px var(--primary-glow)); display: block; }
+    .logo-img { width: 100%; max-width: 140px; border-radius: 18px; margin-bottom: 12px; filter: drop-shadow(0 0 15px var(--primary-glow)); display: block; }
     
     .prize-card {
         background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border);
-        border-radius: 24px; padding: 20px; text-align: center; margin-bottom: 20px;
+        border-radius: 20px; padding: 15px; text-align: center; margin-bottom: 15px;
         width: 100%;
     }
-    .prize-title { font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
-    .prize-desc { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 12px; font-weight: 400; line-height: 1.4; }
+    .prize-title { font-size: 1.2rem; font-weight: 800; color: #fff; margin-bottom: 4px; }
+    .prize-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px; font-weight: 400; line-height: 1.3; }
     .price-badge { 
         background: linear-gradient(135deg, #00ff88 0%, #00cc6d 100%); color: #000;
-        display: inline-block; padding: 6px 16px; border-radius: 12px;
-        font-weight: 900; font-size: 1.1rem; box-shadow: 0 8px 15px var(--primary-glow);
+        display: inline-block; padding: 5px 14px; border-radius: 10px;
+        font-weight: 900; font-size: 1rem; box-shadow: 0 6px 12px var(--primary-glow);
     }
 
-    .tabs { display: flex; gap: 6px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 18px; width: 100%; }
-    .tab-btn { flex: 1; padding: 12px; border-radius: 14px; border: none; background: transparent; color: var(--text-dim); font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 4px; border-radius: 15px; width: 100%; }
+    .tab-btn { flex: 1; padding: 10px; border-radius: 12px; border: none; background: transparent; color: var(--text-dim); font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; }
     .tab-btn.active { background: var(--surface-accent); color: var(--primary); border: 1px solid var(--border); }
 
     /* Grid de 8 Colunas */
     .numbers-grid { 
         display: grid; 
         grid-template-columns: repeat(8, 1fr); 
-        gap: 6px; 
-        margin-bottom: 20px; 
+        gap: 5px; 
+        margin-bottom: 15px; 
     }
     
     .num { 
         aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
         background: rgba(255,255,255,0.05); border: 1px solid var(--border);
-        border-radius: 8px; font-size: 0.65rem; font-weight: 700; cursor: pointer; transition: 0.2s;
+        border-radius: 6px; font-size: 0.6rem; font-weight: 700; cursor: pointer; transition: 0.2s;
     }
     
-    /* Classes de Cores Dinâmicas */
-    .num.selected { background: var(--selected); color: #ffffff; box-shadow: 0 0 10px rgba(0, 122, 255, 0.5); }
+    .num.selected { background: var(--selected); color: #ffffff; box-shadow: 0 0 8px rgba(0, 122, 255, 0.4); }
     .num.reserved { background: var(--reserved); color: #000; cursor: not-allowed; }
     .num.paid { background: var(--paid); color: #000; cursor: not-allowed; }
 
     .form-input { 
-        width: 100%; padding: 16px; border-radius: 18px; border: 1px solid var(--border); 
-        background: rgba(255,255,255,0.04); color: #fff; text-align: center; font-size: 0.95rem; 
-        outline: none; margin-bottom: 12px;
+        width: 100%; padding: 14px; border-radius: 15px; border: 1px solid var(--border); 
+        background: rgba(255,255,255,0.04); color: #fff; text-align: center; font-size: 0.9rem; 
+        outline: none; margin-bottom: 10px;
     }
 
     .btn-main { 
-        padding: 16px 24px; border-radius: 18px; background: var(--primary); 
+        padding: 14px 20px; border-radius: 15px; background: var(--primary); 
         color: #000; font-weight: 800; border: none; cursor: pointer; 
-        box-shadow: 0 10px 25px var(--primary-glow); font-size: 0.9rem; 
-        transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px;
+        box-shadow: 0 8px 20px var(--primary-glow); font-size: 0.85rem; 
+        transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .btn-main:disabled { background: #333; color: #666; box-shadow: none; cursor: not-allowed; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 5000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(10px); padding: 20px; }
-    .modal-box { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--border); border-radius: 35px; padding: 30px; text-align: center; }
+    .modal-box { width: 100%; max-width: 380px; background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 25px; text-align: center; }
     
-    .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 100px; font-weight: 800; z-index: 9999; display: none; box-shadow: 0 10px 30px var(--primary-glow); font-size: 0.8rem; text-align: center; }
-    .spinner { width: 20px; height: 20px; border: 2px solid rgba(0,0,0,0.1); border-top: 2px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
+    .toast { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 12px 24px; border-radius: 100px; font-weight: 800; z-index: 9999; display: none; box-shadow: 0 10px 30px var(--primary-glow); font-size: 0.75rem; text-align: center; }
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.1); border-top: 2px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .my-number-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border); }
-    .status-badge { font-size: 0.6rem; padding: 4px 10px; border-radius: 100px; font-weight: 800; }
+    .my-number-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); }
+    .status-badge { font-size: 0.55rem; padding: 3px 8px; border-radius: 100px; font-weight: 800; }
 
-    .admin-footer { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-    .admin-btn { background: transparent; border: none; color: var(--text-dim); font-size: 0.65rem; font-weight: 700; cursor: pointer; text-transform: uppercase; }
+    .admin-footer { display: flex; justify-content: center; gap: 12px; margin: 15px 0; }
+    .admin-btn { background: transparent; border: none; color: var(--text-dim); font-size: 0.6rem; font-weight: 700; cursor: pointer; text-transform: uppercase; }
 
-    .legend { display: flex; justify-content: center; gap: 10px; font-size: 0.6rem; color: var(--text-dim); margin-bottom: 15px; }
-    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .legend { display: flex; justify-content: center; gap: 8px; font-size: 0.55rem; color: var(--text-dim); margin-bottom: 12px; }
+    .dot { width: 5px; height: 5px; border-radius: 50%; display: inline-block; margin-right: 3px; }
 </style>
 </head>
 <body>
@@ -191,11 +203,19 @@
             <div class="numbers-grid" id="grid"></div>
         </div>
 
-        <div id="view-consulta" style="display:none; padding-bottom: 20px;">
+        <div id="view-consulta" style="display:none; padding-bottom: 15px;">
             <input type="tel" id="search-phone" class="form-input" placeholder="Telefone (DDD)" oninput="maskPhone(this)">
             <button class="btn-main" style="width:100%" onclick="consultarMeusNumeros()">VERIFICAR ESTADO</button>
-            <div id="info-participante" style="margin-top:15px; font-weight:800; color:var(--primary); text-align:center;"></div>
-            <div id="result-consulta" style="margin-top:10px;"></div>
+            
+            <div id="result-area" style="display:none; margin-top:20px;">
+                <div id="info-participante" style="font-weight:800; color:var(--primary); text-align:center; margin-bottom:15px; font-size: 0.85rem;"></div>
+                
+                <button id="btnPagarTodos" class="btn-main" style="width:100%; margin-bottom:15px; background:var(--selected); color:#fff; display:none;" onclick="pagarTodasPendentes()">
+                    💳 PAGAR TODOS OS PENDENTES
+                </button>
+                
+                <div id="result-consulta"></div>
+            </div>
         </div>
 
         <div class="admin-footer">
@@ -204,14 +224,14 @@
         </div>
     </div>
 
-    <!-- Barra de seleção fixa na base -->
+    <!-- Barra de seleção fixa na base interna do container -->
     <div id="footer-rifa" class="footer-selection">
         <div style="flex: 1;">
-            <p style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800;">Subtotal:</p>
-            <p id="footer-total" style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">R$ 0,00</p>
+            <p style="font-size: 0.55rem; color: var(--text-dim); text-transform: uppercase; font-weight: 800;">Subtotal:</p>
+            <p id="footer-total" style="font-size: 1rem; font-weight: 800; color: var(--primary);">R$ 0,00</p>
         </div>
         <button class="btn-main" id="btnReserva" disabled onclick="abrirCheckout()">
-            RESERVAR <i data-lucide="chevron-right"></i>
+            RESERVAR <i data-lucide="chevron-right" style="width: 14px;"></i>
         </button>
     </div>
 </div>
@@ -219,10 +239,10 @@
 <!-- Modal Checkout -->
 <div class="modal-overlay" id="modalCheckout">
     <div class="modal-box">
-        <h2 style="color:var(--primary); margin-bottom:15px">DADOS DA RESERVA</h2>
+        <h2 style="color:var(--primary); margin-bottom:15px; font-size: 1.1rem;">DADOS DA RESERVA</h2>
         <input type="text" id="nome" class="form-input" placeholder="NOME COMPLETO">
         <input type="tel" id="telefone" class="form-input" placeholder="WHATSAPP (DDD)" oninput="maskPhone(this)">
-        <div id="resumo-numeros" style="background:rgba(255,255,255,0.03); padding:15px; border-radius:20px; margin-bottom:15px; font-weight:800; font-size:0.8rem; line-height:1.4;"></div>
+        <div id="resumo-numeros" style="background:rgba(255,255,255,0.03); padding:12px; border-radius:15px; margin-bottom:15px; font-weight:800; font-size:0.75rem; line-height:1.4; color: var(--primary);"></div>
         <button class="btn-main" id="btnConfirmar" style="width: 100%;" onclick="triggerCheckout()">
             💳 PAGAR COM PIX
         </button>
@@ -233,9 +253,9 @@
 <!-- Modal Config -->
 <div class="modal-overlay" id="modalConfig">
     <div class="modal-box">
-        <h3 style="margin-bottom:20px;">AJUSTES DA RIFA</h3>
+        <h3 style="margin-bottom:15px; font-size: 1rem;">AJUSTES DA RIFA</h3>
         <input type="text" id="cfg-premio" class="form-input" placeholder="Nome do Prêmio">
-        <textarea id="cfg-descricao" class="form-input" placeholder="Descrição Detalhada" style="height: 80px; resize: none;"></textarea>
+        <textarea id="cfg-descricao" class="form-input" placeholder="Descrição Detalhada" style="height: 70px; resize: none;"></textarea>
         <input type="number" id="cfg-valor" class="form-input" placeholder="Valor por Número">
         <input type="number" id="cfg-total" class="form-input" placeholder="Total de Números">
         <button class="btn-main" style="width: 100%;" onclick="salvarConfig()">SALVAR</button>
@@ -247,7 +267,7 @@
 <div class="modal-overlay" id="modalSenha">
     <div class="modal-box">
         <h3>PIN ADMIN</h3>
-        <input type="password" id="pin-input" class="form-input" placeholder="****" maxlength="4" style="font-size:2rem; letter-spacing:10px;">
+        <input type="password" id="pin-input" class="form-input" placeholder="****" maxlength="4" style="font-size:1.5rem; letter-spacing:8px;">
         <button class="btn-main" style="width: 100%;" onclick="checkAdminPass()">ENTRAR</button>
         <button class="admin-btn" style="margin-top:15px; width:100%;" onclick="fecharModal('modalSenha')">CANCELAR</button>
     </div>
@@ -284,6 +304,12 @@ let config = { premio: "iPhone 15 Pro", descricao: "O melhor smartphone do mundo
 let dbNumbers = {};
 let selected = new Set();
 let acaoAdmin = null;
+
+let currentConsultation = {
+    nome: "",
+    telefone: "",
+    pendentes: []
+};
 
 lucide.createIcons();
 
@@ -405,7 +431,7 @@ window.triggerCheckout = async () => {
     if(n.split(' ').length < 2 || t.length < 14) return showToast("⚠️ Nome completo e Telefone!");
 
     const btn = document.getElementById('btnConfirmar');
-    btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> GERANDO LINK...';
+    btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
 
     const orderId = "R" + Date.now().toString().slice(-10);
     const valorCentavos = Math.round(selected.size * config.valor * 100);
@@ -435,29 +461,77 @@ window.consultarMeusNumeros = async () => {
     const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
     if(tel.length < 10) return showToast("⚠️ Telefone incompleto!");
 
+    const resultArea = document.getElementById('result-area');
     const res = document.getElementById('result-consulta');
     const info = document.getElementById('info-participante');
+    const btnPagarTodos = document.getElementById('btnPagarTodos');
+    
+    resultArea.style.display = 'block';
     res.innerHTML = '<center><div class="spinner"></div></center>';
+    btnPagarTodos.style.display = 'none';
 
     const snapshot = await get(numRef);
     res.innerHTML = '';
+    
     if(snapshot.exists()){
         const meus = Object.entries(snapshot.val()).filter(([n, d]) => d.telefone.replace(/\D/g, '') === tel);
+        
         if(meus.length > 0){
-            info.innerText = "👤 PARTICIPANTE: " + meus[0][1].nome;
+            const pendentes = meus.filter(([n, d]) => d.status === 'reserved');
+            
+            currentConsultation.nome = meus[0][1].nome;
+            currentConsultation.telefone = tel;
+            currentConsultation.pendentes = pendentes.map(([n, d]) => n);
+
+            info.innerText = "👤 PARTICIPANTE: " + currentConsultation.nome;
+            
+            if(pendentes.length > 1) {
+                btnPagarTodos.style.display = 'block';
+                btnPagarTodos.innerText = `💳 PAGAR ${pendentes.length} PENDENTES (R$ ${(pendentes.length * config.valor).toFixed(2)})`;
+            }
+
             meus.forEach(([n, d]) => {
                 const isPago = d.status === 'paid';
                 let corStatus = isPago ? 'var(--paid)' : 'var(--reserved)';
                 res.innerHTML += `
                     <div class="my-number-row">
-                        <b>#${n}</b>
+                        <b> ${n}</b>
                         <div style="display:flex; gap:8px; align-items:center;">
                             <span class="status-badge" style="background:${corStatus}; color:#000;">${d.status.toUpperCase()}</span>
                             ${!isPago ? `<button class="admin-btn" style="color:var(--primary); font-size:0.6rem; border:1px solid var(--primary); padding:4px 8px; border-radius:8px;" onclick="pagarCotaUnica('${n}','${d.nome}','${d.telefone}')">PAGAR</button>` : ''}
                         </div>
                     </div>`;
             });
-        } else { info.innerText = ''; res.innerHTML = '<p style="text-align:center">Nenhum número encontrado.</p>'; }
+        } else { 
+            info.innerText = ''; 
+            res.innerHTML = '<p style="text-align:center; font-size: 0.8rem; color: var(--text-dim);">Nenhum número encontrado.</p>'; 
+        }
+    }
+};
+
+window.pagarTodasPendentes = async () => {
+    const { nome, telefone, pendentes } = currentConsultation;
+    if(pendentes.length === 0) return;
+
+    const btn = document.getElementById('btnPagarTodos');
+    const originalText = btn.innerText;
+    btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
+
+    const orderId = "RT" + Date.now().toString().slice(-8);
+    const valorCentavos = Math.round(pendentes.length * config.valor * 100);
+
+    try {
+        const updates = {};
+        pendentes.forEach(num => {
+            updates[`${num}/order_nsu`] = orderId;
+        });
+        await update(numRef, updates);
+
+        const checkoutUrl = await callInfinitePay(nome, telefone, orderId, valorCentavos, `Rifa ${config.premio} (${pendentes.length} Cotas)`);
+        if(checkoutUrl) window.location.href = checkoutUrl;
+    } catch(e) { 
+        showToast("❌ Erro ao agrupar pagamento."); 
+        btn.disabled = false; btn.innerText = originalText;
     }
 };
 
