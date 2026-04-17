@@ -186,7 +186,7 @@
             cursor: pointer; transition: 0.3s;
         }
         .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 25px var(--primary); }
-        .btn-pay:disabled { opacity: 0.3; box-shadow: none; }
+        .btn-pay:disabled { opacity: 0.3; box-shadow: none; filter: grayscale(1); }
 
         /* Progress */
         .progress-bar-bg { width: 100%; height: 5px; background: var(--cell-bg); border-radius: 10px; margin-top: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
@@ -236,83 +236,57 @@
             display: flex; flex-direction: column; gap: 0; overflow: hidden;
             transition: background 0.3s;
         }
-
-        .admin-card-header {
-            display: flex; justify-content: space-between; align-items: center; width: 100%;
-        }
-
+        .admin-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .admin-card-details {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.4s var(--transition), margin-top 0.3s;
+            max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition), margin-top 0.3s;
             display: flex; flex-direction: column; gap: 12px;
         }
-
         .admin-card.expanded { background: rgba(255,255,255,0.06); }
-        .admin-card.expanded .admin-card-details {
-            max-height: 500px; /* Suficiente para o conteúdo */
-            margin-top: 15px;
-        }
+        .admin-card.expanded .admin-card-details { max-height: 500px; margin-top: 15px; }
 
-        .admin-actions {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 5px;
-        }
-
+        .admin-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 5px; }
         .btn-admin-action {
             border: none; padding: 8px; border-radius: 10px; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center; gap: 4px;
         }
-
         .btn-paid { background: rgba(0, 255, 136, 0.1); color: var(--primary); border: 1px solid var(--primary); }
         .btn-unpaid { background: rgba(255, 170, 0, 0.1); color: var(--reserved); border: 1px solid var(--reserved); }
         .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
         .btn-whatsapp { background: var(--whatsapp); color: #000; }
+        .btn-admin-action:hover:not(:disabled) { transform: scale(1.02); filter: brightness(1.2); }
+        .btn-admin-action:disabled { opacity: 0.2; cursor: not-allowed; filter: grayscale(1); }
 
-        .btn-admin-action:hover { transform: scale(1.02); filter: brightness(1.2); }
-
-        /* Filtros Administrativos */
-        .admin-filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-        }
-        
+        .admin-filters { display: flex; gap: 8px; margin-bottom: 15px; }
         .filter-chip {
-            flex: 1;
-            background: var(--cell-bg);
-            border: 1px solid var(--border);
-            color: var(--text-dim);
-            padding: 8px;
-            border-radius: 12px;
-            font-size: 0.6rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            text-align: center;
+            flex: 1; background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 8px;
+            border-radius: 12px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-align: center;
         }
-        
         .filter-chip.active[data-filter="all"] { border-color: var(--secondary); color: var(--secondary); box-shadow: 0 0 10px var(--secondary-glow); }
         .filter-chip.active[data-filter="paid"] { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 10px var(--primary-rgb); }
         .filter-chip.active[data-filter="reserved"] { border-color: var(--reserved); color: var(--reserved); box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); }
 
         /* Estilo para cartões de resultado da busca */
         .result-card {
-            background: var(--cell-bg);
-            border: 1px solid var(--border);
-            padding: 15px;
-            border-radius: 20px;
-            margin-bottom: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+            background: var(--cell-bg); border: 1px solid var(--border); padding: 20px; border-radius: 20px;
+            margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;
         }
-        .result-header { display: flex; justify-content: space-between; align-items: center; }
-        .result-num { font-size: 1.2rem; font-weight: 900; color: #fff; }
-        .result-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 100px; text-transform: uppercase; }
-        .btn-inline-pay {
-            background: var(--secondary); color: white; border: none; padding: 8px 12px; border-radius: 10px; font-weight: 800; font-size: 0.7rem; cursor: pointer;
-            box-shadow: 0 0 10px var(--secondary-glow);
+        .result-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .result-numbers { font-size: 1.1rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
+
+        /* Modal de Seleção de Pagamento */
+        .selection-list { text-align: left; max-height: 250px; overflow-y: auto; margin: 15px 0; padding-right: 5px; }
+        .selection-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;
         }
+        .selection-item.checked { border-color: var(--primary); background: rgba(0,255,136,0.05); }
+        .selection-item input { display: none; }
+        .selection-item .checkbox-ui {
+            width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px;
+            display: flex; align-items: center; justify-content: center; color: transparent;
+        }
+        .selection-item.checked .checkbox-ui { background: var(--primary); border-color: var(--primary); color: #000; }
     </style>
 </head>
 <body data-theme="dark">
@@ -366,30 +340,24 @@
 
                 <div id="view-consulta" style="display: none;">
                     <input type="tel" id="search-phone" class="custom-input" placeholder="Seu WhatsApp (DDD)" oninput="maskPhone(this)">
-                    <button class="btn-pay" id="btn-search-client" style="width: 100%; justify-content: center;" onclick="consultarMeusNumeros()">BUSCAR NÚMEROS</button>
+                    <button class="btn-pay" id="btn-search-client" style="width: 100%; justify-content: center;" onclick="consultarMeusNumeros()">BUSCAR MEUS NÚMEROS</button>
                     <div id="results-area" style="margin-top: 25px;"></div>
                 </div>
 
                 <div id="view-admin" style="display: none;">
                     <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"></div>
-                    
-                    <!-- Busca Admin -->
                     <div style="margin-bottom: 12px;">
-                        <input type="text" id="admin-search" class="custom-input" style="margin-bottom:8px; padding:12px;" placeholder="Pesquisar por nome..." oninput="renderAdmin()">
-                        
-                        <!-- FILTROS DE ESTADO -->
+                        <input type="text" id="admin-search" class="custom-input" style="margin-bottom:8px; padding:12px;" placeholder="Nome ou Cota (ex: 05)..." oninput="renderAdmin()">
                         <div class="admin-filters">
                             <div class="filter-chip active" data-filter="all" onclick="setAdminFilter('all')">TODOS</div>
                             <div class="filter-chip" data-filter="paid" onclick="setAdminFilter('paid')">PAGOS</div>
                             <div class="filter-chip" data-filter="reserved" onclick="setAdminFilter('reserved')">PENDENTES</div>
                         </div>
                     </div>
-
                     <div style="display: flex; gap: 8px; margin-bottom: 15px;">
                         <button class="btn-pay" style="flex:1; background:var(--secondary); color:#fff; box-shadow: 0 0 15px var(--secondary-glow);" onclick="openConfigModal()">CONFIGURAR</button>
                         <button class="btn-pay" style="flex:1; background:rgba(255, 77, 77, 0.1); color:var(--danger); border:1px solid var(--danger); box-shadow:none;" onclick="resetRifa()">RESET GERAL</button>
                     </div>
-                    
                     <div id="admin-list"></div>
                 </div>
             </div>
@@ -416,6 +384,29 @@
             <input type="tel" id="cust-phone" class="custom-input" placeholder="WhatsApp (DDD)" oninput="maskPhone(this)">
             <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="confirmarReserva()" id="btn-confirm-res">CONCLUIR RESERVA</button>
             <button onclick="closeModal('modal-checkout')" style="margin-top: 20px; background:none; border:none; color:var(--text-dim); font-size:0.8rem; font-weight:700; cursor:pointer;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- Modal: Selecionar Pagamento -->
+    <div class="modal-overlay" id="modal-selection-pay">
+        <div class="modal-card">
+            <h2 style="margin-bottom: 10px; font-weight: 800; color: var(--primary);">PAGAMENTO</h2>
+            <p style="font-size: 0.7rem; color: var(--text-dim);">Selecione as cotas que deseja pagar agora:</p>
+            
+            <div id="selection-pay-list" class="selection-list">
+                <!-- Injetado via JS -->
+            </div>
+
+            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 15px;">
+                <p style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Total a Pagar</p>
+                <p id="selection-pay-total" style="font-size: 1.2rem; font-weight: 900; color: var(--primary);">R$ 0,00</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="confirmarPagamentoSelecionado()">IR PARA O PIX</button>
+                <button class="btn-pay" style="width: 100%; justify-content: center; background: transparent; border: 1px solid var(--border); color: #fff; box-shadow: none;" onclick="pagarTodosDireto()">PAGAR TODOS</button>
+            </div>
+            <button onclick="closeModal('modal-selection-pay')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size:0.75rem; font-weight:700; cursor:pointer;">CANCELAR</button>
         </div>
     </div>
 
@@ -467,31 +458,26 @@
         let dbNumbers = {};
         let selected = new Set();
         let isAdmin = false;
-        let adminFilter = 'all'; // Filter state
+        let adminFilter = 'all';
+
+        let currentClientNome = "";
+        let currentClientTel = "";
+        let currentClientPendentes = [];
 
         lucide.createIcons();
 
         window.toggleTheme = () => {
             const body = document.body;
-            const current = body.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
+            const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next);
-            document.getElementById('theme-btn').innerHTML = `<i data-lucide=" ${next === 'dark' ? 'moon' : 'sun'}"></i>`;
+            document.getElementById('theme-btn').innerHTML = `<i data-lucide="${next === 'dark' ? 'moon' : 'sun'}"></i>`;
             lucide.createIcons();
         };
 
-        onValue(cfgRef, (s) => { 
-            if(s.exists()){ 
-                config = s.val(); 
-                if(!config.descricao) config.descricao = "Participe e concorra agora!";
-                renderUI(); 
-            } 
-        });
-
+        onValue(cfgRef, (s) => { if(s.exists()){ config = s.val(); renderUI(); } });
         onValue(numRef, (s) => { 
             dbNumbers = s.exists() ? s.val() : {}; 
-            renderGrid(); 
-            updateProgress();
+            renderGrid(); updateProgress();
             if(isAdmin) renderAdmin();
         });
 
@@ -526,8 +512,7 @@
         function toggleNumber(n) {
             if(dbNumbers[n]) return;
             selected.has(n) ? selected.delete(n) : selected.add(n);
-            renderGrid();
-            updateFooter();
+            renderGrid(); updateFooter();
         }
 
         function updateFooter() {
@@ -557,96 +542,67 @@
             document.getElementById(`view-${tab}`).style.display = 'block';
             document.getElementById(`tab-${tab}`).classList.add('active');
             document.getElementById('footer-purchase').style.display = tab === 'rifa' ? 'flex' : 'none';
-            document.getElementById('main-scroll').scrollTop = 0;
             if(tab === 'admin') renderAdmin();
         };
 
         window.askAdmin = () => document.getElementById('modal-pin').style.display = 'flex';
         window.validateAdmin = () => {
             if(document.getElementById('admin-pin').value === PIN) {
-                isAdmin = true;
-                document.getElementById('tab-admin').style.display = 'block';
+                isAdmin = true; document.getElementById('tab-admin').style.display = 'block';
                 closeModal('modal-pin'); switchTab('admin');
             } else showToast("❌ PIN INVÁLIDO");
         };
 
         window.setAdminFilter = (val) => {
             adminFilter = val;
-            document.querySelectorAll('.filter-chip').forEach(c => {
-                c.classList.toggle('active', c.getAttribute('data-filter') === val);
-            });
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.getAttribute('data-filter') === val));
             renderAdmin();
         };
 
-        window.toggleAdminCard = (id) => {
-            const card = document.getElementById(`card-${id}`);
-            if (card) {
-                card.classList.toggle('expanded');
-            }
-        };
+        window.toggleAdminCard = (id) => document.getElementById(`card-${id}`).classList.toggle('expanded');
 
         window.renderAdmin = () => {
             const list = document.getElementById('admin-list');
-            if(!list) return;
-            list.innerHTML = '';
-            
-            const search = document.getElementById('admin-search').value.toLowerCase();
+            if(!list) return; list.innerHTML = '';
+            const search = document.getElementById('admin-search').value.toLowerCase().trim();
             let tPaid = 0;
-            
             const groups = {};
             Object.entries(dbNumbers).forEach(([n, d]) => {
                 if(d.status === 'paid') tPaid += config.valor;
-                const phone = d.telefone || "0";
-                if(!groups[phone]) groups[phone] = { nome: d.nome, telefone: d.telefone, cotas: [] };
-                groups[phone].cotas.push({ n, status: d.status });
+                const ph = d.telefone || "0";
+                if(!groups[ph]) groups[ph] = { nome: d.nome, telefone: d.telefone, cotas: [] };
+                groups[ph].cotas.push({ n, status: d.status });
             });
-
             document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item">PAGO: <b>R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item">VENDAS: <b>${Object.keys(dbNumbers).length}</b></div>`;
             
-            // Transform object to array and filter
-            let filteredParticipants = Object.values(groups).filter(p => {
-                // Filter by Search Name
+            let filtered = Object.values(groups).filter(p => {
+                const isNumeric = !isNaN(search) && search !== "";
+                const matchesCota = isNumeric && p.cotas.some(c => c.n === search.padStart(2, '0'));
                 const matchesName = p.nome.toLowerCase().includes(search);
-                
-                // Filter by Status
-                let matchesStatus = true;
-                if (adminFilter !== 'all') {
-                    matchesStatus = p.cotas.some(c => c.status === adminFilter);
-                }
-                
-                return matchesName && matchesStatus;
+                let matchesStatus = adminFilter === 'all' || p.cotas.some(c => c.status === adminFilter);
+                return (matchesName || matchesCota) && matchesStatus;
             });
 
-            if (filteredParticipants.length === 0) {
-                list.innerHTML = '<p style="text-align:center; color:var(--text-dim); padding:20px; font-size:0.8rem;">Nenhum participante encontrado.</p>';
-                return;
-            }
-
-            filteredParticipants.forEach(p => {
+            filtered.forEach(p => {
                 const phoneClean = p.telefone.replace(/\D/g, '');
                 const sortedCotas = p.cotas.sort((a,b) => parseInt(a.n) - parseInt(b.n));
-                
+                const hasPaid = sortedCotas.some(c => c.status === 'paid');
+                const hasReserved = sortedCotas.some(c => c.status === 'reserved');
                 const card = document.createElement('div');
-                card.className = 'admin-card';
-                card.id = `card-${phoneClean}`;
+                card.className = 'admin-card'; card.id = `card-${phoneClean}`;
+                if(!isNaN(search) && search !== "") card.classList.add('expanded');
                 card.innerHTML = `
                     <div class="admin-card-header">
-                        <div onclick="toggleAdminCard('${phoneClean}')" style="flex:1; padding: 5px 0; cursor: pointer;">
-                            <b style="color:var(--primary); font-size:0.85rem;">${p.nome.toUpperCase()}</b>
-                        </div>
-                        <button class="btn-admin-action btn-whatsapp" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')">
-                            <i data-lucide="message-circle" style="width:14px;"></i>
-                        </button>
+                        <div onclick="toggleAdminCard('${phoneClean}')" style="flex:1; cursor: pointer;"><b style="color:var(--primary);">${p.nome.toUpperCase()}</b></div>
+                        <button class="btn-admin-action btn-whatsapp" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')"><i data-lucide="message-circle" style="width:14px;"></i></button>
                     </div>
                     <div class="admin-card-details">
-                        <span style="color:var(--text-dim); font-size:0.7rem; font-weight:700;">${p.telefone}</span>
-                        <div style="font-size:0.75rem; color:#fff; line-height:1.4;">
-                            ${sortedCotas.map(c => `<span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">#${c.n}</span>`).join(', ')}
-                        </div>
+                        <span style="color:var(--text-dim); font-size:0.7rem;">${p.telefone}</span>
+                        <div style="font-size:0.75rem; color:#fff;">${sortedCotas.map(c => `<span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                         <div class="admin-actions">
-                            <button class="btn-admin-action btn-paid" onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGAS</button>
-                            <button class="btn-admin-action btn-unpaid" onclick="adminUpdateStatus('${p.telefone}', 'reserved')">MARCAR PENDENTES</button>
-                            <button class="btn-admin-action btn-delete" style="grid-column: span 2;" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR PARTICIPANTE</button>
+                            <button class="btn-admin-action btn-paid" ${!hasReserved ? 'disabled' : ''} onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGAS</button>
+                            <button class="btn-admin-action btn-unpaid" ${!hasPaid ? 'disabled' : ''} onclick="adminUpdateStatus('${p.telefone}', 'reserved')">MARCAR PENDENTES</button>
+                            <button class="btn-admin-action btn-delete" style="grid-column: span 2;" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR</button>
                         </div>
                     </div>
                 `;
@@ -655,23 +611,17 @@
             lucide.createIcons();
         };
 
-        window.adminUpdateStatus = async (phone, newStatus) => {
+        window.adminUpdateStatus = async (phone, s) => {
             const updates = {};
-            Object.entries(dbNumbers).forEach(([n, d]) => {
-                if(d.telefone === phone) updates[`${n}/status`] = newStatus;
-            });
-            await update(numRef, updates);
-            showToast("✅ STATUS ATUALIZADO!");
+            Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === phone) updates[`${n}/status`] = s; });
+            await update(numRef, updates); showToast("✅ ATUALIZADO!");
         };
 
         window.adminDeleteParticipant = async (phone) => {
-            if(!confirm("⚠️ REMOVER PARTICIPANTE E LIBERAR COTAS?")) return;
+            if(!confirm("⚠️ EXCLUIR PARTICIPANTE?")) return;
             const updates = {};
-            Object.entries(dbNumbers).forEach(([n, d]) => {
-                if(d.telefone === phone) updates[n] = null;
-            });
+            Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === phone) updates[n] = null; });
             await update(numRef, updates);
-            showToast("🗑️ PARTICIPANTE REMOVIDO!");
         };
 
         window.openConfigModal = () => {
@@ -684,18 +634,127 @@
 
         window.saveRifaConfig = () => {
             const up = { premio: document.getElementById('cfg-premio').value, descricao: document.getElementById('cfg-descricao').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value) };
-            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ CONFIGURAÇÃO SALVA!"); });
+            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ SALVO!"); });
         };
 
         window.abrirCheckout = () => document.getElementById('modal-checkout').style.display = 'flex';
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
+        window.consultarMeusNumeros = async () => {
+            const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
+            const area = document.getElementById('results-area');
+            const btn = document.getElementById('btn-search-client');
+            if(!tel || tel.length < 10) return showToast("⚠️ WHATSAPP VÁLIDO!");
+            
+            btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
+            const s = await get(numRef); area.innerHTML = '';
+            btn.disabled = false; btn.innerHTML = 'BUSCAR MEUS NÚMEROS';
+            
+            if(s.exists()){
+                const data = s.val();
+                const filtered = Object.entries(data).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
+                if(filtered.length > 0) {
+                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
+                    const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
+                    
+                    currentClientNome = filtered[0][1].nome;
+                    currentClientTel = tel;
+                    currentClientPendentes = pendentes;
+
+                    let html = '';
+                    if(pendentes.length > 0) {
+                        html += `
+                            <div class="result-card" style="border-color: var(--reserved);">
+                                <b class="result-label" style="color: var(--reserved);">Bilhetes Pendentes</b>
+                                <div class="result-numbers">${pendentes.join(', ')}</div>
+                                <button class="btn-pay" style="width:100%; margin-top:15px; background:var(--secondary);" onclick="abrirModalSelecaoPagar()">
+                                    💳 PAGAR PENDENTES (R$ ${(pendentes.length * config.valor).toFixed(2)})
+                                </button>
+                            </div>
+                        `;
+                    }
+                    if(pagos.length > 0) {
+                        html += `
+                            <div class="result-card" style="border-color: var(--primary);">
+                                <b class="result-label" style="color: var(--primary);">Bilhetes Pagos</b>
+                                <div class="result-numbers">${pagos.join(', ')}</div>
+                            </div>
+                        `;
+                    }
+                    area.innerHTML = html;
+                } else area.innerHTML = '<p style="text-align:center; color:var(--text-dim);">NADA ENCONTRADO</p>';
+            }
+        };
+
+        window.abrirModalSelecaoPagar = () => {
+            const list = document.getElementById('selection-pay-list');
+            list.innerHTML = '';
+            
+            currentClientPendentes.forEach(n => {
+                const item = document.createElement('div');
+                item.className = 'selection-item checked';
+                item.innerHTML = `
+                    <span style="font-weight:800; color:#fff;">Cota ${n}</span>
+                    <div class="checkbox-ui"><i data-lucide="check" style="width:14px;"></i></div>
+                    <input type="checkbox" value="${n}" checked onchange="updateSelectionTotal()">
+                `;
+                item.onclick = (e) => {
+                    if(e.target.tagName !== 'INPUT'){
+                        const cb = item.querySelector('input');
+                        cb.checked = !cb.checked;
+                        item.classList.toggle('checked', cb.checked);
+                        updateSelectionTotal();
+                    }
+                };
+                list.appendChild(item);
+            });
+            
+            document.getElementById('modal-selection-pay').style.display = 'flex';
+            updateSelectionTotal();
+            lucide.createIcons();
+        };
+
+        window.updateSelectionTotal = () => {
+            const selectedBoxes = document.querySelectorAll('#selection-pay-list input:checked');
+            const total = selectedBoxes.length * config.valor;
+            document.getElementById('selection-pay-total').innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            
+            document.querySelectorAll('.selection-item').forEach(item => {
+                const cb = item.querySelector('input');
+                item.classList.toggle('checked', cb.checked);
+            });
+        };
+
+        window.confirmarPagamentoSelecionado = async () => {
+            const selectedNums = Array.from(document.querySelectorAll('#selection-pay-list input:checked')).map(cb => cb.value);
+            if(selectedNums.length === 0) return showToast("⚠️ SELECIONE AO MENOS UM!");
+            
+            closeModal('modal-selection-pay');
+            await processarBulk(currentClientNome, currentClientTel, selectedNums);
+        };
+
+        window.pagarTodosDireto = async () => {
+            closeModal('modal-selection-pay');
+            await processarBulk(currentClientNome, currentClientTel, currentClientPendentes);
+        };
+
+        async function processarBulk(nome, tel, lista) {
+            const oid = "RT" + Date.now().toString().slice(-8);
+            showToast(`Gerando Pix para ${lista.length} cota(s)...`);
+            try {
+                const up = {};
+                lista.forEach(n => up[`${n}/order_nsu`] = oid);
+                await update(numRef, up);
+                const url = await triggerInfinite(nome, tel, oid, lista.length * config.valor);
+                if(url) window.location.href = url;
+            } catch(e) { showToast("❌ ERRO NO PAGAMENTO"); }
+        }
+
         window.confirmarReserva = async () => {
             const n = document.getElementById('cust-name').value.trim();
             const t = document.getElementById('cust-phone').value.trim();
-            const phoneClean = t.replace(/\D/g, '');
-            if(!n || n.split(' ').length < 2) return showToast("⚠️ INFORME NOME COMPLETO!");
-            if(phoneClean.length < 10) return showToast("⚠️ WHATSAPP INVÁLIDO!");
+            if(!n || n.split(' ').length < 2) return showToast("⚠️ NOME COMPLETO!");
+            if(t.replace(/\D/g,'').length < 10) return showToast("⚠️ WHATSAPP INVÁLIDO!");
             const btn = document.getElementById('btn-confirm-res');
             btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
             const oid = "RN" + Date.now().toString().slice(-8);
@@ -705,7 +764,7 @@
                 await update(numRef, up);
                 const url = await triggerInfinite(n, t, oid, selected.size * config.valor);
                 if(url) { selected.clear(); window.location.href = url; }
-            } catch(e) { showToast("❌ ERRO NO PAGAMENTO!"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
+            } catch(e) { showToast("❌ ERRO!"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
         };
 
         async function triggerInfinite(nome, tel, oid, val) {
@@ -713,88 +772,6 @@
             const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) });
             const d = await res.json(); return d.url || d.checkout_url;
         }
-
-        window.consultarMeusNumeros = async () => {
-            const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
-            const area = document.getElementById('results-area');
-            const btnSearch = document.getElementById('btn-search-client');
-            if(!tel || tel.length < 10) return showToast("⚠️ INFORME WHATSAPP VÁLIDO");
-            
-            btnSearch.disabled = true;
-            btnSearch.innerHTML = '<div class="spinner"></div>';
-            
-            const s = await get(numRef); area.innerHTML = '';
-            btnSearch.disabled = false;
-            btnSearch.innerHTML = 'BUSCAR NÚMEROS';
-            
-            if(s.exists()){
-                const data = s.val();
-                const filtered = Object.entries(data).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
-                
-                if(filtered.length > 0) {
-                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved');
-                    const nome = filtered[0][1].nome;
-                    
-                    if(pendentes.length > 1) {
-                        const totalPendentes = (pendentes.length * config.valor).toFixed(2);
-                        area.innerHTML += `
-                            <button class="btn-pay" style="width:100%; margin-bottom:15px; background:var(--secondary);" onclick="pagarPendentesBulk('${nome}', '${tel}', ${JSON.stringify(pendentes.map(p => p[0]))})">
-                                💳 PAGAR TODAS AS ${pendentes.length} PENDENTES (R$ ${totalPendentes})
-                            </button>
-                        `;
-                    }
-
-                    filtered.sort((a,b) => parseInt(a[0]) - parseInt(b[0])).forEach(([n, d]) => {
-                        const isPago = d.status === 'paid';
-                        area.innerHTML += `
-                            <div class="result-card">
-                                <div class="result-header">
-                                    <span class="result-num">${n}</span>
-                                    <span class="result-status" style="background:${isPago ? 'var(--paid)' : 'var(--reserved)'}; color:#000;">
-                                        ${d.status.toUpperCase()}
-                                    </span>
-                                </div>
-                                ${!isPago ? `
-                                    <button class="btn-inline-pay" onclick="pagarCotaUnica('${n}', '${d.nome}', '${tel}')">
-                                        PAGAR ESTA COTA
-                                    </button>
-                                ` : ''}
-                            </div>
-                        `;
-                    });
-                } else {
-                    area.innerHTML = '<p style="text-align:center; color:var(--text-dim); font-size:0.85rem;">NENHUM NÚMERO ENCONTRADO</p>';
-                }
-            }
-        };
-
-        window.pagarCotaUnica = async (num, nome, tel) => {
-            const oid = "RS" + num + Date.now().toString().slice(-6);
-            showToast("Gerando Pix para" + num + "...");
-            try {
-                await update(ref(db, `rifa_master/numeros/${num}`), { order_nsu: oid });
-                const url = await triggerInfinite(nome, tel, oid, config.valor);
-                if(url) window.location.href = url;
-            } catch(e) { showToast("❌ Erro ao gerar pagamento"); }
-        };
-
-        window.pagarPendentesBulk = async (nome, tel, lista) => {
-            const oid = "RT" + Date.now().toString().slice(-8);
-            showToast("Agrupando " + lista.length + " cotas...");
-            try {
-                const updates = {};
-                lista.forEach(num => updates[`${num}/order_nsu`] = oid);
-                await update(numRef, updates);
-                const url = await triggerInfinite(nome, tel, oid, lista.length * config.valor);
-                if(url) window.location.href = url;
-            } catch(e) { showToast("❌ Erro no pagamento em lote"); }
-        };
-
-        window.resetRifa = () => {
-            if(confirm("⚠️ PERIGO: ISSO APAGARÁ TODAS AS RESERVAS E VENDAS. CONTINUAR?")) {
-                remove(numRef).then(() => showToast("🔥 RIFA RESETADA!"));
-            }
-        };
 
         window.maskPhone = i => { 
             let v = i.value.replace(/\D/g,""); 
@@ -809,7 +786,6 @@
             setTimeout(() => t.style.display = 'none', 4000); 
         }
 
-        // Verifica NSU no retorno
         const nsuParam = new URLSearchParams(window.location.search).get('order_nsu');
         if(nsuParam) {
             get(numRef).then(s => {
@@ -826,6 +802,10 @@
                 }
             });
         }
+
+        window.resetRifa = () => {
+            if(confirm("⚠️ RESETAR TODA A RIFA?")) remove(numRef).then(() => showToast("🔥 RESETADO!"));
+        };
     </script>
 </body>
 </html>
