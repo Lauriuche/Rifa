@@ -31,8 +31,6 @@
             --paid: #00ff88;
             --selected: #007aff;
             --danger: #ff4d4d;
-            --whatsapp: #25d366;
-            --promo-accent: #ff00ff;
             --promo-gold: #ffcc00;
             --transition: cubic-bezier(0.4, 0, 0.2, 1);
             --neon-glow: 0 0 15px rgba(0, 255, 136, 0.4);
@@ -46,7 +44,6 @@
             --border: rgba(0, 204, 106, 0.4);
             --text-main: #000000;
             --text-dim: #475569;
-            --cell-bg: rgba(0, 0, 0, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -78,7 +75,7 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Painel Esquerdo */
+        /* Painéis */
         .header-panel { padding: 20px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; gap: 15px; }
         .header-controls { display: flex; justify-content: space-between; align-items: center; }
         .logo-img { width: 70px; height: auto; border-radius: 18px; filter: drop-shadow(0 0 10px var(--primary)); }
@@ -95,7 +92,6 @@
             display: inline-flex; align-items: center; gap: 8px; margin-top: 15px; align-self: center;
         }
 
-        /* Painel Direito */
         .main-panel { flex: 1; display: flex; flex-direction: column; gap: 15px; overflow: hidden; }
         .menu-block { padding: 8px; flex-shrink: 0; }
         .nav-tabs { display: flex; gap: 8px; }
@@ -150,74 +146,52 @@
             box-shadow: 0 0 25px rgba(0, 255, 136, 0.2); z-index: 100;
         }
 
-        .admin-stat-item {
-            background: rgba(255,255,255,0.03); border: 1px solid var(--border); 
-            padding: 15px; border-radius: 20px; text-align: center;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-        }
-        .admin-stat-label { font-size: 0.55rem; color: var(--text-dim); font-weight: 800; text-transform: uppercase; }
-        .admin-stat-value { font-size: 1.1rem; font-weight: 900; }
-
-        .admin-card {
-            background: var(--cell-bg); border: 1px solid var(--border); padding: 12px; border-radius: 20px; margin-bottom: 12px;
-            display: flex; flex-direction: column; overflow: hidden; transition: 0.3s;
-        }
-        .admin-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .admin-card-details {
-            max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition), margin-top 0.3s;
-            display: flex; flex-direction: column; gap: 10px; color: var(--text-main);
-        }
-        .admin-card.expanded { background: rgba(var(--primary-rgb), 0.05); border-color: var(--primary); }
-        .admin-card.expanded .admin-card-details { max-height: 800px; margin-top: 12px; }
-
-        .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
-        .btn-admin-action {
-            border: none; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 0.65rem; cursor: pointer; 
-            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px;
-        }
-        .btn-paid { background: rgba(0, 255, 136, 0.1); color: var(--primary); border: 1px solid var(--primary); }
-        .btn-unpaid { background: rgba(255, 170, 0, 0.1); color: var(--reserved); border: 1px solid var(--reserved); }
-        .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-        .btn-whatsapp { background: var(--whatsapp); color: #000; width: 44px; height: 44px; border-radius: 14px; }
-        .btn-admin-action:disabled { opacity: 0.15; cursor: not-allowed; }
-
-        .admin-filters { display: flex; gap: 8px; margin-bottom: 15px; }
-        .filter-chip {
-            flex: 1; background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 12px;
-            border-radius: 14px; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-align: center;
-        }
-        .filter-chip.active { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.15); }
+        .footer-price-info { display: flex; flex-direction: column; text-align: left; }
+        .footer-original-price { font-size: 0.65rem; color: var(--danger); text-decoration: line-through; margin-bottom: -2px; }
+        .footer-discount-label { font-size: 0.6rem; color: var(--primary); font-weight: 800; text-transform: uppercase; }
 
         .adj-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 20px; }
         .adj-btn {
             background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main);
-            padding: 10px 0; border-radius: 12px; font-size: 0.55rem; font-weight: 900;
+            padding: 10px 0; border-radius: 14px; font-size: 0.8rem; font-weight: 900;
             cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.2s;
         }
+        .adj-btn span { font-size: 0.45rem; font-weight: 800; text-transform: uppercase; margin-top: 2px; opacity: 0.8; }
+        .adj-btn.minus { color: var(--danger); border-color: rgba(255,77,77,0.4); }
+        .adj-btn.plus { color: var(--primary); border-color: rgba(0,255,136,0.4); }
+        .adj-btn.clear { color: var(--promo-accent); border-color: rgba(255,0,255,0.4); }
 
         @media (min-width: 900px) or (orientation: landscape) {
             .app-wrapper { flex-direction: row; align-items: stretch; }
             .header-panel { width: 340px; height: 100%; }
             .main-panel { height: 100%; }
-            .prize-display { height: auto; flex: none; }
         }
 
         .btn-pay { background: var(--primary); color: #000; padding: 12px 28px; border-radius: 18px; font-weight: 900; font-size: 0.9rem; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; text-align: center; }
         .btn-pay:disabled { opacity: 0.3; filter: grayscale(1); }
-        .icon-btn { background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
-        .custom-input { 
-            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); 
-            padding: 16px; border-radius: 15px; color: #fff; text-align: center; outline: none; 
-            margin-bottom: 15px; appearance: none; -webkit-appearance: none;
-        }
+        .icon-btn { background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main); width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; box-shadow: inset 0 0 5px var(--border); }
+        .custom-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 15px; color: #fff; text-align: center; outline: none; margin-bottom: 15px; appearance: none; -webkit-appearance: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { background: var(--surface-bright); width: 100%; max-width: 420px; border-radius: 35px; padding: 30px; border: 2px solid var(--primary); text-align: center; max-height: 90vh; overflow-y: auto; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 0 20px var(--primary); }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 100px; font-size: 0.85rem; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 0 20px var(--primary); }
         .tooltip-bubble { position: absolute; background: var(--surface-bright); border: 1px solid var(--primary); padding: 5px 10px; border-radius: 10px; font-size: 0.65rem; font-weight: 800; z-index: 1000; animation: floatUp 2s forwards; pointer-events: none; }
         @keyframes floatUp { 0% { opacity:0; transform:translateY(10px); } 15% { opacity:1; } 85% { opacity:1; } 100% { opacity:0; transform:translateY(-10px); } }
+        .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .admin-stat-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+        .admin-card { background: var(--cell-bg); border: 1px solid var(--border); padding: 12px; border-radius: 20px; margin-bottom: 12px; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
+        .admin-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .admin-card-details { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition); display: flex; flex-direction: column; gap: 10px; color: var(--text-main); }
+        .admin-card.expanded .admin-card-details { max-height: 800px; margin-top: 12px; }
+        .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 5px; }
+        .btn-admin-action { border: none; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        .btn-paid { background: rgba(0, 255, 136, 0.1); color: var(--primary); border: 1px solid var(--primary); }
+        .btn-unpaid { background: rgba(255, 170, 0, 0.1); color: var(--reserved); border: 1px solid var(--reserved); }
+        .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .filter-chip { flex: 1; background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 12px; border-radius: 14px; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-align: center; }
+        .filter-chip.active { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.15); }
         .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); position: relative; text-align: left; }
-        .unlimited-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
-        .unlimited-row input { width: 18px; height: 18px; accent-color: var(--primary); }
     </style>
 </head>
 <body>
@@ -225,7 +199,6 @@
     <div id="toast" class="toast">Mensagem</div>
 
     <div class="app-wrapper">
-        <!-- PAINEL ESQUERDO -->
         <header class="block-container header-panel">
             <div class="header-controls">
                 <button class="icon-btn" onclick="window.toggleTheme()"><i data-lucide="moon" id="theme-icon"></i></button>
@@ -242,7 +215,6 @@
             </div>
         </header>
 
-        <!-- PAINEL DIREITO -->
         <div class="main-panel">
             <nav class="block-container menu-block">
                 <div class="nav-tabs">
@@ -254,20 +226,18 @@
 
             <div class="block-container promo-block" id="promo-display-area"></div>
 
-            <main class="block-container content-block" style="flex:1; display:flex; flex-direction:column; overflow:hidden; position:relative;">
+            <main class="block-container content-block">
                 <div class="content-scroll" id="main-scroll">
-                    
                     <div id="view-rifa">
                         <div class="adj-grid">
-                            <button class="adj-btn" style="color:var(--danger); border-color:rgba(255,77,77,0.3)" onclick="window.adjustSelection(-10)">-10<span>COTAS</span></button>
-                            <button class="adj-btn" style="color:var(--danger); border-color:rgba(255,77,77,0.3)" onclick="window.adjustSelection(-5)">-5<span>COTAS</span></button>
-                            <button class="adj-btn" style="color:var(--danger); border-color:rgba(255,77,77,0.3)" onclick="window.adjustSelection(-1)">-1<span>COTA</span></button>
-                            <button class="adj-btn" style="color:var(--promo-accent); border-color:rgba(255,0,255,0.3)" onclick="window.adjustSelection(0)">LIMPAR</button>
-                            <button class="adj-btn" style="color:var(--primary); border-color:rgba(0,255,136,0.3)" onclick="window.adjustSelection(1)">+1<span>COTA</span></button>
-                            <button class="adj-btn" style="color:var(--primary); border-color:rgba(0,255,136,0.3)" onclick="window.adjustSelection(5)">+5<span>COTAS</span></button>
-                            <button class="adj-btn" style="color:var(--primary); border-color:rgba(0,255,136,0.3)" onclick="window.adjustSelection(10)">+10<span>COTAS</span></button>
+                            <button class="adj-btn minus" onclick="window.adjustSelection(-10)">-10</button>
+                            <button class="adj-btn minus" onclick="window.adjustSelection(-5)">-5</button>
+                            <button class="adj-btn minus" onclick="window.adjustSelection(-1)">-1</button>
+                            <button class="adj-btn clear" onclick="window.adjustSelection(0)">CLR</button>
+                            <button class="adj-btn plus" onclick="window.adjustSelection(1)">+1</button>
+                            <button class="adj-btn plus" onclick="window.adjustSelection(5)">+5</button>
+                            <button class="adj-btn plus" onclick="window.adjustSelection(10)">+10</button>
                         </div>
-
                         <div class="legend-filter">
                             <div class="legend-chip active" data-grid-filter="all" onclick="window.setGridFilter('all')"><div class="dot all"></div>TODOS</div>
                             <div class="legend-chip" data-grid-filter="available" onclick="window.setGridFilter('available')"><div class="dot available"></div>LIVRE</div>
@@ -275,39 +245,34 @@
                             <div class="legend-chip" data-grid-filter="reserved" onclick="window.setGridFilter('reserved')"><div class="dot reserved"></div>RESERVADOS</div>
                             <div class="legend-chip" data-grid-filter="paid" onclick="window.setGridFilter('paid')"><div class="dot paid"></div>PAGOS</div>
                         </div>
-
                         <div class="grid-container" id="grid"></div>
                     </div>
 
                     <div id="view-consulta" style="display: none;">
                         <input type="tel" id="search-phone" class="custom-input" placeholder="Seu WhatsApp (DDD)" oninput="window.maskPhone(this)">
-                        <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.consultarMeusNumeros()">BUSCAR NÚMEROS</button>
+                        <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.consultarMeusNumeros()">BUSCAR MEUS NÚMEROS</button>
                         <div id="results-area" style="margin-top: 25px;"></div>
                     </div>
 
                     <div id="view-admin" style="display: none;">
                         <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;"></div>
-                        
-                        <div style="margin-bottom: 12px;">
-                            <input type="text" id="admin-search" class="custom-input" style="margin-bottom:8px;" placeholder="Nome ou Bilhete..." oninput="window.renderAdmin()">
-                            <div class="admin-filters">
-                                <div class="filter-chip active" onclick="window.setAdminFilter('all')">TODOS</div>
-                                <div class="filter-chip" onclick="window.setAdminFilter('paid')">PAGOS</div>
-                                <div class="filter-chip" onclick="window.setAdminFilter('reserved')">PENDENTES</div>
-                            </div>
+                        <input type="text" id="admin-search" class="custom-input" placeholder="Nome ou Bilhete..." oninput="window.renderAdmin()">
+                        <div class="admin-filters" style="display:flex; gap:8px; margin-bottom:15px">
+                            <div class="filter-chip active" onclick="window.setAdminFilter('all')">TODOS</div>
+                            <div class="filter-chip" onclick="window.setAdminFilter('paid')">PAGOS</div>
+                            <div class="filter-chip" onclick="window.setAdminFilter('reserved')">PENDENTES</div>
                         </div>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <button class="btn-pay" style="flex:1; background:var(--secondary);" onclick="window.openConfigModal()">CONFIGURAR</button>
-                            <button class="btn-pay" style="flex:1; background:rgba(255,77,77,0.1); color:var(--danger); border:1px solid var(--danger); box-shadow:none;" onclick="window.resetRifa()">RESET</button>
-                        </div>
+                        <button class="btn-pay" style="width:100%; background:var(--secondary); margin-bottom:15px" onclick="window.openConfigModal()">CONFIGURAR</button>
                         <div id="admin-list"></div>
                     </div>
                 </div>
 
                 <footer class="purchase-footer" id="footer-purchase">
-                    <div>
+                    <div class="footer-price-info">
                         <p style="font-size:0.6rem; color:var(--text-dim); font-weight:800; text-transform:uppercase;">COTAS: <span id="count-display" style="color:var(--primary)">0</span></p>
-                        <p id="footer-total" style="font-size: 1.2rem; font-weight: 900; color: var(--primary);">R$ 0,00</p>
+                        <p id="footer-original-price" class="footer-original-price" style="display:none"></p>
+                        <p id="footer-discount-amount" class="footer-discount-label" style="display:none"></p>
+                        <p id="footer-total" style="font-size: 1.1rem; font-weight: 900; color: var(--primary);">R$ 0,00</p>
                     </div>
                     <button class="btn-pay" id="btn-checkout" disabled onclick="window.abrirCheckout()">
                         COMPRAR <i data-lucide="zap" style="width: 18px; fill: currentColor;"></i>
@@ -323,14 +288,13 @@
             <h2 style="color:var(--primary); margin-bottom:20px;">DADOS DA RESERVA</h2>
             <input type="text" id="cust-name" class="custom-input" placeholder="Nome Completo">
             <input type="tel" id="cust-phone" class="custom-input" placeholder="WhatsApp (DDD)" oninput="window.maskPhone(this)">
-            
             <div style="display:flex; gap:8px; margin-bottom:15px;">
                 <input type="text" id="coupon-input" class="custom-input" placeholder="Cupom?" style="margin-bottom:0; flex:1">
-                <button class="btn-admin-action btn-paid" style="height:50px; padding:0 20px" onclick="window.applyCoupon()">OK</button>
+                <button class="btn-pay" style="height:50px; background:var(--secondary); padding:0 20px" onclick="window.applyCoupon()">OK</button>
             </div>
-
             <div id="checkout-summary" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:20px; text-align:left">
                 <p id="checkout-final-val" style="font-size:1.4rem; font-weight:900; color:var(--primary)">R$ 0,00</p>
+                <p id="checkout-discount-info" style="font-size:0.7rem; color:var(--promo-gold); font-weight:700"></p>
                 <p id="checkout-coupon-info" style="font-size:0.7rem; color:var(--promo-accent); font-weight:700"></p>
             </div>
             <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.confirmarReserva()" id="btn-confirm-res">GERAR PAGAMENTO</button>
@@ -346,17 +310,6 @@
             <input type="number" id="cfg-valor" class="custom-input" placeholder="Valor Cota">
             <input type="number" id="cfg-total" class="custom-input" placeholder="Total Cotas">
             <input type="password" id="cfg-pin" class="custom-input" placeholder="Senha Admin" inputmode="numeric">
-            
-            <div style="border-top:1px solid var(--border); padding-top:15px; margin-top: 10px;">
-                <h4 style="color:var(--promo-gold); margin-bottom: 10px; font-size: 0.8rem">PROMOÇÕES</h4>
-                <button id="btn-toggle-promos" class="icon-btn" onclick="window.togglePromosState()" style="width:100%; margin-bottom:10px;">OFF</button>
-                <div id="promos-list"></div>
-                <button class="btn-admin-action btn-paid" style="width:100%; margin-bottom:15px; justify-content:center" onclick="window.addPromoRow()">+ REGRA QUANTIDADE</button>
-
-                <h4 style="color:var(--promo-accent); margin-bottom: 10px; font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 15px">CUPONS</h4>
-                <div id="coupons-list"></div>
-                <button class="btn-admin-action btn-unpaid" style="width:100%; justify-content:center" onclick="window.addCouponRow()">+ NOVO CUPOM</button>
-            </div>
             <button class="btn-pay" style="width:100%; margin-top:25px; justify-content:center" onclick="window.saveRifaConfig()">SALVAR TUDO</button>
             <button onclick="window.closeModal('modal-config')" style="margin-top: 10px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">FECHAR</button>
         </div>
@@ -409,18 +362,19 @@
         let isAdmin = false;
         let adminFilter = 'all';
         let gridFilter = 'all';
-        let pendingAction = null;
         let appliedCoupon = null;
+        let pendingAction = null;
 
         lucide.createIcons();
 
+        // Sync Database
         onValue(cfgRef, (s) => { if(s.exists()){ config = { ...config, ...s.val() }; renderUI(); } });
         onValue(numRef, (s) => { dbNumbers = s.exists() ? s.val() : {}; renderGrid(); if(isAdmin) window.renderAdmin(); });
 
         function renderUI() {
-            document.getElementById('display-premio').innerText = config.premio.toUpperCase();
-            document.getElementById('display-descricao').innerText = config.descricao;
-            document.getElementById('display-valor').innerText = config.valor.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('display-premio').innerText = (config.premio || '...').toUpperCase();
+            document.getElementById('display-descricao').innerText = config.descricao || '...';
+            document.getElementById('display-valor').innerText = (config.valor || 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             const area = document.getElementById('promo-display-area');
             area.innerHTML = '';
             if(config.promosActive && config.promos && config.promos.length > 0) {
@@ -437,8 +391,6 @@
             const body = document.body;
             const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next);
-            const icon = document.getElementById('theme-icon');
-            icon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
             lucide.createIcons();
         };
 
@@ -448,19 +400,10 @@
             renderGrid();
         };
 
-        window.showOwnerTooltip = (e, name) => {
-            const old = document.querySelector('.tooltip-bubble'); if(old) old.remove();
-            const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase();
-            document.body.appendChild(b);
-            const rect = e.target.getBoundingClientRect();
-            b.style.left = `${rect.left + (rect.width/2) - (b.offsetWidth/2)}px`;
-            b.style.top = `${rect.top + window.scrollY - 38}px`;
-            setTimeout(() => b.remove(), 2000);
-        };
-
         function calculateBestPrice(count, useCoupon = false) {
             let original = count * config.valor;
             let final = original;
+            let promoDiscount = 0;
             if(config.promosActive && config.promos) {
                 config.promos.forEach(p => {
                     if(count >= p.min) {
@@ -471,32 +414,41 @@
                     }
                 });
             }
+            promoDiscount = original - final;
             if(useCoupon && appliedCoupon) { 
                 if(appliedCoupon.type === 'pct') final -= (final * (appliedCoupon.val / 100));
                 else final -= appliedCoupon.val;
-                if(final < 0) final = 0; 
+                if(final < 0) final = 0;
             }
-            return { final, original };
+            return { final, original, promoDiscount };
         }
 
         window.updateFooter = () => {
             const p = calculateBestPrice(selected.size, false);
             document.getElementById('count-display').innerText = selected.size;
             document.getElementById('footer-total').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            const origEl = document.getElementById('footer-original-price');
+            const discEl = document.getElementById('footer-discount-amount');
+            if(p.promoDiscount > 0) {
+                origEl.innerText = p.original.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                discEl.innerText = `Desconto: - ${p.promoDiscount.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+                origEl.style.display = 'block'; discEl.style.display = 'block';
+            } else { origEl.style.display = 'none'; discEl.style.display = 'none'; }
             document.getElementById('btn-checkout').disabled = selected.size === 0;
         }
 
         window.renderGrid = () => {
-            const grid = document.getElementById('grid'); grid.innerHTML = '';
+            const grid = document.getElementById('grid'); if(!grid) return;
+            grid.innerHTML = '';
             for(let i=0; i<config.total; i++) {
                 const n = i.toString().padStart(2, '0');
                 const info = dbNumbers[n];
                 const isSel = selected.has(n);
-                if(gridFilter !== 'all') {
-                    if(gridFilter === 'available' && (info || isSel)) continue;
-                    if(gridFilter === 'selected' && !isSel) continue;
-                    if(gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
-                    if(gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
+                if (gridFilter !== 'all') {
+                    if (gridFilter === 'available' && (info || isSel)) continue;
+                    if (gridFilter === 'selected' && (!isSel || info)) continue; 
+                    if (gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
+                    if (gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
                 }
                 const el = document.createElement('div'); el.className = 'num-cell'; el.innerText = n;
                 if(info) { el.classList.add(info.status); el.onclick = (e) => window.showOwnerTooltip(e, info.nome); }
@@ -528,8 +480,71 @@
         window.validateAdmin = () => { if(document.getElementById('admin-pin').value === config.pin) { isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; window.closeModal('modal-pin'); window.switchTab('admin'); } else showToast("❌ PIN INVÁLIDO"); };
         window.closeModal = id => { if(id === 'modal-checkout') appliedCoupon = null; document.getElementById(id).style.display = 'none'; };
 
-        // ADMIN FUNCTIONS
-        window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v === 'all' && c.innerText === 'TODOS'))); window.renderAdmin(); };
+        // CORREÇÃO: Função de consulta com botão de pagamento funcional
+        window.consultarMeusNumeros = async () => {
+            const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
+            const area = document.getElementById('results-area'); if(!tel || tel.length < 10) return;
+            const s = await get(numRef); area.innerHTML = '';
+            if(s.exists()){
+                const all = s.val();
+                const filtered = Object.entries(all).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
+                if(filtered.length > 0) {
+                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
+                    const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
+                    const nome = filtered[0][1].nome;
+                    if(pendentes.length > 0) {
+                        const listaStr = pendentes.join(',');
+                        area.innerHTML += `
+                            <div class="block-container" style="padding:15px; margin-bottom:10px; border-color:var(--reserved); text-align:center;">
+                                <b style="color:var(--reserved); font-size:0.7rem">PENDENTES:</b>
+                                <p style="font-weight:700; margin:5px 0 15px 0">${pendentes.join(', ')}</p>
+                                <button class="btn-pay" id="btn-pay-pending" style="width:100%; justify-content:center" onclick="window.confirmarPagamentoExistente('${tel}', '${nome}', '${listaStr}')">PAGAR AGORA</button>
+                            </div>`;
+                    }
+                    if(pagos.length > 0) area.innerHTML += `<div class="block-container" style="padding:15px; border-color:var(--paid); text-align:left;"><b style="color:var(--paid); font-size:0.7rem">PAGOS:</b><p style="font-weight:700; margin-top:5px">${pagos.join(', ')}</p></div>`;
+                } else area.innerHTML = '<p style="text-align:center">NADA ENCONTRADO</p>';
+            }
+            lucide.createIcons();
+        };
+
+        // CORREÇÃO: Função de pagamento robusta
+        window.confirmarPagamentoExistente = async (tel, nome, listaStr) => {
+            const lista = listaStr.split(',');
+            const btn = document.getElementById('btn-pay-pending');
+            if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
+            
+            showToast("⏳ GERANDO PAGAMENTO...");
+            const totalCusto = lista.length * config.valor;
+            const oid = "RP" + Date.now();
+            
+            try {
+                const up = {}; 
+                lista.forEach(n => up[`${n}/order_nsu`] = oid);
+                await update(numRef, up);
+                
+                const payData = { 
+                    "handle": HANDLE, 
+                    "order_nsu": oid, 
+                    "customer": { "name": nome, "phone_number": "55" + tel }, 
+                    "items": [{ "quantity": 1, "price": Math.round(totalCusto * 100), "description": `Pagar Rifa ${config.premio}` }] 
+                };
+                
+                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) 
+                });
+                
+                const d = await res.json();
+                if(d.url || d.checkout_url) {
+                    window.location.href = d.url || d.checkout_url;
+                } else {
+                    showToast("❌ ERRO NO LINK");
+                    if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
+                }
+            } catch(e) { 
+                showToast("❌ ERRO AO GERAR"); 
+                if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
+            }
+        };
 
         window.renderAdmin = () => {
             const list = document.getElementById('admin-list'); if(!list) return; list.innerHTML = '';
@@ -537,16 +552,11 @@
             let tPaid = 0; const groups = {};
             Object.entries(dbNumbers).forEach(([n, d]) => {
                 if(d.status === 'paid') tPaid += config.valor;
-                const phKey = d.telefone.replace(/\D/g,'');
+                const phKey = (d.telefone || "0").replace(/\D/g,'');
                 if(!groups[phKey]) groups[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
                 groups[phKey].cotas.push({n, status: d.status});
             });
-
-            document.getElementById('admin-stats').innerHTML = `
-                <div class="admin-stat-item" style="border-color: var(--primary)"><span class="admin-stat-label">Recebido</span><b class="admin-stat-value" style="color:var(--primary)">R$ ${tPaid.toFixed(2)}</b></div>
-                <div class="admin-stat-item" style="border-color: var(--secondary)"><span class="admin-stat-label">Vendas</span><b class="admin-stat-value" style="color:var(--secondary)">${Object.keys(dbNumbers).length}</b></div>
-            `;
-
+            document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item" style="border-color:var(--primary)"><span class="admin-stat-label">Recebido</span><b class="admin-stat-value" style="color:var(--primary)">R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item" style="border-color:var(--secondary)"><span class="admin-stat-label">Vendas</span><b class="admin-stat-value" style="color:var(--secondary)">${Object.keys(dbNumbers).length}</b></div>`;
             Object.values(groups).filter(p => {
                 if(adminFilter === 'paid') return p.cotas.every(c => c.status === 'paid');
                 if(adminFilter === 'reserved') return p.cotas.some(c => c.status === 'reserved');
@@ -556,59 +566,37 @@
                 const card = document.createElement('div'); card.className = 'admin-card'; card.id = `card-${phClean}`;
                 const allPaid = p.cotas.every(c => c.status === 'paid');
                 const allRes = p.cotas.every(c => c.status === 'reserved');
-                card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="btn-whatsapp" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:18px"></i></button></div>
+                card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="btn-whatsapp" onclick="window.open('https://wa.me/55${phClean}')" style="background:var(--whatsapp); border:none; padding:10px; border-radius:10px"><i data-lucide="message-circle" style="width:18px"></i></button></div>
                 <div class="admin-card-details"><span>${p.telefone}</span><div style="background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                 <div class="admin-actions">
-                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar todas as cotas de ${p.nome}?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
-                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente todas as cotas de ${p.nome}?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
-                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('EXCLUIR participante e liberar cotas?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR PARTICIPANTE</button>
+                    <button class="btn-admin-action btn-paid" onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
+                    <button class="btn-admin-action btn-unpaid" onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
+                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR</button>
                 </div></div>`;
                 list.appendChild(card);
             });
             lucide.createIcons();
         };
 
-        window.toggleAdminCard = id => { const c = document.getElementById(`card-${id}`); const exp = c.classList.contains('expanded'); document.querySelectorAll('.admin-card').forEach(x => x.classList.remove('expanded')); if(!exp) c.classList.add('expanded'); };
+        window.toggleAdminCard = id => { const c = document.getElementById(`card-${id}`); if(!c) return; const exp = c.classList.contains('expanded'); document.querySelectorAll('.admin-card').forEach(x => x.classList.remove('expanded')); if(!exp) c.classList.add('expanded'); };
         window.requestConfirmAction = (msg, action) => { pendingAction = action; document.getElementById('confirm-msg').innerText = msg; document.getElementById('modal-confirm').style.display = 'flex'; };
         window.executeConfirmedAction = async () => { if(pendingAction) await pendingAction(); window.closeModal('modal-confirm'); };
-        
         window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ ATUALIZADO"); };
         window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); showToast("🗑️ EXCLUÍDO"); };
-
+        window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 RESETADO"); }); };
+        window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
         window.openConfigModal = () => {
-            document.getElementById('cfg-premio').value = config.premio;
-            document.getElementById('cfg-valor').value = config.valor;
-            document.getElementById('cfg-total').value = config.total;
-            document.getElementById('cfg-pin').value = config.pin;
-            document.getElementById('cfg-descricao').value = config.descricao;
-            document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF";
-            document.getElementById('promos-list').innerHTML = '';
-            if(config.promos) config.promos.forEach(p => window.addPromoRow(p));
-            document.getElementById('coupons-list').innerHTML = '';
-            if(config.coupons) config.coupons.forEach(c => window.addCouponRow(c));
+            document.getElementById('cfg-premio').value = config.premio || "";
+            document.getElementById('cfg-valor').value = config.valor || 0;
+            document.getElementById('cfg-total').value = config.total || 0;
+            document.getElementById('cfg-pin').value = config.pin || "";
+            document.getElementById('cfg-descricao').value = config.descricao || "";
             document.getElementById('modal-config').style.display = 'flex';
         };
 
-        window.addPromoRow = (d = {min:10, val:10, type:'pct'}) => {
-            const div = document.createElement('div'); div.className = 'promo-editor-card';
-            div.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><input type="number" class="custom-input p-min" value="${d.min}"><select class="custom-input p-type"><option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option><option value="free" ${d.type==='free'?'selected':''}>Grátis</option></select></div><input type="number" class="custom-input p-val" value="${d.val}"><button class="btn-admin-action btn-delete" style="width:100%" onclick="this.parentElement.remove()">REMOVER REGRA</button>`;
-            document.getElementById('promos-list').appendChild(div);
-        };
-
-        window.addCouponRow = (d = {code:'', val:5, unlimited:false, limit:0, type:'val'}) => {
-            const div = document.createElement('div'); div.className = 'promo-editor-card'; div.style.borderColor = 'var(--promo-accent)';
-            div.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="CÓDIGO"><div class="unlimited-row"><input type="checkbox" class="c-unlimited" ${d.unlimited?'checked':''}><span>ILIMITADO</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px"><div><input type="number" class="custom-input c-val" value="${d.val}"></div><div><select class="custom-input c-type"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><input type="number" class="custom-input c-limit" value="${d.limit}" placeholder="LIMITE"><button class="btn-admin-action btn-delete" style="width:100%" onclick="this.parentElement.remove()">REMOVER CUPOM</button>`;
-            document.getElementById('coupons-list').appendChild(div);
-        };
-
-        window.togglePromosState = () => { config.promosActive = !config.promosActive; document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF"; };
-
         window.saveRifaConfig = () => {
-            const pr = [], cp = [];
-            document.querySelectorAll('#promos-list .promo-editor-card').forEach(c => pr.push({ min: parseInt(c.querySelector('.p-min').value), val: parseFloat(c.querySelector('.p-val').value), type: c.querySelector('.p-type').value }));
-            document.querySelectorAll('#coupons-list .promo-editor-card').forEach(c => cp.push({ code: c.querySelector('.c-code').value.toUpperCase(), type: c.querySelector('.c-type').value, val: parseFloat(c.querySelector('.c-val').value), unlimited: c.querySelector('.c-unlimited').checked, limit: parseInt(c.querySelector('.c-limit').value), used: config.coupons?.find(x => x.code === c.querySelector('.c-code').value.toUpperCase())?.used || 0 }));
-            const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr, coupons: cp, descricao: document.getElementById('cfg-descricao').value };
-            set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO"); });
+            const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, descricao: document.getElementById('cfg-descricao').value };
+            set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO COM SUCESSO"); });
         };
 
         window.applyCoupon = () => {
@@ -617,40 +605,47 @@
             if(!coupon) return showToast("❌ CUPOM INVÁLIDO");
             if(!coupon.unlimited && coupon.limit > 0 && (coupon.used || 0) >= coupon.limit) return showToast("⚠️ ESGOTADO");
             appliedCoupon = coupon;
-            const label = coupon.type === 'pct' ? `${coupon.val}% OFF` : `R$ ${coupon.val.toFixed(2)} OFF`;
-            document.getElementById('checkout-coupon-info').innerText = `DESCONTO: - ${label}`;
-            const p = calculateBestPrice(selected.size, true);
-            document.getElementById('checkout-final-val').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            showToast("✅ APLICADO");
+            const res = calculateBestPrice(selected.size, true);
+            document.getElementById('checkout-coupon-info').innerText = `Cupom: - ${coupon.type==='pct'?coupon.val+'%':'R$ '+coupon.val.toFixed(2)}`;
+            document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            showToast("✅ CUPOM APLICADO");
+        };
+
+        window.abrirCheckout = () => {
+            appliedCoupon = null;
+            document.getElementById('coupon-input').value = "";
+            document.getElementById('checkout-coupon-info').innerText = "";
+            const res = calculateBestPrice(selected.size, true);
+            document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('checkout-discount-info').innerText = res.promoDiscount > 0 ? `Promos: - ${res.promoDiscount.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}` : "";
+            document.getElementById('modal-checkout').style.display = 'flex';
         };
 
         window.confirmarReserva = async () => {
             const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim();
-            if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS");
+            if(!n || t.length < 10) return showToast("⚠️ PREENCHA OS DADOS");
+            const btn = document.getElementById('btn-confirm-res');
+            btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
+            const res = calculateBestPrice(selected.size, true);
             const oid = "RN" + Date.now();
             try {
-                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid });
-                await update(numRef, up); selected.clear(); window.closeModal('modal-checkout'); showToast("✅ RESERVADO!");
-            } catch(e) { showToast("❌ ERRO"); }
+                if(appliedCoupon) {
+                    const idx = config.coupons.findIndex(c => c.code === appliedCoupon.code);
+                    if(idx !== -1) await update(ref(db, `rifa_master/config/coupons/${idx}`), { used: (config.coupons[idx].used || 0) + 1 });
+                }
+                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_pago: res.final });
+                await update(numRef, up);
+                const paymentData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{ "quantity": 1, "price": Math.round(res.final * 100), "description": `Rifa ${config.premio}` }] };
+                const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(paymentData) });
+                const d = await payRes.json();
+                if(d.url || d.checkout_url) { selected.clear(); window.location.href = d.url || d.checkout_url; }
+                else { showToast("✅ RESERVADO!"); selected.clear(); window.closeModal('modal-checkout'); }
+            } catch(e) { showToast("❌ ERRO AO PROCESSAR"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
         };
 
-        window.consultarMeusNumeros = async () => {
-            const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
-            const area = document.getElementById('results-area'); if(!tel || tel.length < 10) return;
-            const s = await get(numRef); area.innerHTML = '';
-            if(s.exists()){
-                const filtered = Object.entries(s.val()).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
-                if(filtered.length > 0) {
-                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
-                    const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
-                    if(pendentes.length > 0) area.innerHTML += `<div class="block-container" style="padding:15px; margin-bottom:10px; border-color:var(--reserved)"><b style="color:var(--reserved)">PENDENTES</b><p>${pendentes.join(', ')}</p></div>`;
-                    if(pagos.length > 0) area.innerHTML += `<div class="block-container" style="padding:15px; border-color:var(--paid)"><b style="color:var(--paid)">PAGOS</b><p>${pagos.join(', ')}</p></div>`;
-                } else area.innerHTML = '<p>NADA ENCONTRADO</p>';
-            }
-        };
-
+        window.showOwnerTooltip = (e, name) => { const old = document.querySelector('.tooltip-bubble'); if(old) old.remove(); const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase(); document.body.appendChild(b); const rect = e.target.getBoundingClientRect(); b.style.left = `${rect.left + (rect.width/2) - (b.offsetWidth/2)}px`; b.style.top = `${rect.top + window.scrollY - 38}px`; setTimeout(() => b.remove(), 2000); };
         window.maskPhone = i => { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; };
-        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); }
     </script>
 </body>
 </html>
