@@ -1,3 +1,4 @@
+<html>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -191,7 +192,6 @@
         .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
         .filter-chip { flex: 1; background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 12px; border-radius: 14px; font-size: 0.65rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-align: center; }
         .filter-chip.active { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.15); }
-        .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); position: relative; text-align: left; }
     </style>
 </head>
 <body>
@@ -288,15 +288,23 @@
             <h2 style="color:var(--primary); margin-bottom:20px;">DADOS DA RESERVA</h2>
             <input type="text" id="cust-name" class="custom-input" placeholder="Nome Completo">
             <input type="tel" id="cust-phone" class="custom-input" placeholder="WhatsApp (DDD)" oninput="window.maskPhone(this)">
+            
             <div style="display:flex; gap:8px; margin-bottom:15px;">
                 <input type="text" id="coupon-input" class="custom-input" placeholder="Cupom?" style="margin-bottom:0; flex:1">
                 <button class="btn-pay" style="height:50px; background:var(--secondary); padding:0 20px" onclick="window.applyCoupon()">OK</button>
             </div>
-            <div id="checkout-summary" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:20px; text-align:left">
+
+            <div id="checkout-summary" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left">
                 <p id="checkout-final-val" style="font-size:1.4rem; font-weight:900; color:var(--primary)">R$ 0,00</p>
                 <p id="checkout-discount-info" style="font-size:0.7rem; color:var(--promo-gold); font-weight:700"></p>
                 <p id="checkout-coupon-info" style="font-size:0.7rem; color:var(--promo-accent); font-weight:700"></p>
             </div>
+            
+            <!-- AVISO DE 3 DIAS -->
+            <p style="font-size: 0.65rem; color: var(--danger); margin-bottom: 20px; font-weight: 700; line-height: 1.3; text-transform: uppercase;">
+                ⚠️ Atenção: Você tem 3 dias para pagar, ou seus números ficarão disponíveis para compra novamente.
+            </p>
+
             <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.confirmarReserva()" id="btn-confirm-res">GERAR PAGAMENTO</button>
             <button onclick="window.closeModal('modal-checkout')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">VOLTAR</button>
         </div>
@@ -367,7 +375,6 @@
 
         lucide.createIcons();
 
-        // Sync Database
         onValue(cfgRef, (s) => { if(s.exists()){ config = { ...config, ...s.val() }; renderUI(); } });
         onValue(numRef, (s) => { dbNumbers = s.exists() ? s.val() : {}; renderGrid(); if(isAdmin) window.renderAdmin(); });
 
@@ -391,6 +398,8 @@
             const body = document.body;
             const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next);
+            const icon = document.getElementById('theme-icon');
+            icon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
             lucide.createIcons();
         };
 
@@ -480,7 +489,6 @@
         window.validateAdmin = () => { if(document.getElementById('admin-pin').value === config.pin) { isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; window.closeModal('modal-pin'); window.switchTab('admin'); } else showToast("❌ PIN INVÁLIDO"); };
         window.closeModal = id => { if(id === 'modal-checkout') appliedCoupon = null; document.getElementById(id).style.display = 'none'; };
 
-        // CORREÇÃO: Função de consulta com botão de pagamento funcional
         window.consultarMeusNumeros = async () => {
             const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
             const area = document.getElementById('results-area'); if(!tel || tel.length < 10) return;
@@ -493,12 +501,15 @@
                     const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
                     const nome = filtered[0][1].nome;
                     if(pendentes.length > 0) {
+                        // Calcula o total baseado no VALOR FIXADO na reserva
+                        const totalPendente = pendentes.reduce((acc, n) => acc + (all[n].valor_fixado_unidade || config.valor), 0);
                         const listaStr = pendentes.join(',');
                         area.innerHTML += `
                             <div class="block-container" style="padding:15px; margin-bottom:10px; border-color:var(--reserved); text-align:center;">
                                 <b style="color:var(--reserved); font-size:0.7rem">PENDENTES:</b>
-                                <p style="font-weight:700; margin:5px 0 15px 0">${pendentes.join(', ')}</p>
-                                <button class="btn-pay" id="btn-pay-pending" style="width:100%; justify-content:center" onclick="window.confirmarPagamentoExistente('${tel}', '${nome}', '${listaStr}')">PAGAR AGORA</button>
+                                <p style="font-weight:700; margin:5px 0 10px 0">${pendentes.join(', ')}</p>
+                                <p style="font-size:1.1rem; font-weight:900; color:var(--primary); margin-bottom:15px">Total: R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
+                                <button class="btn-pay" id="btn-pay-pending" style="width:100%; justify-content:center" onclick="window.confirmarPagamentoExistente('${tel}', '${nome}', '${listaStr}', ${totalPendente})">PAGAR AGORA</button>
                             </div>`;
                     }
                     if(pagos.length > 0) area.innerHTML += `<div class="block-container" style="padding:15px; border-color:var(--paid); text-align:left;"><b style="color:var(--paid); font-size:0.7rem">PAGOS:</b><p style="font-weight:700; margin-top:5px">${pagos.join(', ')}</p></div>`;
@@ -507,14 +518,12 @@
             lucide.createIcons();
         };
 
-        // CORREÇÃO: Função de pagamento robusta
-        window.confirmarPagamentoExistente = async (tel, nome, listaStr) => {
+        window.confirmarPagamentoExistente = async (tel, nome, listaStr, totalCusto) => {
             const lista = listaStr.split(',');
             const btn = document.getElementById('btn-pay-pending');
             if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
             
             showToast("⏳ GERANDO PAGAMENTO...");
-            const totalCusto = lista.length * config.valor;
             const oid = "RP" + Date.now();
             
             try {
@@ -534,16 +543,9 @@
                 });
                 
                 const d = await res.json();
-                if(d.url || d.checkout_url) {
-                    window.location.href = d.url || d.checkout_url;
-                } else {
-                    showToast("❌ ERRO NO LINK");
-                    if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
-                }
-            } catch(e) { 
-                showToast("❌ ERRO AO GERAR"); 
-                if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
-            }
+                if(d.url || d.checkout_url) { window.location.href = d.url || d.checkout_url; }
+                else { showToast("❌ ERRO NO LINK"); if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; } }
+            } catch(e) { showToast("❌ ERRO AO GERAR"); if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; } }
         };
 
         window.renderAdmin = () => {
@@ -551,7 +553,7 @@
             const search = document.getElementById('admin-search').value.toLowerCase();
             let tPaid = 0; const groups = {};
             Object.entries(dbNumbers).forEach(([n, d]) => {
-                if(d.status === 'paid') tPaid += config.valor;
+                if(d.status === 'paid') tPaid += (d.valor_fixado_unidade || config.valor);
                 const phKey = (d.telefone || "0").replace(/\D/g,'');
                 if(!groups[phKey]) groups[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
                 groups[phKey].cotas.push({n, status: d.status});
@@ -564,8 +566,6 @@
             }).filter(p => p.nome.toLowerCase().includes(search) || p.cotas.some(c => c.n.includes(search))).forEach(p => {
                 const phClean = p.telefone.replace(/\D/g,'');
                 const card = document.createElement('div'); card.className = 'admin-card'; card.id = `card-${phClean}`;
-                const allPaid = p.cotas.every(c => c.status === 'paid');
-                const allRes = p.cotas.every(c => c.status === 'reserved');
                 card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="btn-whatsapp" onclick="window.open('https://wa.me/55${phClean}')" style="background:var(--whatsapp); border:none; padding:10px; border-radius:10px"><i data-lucide="message-circle" style="width:18px"></i></button></div>
                 <div class="admin-card-details"><span>${p.telefone}</span><div style="background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                 <div class="admin-actions">
@@ -585,6 +585,7 @@
         window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); showToast("🗑️ EXCLUÍDO"); };
         window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 RESETADO"); }); };
         window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
+        
         window.openConfigModal = () => {
             document.getElementById('cfg-premio').value = config.premio || "";
             document.getElementById('cfg-valor').value = config.valor || 0;
@@ -626,14 +627,26 @@
             if(!n || t.length < 10) return showToast("⚠️ PREENCHA OS DADOS");
             const btn = document.getElementById('btn-confirm-res');
             btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
+            
             const res = calculateBestPrice(selected.size, true);
+            // VALOR FIXADO: Divide o total pelo número de cotas para salvar o valor unitário promocional
+            const valorUnidadeFixado = res.final / selected.size;
+            
             const oid = "RN" + Date.now();
             try {
                 if(appliedCoupon) {
                     const idx = config.coupons.findIndex(c => c.code === appliedCoupon.code);
                     if(idx !== -1) await update(ref(db, `rifa_master/config/coupons/${idx}`), { used: (config.coupons[idx].used || 0) + 1 });
                 }
-                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_pago: res.final });
+                const up = {}; 
+                selected.forEach(num => up[num] = { 
+                    nome: n, 
+                    telefone: t, 
+                    status: 'reserved', 
+                    order_nsu: oid, 
+                    valor_fixado_unidade: valorUnidadeFixado 
+                });
+                
                 await update(numRef, up);
                 const paymentData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{ "quantity": 1, "price": Math.round(res.final * 100), "description": `Rifa ${config.premio}` }] };
                 const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(paymentData) });
