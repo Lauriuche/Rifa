@@ -1,3 +1,4 @@
+<html>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -91,22 +92,22 @@
         .header-controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         
         .icon-btn {
-            background: var(--cell-bg); border: 0px solid var(--border);
+            background: var(--cell-bg); border: 1px solid var(--border);
             color: var(--text-main); cursor: pointer;
-            width: 25px; height: 25px; border-radius: 4px;
+            width: 42px; height: 42px; border-radius: 14px;
             display: flex; align-items: center; justify-content: center;
             transition: 0.3s;
             text-align: center;
         }
         .icon-btn:hover { transform: scale(1.05); border-color: var(--primary); }
-        .logo-img { width: 95px; height: auto; border-radius: 16px; filter: drop-shadow(0 0 10px var(--primary)); }
+        .logo-img { width: 65px; height: auto; border-radius: 16px; filter: drop-shadow(0 0 10px var(--primary)); }
 
         .prize-card {
             background: rgba(var(--primary-rgb), 0.03);
             border: 1px solid var(--border); border-radius: 20px; padding: 15px;
         }
-        .prize-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; text-shadow: 0 0 5px var(--primary); color: var(--text-main); }
-        .prize-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; }
+        .prize-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; text-shadow: 0 0 5px var(--primary); color: var(--text-main); text-align: center; }
+        .prize-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; text-align: center; }
         .price-tag {
             font-size: 1rem; font-weight: 900; color: var(--primary);
             background: rgba(var(--primary-rgb), 0.1); padding: 6px 16px; border-radius: 12px;
@@ -144,10 +145,10 @@
         .scroll-area::-webkit-scrollbar { width: 0; }
 
         /* Ajuste de Cotas */
-        .adjustment-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 20px; }
+        .adjustment-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
         .adj-btn {
             background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main);
-            border-radius: 12px; padding: 12px 0; font-size: 1rem; font-weight: 900;
+            border-radius: 10px; padding: 10px 0; font-size: 0.55rem; font-weight: 900;
             cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;
             text-align: center;
         }
@@ -156,7 +157,34 @@
         .adj-btn.minus { border-color: var(--danger); color: var(--danger); }
         .adj-btn.clear { background: rgba(255, 0, 255, 0.1); border-color: var(--promo-accent); color: var(--promo-accent); }
 
-        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 25px 0; position: relative; box-shadow: 0 0 5px var(--primary); }
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 25px 0 15px 0; position: relative; box-shadow: 0 0 5px var(--primary); }
+
+        /* Legenda de Cores */
+        .legend-container {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        .legend-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        .legend-box.available { background: var(--cell-bg); border: 1px solid var(--border); }
+        .legend-box.reserved { background: var(--reserved); }
+        .legend-box.paid { background: var(--paid); }
+        .legend-box.selected { background: var(--selected); border: 1px solid #fff; }
 
         /* Grid de Números */
         .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
@@ -242,6 +270,9 @@
         .btn-unpaid { background: rgba(255, 170, 0, 0.1); color: var(--reserved); border: 1px solid var(--reserved); }
         .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
         .btn-whatsapp { background: var(--whatsapp); color: #000; width: 44px; height: 44px; border-radius: 14px; }
+        
+        /* Botões Desativados */
+        .btn-admin-action:disabled { opacity: 0.15; cursor: not-allowed; filter: grayscale(1); border-color: transparent !important; }
 
         .admin-filters { display: flex; gap: 8px; margin-bottom: 15px; }
         .filter-chip {
@@ -274,6 +305,28 @@
             min-height: 50px;
         }
         .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--border); }
+
+        /* Estilização do Botão Aplicar Cupom (CORRIGIDO) */
+        .coupon-box { display: flex; gap: 8px; margin-bottom: 15px; }
+        .btn-apply { 
+            background: var(--secondary); 
+            color: white; 
+            border: none; 
+            border-radius: 15px; 
+            padding: 0 20px; 
+            font-weight: 800; 
+            font-size: 0.75rem; 
+            cursor: pointer; 
+            text-align: center; 
+            box-shadow: 0 0 10px var(--secondary-glow);
+            transition: 0.3s;
+            height: 50px; /* Igual ao min-height do input */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-apply:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .btn-apply:active { transform: scale(0.95); }
 
         .toast { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: var(--primary); border: none; color: #000; padding: 14px 28px; border-radius: 100px; font-size: 0.85rem; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 0 20px var(--primary); }
         .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,255,136,0.1); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -325,15 +378,37 @@
             <div class="scroll-area" id="main-scroll">
                 <div id="view-rifa">
                     <div class="adjustment-grid">
-                        <button class="adj-btn minus" onclick="window.adjustSelection(-10)">-10</span></button>
-                        <button class="adj-btn minus" onclick="window.adjustSelection(-5)">-5</span></button>
-                        <button class="adj-btn minus" onclick="window.adjustSelection(-1)">-1</span></button>
-                        <button class="adj-btn clear" onclick="window.adjustSelection(0)">X</button>
-                        <button class="adj-btn plus" onclick="window.adjustSelection(1)">+1</span></button>
-                        <button class="adj-btn plus" onclick="window.adjustSelection(5)">+5</span></button>
-                        <button class="adj-btn plus" onclick="window.adjustSelection(10)">+10</span></button>
+                        <button class="adj-btn minus" onclick="window.adjustSelection(-10)">-10<span>COTAS</span></button>
+                        <button class="adj-btn minus" onclick="window.adjustSelection(-5)">-5<span>COTAS</span></button>
+                        <button class="adj-btn minus" onclick="window.adjustSelection(-1)">-1<span>COTA</span></button>
+                        <button class="adj-btn clear" onclick="window.adjustSelection(0)">LIMPAR</button>
+                        <button class="adj-btn plus" onclick="window.adjustSelection(1)">+1<span>COTA</span></button>
+                        <button class="adj-btn plus" onclick="window.adjustSelection(5)">+5<span>COTAS</span></button>
+                        <button class="adj-btn plus" onclick="window.adjustSelection(10)">+10<span>COTAS</span></button>
                     </div>
+                    
                     <div class="section-divider"></div>
+
+                    <!-- LEGENDA DE CORES -->
+                    <div class="legend-container">
+                        <div class="legend-item">
+                            <div class="legend-box available"></div>
+                            <span>Livre</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box selected"></div>
+                            <span>Selecionado</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box reserved"></div>
+                            <span>Reservado</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-box paid"></div>
+                            <span>Pago</span>
+                        </div>
+                    </div>
+
                     <div class="grid-container" id="grid"></div>
                 </div>
 
@@ -394,7 +469,7 @@
                 <p id="checkout-promo-applied" style="font-size: 0.65rem; color: var(--promo-gold); font-weight: 800; margin-top: 5px;"></p>
                 <p id="checkout-coupon-applied" style="font-size: 0.65rem; color: var(--promo-accent); font-weight: 800;"></p>
             </div>
-            <button class="btn-pay" style="width: 100%;" onclick="window.confirmarReserva()" id="btn-confirm-res">CONCLUIR E PAGAR</button>
+            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="window.confirmarReserva()" id="btn-confirm-res">CONCLUIR E PAGAR</button>
             <button onclick="window.closeModal('modal-checkout')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size:0.75rem; font-weight:800; cursor:pointer;">VOLTAR</button>
         </div>
     </div>
@@ -420,8 +495,20 @@
                 <div id="coupons-list"></div>
                 <button class="btn-admin-action btn-unpaid" style="width:100%; justify-content:center;" onclick="window.addCouponRow()">+ NOVO CUPOM</button>
             </div>
-            <button class="btn-pay" style="width: 100%; margin-top: 25px;" onclick="window.saveRifaConfig()">SALVAR TUDO</button>
+            <button class="btn-pay" style="width: 100%; margin-top: 25px; justify-content: center;" onclick="window.saveRifaConfig()">SALVAR TUDO</button>
             <button onclick="window.closeModal('modal-config')" style="margin-top: 10px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer;">FECHAR</button>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação Personalizado -->
+    <div class="modal-overlay" id="modal-confirm">
+        <div class="modal-card" style="max-width: 320px; border-color: var(--danger);">
+            <h3 style="color: var(--danger); margin-bottom: 15px;">CONFIRMAR AÇÃO</h3>
+            <p id="confirm-msg" style="color: var(--text-main); font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; line-height: 1.4;"></p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button class="btn-pay" style="background: var(--danger); justify-content: center;" onclick="window.executeConfirmedAction()">SIM</button>
+                <button class="btn-pay" style="background: var(--surface-bright); border: 1px solid var(--border); color: var(--text-main); justify-content: center; box-shadow: none;" onclick="window.closeModal('modal-confirm')">NÃO</button>
+            </div>
         </div>
     </div>
 
@@ -473,6 +560,7 @@
         let adminFilter = 'all';
         let appliedCoupon = null;
         let currentClientNome = "", currentClientTel = "", currentClientPendentes = [];
+        let pendingAction = null;
 
         lucide.createIcons();
 
@@ -504,30 +592,40 @@
 
         window.toggleTheme = () => {
             const body = document.body;
-            const current = body.getAttribute('data-theme');
-            const next = current === 'dark' ? 'light' : 'dark';
+            const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
             body.setAttribute('data-theme', next);
             const btn = document.getElementById('theme-btn');
             if (btn) btn.innerHTML = `<i data-lucide="${next === 'dark' ? 'moon' : 'sun'}"></i>`;
             lucide.createIcons();
         };
 
-        // NOVO: Exibe balão sutil com o nome do comprador
+        // Tooltip Flutuante
         window.showOwnerTooltip = (e, name) => {
             const existing = document.querySelector('.tooltip-bubble');
             if (existing) existing.remove();
-
             const bubble = document.createElement('div');
             bubble.className = 'tooltip-bubble';
             bubble.innerText = name;
             document.body.appendChild(bubble);
-
             const rect = e.target.getBoundingClientRect();
-            // Posiciona acima da célula
             bubble.style.left = `${rect.left + (rect.width / 2) - (bubble.offsetWidth / 2)}px`;
             bubble.style.top = `${rect.top + window.scrollY - 38}px`;
-
             setTimeout(() => bubble.remove(), 2000);
+        };
+
+        // Lógica de Confirmação Personalizada
+        window.requestConfirmAction = (msg, action) => {
+            pendingAction = action;
+            document.getElementById('confirm-msg').innerText = msg;
+            document.getElementById('modal-confirm').style.display = 'flex';
+        };
+
+        window.executeConfirmedAction = async () => {
+            if (pendingAction) {
+                await pendingAction();
+                pendingAction = null;
+            }
+            window.closeModal('modal-confirm');
         };
 
         function calculateBestPrice(count, useCoupon = false) {
@@ -574,8 +672,10 @@
             document.getElementById('footer-total').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
             const origEl = document.getElementById('footer-original');
             if(p.final < p.original) { 
-                origEl.innerText = p.original.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
-                origEl.style.display = 'block'; 
+                if(origEl) {
+                    origEl.innerText = p.original.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
+                    origEl.style.display = 'block'; 
+                }
             } else if(origEl) origEl.style.display = 'none';
             const btn = document.getElementById('btn-checkout');
             if(btn) btn.disabled = count === 0;
@@ -587,14 +687,12 @@
                 const n = i.toString().padStart(2, '0');
                 const el = document.createElement('div');
                 el.className = 'num-cell'; el.innerText = n;
-                
                 if(dbNumbers[n]) {
                     el.classList.add(dbNumbers[n].status);
-                    // Clique sutil em cotas ocupadas mostra o nome
                     el.onclick = (e) => window.showOwnerTooltip(e, dbNumbers[n].nome);
                 } else {
                     if(selected.has(n)) el.classList.add('selected');
-                    el.onclick = () => { selected.has(n) ? selected.delete(n) : selected.add(n); renderGrid(); updateFooter(); };
+                    el.onclick = () => { if(!dbNumbers[n]) { selected.has(n) ? selected.delete(n) : selected.add(n); renderGrid(); updateFooter(); } };
                 }
                 grid.appendChild(el);
             }
@@ -662,20 +760,24 @@
                 const isNumeric = !isNaN(search) && search !== "";
                 const matchesCota = isNumeric && p.cotas.some(c => c.n === search.padStart(2, '0'));
                 const matchesName = p.nome.toLowerCase().includes(search);
+                
                 let matchesStatus = true;
                 if (adminFilter === 'paid') matchesStatus = p.cotas.every(c => c.status === 'paid');
                 else if (adminFilter === 'reserved') matchesStatus = p.cotas.some(c => c.status === 'reserved');
+                
                 return (matchesName || matchesCota) && matchesStatus;
             });
 
             filtered.forEach(p => {
                 const phClean = p.telefone.replace(/\D/g, '');
                 const sortedCotas = p.cotas.sort((a,b) => parseInt(a.n) - parseInt(b.n));
-                const hasPaid = sortedCotas.some(c => c.status === 'paid');
-                const hasReserved = sortedCotas.some(c => c.status === 'reserved');
+                const allPaid = sortedCotas.every(c => c.status === 'paid');
+                const allReserved = sortedCotas.every(c => c.status === 'reserved');
+                
                 const card = document.createElement('div');
                 card.className = 'admin-card'; card.id = `card-${phClean}`;
                 if(!isNaN(search) && search !== "") card.classList.add('expanded');
+
                 card.innerHTML = `
                     <div class="admin-card-header">
                         <div onclick="window.toggleAdminCard('${phClean}')" style="flex:1; cursor:pointer; padding:5px 0;">
@@ -691,9 +793,9 @@
                             ${sortedCotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}
                         </div>
                         <div class="admin-actions">
-                            <button class="btn-admin-action btn-paid" ${!hasReserved ? 'disabled' : ''} onclick="window.adminUpdateStatus('${p.telefone}', 'paid')">PAGOS</button>
-                            <button class="btn-admin-action btn-unpaid" ${!hasPaid ? 'disabled' : ''} onclick="window.adminUpdateStatus('${p.telefone}', 'reserved')">PENDENTES</button>
-                            <button class="btn-admin-action btn-delete" style="grid-column: span 2; background:rgba(255,77,77,0.1); color:var(--danger);" onclick="window.adminDeleteParticipant('${p.telefone}')">EXCLUIR PARTICIPANTE</button>
+                            <button class="btn-admin-action btn-paid" ${allPaid ? 'disabled' : ''} onclick="window.requestConfirmAction('Alterar todas as cotas de ${p.nome} para PAGAS?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
+                            <button class="btn-admin-action btn-unpaid" ${allReserved ? 'disabled' : ''} onclick="window.requestConfirmAction('Alterar todas as cotas de ${p.nome} para PENDENTES?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
+                            <button class="btn-admin-action btn-delete" style="grid-column: span 2; background:rgba(255,77,77,0.1); color:var(--danger);" onclick="window.requestConfirmAction('EXCLUIR permanentemente o participante ${p.nome} e liberar suas cotas?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR PARTICIPANTE</button>
                         </div>
                     </div>
                 `;
@@ -702,8 +804,8 @@
             lucide.createIcons();
         };
 
-        window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ Atualizado!"); };
-        window.adminDeleteParticipant = async (ph) => { if(!confirm("Excluir participante?")) return; const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); };
+        window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if (d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ Atualizado!"); };
+        window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if (d.telefone === ph) up[n] = null; }); if (Object.keys(up).length > 0) { await update(numRef, up); showToast("🗑️ Participante excluído!"); } else { showToast("❌ Erro ao localizar participante"); } };
         
         window.openConfigModal = () => {
             document.getElementById('cfg-premio').value = config.premio;
@@ -744,14 +846,13 @@
         
         window.switchTab = t => { appliedCoupon = null; ['rifa','consulta','admin'].forEach(v => { const view = document.getElementById(`view-${v}`); if(view) view.style.display='none'; const b = document.getElementById(`tab-${v}`); if(b) b.classList.remove('active'); }); const activeView = document.getElementById(`view-${t}`); if(activeView) activeView.style.display='block'; const activeTab = document.getElementById(`tab-${t}`); if(activeTab) activeTab.classList.add('active'); const foot = document.getElementById('footer-purchase'); if(foot) foot.style.display=t==='rifa'?'flex':'none'; if(t==='admin') window.renderAdmin(); updateFooter(); };
         window.askAdmin = () => { const m = document.getElementById('modal-pin'); if(m) m.style.display = 'flex'; };
-        window.validateAdmin = () => { const input = document.getElementById('admin-pin'); if(input && input.value === config.pin) { isAdmin = true; const adminTab = document.getElementById('tab-admin'); if(adminTab) adminTab.style.display = 'block'; window.closeModal('modal-pin'); window.switchTab('admin'); } else showToast("❌ PIN INVÁLIDO"); };
+        window.validateAdmin = () => { const input = document.getElementById('admin-pin'); if(input && input.value === config.pin) { isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; window.closeModal('modal-pin'); window.switchTab('admin'); } else showToast("❌ PIN INVÁLIDO"); };
         window.closeModal = id => { if(id === 'modal-checkout') appliedCoupon = null; document.getElementById(id).style.display = 'none'; updateFooter(); };
         window.maskPhone = i => { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; };
         function showToast(m) { const t = document.getElementById('toast'); if(t) { t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); } }
         function updateProgress() { const c = Object.keys(dbNumbers).length; const p = document.getElementById('progress-fill'); if(p) p.style.width = (c/config.total*100)+"%"; }
 
         window.abrirCheckout = () => { appliedCoupon = null; const ci = document.getElementById('coupon-input'); if(ci) ci.value = ""; const ca = document.getElementById('checkout-coupon-applied'); if(ca) ca.innerText = ""; const p = calculateBestPrice(selected.size, true); const cf = document.getElementById('checkout-final-val'); if(cf) cf.innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); const pa = document.getElementById('checkout-promo-applied'); if(pa) pa.innerText = p.promoText; const mod = document.getElementById('modal-checkout'); if(mod) mod.style.display = 'flex'; };
-        
         window.confirmarReserva = async () => {
             const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim();
             if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS");
@@ -769,8 +870,8 @@
         };
 
         window.consultarMeusNumeros = async () => {
-            const phInput = document.getElementById('search-phone');
-            const tel = phInput ? phInput.value.replace(/\D/g, '') : "";
+            const telInput = document.getElementById('search-phone');
+            const tel = telInput ? telInput.value.replace(/\D/g, '') : "";
             const area = document.getElementById('results-area'); if(!tel || tel.length < 10) return;
             const s = await get(numRef); if(area) area.innerHTML = '';
             if(s.exists()){
@@ -836,8 +937,27 @@
             } catch(e) { showToast("❌ Erro"); }
         };
 
-        window.pagarTodosDireto = () => { document.querySelectorAll('#selection-pay-list input').forEach(c => c.checked = true); window.confirmarPagamentoSelecionado(); };
-        window.resetRifa = () => { if(confirm("⚠️ RESET TOTAL?")) remove(numRef).then(() => showToast("🔥 Resetado!")); };
+        window.resetRifa = () => { 
+            window.requestConfirmAction('⚠️ VOCÊ TEM CERTEZA? Isso apagará TODOS os bilhetes reservados e pagos da rifa!', async () => {
+                await remove(numRef);
+                showToast("🔥 Rifa resetada com sucesso!");
+            });
+        };
+
+        const nsuRetorno = new URLSearchParams(window.location.search).get('order_nsu');
+        if(nsuRetorno) { 
+            get(numRef).then(s => { 
+                if(s.exists()){ 
+                    const data = s.val(); const up = {}; let ok = false; 
+                    Object.entries(data).forEach(([n, info]) => { if(info.order_nsu === nsuRetorno && info.status === 'reserved') { up[`${n}/status`] = 'paid'; ok = true; } }); 
+                    if(ok) update(numRef, up).then(() => { 
+                        window.history.replaceState({}, '', window.location.pathname); 
+                        if(typeof confetti !== 'undefined') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); 
+                        showToast("🎉 PAGAMENTO CONFIRMADO!"); 
+                    }); 
+                } 
+            }); 
+        }
     </script>
 </body>
 </html>
