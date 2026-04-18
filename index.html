@@ -1,4 +1,3 @@
-<html>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -16,7 +15,7 @@
     
     <style>
         :root {
-            /* Neon Dark Theme (Padrão) */
+            /* Tema Neon Escuro (Padrão) */
             --primary: #00ff88;
             --primary-rgb: 0, 255, 136;
             --secondary: #007aff;
@@ -66,12 +65,15 @@
             color: var(--text-main);
             height: 100dvh; width: 100vw;
             display: flex; justify-content: center;
-            padding: 10px; overflow: hidden;
+            /* AJUSTE: 15px fixo nas laterais e topo */
+            padding: 15px 15px 0 15px; 
+            overflow: hidden;
             transition: background 0.4s var(--transition), color 0.4s var(--transition);
         }
 
         .app-wrapper {
-            width: 100%; max-width: 440px;
+            width: 100%; 
+            max-width: 500px; /* Aumentado levemente para telas maiores */
             height: 100%;
             display: flex; flex-direction: column;
             gap: 12px;
@@ -125,23 +127,28 @@
         }
         .tab-btn.active { background: var(--surface-bright); color: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--border); }
 
-        /* Bloco Promoções */
+        /* AJUSTE: Promoções em Colunas */
         .promo-block {
             padding: 12px; flex-shrink: 0;
             background: linear-gradient(135deg, rgba(255, 0, 85, 0.15), rgba(255, 204, 0, 0.15));
             border: 1px dashed var(--promo-gold);
-            display: none; flex-direction: column; gap: 8px;
+            display: none; 
+            /* Mudança para Grid para suportar colunas */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 8px;
         }
         .promo-item {
-            background: rgba(0,0,0,0.3); padding: 8px 15px; border-radius: 12px;
-            color: var(--promo-gold); font-weight: 800; font-size: 0.7rem;
+            background: rgba(0,0,0,0.3); padding: 8px 10px; border-radius: 12px;
+            color: var(--promo-gold); font-weight: 800; font-size: 0.65rem;
             text-align: center; text-transform: uppercase; letter-spacing: 0.5px;
             animation: glow-text 2s infinite alternate;
+            display: flex; align-items: center; justify-content: center;
         }
 
         /* Conteúdo Principal */
         .content-block { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
-        .scroll-area { flex: 1; overflow-y: auto; padding: 20px 20px 110px 20px; -webkit-overflow-scrolling: touch; }
+        .scroll-area { flex: 1; overflow-y: auto; padding: 15px 15px 110px 15px; -webkit-overflow-scrolling: touch; }
         .scroll-area::-webkit-scrollbar { width: 0; }
 
         /* Ajuste de Cotas */
@@ -157,43 +164,54 @@
         .adj-btn.minus { border-color: var(--danger); color: var(--danger); }
         .adj-btn.clear { background: rgba(255, 0, 255, 0.1); border-color: var(--promo-accent); color: var(--promo-accent); }
 
-        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 25px 0 15px 0; position: relative; box-shadow: 0 0 5px var(--primary); }
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); margin: 20px 0 15px 0; position: relative; box-shadow: 0 0 5px var(--primary); }
 
         /* Legenda de Cores */
         .legend-container {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.6rem;
+            gap: 5px;
+            padding: 5px 8px;
+            background: var(--cell-bg);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            font-size: 0.5rem;
             font-weight: 800;
             color: var(--text-dim);
             text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.3s;
         }
-        .legend-box {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-        }
+        .legend-item.active { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.1); }
+        .legend-box { width: 8px; height: 8px; border-radius: 2px; }
+        .legend-box.all { background: var(--text-main); }
         .legend-box.available { background: var(--cell-bg); border: 1px solid var(--border); }
         .legend-box.reserved { background: var(--reserved); }
         .legend-box.paid { background: var(--paid); }
         .legend-box.selected { background: var(--selected); border: 1px solid #fff; }
 
-        /* Grid de Números */
-        .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+        /* AJUSTE: Grid de Números Flexível */
+        .grid-container { 
+            display: grid; 
+            /* auto-fill garante que caibam quantos números for possível sem mudar o tamanho deles */
+            grid-template-columns: repeat(auto-fill, minmax(38px, 1fr)); 
+            gap: 6px; 
+            justify-content: center;
+        }
         .num-cell {
             aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
             background: var(--cell-bg); border: 1px solid var(--border); border-radius: 8px;
             font-size: 0.7rem; font-weight: 700; cursor: pointer; color: var(--text-main);
             transition: 0.2s; text-align: center;
             position: relative;
+            min-width: 38px; /* Tamanho fixo para consistência */
         }
         .num-cell.selected { background: var(--selected); color: #fff; border-color: #fff; box-shadow: 0 0 15px var(--secondary-glow); transform: scale(1.1); z-index: 2; }
         .num-cell.reserved { background: var(--reserved); color: #000; cursor: pointer; opacity: 0.8; border-color: transparent; }
@@ -306,27 +324,14 @@
         }
         .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--border); }
 
-        /* Estilização do Botão Aplicar Cupom (CORRIGIDO) */
-        .coupon-box { display: flex; gap: 8px; margin-bottom: 15px; }
         .btn-apply { 
-            background: var(--secondary); 
-            color: white; 
-            border: none; 
-            border-radius: 15px; 
-            padding: 0 20px; 
-            font-weight: 800; 
-            font-size: 0.75rem; 
-            cursor: pointer; 
-            text-align: center; 
+            background: var(--secondary); color: white; border: none; border-radius: 15px; 
+            padding: 0 20px; font-weight: 800; font-size: 0.75rem; 
+            cursor: pointer; text-align: center; 
             box-shadow: 0 0 10px var(--secondary-glow);
-            transition: 0.3s;
-            height: 50px; /* Igual ao min-height do input */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            transition: 0.3s; height: 50px; display: flex; align-items: center; justify-content: center;
         }
         .btn-apply:hover { transform: scale(1.02); filter: brightness(1.1); }
-        .btn-apply:active { transform: scale(0.95); }
 
         .toast { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: var(--primary); border: none; color: #000; padding: 14px 28px; border-radius: 100px; font-size: 0.85rem; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 0 20px var(--primary); }
         .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,255,136,0.1); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
@@ -370,7 +375,7 @@
             </div>
         </nav>
 
-        <!-- BLOCO PROMOÇÕES -->
+        <!-- BLOCO PROMOÇÕES (AJUSTADO PARA COLUNAS) -->
         <div class="block-container promo-block" id="promo-display-area"></div>
 
         <!-- CONTEÚDO -->
@@ -389,26 +394,31 @@
                     
                     <div class="section-divider"></div>
 
-                    <!-- LEGENDA DE CORES -->
+                    <!-- LEGENDA DE CORES (FILTROS) -->
                     <div class="legend-container">
-                        <div class="legend-item">
+                        <div class="legend-item active" data-grid-filter="all" onclick="window.setGridFilter('all')">
+                            <div class="legend-box all"></div>
+                            <span>Todos</span>
+                        </div>
+                        <div class="legend-item" data-grid-filter="available" onclick="window.setGridFilter('available')">
                             <div class="legend-box available"></div>
                             <span>Livre</span>
                         </div>
-                        <div class="legend-item">
+                        <div class="legend-item" data-grid-filter="selected" onclick="window.setGridFilter('selected')">
                             <div class="legend-box selected"></div>
-                            <span>Selecionado</span>
+                            <span>Selecionados</span>
                         </div>
-                        <div class="legend-item">
+                        <div class="legend-item" data-grid-filter="reserved" onclick="window.setGridFilter('reserved')">
                             <div class="legend-box reserved"></div>
-                            <span>Reservado</span>
+                            <span>Reservados</span>
                         </div>
-                        <div class="legend-item">
+                        <div class="legend-item" data-grid-filter="paid" onclick="window.setGridFilter('paid')">
                             <div class="legend-box paid"></div>
-                            <span>Pago</span>
+                            <span>Pagos</span>
                         </div>
                     </div>
 
+                    <!-- GRID DINÂMICO -->
                     <div class="grid-container" id="grid"></div>
                 </div>
 
@@ -558,6 +568,7 @@
         let selected = new Set();
         let isAdmin = false;
         let adminFilter = 'all';
+        let gridFilter = 'all'; 
         let appliedCoupon = null;
         let currentClientNome = "", currentClientTel = "", currentClientPendentes = [];
         let pendingAction = null;
@@ -580,7 +591,7 @@
             if (promoArea) {
                 promoArea.innerHTML = '';
                 if(config.promosActive && config.promos && config.promos.length > 0) {
-                    promoArea.style.display = 'flex';
+                    promoArea.style.display = 'grid'; // Agora é Grid
                     config.promos.forEach(p => {
                         const text = p.type === 'pct' ? `COMPRE ${p.min} E GANHE ${p.val}% OFF` : `COMPRE ${p.min} E GANHE ${p.val} GRÁTIS`;
                         promoArea.innerHTML += `<div class="promo-item">${text}</div>`;
@@ -599,6 +610,15 @@
             lucide.createIcons();
         };
 
+        // FILTRO DE GRADE (LEGENDA)
+        window.setGridFilter = (filter) => {
+            gridFilter = filter;
+            document.querySelectorAll('.legend-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.gridFilter === filter);
+            });
+            renderGrid();
+        };
+
         // Tooltip Flutuante
         window.showOwnerTooltip = (e, name) => {
             const existing = document.querySelector('.tooltip-bubble');
@@ -613,7 +633,7 @@
             setTimeout(() => bubble.remove(), 2000);
         };
 
-        // Lógica de Confirmação Personalizada
+        // Confirmação personalizada
         window.requestConfirmAction = (msg, action) => {
             pendingAction = action;
             document.getElementById('confirm-msg').innerText = msg;
@@ -621,10 +641,7 @@
         };
 
         window.executeConfirmedAction = async () => {
-            if (pendingAction) {
-                await pendingAction();
-                pendingAction = null;
-            }
+            if (pendingAction) { await pendingAction(); pendingAction = null; }
             window.closeModal('modal-confirm');
         };
 
@@ -685,13 +702,24 @@
             const grid = document.getElementById('grid'); if(!grid) return; grid.innerHTML = '';
             for(let i=0; i < config.total; i++) {
                 const n = i.toString().padStart(2, '0');
+                const info = dbNumbers[n];
+                const isSelected = selected.has(n);
+                
+                // LÓGICA DE FILTRAGEM
+                if (gridFilter !== 'all') {
+                    if (gridFilter === 'available' && (info || isSelected)) continue;
+                    if (gridFilter === 'selected' && !isSelected) continue;
+                    if (gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
+                    if (gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
+                }
+
                 const el = document.createElement('div');
                 el.className = 'num-cell'; el.innerText = n;
-                if(dbNumbers[n]) {
-                    el.classList.add(dbNumbers[n].status);
-                    el.onclick = (e) => window.showOwnerTooltip(e, dbNumbers[n].nome);
+                if(info) {
+                    el.classList.add(info.status);
+                    el.onclick = (e) => window.showOwnerTooltip(e, info.nome);
                 } else {
-                    if(selected.has(n)) el.classList.add('selected');
+                    if(isSelected) el.classList.add('selected');
                     el.onclick = () => { if(!dbNumbers[n]) { selected.has(n) ? selected.delete(n) : selected.add(n); renderGrid(); updateFooter(); } };
                 }
                 grid.appendChild(el);
@@ -760,11 +788,9 @@
                 const isNumeric = !isNaN(search) && search !== "";
                 const matchesCota = isNumeric && p.cotas.some(c => c.n === search.padStart(2, '0'));
                 const matchesName = p.nome.toLowerCase().includes(search);
-                
                 let matchesStatus = true;
                 if (adminFilter === 'paid') matchesStatus = p.cotas.every(c => c.status === 'paid');
                 else if (adminFilter === 'reserved') matchesStatus = p.cotas.some(c => c.status === 'reserved');
-                
                 return (matchesName || matchesCota) && matchesStatus;
             });
 
@@ -773,11 +799,9 @@
                 const sortedCotas = p.cotas.sort((a,b) => parseInt(a.n) - parseInt(b.n));
                 const allPaid = sortedCotas.every(c => c.status === 'paid');
                 const allReserved = sortedCotas.every(c => c.status === 'reserved');
-                
                 const card = document.createElement('div');
                 card.className = 'admin-card'; card.id = `card-${phClean}`;
                 if(!isNaN(search) && search !== "") card.classList.add('expanded');
-
                 card.innerHTML = `
                     <div class="admin-card-header">
                         <div onclick="window.toggleAdminCard('${phClean}')" style="flex:1; cursor:pointer; padding:5px 0;">
@@ -806,44 +830,11 @@
 
         window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if (d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ Atualizado!"); };
         window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if (d.telefone === ph) up[n] = null; }); if (Object.keys(up).length > 0) { await update(numRef, up); showToast("🗑️ Participante excluído!"); } else { showToast("❌ Erro ao localizar participante"); } };
-        
-        window.openConfigModal = () => {
-            document.getElementById('cfg-premio').value = config.premio;
-            document.getElementById('cfg-valor').value = config.valor;
-            document.getElementById('cfg-total').value = config.total;
-            document.getElementById('cfg-pin').value = config.pin;
-            document.getElementById('cfg-descricao').value = config.descricao || "";
-            const btnTog = document.getElementById('btn-toggle-promos');
-            if(btnTog) btnTog.innerText = config.promosActive ? "ON" : "OFF";
-            const editor = document.getElementById('promos-editor-area');
-            if(editor) editor.style.display = config.promosActive ? "block" : "none";
-            document.getElementById('promos-list').innerHTML = '';
-            if(config.promos) config.promos.forEach(p => window.addPromoRow(p));
-            document.getElementById('coupons-list').innerHTML = '';
-            if(config.coupons) config.coupons.forEach(c => window.addCouponRow(c));
-            document.getElementById('modal-config').style.display = 'flex';
-        };
-
-        window.saveRifaConfig = () => {
-            const pr = [], cp = [];
-            document.querySelectorAll('#promos-list .promo-editor-card').forEach(c => pr.push({ min: parseInt(c.querySelector('.p-min').value), val: parseFloat(c.querySelector('.p-val').value), type: c.querySelector('.p-type').value }));
-            document.querySelectorAll('#coupons-list .promo-editor-card').forEach(card => {
-                const code = card.querySelector('.c-code').value.toUpperCase();
-                const oldCoupon = config.coupons?.find(x => x.code === code);
-                cp.push({ code: code, type: card.querySelector('.c-type').value, val: parseFloat(card.querySelector('.c-val').value), unlimited: card.querySelector('.c-unlimited').checked, limit: parseInt(card.querySelector('.c-limit').value), used: oldCoupon?.used || 0 });
-            });
-            const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr, coupons: cp, descricao: document.getElementById('cfg-descricao').value };
-            set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ Salvo!"); });
-        };
-
+        window.openConfigModal = () => { document.getElementById('cfg-premio').value = config.premio; document.getElementById('cfg-valor').value = config.valor; document.getElementById('cfg-total').value = config.total; document.getElementById('cfg-pin').value = config.pin; document.getElementById('cfg-descricao').value = config.descricao || ""; const btnTog = document.getElementById('btn-toggle-promos'); if(btnTog) btnTog.innerText = config.promosActive ? "ON" : "OFF"; const editor = document.getElementById('promos-editor-area'); if(editor) editor.style.display = config.promosActive ? "block" : "none"; document.getElementById('promos-list').innerHTML = ''; if(config.promos) config.promos.forEach(p => window.addPromoRow(p)); document.getElementById('coupons-list').innerHTML = ''; if(config.coupons) config.coupons.forEach(c => window.addCouponRow(c)); document.getElementById('modal-config').style.display = 'flex'; };
+        window.saveRifaConfig = () => { const pr = [], cp = []; document.querySelectorAll('#promos-list .promo-editor-card').forEach(c => pr.push({ min: parseInt(c.querySelector('.p-min').value), val: parseFloat(c.querySelector('.p-val').value), type: c.querySelector('.p-type').value })); document.querySelectorAll('#coupons-list .promo-editor-card').forEach(card => { const code = card.querySelector('.c-code').value.toUpperCase(); const oldCoupon = config.coupons?.find(x => x.code === code); cp.push({ code: code, type: card.querySelector('.c-type').value, val: parseFloat(card.querySelector('.c-val').value), unlimited: card.querySelector('.c-unlimited').checked, limit: parseInt(card.querySelector('.c-limit').value), used: oldCoupon?.used || 0 }); }); const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr, coupons: cp, descricao: document.getElementById('cfg-descricao').value }; set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ Salvo!"); }); };
         window.togglePromosState = () => { config.promosActive = !config.promosActive; const btn = document.getElementById('btn-toggle-promos'); if(btn) btn.innerText = config.promosActive ? "ON" : "OFF"; const editor = document.getElementById('promos-editor-area'); if(editor) editor.style.display = config.promosActive ? "block" : "none"; };
         window.addPromoRow = (d = { min: 10, val: 10, type: 'pct' }) => { const c = document.getElementById('promos-list'); if(!c) return; const r = document.createElement('div'); r.className = 'promo-editor-card'; r.innerHTML = `<div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;"><input type="number" class="custom-input p-min" value="${d.min}"><select class="custom-input p-type"><option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option><option value="free" ${d.type==='free'?'selected':''}>Grátis</option></select></div><input type="number" class="custom-input p-val" value="${d.val}"><button class="btn-admin-action btn-delete" style="width:100%; justify-content: center;" onclick="this.parentElement.remove()">REMOVER REGRA</button>`; c.appendChild(r); };
-        
-        window.addCouponRow = (d = { code: '', val: 5, unlimited: false, limit: 0, used: 0, type: 'val' }) => { 
-            const c = document.getElementById('coupons-list'); if(!c) return; const r = document.createElement('div'); r.className = 'promo-editor-card'; r.style.borderColor = "var(--promo-accent)"; 
-            r.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="CÓDIGO"><div class="unlimited-row"><input type="checkbox" class="c-unlimited" ${d.unlimited ? 'checked' : ''} onchange="this.parentElement.nextElementSibling.nextElementSibling.querySelector('.c-limit').disabled = this.checked"><span style="font-size: 0.7rem;">ILIMITADO</span></div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:10px;"><div><input type="number" class="custom-input c-val" value="${d.val}"></div><div><select class="custom-input c-type" style="height:45px;"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><div style="margin-bottom:10px;"><input type="number" class="custom-input c-limit" value="${d.limit}" ${d.unlimited ? 'disabled' : ''} placeholder="LIMITE"></div><button class="btn-admin-action btn-delete" style="width:100%; justify-content: center;" onclick="this.parentElement.remove()">REMOVER CUPOM</button>`; c.appendChild(r); 
-        };
-        
+        window.addCouponRow = (d = { code: '', val: 5, unlimited: false, limit: 0, used: 0, type: 'val' }) => { const c = document.getElementById('coupons-list'); if(!c) return; const r = document.createElement('div'); r.className = 'promo-editor-card'; r.style.borderColor = "var(--promo-accent)"; r.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="CÓDIGO"><div class="unlimited-row"><input type="checkbox" class="c-unlimited" ${d.unlimited ? 'checked' : ''} onchange="this.parentElement.nextElementSibling.nextElementSibling.querySelector('.c-limit').disabled = this.checked"><span style="font-size: 0.7rem;">ILIMITADO</span></div><div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px; margin-bottom:10px;"><div><input type="number" class="custom-input c-val" value="${d.val}"></div><div><select class="custom-input c-type" style="height:45px;"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><div style="margin-bottom:10px;"><input type="number" class="custom-input c-limit" value="${d.limit}" ${d.unlimited ? 'disabled' : ''} placeholder="LIMITE"></div><button class="btn-admin-action btn-delete" style="width:100%; justify-content: center;" onclick="this.parentElement.remove()">REMOVER CUPOM</button>`; c.appendChild(r); };
         window.switchTab = t => { appliedCoupon = null; ['rifa','consulta','admin'].forEach(v => { const view = document.getElementById(`view-${v}`); if(view) view.style.display='none'; const b = document.getElementById(`tab-${v}`); if(b) b.classList.remove('active'); }); const activeView = document.getElementById(`view-${t}`); if(activeView) activeView.style.display='block'; const activeTab = document.getElementById(`tab-${t}`); if(activeTab) activeTab.classList.add('active'); const foot = document.getElementById('footer-purchase'); if(foot) foot.style.display=t==='rifa'?'flex':'none'; if(t==='admin') window.renderAdmin(); updateFooter(); };
         window.askAdmin = () => { const m = document.getElementById('modal-pin'); if(m) m.style.display = 'flex'; };
         window.validateAdmin = () => { const input = document.getElementById('admin-pin'); if(input && input.value === config.pin) { isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; window.closeModal('modal-pin'); window.switchTab('admin'); } else showToast("❌ PIN INVÁLIDO"); };
@@ -851,113 +842,15 @@
         window.maskPhone = i => { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; };
         function showToast(m) { const t = document.getElementById('toast'); if(t) { t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); } }
         function updateProgress() { const c = Object.keys(dbNumbers).length; const p = document.getElementById('progress-fill'); if(p) p.style.width = (c/config.total*100)+"%"; }
-
         window.abrirCheckout = () => { appliedCoupon = null; const ci = document.getElementById('coupon-input'); if(ci) ci.value = ""; const ca = document.getElementById('checkout-coupon-applied'); if(ca) ca.innerText = ""; const p = calculateBestPrice(selected.size, true); const cf = document.getElementById('checkout-final-val'); if(cf) cf.innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); const pa = document.getElementById('checkout-promo-applied'); if(pa) pa.innerText = p.promoText; const mod = document.getElementById('modal-checkout'); if(mod) mod.style.display = 'flex'; };
-        window.confirmarReserva = async () => {
-            const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim();
-            if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS");
-            const p = calculateBestPrice(selected.size, true), btn = document.getElementById('btn-confirm-res');
-            if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
-            const oid = "RN" + Date.now().toString().slice(-8);
-            try {
-                if(appliedCoupon){ const idx = config.coupons.findIndex(c => c.code === appliedCoupon.code); if(idx !== -1) await update(ref(db, `rifa_master/config/coupons/${idx}`), { used: (config.coupons[idx].used || 0) + 1 }); }
-                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, coupon_code: appliedCoupon?.code || null });
-                await update(numRef, up);
-                const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{"quantity":1, "price": Math.round(p.final * 100), "description": `Rifa ${config.premio}`}] };
-                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) });
-                const d = await res.json(); if(d.url || d.checkout_url) { selected.clear(); window.location.href = d.url || d.checkout_url; }
-            } catch(e) { showToast("❌ ERRO NO PAGAMENTO"); if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; } }
-        };
-
-        window.consultarMeusNumeros = async () => {
-            const telInput = document.getElementById('search-phone');
-            const tel = telInput ? telInput.value.replace(/\D/g, '') : "";
-            const area = document.getElementById('results-area'); if(!tel || tel.length < 10) return;
-            const s = await get(numRef); if(area) area.innerHTML = '';
-            if(s.exists()){
-                const filtered = Object.entries(s.val()).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
-                if(filtered.length > 0) {
-                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
-                    const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
-                    currentClientNome = filtered[0][1].nome; currentClientTel = tel; currentClientPendentes = pendentes;
-                    if(area) {
-                        if(pendentes.length > 0) area.innerHTML += `<div class="result-card" style="border-color: var(--reserved);"><b style="color:var(--reserved); font-size:0.6rem;">PENDENTES</b><div style="font-size:1.1rem; font-weight:800; color:var(--text-main); margin:10px 0;">${pendentes.join(', ')}</div><button class="btn-pay" style="width:100%; background:var(--secondary); justify-content: center;" onclick="window.abrirModalSelecaoPagar()">💳 PAGAR PENDENTES</button></div>`;
-                        if(pagos.length > 0) area.innerHTML += `<div class="result-card" style="border-color: var(--primary);"><b style="color:var(--primary); font-size:0.6rem;">PAGOS</b><div style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${pagos.join(', ')}</div></div>`;
-                    }
-                } else if(area) area.innerHTML = '<p style="text-align:center;">NADA ENCONTRADO</p>';
-            }
-        };
-
-        window.abrirModalSelecaoPagar = () => {
-            const list = document.getElementById('selection-pay-list'); if(list) list.innerHTML = '';
-            currentClientPendentes.forEach(n => {
-                const item = document.createElement('div'); item.className = 'selection-item checked';
-                item.style = "display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(128,128,128,0.03); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: var(--text-main);";
-                item.innerHTML = `<span style="font-weight:800;">Cota ${n}</span><div class="checkbox-ui" style="width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #000;"><i data-lucide="check" style="width:14px;"></i></div><input type="checkbox" value="${n}" checked style="display:none;" onchange="window.updateSelectionTotal()">`;
-                item.onclick = (e) => { 
-                    const cb = item.querySelector('input');
-                    if(e.target.tagName !== 'INPUT'){ cb.checked = !cb.checked; }
-                    const ui = item.querySelector('.checkbox-ui');
-                    if(cb.checked) {
-                        item.style.borderColor = 'var(--primary)';
-                        ui.style.background = 'var(--primary)';
-                        ui.style.color = '#000';
-                    } else {
-                        item.style.borderColor = 'var(--border)';
-                        ui.style.background = 'transparent';
-                        ui.style.color = 'transparent';
-                    }
-                    window.updateSelectionTotal(); 
-                };
-                if(list) list.appendChild(item);
-            });
-            const mod = document.getElementById('modal-selection-pay');
-            if(mod) mod.style.display = 'flex';
-            window.updateSelectionTotal(); lucide.createIcons();
-        };
-
-        window.updateSelectionTotal = () => {
-            const boxes = document.querySelectorAll('#selection-pay-list input:checked');
-            const totalDisplay = document.getElementById('selection-pay-total');
-            if(totalDisplay) totalDisplay.innerText = (boxes.length * config.valor).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-        };
-
-        window.confirmarPagamentoSelecionado = async () => {
-            const checked = Array.from(document.querySelectorAll('#selection-pay-list input:checked')).map(cb => cb.value);
-            if(!checked.length) return showToast("⚠️ Selecione um!");
-            window.closeModal('modal-selection-pay');
-            const oid = "RT" + Date.now().toString().slice(-8);
-            showToast("Gerando Pix...");
-            try {
-                const up = {}; checked.forEach(n => up[`${n}/order_nsu`] = oid);
-                await update(numRef, up);
-                const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": currentClientNome, "phone_number": "55" + currentClientTel }, "items": [{"quantity":1, "price": Math.round(checked.length * config.valor * 100), "description": `Rifa ${config.premio}`}] };
-                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) });
-                const d = await res.json(); if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url;
-            } catch(e) { showToast("❌ Erro"); }
-        };
-
-        window.resetRifa = () => { 
-            window.requestConfirmAction('⚠️ VOCÊ TEM CERTEZA? Isso apagará TODOS os bilhetes reservados e pagos da rifa!', async () => {
-                await remove(numRef);
-                showToast("🔥 Rifa resetada com sucesso!");
-            });
-        };
-
-        const nsuRetorno = new URLSearchParams(window.location.search).get('order_nsu');
-        if(nsuRetorno) { 
-            get(numRef).then(s => { 
-                if(s.exists()){ 
-                    const data = s.val(); const up = {}; let ok = false; 
-                    Object.entries(data).forEach(([n, info]) => { if(info.order_nsu === nsuRetorno && info.status === 'reserved') { up[`${n}/status`] = 'paid'; ok = true; } }); 
-                    if(ok) update(numRef, up).then(() => { 
-                        window.history.replaceState({}, '', window.location.pathname); 
-                        if(typeof confetti !== 'undefined') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); 
-                        showToast("🎉 PAGAMENTO CONFIRMADO!"); 
-                    }); 
-                } 
-            }); 
-        }
+        window.confirmarReserva = async () => { const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim(); if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS"); const p = calculateBestPrice(selected.size, true), btn = document.getElementById('btn-confirm-res'); if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; } const oid = "RN" + Date.now().toString().slice(-8); try { if(appliedCoupon){ const idx = config.coupons.findIndex(c => c.code === appliedCoupon.code); if(idx !== -1) await update(ref(db, `rifa_master/config/coupons/${idx}`), { used: (config.coupons[idx].used || 0) + 1 }); } const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, coupon_code: appliedCoupon?.code || null }); await update(numRef, up); const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{"quantity":1, "price": Math.round(p.final * 100), "description": `Rifa ${config.premio}`}] }; const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) }); const d = await res.json(); if(d.url || d.checkout_url) { selected.clear(); window.location.href = d.url || d.checkout_url; } } catch(e) { showToast("❌ ERRO NO PAGAMENTO"); if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; } } };
+        window.consultarMeusNumeros = async () => { const telInput = document.getElementById('search-phone'); const tel = telInput ? telInput.value.replace(/\D/g, '') : ""; const area = document.getElementById('results-area'); if(!tel || tel.length < 10) return; const s = await get(numRef); if(area) area.innerHTML = ''; if(s.exists()){ const filtered = Object.entries(s.val()).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel); if(filtered.length > 0) { const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort(); const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort(); currentClientNome = filtered[0][1].nome; currentClientTel = tel; currentClientPendentes = pendentes; if(area) { if(pendentes.length > 0) area.innerHTML += `<div class="result-card" style="border-color: var(--reserved);"><b style="color:var(--reserved); font-size:0.6rem;">PENDENTES</b><div style="font-size:1.1rem; font-weight:800; color:var(--text-main); margin:10px 0;">${pendentes.join(', ')}</div><button class="btn-pay" style="width:100%; background:var(--secondary); justify-content: center;" onclick="window.abrirModalSelecaoPagar()">💳 PAGAR PENDENTES</button></div>`; if(pagos.length > 0) area.innerHTML += `<div class="result-card" style="border-color: var(--primary);"><b style="color:var(--primary); font-size:0.6rem;">PAGOS</b><div style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${pagos.join(', ')}</div></div>`; } } else if(area) area.innerHTML = '<p style="text-align:center;">NADA ENCONTRADO</p>'; } };
+        window.abrirModalSelecaoPagar = () => { const list = document.getElementById('selection-pay-list'); if(list) list.innerHTML = ''; currentClientPendentes.forEach(n => { const item = document.createElement('div'); item.className = 'selection-item checked'; item.style = "display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(128,128,128,0.03); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px; cursor: pointer; color: var(--text-main);"; item.innerHTML = `<span style="font-weight:800;">Cota ${n}</span><div class="checkbox-ui" style="width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; background: var(--primary); color: #000;"><i data-lucide="check" style="width:14px;"></i></div><input type="checkbox" value="${n}" checked style="display:none;" onchange="window.updateSelectionTotal()">`; item.onclick = (e) => { const cb = item.querySelector('input'); if(e.target.tagName !== 'INPUT'){ cb.checked = !cb.checked; } const ui = item.querySelector('.checkbox-ui'); if(cb.checked) { item.style.borderColor = 'var(--primary)'; ui.style.background = 'var(--primary)'; ui.style.color = '#000'; } else { item.style.borderColor = 'var(--border)'; ui.style.background = 'transparent'; ui.style.color = 'transparent'; } window.updateSelectionTotal(); }; if(list) list.appendChild(item); }); document.getElementById('modal-selection-pay').style.display = 'flex'; window.updateSelectionTotal(); lucide.createIcons(); };
+        window.updateSelectionTotal = () => { const boxes = document.querySelectorAll('#selection-pay-list input:checked'); const totalDisplay = document.getElementById('selection-pay-total'); if(totalDisplay) totalDisplay.innerText = (boxes.length * config.valor).toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); };
+        window.confirmarPagamentoSelecionado = async () => { const checked = Array.from(document.querySelectorAll('#selection-pay-list input:checked')).map(cb => cb.value); if(!checked.length) return showToast("⚠️ Selecione um!"); window.closeModal('modal-selection-pay'); const oid = "RT" + Date.now().toString().slice(-8); showToast("Gerando Pix..."); try { const up = {}; checked.forEach(n => up[`${n}/order_nsu`] = oid); await update(numRef, up); const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": currentClientNome, "phone_number": "55" + currentClientTel }, "items": [{"quantity":1, "price": Math.round(checked.length * config.valor * 100), "description": `Rifa ${config.premio}`}] }; const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) }); const d = await res.json(); if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url; } catch(e) { showToast("❌ Erro"); } };
+        window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 Resetado!"); }); };
+        const nsuR = new URLSearchParams(window.location.search).get('order_nsu');
+        if(nsuR) { get(numRef).then(s => { if(s.exists()){ const data = s.val(); const up = {}; let ok = false; Object.entries(data).forEach(([n, info]) => { if(info.order_nsu === nsuR && info.status === 'reserved') { up[`${n}/status`] = 'paid'; ok = true; } }); if(ok) update(numRef, up).then(() => { window.history.replaceState({}, '', window.location.pathname); if(typeof confetti !== 'undefined') confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); showToast("🎉 PAGAMENTO CONFIRMADO!"); }); } }); }
     </script>
 </body>
 </html>
