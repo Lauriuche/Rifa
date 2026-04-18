@@ -33,6 +33,8 @@
             --selected: #007aff;
             --danger: #ff4d4d;
             --whatsapp: #25d366;
+            --promo-accent: #ff00ff; /* Magenta para destaque de limpeza */
+            --promo-gold: #ffcc00;
             --transition: cubic-bezier(0.4, 0, 0.2, 1);
             --neon-glow: 0 0 15px rgba(0, 255, 136, 0.4);
         }
@@ -43,8 +45,8 @@
             --surface: rgba(255, 255, 255, 0.9);
             --surface-bright: #ffffff;
             --border: rgba(0, 204, 106, 0.4);
-            --text-main: #0f172a;
-            --text-dim: #64748b;
+            --text-main: #000000;
+            --text-dim: #475569;
             --cell-bg: rgba(0, 0, 0, 0.05);
             --neon-glow: 0 0 10px rgba(0, 204, 106, 0.2);
         }
@@ -64,14 +66,14 @@
             height: 100dvh; width: 100vw;
             display: flex; justify-content: center;
             padding: 10px; overflow: hidden;
-            transition: background 0.4s var(--transition);
+            transition: background 0.4s var(--transition), color 0.4s var(--transition);
         }
 
         .app-wrapper {
             width: 100%; max-width: 440px;
             height: 100%;
             display: flex; flex-direction: column;
-            gap: 15px;
+            gap: 12px;
             position: relative;
         }
 
@@ -90,29 +92,21 @@
         
         .icon-btn {
             background: var(--cell-bg); border: 1px solid var(--border);
-            color: var(--primary); cursor: pointer;
+            color: var(--text-main); cursor: pointer;
             width: 40px; height: 40px; border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
             box-shadow: inset 0 0 5px var(--border);
             transition: 0.3s;
         }
         .icon-btn:hover { box-shadow: 0 0 15px var(--primary); transform: scale(1.05); }
-
-        .logo-img { 
-            width: 65px; height: auto; border-radius: 16px; 
-            filter: drop-shadow(0 0 10px var(--primary));
-        }
+        .logo-img { width: 65px; height: auto; border-radius: 16px; filter: drop-shadow(0 0 10px var(--primary)); }
 
         .prize-card {
             background: rgba(var(--primary-rgb), 0.03);
             border: 1px solid var(--border); border-radius: 20px; padding: 15px;
         }
-        .prize-title { 
-            font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; 
-            text-shadow: 0 0 10px var(--primary);
-        }
+        .prize-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 4px; text-shadow: 0 0 5px var(--primary); color: var(--text-main); }
         .prize-desc { font-size: 0.75rem; color: var(--text-dim); margin-bottom: 12px; font-weight: 500; }
-
         .price-tag {
             font-size: 1rem; font-weight: 900; color: var(--primary);
             background: rgba(var(--primary-rgb), 0.1); padding: 6px 16px; border-radius: 10px;
@@ -128,165 +122,97 @@
             background: transparent; color: var(--text-dim);
             font-size: 0.7rem; font-weight: 800; cursor: pointer; transition: 0.3s;
         }
-        .tab-btn.active { 
-            background: var(--surface-bright); 
-            color: var(--primary); 
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--border);
-        }
+        .tab-btn.active { background: var(--surface-bright); color: var(--primary); border-color: var(--primary); box-shadow: 0 0 15px var(--border); }
 
-        /* Conteúdo / Números */
-        .content-block {
-            flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative;
+        /* NOVO BLOCO: Promoções Isoladas */
+        .promo-block {
+            padding: 12px; flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(255, 0, 85, 0.15), rgba(255, 204, 0, 0.15));
+            border: 1px dashed var(--promo-gold);
+            display: none; /* Ativado via JS */
+            flex-direction: column; gap: 8px;
         }
+        .promo-item {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 15px; border-radius: 12px;
+            color: var(--promo-gold); font-weight: 800; font-size: 0.7rem;
+            text-align: center; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.2);
+            animation: glow-text 2s infinite alternate;
+        }
+        @keyframes glow-text { from { text-shadow: 0 0 2px var(--promo-gold); } to { text-shadow: 0 0 10px var(--promo-gold); } }
 
-        .scroll-area {
-            flex: 1; overflow-y: auto; padding: 20px 20px 110px 20px;
-            -webkit-overflow-scrolling: touch;
-        }
+        /* Conteúdo Principal */
+        .content-block { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+        .scroll-area { flex: 1; overflow-y: auto; padding: 20px 20px 110px 20px; -webkit-overflow-scrolling: touch; }
         .scroll-area::-webkit-scrollbar { width: 0; }
 
-        .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
+        /* Barra de Ajuste de Cotas */
+        .adjustment-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 20px; }
+        .adj-btn {
+            background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main);
+            border-radius: 10px; padding: 10px 0; font-size: 0.55rem; font-weight: 900;
+            cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .adj-btn:active { transform: scale(0.9); }
+        .adj-btn.plus { border-color: var(--primary); color: var(--primary); box-shadow: inset 0 0 5px rgba(0,255,136,0.2); }
+        .adj-btn.minus { border-color: var(--danger); color: var(--danger); box-shadow: inset 0 0 5px rgba(255,77,77,0.2); }
+        
+        /* Botão LIMPAR com cor exclusiva */
+        .adj-btn.clear { 
+            background: rgba(255, 0, 255, 0.1); 
+            border-color: var(--promo-accent); 
+            color: var(--promo-accent); 
+            box-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+        .adj-btn.clear:hover { box-shadow: 0 0 15px var(--promo-accent); }
 
+        /* Separador Visual */
+        .section-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 25px 0;
+            position: relative;
+            box-shadow: 0 0 5px var(--primary);
+        }
+
+        .grid-container { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; }
         .num-cell {
             aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center;
             background: var(--cell-bg); border: 1px solid var(--border); border-radius: 8px;
             font-size: 0.7rem; font-weight: 700; cursor: pointer; color: var(--text-main);
             transition: all 0.2s ease;
         }
-        .num-cell.selected { 
-            background: var(--selected); color: white; border-color: #fff; 
-            box-shadow: 0 0 15px var(--secondary-glow); transform: scale(1.1); z-index: 2; 
-        }
-        .num-cell.reserved { 
-            background: var(--reserved); color: #000; cursor: not-allowed; 
-            box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); border-color: transparent; 
-        }
-        .num-cell.paid { 
-            background: var(--paid); color: #000; cursor: not-allowed; 
-            box-shadow: 0 0 15px var(--primary); border-color: transparent;
-        }
+        .num-cell.selected { background: var(--selected); color: #fff; border-color: #fff; box-shadow: 0 0 15px var(--secondary-glow); transform: scale(1.1); z-index: 2; }
+        .num-cell.reserved { background: var(--reserved); color: #000; cursor: not-allowed; opacity: 0.6; border-color: transparent; }
+        .num-cell.paid { background: var(--paid); color: #000; cursor: not-allowed; box-shadow: 0 0 10px var(--primary); border-color: transparent; }
 
-        /* Rodapé de Compra */
         .purchase-footer {
             position: absolute; bottom: 15px; left: 15px; right: 15px;
-            background: var(--surface-bright);
-            border: 1px solid var(--primary);
-            border-radius: 25px;
-            padding: 15px 22px;
-            display: flex; align-items: center; justify-content: space-between;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-            z-index: 100;
+            background: var(--surface-bright); border: 1px solid var(--primary); border-radius: 25px;
+            padding: 15px 22px; display: flex; align-items: center; justify-content: space-between;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3); z-index: 100;
         }
 
         .btn-pay {
             background: var(--primary); color: #000; padding: 12px 24px; border-radius: 16px;
             font-weight: 800; font-size: 0.85rem; border: none; display: flex; align-items: center; gap: 8px;
-            box-shadow: 0 0 15px var(--primary);
-            cursor: pointer; transition: 0.3s;
+            box-shadow: 0 0 15px var(--primary); cursor: pointer; transition: 0.3s;
         }
-        .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 0 25px var(--primary); }
-        .btn-pay:disabled { opacity: 0.3; box-shadow: none; filter: grayscale(1); }
+        .btn-pay:disabled { opacity: 0.3; filter: grayscale(1); cursor: not-allowed; }
 
-        /* Progress */
-        .progress-bar-bg { width: 100%; height: 5px; background: var(--cell-bg); border-radius: 10px; margin-top: 15px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: 1s ease; box-shadow: 0 0 10px var(--primary); }
-        
-        /* Modais Néon */
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px);
-            z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
-        }
-        .modal-card {
-            background: var(--surface-bright); width: 100%; max-width: 380px; border-radius: 35px;
-            padding: 30px; border: 2px solid var(--primary); text-align: center;
-            box-shadow: 0 0 30px var(--border);
-        }
-        .custom-input {
-            width: 100%; background: rgba(0,0,0,0.2); border: 1px solid var(--border);
-            padding: 16px; border-radius: 15px; color: var(--primary); font-size: 0.95rem; outline: none; margin-bottom: 18px;
-            box-shadow: inset 0 0 5px var(--border);
-            transition: 0.3s;
-        }
-        .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 10px var(--border); }
-
-        .toast {
-            position: fixed; top: 25px; left: 50%; transform: translateX(-50%);
-            background: var(--primary); border: none; color: #000;
-            padding: 14px 28px; border-radius: 100px; font-size: 0.85rem; font-weight: 800; z-index: 2000; display: none;
-            box-shadow: 0 0 20px var(--primary);
-        }
-
-        .spinner { 
-            width: 22px; height: 22px; border: 3px solid rgba(0,255,136,0.1); 
-            border-top: 3px solid var(--primary); border-radius: 50%; 
-            animation: spin 0.8s linear infinite; 
-            filter: drop-shadow(0 0 5px var(--primary));
-        }
+        /* Utilitários */
+        .progress-bar-bg { width: 100%; height: 5px; background: var(--cell-bg); border-radius: 10px; margin-top: 15px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--primary)); width: 0%; transition: 1s ease; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: var(--surface-bright); width: 100%; max-width: 380px; border-radius: 35px; padding: 30px; border: 2px solid var(--primary); text-align: center; max-height: 85vh; overflow-y: auto; }
+        .custom-input { width: 100%; background: rgba(128,128,128,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 15px; color: var(--text-main); font-size: 0.95rem; outline: none; margin-bottom: 18px; }
+        .admin-card { background: var(--cell-bg); border: 1px solid var(--border); padding: 15px; border-radius: 20px; margin-bottom: 15px; color: var(--text-main); }
+        .admin-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+        .admin-stat-item { background: var(--cell-bg); border: 1px solid var(--border); padding: 12px; border-radius: 15px; text-align: center; color: var(--text-main); }
+        .toast { position: fixed; top: 25px; left: 50%; transform: translateX(-50%); background: var(--primary); border: none; color: #000; padding: 14px 28px; border-radius: 100px; font-size: 0.85rem; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 0 20px var(--primary); }
+        .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,255,136,0.1); border-top: 3px solid var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* Admin Styles */
-        .admin-stat-item {
-            background: var(--cell-bg); border: 1px solid var(--border); padding: 12px; border-radius: 15px; text-align: center;
-        }
-        .admin-stat-item b { color: var(--primary); text-shadow: 0 0 5px var(--primary); }
-
-        .admin-card {
-            background: var(--cell-bg); border: 1px solid var(--border); padding: 15px; border-radius: 20px; margin-bottom: 15px;
-            display: flex; flex-direction: column; gap: 0; overflow: hidden;
-            transition: background 0.3s;
-        }
-        .admin-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .admin-card-details {
-            max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition), margin-top 0.3s;
-            display: flex; flex-direction: column; gap: 12px;
-        }
-        .admin-card.expanded { background: rgba(255,255,255,0.06); }
-        .admin-card.expanded .admin-card-details { max-height: 500px; margin-top: 15px; }
-
-        .admin-actions { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 5px; }
-        .btn-admin-action {
-            border: none; padding: 8px; border-radius: 10px; font-weight: 800; font-size: 0.65rem; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 4px;
-        }
-        .btn-paid { background: rgba(0, 255, 136, 0.1); color: var(--primary); border: 1px solid var(--primary); }
-        .btn-unpaid { background: rgba(255, 170, 0, 0.1); color: var(--reserved); border: 1px solid var(--reserved); }
-        .btn-delete { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
-        .btn-whatsapp { background: var(--whatsapp); color: #000; }
-        .btn-admin-action:hover:not(:disabled) { transform: scale(1.02); filter: brightness(1.2); }
-        .btn-admin-action:disabled { opacity: 0.2; cursor: not-allowed; filter: grayscale(1); }
-
-        .admin-filters { display: flex; gap: 8px; margin-bottom: 15px; }
-        .filter-chip {
-            flex: 1; background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-dim); padding: 8px;
-            border-radius: 12px; font-size: 0.6rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-align: center;
-        }
-        .filter-chip.active[data-filter="all"] { border-color: var(--secondary); color: var(--secondary); box-shadow: 0 0 10px var(--secondary-glow); }
-        .filter-chip.active[data-filter="paid"] { border-color: var(--primary); color: var(--primary); box-shadow: 0 0 10px var(--primary-rgb); }
-        .filter-chip.active[data-filter="reserved"] { border-color: var(--reserved); color: var(--reserved); box-shadow: 0 0 10px rgba(255, 170, 0, 0.4); }
-
-        /* Estilo para cartões de resultado da busca */
-        .result-card {
-            background: var(--cell-bg); border: 1px solid var(--border); padding: 20px; border-radius: 20px;
-            margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;
-        }
-        .result-label { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
-        .result-numbers { font-size: 1.1rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
-
-        /* Modal de Seleção de Pagamento */
-        .selection-list { text-align: left; max-height: 250px; overflow-y: auto; margin: 15px 0; padding-right: 5px; }
-        .selection-item {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
-            border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: 0.2s;
-        }
-        .selection-item.checked { border-color: var(--primary); background: rgba(0,255,136,0.05); }
-        .selection-item input { display: none; }
-        .selection-item .checkbox-ui {
-            width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px;
-            display: flex; align-items: center; justify-content: center; color: transparent;
-        }
-        .selection-item.checked .checkbox-ui { background: var(--primary); border-color: var(--primary); color: #000; }
     </style>
 </head>
 <body data-theme="dark">
@@ -297,24 +223,18 @@
         <!-- BLOCO 1: CABEÇALHO -->
         <header class="block-container header-block">
             <div class="header-controls">
-                <button class="icon-btn" onclick="toggleTheme()" id="theme-btn">
-                    <i data-lucide="moon"></i>
-                </button>
+                <button class="icon-btn" onclick="toggleTheme()" id="theme-btn"><i data-lucide="moon"></i></button>
                 <img src="1776393050679.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/100x100/000/00FF88?text=RIFA'">
-                <button class="icon-btn" onclick="askAdmin()">
-                    <i data-lucide="settings"></i>
-                </button>
+                <button class="icon-btn" onclick="askAdmin()"><i data-lucide="settings"></i></button>
             </div>
             <div class="prize-card">
-                <h1 class="prize-title" id="display-premio">Carregando...</h1>
-                <p class="prize-desc" id="display-descricao">Aguarde um momento...</p>
+                <h1 class="prize-title" id="display-premio">...</h1>
+                <p class="prize-desc" id="display-descricao">...</p>
                 <div class="price-tag">
                     <i data-lucide="ticket" style="width: 16px;"></i>
                     <span id="display-valor">R$ 0,00</span>
                 </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progress-fill"></div>
-                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
             </div>
         </header>
 
@@ -327,14 +247,30 @@
             </div>
         </nav>
 
-        <!-- BLOCO 3: CONTEÚDO -->
+        <!-- BLOCO EXTRA: PROMOÇÕES (ISOLADO) -->
+        <div class="block-container promo-block" id="promo-display-area">
+            <!-- Promoções injetadas via JS -->
+        </div>
+
+        <!-- BLOCO 3: CONTEÚDO (GRADE E AJUSTES) -->
         <main class="block-container content-block">
             <div class="scroll-area" id="main-scroll">
+                
                 <div id="view-rifa">
-                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                        <button class="icon-btn" style="flex:1; font-size:0.6rem; font-weight:800;" onclick="quickPick(5)">+5 COTAS</button>
-                        <button class="icon-btn" style="flex:1; font-size:0.6rem; font-weight:800;" onclick="quickPick(10)">+10 COTAS</button>
+                    <!-- BARRA DE AJUSTE DE COTAS (7 BOTÕES) -->
+                    <div class="adjustment-grid">
+                        <button class="adj-btn minus" onclick="adjustSelection(-10)">-10<span>COTAS</span></button>
+                        <button class="adj-btn minus" onclick="adjustSelection(-5)">-5<span>COTAS</span></button>
+                        <button class="adj-btn minus" onclick="adjustSelection(-1)">-1<span>COTA</span></button>
+                        <button class="adj-btn clear" onclick="adjustSelection(0)">LIMPAR</button>
+                        <button class="adj-btn plus" onclick="adjustSelection(1)">+1<span>COTA</span></button>
+                        <button class="adj-btn plus" onclick="adjustSelection(5)">+5<span>COTAS</span></button>
+                        <button class="adj-btn plus" onclick="adjustSelection(10)">+10<span>COTAS</span></button>
                     </div>
+
+                    <!-- SEPARADOR VISUAL -->
+                    <div class="section-divider"></div>
+
                     <div class="grid-container" id="grid"></div>
                 </div>
 
@@ -346,88 +282,73 @@
 
                 <div id="view-admin" style="display: none;">
                     <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;"></div>
-                    <div style="margin-bottom: 12px;">
-                        <input type="text" id="admin-search" class="custom-input" style="margin-bottom:8px; padding:12px;" placeholder="Nome ou Cota (ex: 05)..." oninput="renderAdmin()">
-                        <div class="admin-filters">
-                            <div class="filter-chip active" data-filter="all" onclick="setAdminFilter('all')">TODOS</div>
-                            <div class="filter-chip" data-filter="paid" onclick="setAdminFilter('paid')">PAGOS</div>
-                            <div class="filter-chip" data-filter="reserved" onclick="setAdminFilter('reserved')">PENDENTES</div>
-                        </div>
-                    </div>
+                    <input type="text" id="admin-search" class="custom-input" placeholder="Nome ou Bilhete..." oninput="renderAdmin()">
                     <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                        <button class="btn-pay" style="flex:1; background:var(--secondary); color:#fff; box-shadow: 0 0 15px var(--secondary-glow);" onclick="openConfigModal()">CONFIGURAR</button>
-                        <button class="btn-pay" style="flex:1; background:rgba(255, 77, 77, 0.1); color:var(--danger); border:1px solid var(--danger); box-shadow:none;" onclick="resetRifa()">RESET GERAL</button>
+                        <button class="btn-pay" style="flex:1; background:var(--secondary); color:#fff;" onclick="openConfigModal()">CONFIGURAR</button>
+                        <button class="btn-pay" style="flex:1; background:rgba(255, 77, 77, 0.1); color:var(--danger); border:1px solid var(--danger);" onclick="resetRifa()">RESET</button>
                     </div>
                     <div id="admin-list"></div>
                 </div>
             </div>
 
-            <!-- Rodapé Neon -->
+            <!-- RODAPÉ DE COMPRA -->
             <footer class="purchase-footer" id="footer-purchase">
                 <div>
                     <p style="font-size:0.55rem; color:var(--text-dim); font-weight:800; text-transform:uppercase;">COTAS: <span id="count-display" style="color:var(--primary)">0</span></p>
                     <p id="footer-total" style="font-size: 1.1rem; font-weight: 800; color: var(--primary);">R$ 0,00</p>
+                    <p id="footer-original" style="font-size: 0.6rem; color: var(--danger); text-decoration: line-through; display: none;">R$ 0,00</p>
                 </div>
                 <button class="btn-pay" id="btn-checkout" disabled onclick="abrirCheckout()">
-                    RESERVAR
+                    COMPRAR
                     <i data-lucide="zap" style="width: 16px; fill: currentColor;"></i>
                 </button>
             </footer>
         </main>
     </div>
 
-    <!-- Modais -->
+    <!-- MODAIS -->
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
-            <h2 style="margin-bottom: 20px; font-weight: 800; color: var(--primary); text-shadow: 0 0 10px var(--primary);">RESERVAR AGORA</h2>
+            <h2 style="margin-bottom: 20px; font-weight: 800; color: var(--primary);">RESERVAR AGORA</h2>
             <input type="text" id="cust-name" class="custom-input" placeholder="Nome Completo">
             <input type="tel" id="cust-phone" class="custom-input" placeholder="WhatsApp (DDD)" oninput="maskPhone(this)">
-            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="confirmarReserva()" id="btn-confirm-res">CONCLUIR RESERVA</button>
-            <button onclick="closeModal('modal-checkout')" style="margin-top: 20px; background:none; border:none; color:var(--text-dim); font-size:0.8rem; font-weight:700; cursor:pointer;">FECHAR</button>
-        </div>
-    </div>
-
-    <!-- Modal: Selecionar Pagamento -->
-    <div class="modal-overlay" id="modal-selection-pay">
-        <div class="modal-card">
-            <h2 style="margin-bottom: 10px; font-weight: 800; color: var(--primary);">PAGAMENTO</h2>
-            <p style="font-size: 0.7rem; color: var(--text-dim);">Selecione as cotas que deseja pagar agora:</p>
-            
-            <div id="selection-pay-list" class="selection-list">
-                <!-- Injetado via JS -->
+            <div id="checkout-summary-area" style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: left;">
+                <p id="checkout-final-val" style="font-size: 1.3rem; font-weight: 900; color: var(--primary);">R$ 0,00</p>
+                <p id="checkout-promo-applied" style="font-size: 0.65rem; color: var(--promo-gold); font-weight: 800; margin-top: 5px;"></p>
             </div>
-
-            <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; margin-bottom: 15px;">
-                <p style="font-size: 0.6rem; color: var(--text-dim); text-transform: uppercase;">Total a Pagar</p>
-                <p id="selection-pay-total" style="font-size: 1.2rem; font-weight: 900; color: var(--primary);">R$ 0,00</p>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-                <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="confirmarPagamentoSelecionado()">IR PARA O PIX</button>
-                <button class="btn-pay" style="width: 100%; justify-content: center; background: transparent; border: 1px solid var(--border); color: #fff; box-shadow: none;" onclick="pagarTodosDireto()">PAGAR TODOS</button>
-            </div>
-            <button onclick="closeModal('modal-selection-pay')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size:0.75rem; font-weight:700; cursor:pointer;">CANCELAR</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-pin">
-        <div class="modal-card" style="max-width: 320px;">
-            <h3 style="color:var(--primary); margin-bottom: 15px;">ACESSO RESTRITO</h3>
-            <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="4" style="text-align:center; font-size:1.8rem; letter-spacing:12px;">
-            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="validateAdmin()">ENTRAR NO SISTEMA</button>
-            <button onclick="closeModal('modal-pin')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); cursor:pointer;">CANCELAR</button>
+            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="confirmarReserva()" id="btn-confirm-res">GERAR PIX</button>
+            <button onclick="closeModal('modal-checkout')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-size:0.75rem; font-weight:700;">CANCELAR</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-config">
         <div class="modal-card">
-            <h3 style="color:var(--primary); margin-bottom: 20px;">AJUSTES DA RIFA</h3>
-            <input type="text" id="cfg-premio" class="custom-input" placeholder="Nome do Prémio">
-            <textarea id="cfg-descricao" class="custom-input" placeholder="Descrição" style="height: 100px; resize: none;"></textarea>
-            <input type="number" id="cfg-valor" class="custom-input" step="0.01" placeholder="Valor da Cota">
-            <input type="number" id="cfg-total" class="custom-input" placeholder="Total de Números">
-            <button class="btn-pay" style="width: 100%; justify-content: center;" onclick="saveRifaConfig()">SALVAR DADOS</button>
-            <button onclick="closeModal('modal-config')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); cursor:pointer;">VOLTAR</button>
+            <h3 style="color:var(--primary); margin-bottom: 15px;">AJUSTES GERAIS</h3>
+            <input type="text" id="cfg-premio" class="custom-input" placeholder="Prémio">
+            <textarea id="cfg-descricao" class="custom-input" placeholder="Descrição" style="height: 60px; resize: none;"></textarea>
+            <input type="number" id="cfg-valor" class="custom-input" step="0.01" placeholder="Valor Cota">
+            <input type="number" id="cfg-total" class="custom-input" placeholder="Total Números">
+            <input type="password" id="cfg-pin" class="custom-input" placeholder="Senha Admin (PIN)">
+            
+            <div style="border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px;">
+                <h4 style="color:var(--promo-gold); margin-bottom: 10px; font-size: 0.8rem;">PROMOÇÕES</h4>
+                <button id="btn-toggle-promos" class="icon-btn" onclick="togglePromosState()" style="width: 100%; height: 35px; margin-bottom:10px;">OFF</button>
+                <div id="promos-editor-area" style="display:none;">
+                    <div id="promos-list"></div>
+                    <button class="btn-admin-action btn-paid" style="width:100%;" onclick="addPromoRow()">+ NOVA REGRA</button>
+                </div>
+            </div>
+            <button class="btn-pay" style="width: 100%; margin-top: 20px;" onclick="saveRifaConfig()">SALVAR</button>
+            <button onclick="closeModal('modal-config')" style="margin-top: 10px; background:none; border:none; color:var(--text-dim);">FECHAR</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-pin">
+        <div class="modal-card" style="max-width: 320px;">
+            <h3>ACESSO ADMIN</h3>
+            <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="4" style="text-align:center; font-size:1.5rem; letter-spacing:12px;">
+            <button class="btn-pay" style="width: 100%;" onclick="validateAdmin()">ENTRAR</button>
+            <button onclick="closeModal('modal-pin')" style="margin-top: 10px; background:none; border:none; color:var(--text-dim);">FECHAR</button>
         </div>
     </div>
 
@@ -451,18 +372,12 @@
         const cfgRef = ref(db, "rifa_master/config");
         const numRef = ref(db, "rifa_master/numeros");
 
-        const PIN = "6261";
         const HANDLE = "vagner_lauriuche--inc";
 
-        let config = { premio: "...", descricao: "...", valor: 10, total: 100 };
+        let config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", promosActive: false, promos: [] };
         let dbNumbers = {};
         let selected = new Set();
         let isAdmin = false;
-        let adminFilter = 'all';
-
-        let currentClientNome = "";
-        let currentClientTel = "";
-        let currentClientPendentes = [];
 
         lucide.createIcons();
 
@@ -474,10 +389,17 @@
             lucide.createIcons();
         };
 
-        onValue(cfgRef, (s) => { if(s.exists()){ config = s.val(); renderUI(); } });
+        onValue(cfgRef, (s) => { 
+            if(s.exists()){ 
+                config = { ...config, ...s.val() };
+                renderUI(); 
+            } 
+        });
+
         onValue(numRef, (s) => { 
             dbNumbers = s.exists() ? s.val() : {}; 
-            renderGrid(); updateProgress();
+            renderGrid(); 
+            updateProgress();
             if(isAdmin) renderAdmin();
         });
 
@@ -485,13 +407,47 @@
             document.getElementById('display-premio').innerText = config.premio;
             document.getElementById('display-descricao').innerText = config.descricao;
             document.getElementById('display-valor').innerText = config.valor.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            
+            // Promoções em bloco isolado
+            const promoArea = document.getElementById('promo-display-area');
+            promoArea.innerHTML = '';
+            if(config.promosActive && config.promos.length > 0) {
+                promoArea.style.display = 'flex';
+                config.promos.forEach(p => {
+                    const text = p.type === 'pct' ? `COMPRE ${p.min} E GANHE ${p.val}% OFF` : `COMPRE ${p.min} E GANHE ${p.val} GRÁTIS`;
+                    promoArea.innerHTML += `<div class="promo-item">${text}</div>`;
+                });
+            } else {
+                promoArea.style.display = 'none';
+            }
             updateFooter();
         }
 
-        function updateProgress() {
-            const filledCount = Object.keys(dbNumbers).length;
-            const percent = (filledCount / config.total) * 100;
-            document.getElementById('progress-fill').style.width = percent + "%";
+        function calculateBestPrice(count) {
+            let original = count * config.valor;
+            let final = original;
+            let promoText = "";
+            if(config.promosActive && config.promos.length) {
+                config.promos.forEach(p => {
+                    if(count >= p.min) {
+                        let price = original;
+                        if(p.type === 'pct') price = original * (1 - (p.val / 100));
+                        else if(p.type === 'free') price = original - (p.val * config.valor);
+                        if(price < final) { final = price; promoText = p.type === 'pct' ? `${p.val}% OFF aplicado!` : `${p.val} Grátis aplicado!`; }
+                    }
+                });
+            }
+            return { final, original, promoText };
+        }
+
+        function updateFooter() {
+            const count = selected.size;
+            const p = calculateBestPrice(count);
+            document.getElementById('count-display').innerText = count;
+            document.getElementById('footer-total').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            const origEl = document.getElementById('footer-original');
+            if(p.final < p.original) { origEl.innerText = p.original.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); origEl.style.display = 'block'; } else origEl.style.display = 'none';
+            document.getElementById('btn-checkout').disabled = count === 0;
         }
 
         function renderGrid() {
@@ -504,7 +460,7 @@
                 el.innerText = n;
                 if(dbNumbers[n]) el.classList.add(dbNumbers[n].status);
                 else if(selected.has(n)) el.classList.add('selected');
-                el.onclick = () => toggleNumber(n);
+                el.onclick = () => { toggleNumber(n); updateFooter(); };
                 grid.appendChild(el);
             }
         }
@@ -512,249 +468,108 @@
         function toggleNumber(n) {
             if(dbNumbers[n]) return;
             selected.has(n) ? selected.delete(n) : selected.add(n);
-            renderGrid(); updateFooter();
+            renderGrid();
         }
 
-        function updateFooter() {
-            const total = selected.size * config.valor;
-            document.getElementById('footer-total').innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('count-display').innerText = selected.size;
-            document.getElementById('btn-checkout').disabled = selected.size === 0;
-        }
-
-        window.quickPick = (qty) => {
-            const available = [];
-            for(let i=0; i<config.total; i++) {
-                const n = i.toString().padStart(2, '0');
-                if(!dbNumbers[n] && !selected.has(n)) available.push(n);
+        // LÓGICA DE AJUSTE CORRIGIDA (+5 e +10 agora funcionam 100%)
+        window.adjustSelection = (qty) => {
+            if(qty === 0) {
+                selected.clear();
+            } else if (qty > 0) {
+                const available = [];
+                for(let i=0; i<config.total; i++){
+                    const n = i.toString().padStart(2, '0');
+                    if(!dbNumbers[n] && !selected.has(n)) available.push(n);
+                }
+                // Embaralha para pegar aleatórios
+                const chosen = available.sort(() => Math.random() - 0.5).slice(0, qty);
+                chosen.forEach(n => selected.add(n));
+            } else {
+                const items = Array.from(selected);
+                const toRemove = Math.min(Math.abs(qty), items.length);
+                for(let i=0; i<toRemove; i++){
+                    selected.delete(items[items.length - 1 - i]);
+                }
             }
-            available.sort(() => Math.random() - 0.5).slice(0, qty).forEach(n => selected.add(n));
-            renderGrid(); updateFooter();
+            renderGrid();
+            updateFooter();
         };
 
-        window.switchTab = (tab) => {
-            ['rifa', 'consulta', 'admin'].forEach(v => {
-                const el = document.getElementById(`view-${v}`);
-                if(el) el.style.display = 'none';
-                const btn = document.getElementById(`tab-${v}`);
-                if(btn) btn.classList.remove('active');
-            });
-            document.getElementById(`view-${tab}`).style.display = 'block';
-            document.getElementById(`tab-${tab}`).classList.add('active');
-            document.getElementById('footer-purchase').style.display = tab === 'rifa' ? 'flex' : 'none';
-            if(tab === 'admin') renderAdmin();
+        window.togglePromosState = () => {
+            config.promosActive = !config.promosActive;
+            document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF";
+            document.getElementById('promos-editor-area').style.display = config.promosActive ? "block" : "none";
         };
 
-        window.askAdmin = () => document.getElementById('modal-pin').style.display = 'flex';
-        window.validateAdmin = () => {
-            if(document.getElementById('admin-pin').value === PIN) {
-                isAdmin = true; document.getElementById('tab-admin').style.display = 'block';
-                closeModal('modal-pin'); switchTab('admin');
-            } else showToast("❌ PIN INVÁLIDO");
-        };
-
-        window.setAdminFilter = (val) => {
-            adminFilter = val;
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.getAttribute('data-filter') === val));
-            renderAdmin();
-        };
-
-        window.toggleAdminCard = (id) => document.getElementById(`card-${id}`).classList.toggle('expanded');
-
-        window.renderAdmin = () => {
-            const list = document.getElementById('admin-list');
-            if(!list) return; list.innerHTML = '';
-            const search = document.getElementById('admin-search').value.toLowerCase().trim();
-            let tPaid = 0;
-            const groups = {};
-            Object.entries(dbNumbers).forEach(([n, d]) => {
-                if(d.status === 'paid') tPaid += config.valor;
-                const ph = d.telefone || "0";
-                if(!groups[ph]) groups[ph] = { nome: d.nome, telefone: d.telefone, cotas: [] };
-                groups[ph].cotas.push({ n, status: d.status });
-            });
-            document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item">PAGO: <b>R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item">VENDAS: <b>${Object.keys(dbNumbers).length}</b></div>`;
-            
-            let filtered = Object.values(groups).filter(p => {
-                const isNumeric = !isNaN(search) && search !== "";
-                const matchesCota = isNumeric && p.cotas.some(c => c.n === search.padStart(2, '0'));
-                const matchesName = p.nome.toLowerCase().includes(search);
-                let matchesStatus = adminFilter === 'all' || p.cotas.some(c => c.status === adminFilter);
-                return (matchesName || matchesCota) && matchesStatus;
-            });
-
-            filtered.forEach(p => {
-                const phoneClean = p.telefone.replace(/\D/g, '');
-                const sortedCotas = p.cotas.sort((a,b) => parseInt(a.n) - parseInt(b.n));
-                const hasPaid = sortedCotas.some(c => c.status === 'paid');
-                const hasReserved = sortedCotas.some(c => c.status === 'reserved');
-                const card = document.createElement('div');
-                card.className = 'admin-card'; card.id = `card-${phoneClean}`;
-                if(!isNaN(search) && search !== "") card.classList.add('expanded');
-                card.innerHTML = `
-                    <div class="admin-card-header">
-                        <div onclick="toggleAdminCard('${phoneClean}')" style="flex:1; cursor: pointer;"><b style="color:var(--primary);">${p.nome.toUpperCase()}</b></div>
-                        <button class="btn-admin-action btn-whatsapp" onclick="window.open('https://wa.me/55${phoneClean}', '_blank')"><i data-lucide="message-circle" style="width:14px;"></i></button>
-                    </div>
-                    <div class="admin-card-details">
-                        <span style="color:var(--text-dim); font-size:0.7rem;">${p.telefone}</span>
-                        <div style="font-size:0.75rem; color:#fff;">${sortedCotas.map(c => `<span style="color:${c.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
-                        <div class="admin-actions">
-                            <button class="btn-admin-action btn-paid" ${!hasReserved ? 'disabled' : ''} onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGAS</button>
-                            <button class="btn-admin-action btn-unpaid" ${!hasPaid ? 'disabled' : ''} onclick="adminUpdateStatus('${p.telefone}', 'reserved')">MARCAR PENDENTES</button>
-                            <button class="btn-admin-action btn-delete" style="grid-column: span 2;" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR</button>
-                        </div>
-                    </div>
-                `;
-                list.appendChild(card);
-            });
-            lucide.createIcons();
-        };
-
-        window.adminUpdateStatus = async (phone, s) => {
-            const updates = {};
-            Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === phone) updates[`${n}/status`] = s; });
-            await update(numRef, updates); showToast("✅ ATUALIZADO!");
-        };
-
-        window.adminDeleteParticipant = async (phone) => {
-            if(!confirm("⚠️ EXCLUIR PARTICIPANTE?")) return;
-            const updates = {};
-            Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === phone) updates[n] = null; });
-            await update(numRef, updates);
+        window.addPromoRow = (data = { min: 10, val: 10, type: 'pct' }) => {
+            const container = document.getElementById('promos-list');
+            const row = document.createElement('div');
+            row.style = "background:rgba(0,0,0,0.2); padding:10px; border-radius:12px; margin-bottom:10px;";
+            row.className = 'promo-editor-card';
+            row.innerHTML = `
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
+                    <input type="number" class="custom-input p-min" value="${data.min}" style="margin-bottom:5px; padding:8px;" placeholder="Mínimo">
+                    <select class="custom-input p-type" style="margin-bottom:5px; padding:8px; height:45px;">
+                        <option value="pct" ${data.type==='pct'?'selected':''}>% OFF</option>
+                        <option value="free" ${data.type==='free'?'selected':''}>Gratuitos</option>
+                    </select>
+                </div>
+                <input type="number" class="custom-input p-val" value="${data.val}" style="margin-bottom:5px; padding:8px;" placeholder="Valor">
+                <button class="btn-admin-action btn-delete" style="width:100%;" onclick="this.parentElement.remove()">EXCLUIR</button>
+            `;
+            container.appendChild(row);
         };
 
         window.openConfigModal = () => {
             document.getElementById('cfg-premio').value = config.premio;
-            document.getElementById('cfg-descricao').value = config.descricao;
             document.getElementById('cfg-valor').value = config.valor;
             document.getElementById('cfg-total').value = config.total;
+            document.getElementById('cfg-pin').value = config.pin;
+            document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF";
+            document.getElementById('promos-editor-area').style.display = config.promosActive ? "block" : "none";
+            document.getElementById('promos-list').innerHTML = '';
+            if(config.promos) config.promos.forEach(p => addPromoRow(p));
             document.getElementById('modal-config').style.display = 'flex';
         };
 
         window.saveRifaConfig = () => {
-            const up = { premio: document.getElementById('cfg-premio').value, descricao: document.getElementById('cfg-descricao').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value) };
-            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ SALVO!"); });
+            const pr = [];
+            document.querySelectorAll('.promo-editor-card').forEach(card => {
+                pr.push({ min: parseInt(card.querySelector('.p-min').value), val: parseFloat(card.querySelector('.p-val').value), type: card.querySelector('.p-type').value });
+            });
+            const up = { premio: document.getElementById('cfg-premio').value, descricao: document.getElementById('cfg-descricao').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr };
+            set(cfgRef, up).then(() => { closeModal('modal-config'); showToast("✅ CONFIGURAÇÕES SALVAS!"); });
         };
 
-        window.abrirCheckout = () => document.getElementById('modal-checkout').style.display = 'flex';
+        window.switchTab = (t) => {
+            ['rifa', 'consulta', 'admin'].forEach(v => {
+                document.getElementById(`view-${v}`).style.display = 'none';
+                const b = document.getElementById(`tab-${v}`); if(b) b.classList.remove('active');
+            });
+            document.getElementById(`view-${t}`).style.display = 'block';
+            document.getElementById(`tab-${t}`).classList.add('active');
+            document.getElementById('footer-purchase').style.display = t === 'rifa' ? 'flex' : 'none';
+        };
+
+        window.askAdmin = () => document.getElementById('modal-pin').style.display = 'flex';
+        window.validateAdmin = () => { if(document.getElementById('admin-pin').value === config.pin) { isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; closeModal('modal-pin'); switchTab('admin'); } else showToast("❌ PIN INVÁLIDO"); };
         window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+        window.maskPhone = i => { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; };
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+        function updateProgress() { const c = Object.keys(dbNumbers).length; document.getElementById('progress-fill').style.width = (c/config.total*100)+"%"; }
 
-        window.consultarMeusNumeros = async () => {
-            const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
-            const area = document.getElementById('results-area');
-            const btn = document.getElementById('btn-search-client');
-            if(!tel || tel.length < 10) return showToast("⚠️ WHATSAPP VÁLIDO!");
-            
-            btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
-            const s = await get(numRef); area.innerHTML = '';
-            btn.disabled = false; btn.innerHTML = 'BUSCAR MEUS NÚMEROS';
-            
-            if(s.exists()){
-                const data = s.val();
-                const filtered = Object.entries(data).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
-                if(filtered.length > 0) {
-                    const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
-                    const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
-                    
-                    currentClientNome = filtered[0][1].nome;
-                    currentClientTel = tel;
-                    currentClientPendentes = pendentes;
-
-                    let html = '';
-                    if(pendentes.length > 0) {
-                        html += `
-                            <div class="result-card" style="border-color: var(--reserved);">
-                                <b class="result-label" style="color: var(--reserved);">Bilhetes Pendentes</b>
-                                <div class="result-numbers">${pendentes.join(', ')}</div>
-                                <button class="btn-pay" style="width:100%; margin-top:15px; background:var(--secondary);" onclick="abrirModalSelecaoPagar()">
-                                    💳 PAGAR PENDENTES (R$ ${(pendentes.length * config.valor).toFixed(2)})
-                                </button>
-                            </div>
-                        `;
-                    }
-                    if(pagos.length > 0) {
-                        html += `
-                            <div class="result-card" style="border-color: var(--primary);">
-                                <b class="result-label" style="color: var(--primary);">Bilhetes Pagos</b>
-                                <div class="result-numbers">${pagos.join(', ')}</div>
-                            </div>
-                        `;
-                    }
-                    area.innerHTML = html;
-                } else area.innerHTML = '<p style="text-align:center; color:var(--text-dim);">NADA ENCONTRADO</p>';
-            }
+        window.abrirCheckout = () => {
+            const p = calculateBestPrice(selected.size);
+            document.getElementById('checkout-final-val').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            document.getElementById('checkout-promo-applied').innerText = p.promoText;
+            document.getElementById('modal-checkout').style.display = 'flex';
         };
-
-        window.abrirModalSelecaoPagar = () => {
-            const list = document.getElementById('selection-pay-list');
-            list.innerHTML = '';
-            
-            currentClientPendentes.forEach(n => {
-                const item = document.createElement('div');
-                item.className = 'selection-item checked';
-                item.innerHTML = `
-                    <span style="font-weight:800; color:#fff;">Cota ${n}</span>
-                    <div class="checkbox-ui"><i data-lucide="check" style="width:14px;"></i></div>
-                    <input type="checkbox" value="${n}" checked onchange="updateSelectionTotal()">
-                `;
-                item.onclick = (e) => {
-                    if(e.target.tagName !== 'INPUT'){
-                        const cb = item.querySelector('input');
-                        cb.checked = !cb.checked;
-                        item.classList.toggle('checked', cb.checked);
-                        updateSelectionTotal();
-                    }
-                };
-                list.appendChild(item);
-            });
-            
-            document.getElementById('modal-selection-pay').style.display = 'flex';
-            updateSelectionTotal();
-            lucide.createIcons();
-        };
-
-        window.updateSelectionTotal = () => {
-            const selectedBoxes = document.querySelectorAll('#selection-pay-list input:checked');
-            const total = selectedBoxes.length * config.valor;
-            document.getElementById('selection-pay-total').innerText = total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            
-            document.querySelectorAll('.selection-item').forEach(item => {
-                const cb = item.querySelector('input');
-                item.classList.toggle('checked', cb.checked);
-            });
-        };
-
-        window.confirmarPagamentoSelecionado = async () => {
-            const selectedNums = Array.from(document.querySelectorAll('#selection-pay-list input:checked')).map(cb => cb.value);
-            if(selectedNums.length === 0) return showToast("⚠️ SELECIONE AO MENOS UM!");
-            
-            closeModal('modal-selection-pay');
-            await processarBulk(currentClientNome, currentClientTel, selectedNums);
-        };
-
-        window.pagarTodosDireto = async () => {
-            closeModal('modal-selection-pay');
-            await processarBulk(currentClientNome, currentClientTel, currentClientPendentes);
-        };
-
-        async function processarBulk(nome, tel, lista) {
-            const oid = "RT" + Date.now().toString().slice(-8);
-            showToast(`Gerando Pix para ${lista.length} cota(s)...`);
-            try {
-                const up = {};
-                lista.forEach(n => up[`${n}/order_nsu`] = oid);
-                await update(numRef, up);
-                const url = await triggerInfinite(nome, tel, oid, lista.length * config.valor);
-                if(url) window.location.href = url;
-            } catch(e) { showToast("❌ ERRO NO PAGAMENTO"); }
-        }
 
         window.confirmarReserva = async () => {
             const n = document.getElementById('cust-name').value.trim();
             const t = document.getElementById('cust-phone').value.trim();
-            if(!n || n.split(' ').length < 2) return showToast("⚠️ NOME COMPLETO!");
-            if(t.replace(/\D/g,'').length < 10) return showToast("⚠️ WHATSAPP INVÁLIDO!");
+            if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS");
+            const prices = calculateBestPrice(selected.size);
             const btn = document.getElementById('btn-confirm-res');
             btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
             const oid = "RN" + Date.now().toString().slice(-8);
@@ -762,50 +577,68 @@
                 const up = {};
                 selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid });
                 await update(numRef, up);
-                const url = await triggerInfinite(n, t, oid, selected.size * config.valor);
-                if(url) { selected.clear(); window.location.href = url; }
-            } catch(e) { showToast("❌ ERRO!"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
+                const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{"quantity":1, "price": Math.round(prices.final * 100), "description": `Rifa ${config.premio}`}] };
+                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) });
+                const d = await res.json();
+                if(d.url || d.checkout_url) { selected.clear(); window.location.href = d.url || d.checkout_url; }
+            } catch(e) { showToast("❌ ERRO NO PAGAMENTO"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
         };
 
-        async function triggerInfinite(nome, tel, oid, val) {
-            const pay = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": nome, "phone_number": "55" + tel.replace(/\D/g,'') }, "items": [{"quantity":1, "price": Math.round(val * 100), "description": `Rifa ${config.premio}`}] };
-            const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(pay) });
-            const d = await res.json(); return d.url || d.checkout_url;
-        }
-
-        window.maskPhone = i => { 
-            let v = i.value.replace(/\D/g,""); 
-            v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); 
-            v=v.replace(/(\d)(\d{4})$/,"$1-$2"); 
-            i.value = v; 
+        window.consultarMeusNumeros = async () => {
+            const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
+            const area = document.getElementById('results-area');
+            if(!tel || tel.length < 10) return;
+            const s = await get(numRef); area.innerHTML = '';
+            if(s.exists()){
+                const filtered = Object.entries(s.val()).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
+                const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
+                const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
+                if(filtered.length > 0) {
+                    if(pendentes.length > 0) area.innerHTML += `<div class="admin-card" style="border-color: var(--reserved);"><b style="color:var(--reserved); font-size:0.6rem;">PENDENTES</b><div style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${pendentes.join(', ')}</div></div>`;
+                    if(pagos.length > 0) area.innerHTML += `<div class="admin-card" style="border-color: var(--primary);"><b style="color:var(--primary); font-size:0.6rem;">PAGOS</b><div style="font-size:1.1rem; font-weight:800; color:var(--text-main);">${pagos.join(', ')}</div></div>`;
+                } else area.innerHTML = '<p style="text-align:center;">NADA ENCONTRADO</p>';
+            }
         };
 
-        function showToast(msg) { 
-            const t = document.getElementById('toast'); 
-            t.innerText = msg; t.style.display = 'block'; 
-            setTimeout(() => t.style.display = 'none', 4000); 
-        }
-
-        const nsuParam = new URLSearchParams(window.location.search).get('order_nsu');
-        if(nsuParam) {
-            get(numRef).then(s => {
-                if(s.exists()){
-                    const data = s.val(); const up = {}; let ok = false;
-                    Object.entries(data).forEach(([n, info]) => {
-                        if(info.order_nsu === nsuParam && info.status === 'reserved') { up[`${n}/status`] = "paid"; ok = true; }
-                    });
-                    if(ok) update(numRef, up).then(() => {
-                        window.history.replaceState({}, '', window.location.pathname);
-                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                        showToast("🎉 PAGAMENTO CONFIRMADO!");
-                    });
+        window.renderAdmin = () => {
+            const list = document.getElementById('admin-list');
+            if(!list) return; list.innerHTML = '';
+            const search = document.getElementById('admin-search').value.toLowerCase().trim();
+            const groups = {};
+            let tPaid = 0;
+            Object.entries(dbNumbers).forEach(([n, d]) => {
+                if(d.status === 'paid') tPaid += config.valor;
+                const ph = d.telefone || "0";
+                if(!groups[ph]) groups[ph] = { nome: d.nome, telefone: d.telefone, cotas: [] };
+                groups[ph].cotas.push({ n, status: d.status });
+            });
+            document.getElementById('admin-stats').innerHTML = `<div class="admin-stat-item">PAGO: <b>R$ ${tPaid.toFixed(2)}</b></div><div class="admin-stat-item">VENDAS: <b>${Object.keys(dbNumbers).length}</b></div>`;
+            Object.values(groups).forEach(p => {
+                const isNumeric = !isNaN(search) && search !== "";
+                if(p.nome.toLowerCase().includes(search) || (isNumeric && p.cotas.some(c => c.n === search.padStart(2,'0')))){
+                    const cl = p.telefone.replace(/\D/g,'');
+                    list.innerHTML += `<div class="admin-card">
+                        <div style="display:flex; justify-content:space-between;">
+                            <b style="color:var(--primary);">${p.nome.toUpperCase()}</b>
+                            <button class="btn-admin-action btn-whatsapp" onclick="window.open('https://wa.me/55${cl}')"><i data-lucide="message-circle" style="width:14px;"></i></button>
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-main); margin-top:8px;">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
+                        <div class="admin-actions">
+                            <button class="btn-admin-action btn-paid" onclick="adminUpdateStatus('${p.telefone}', 'paid')">MARCAR PAGO</button>
+                            <button class="btn-admin-action btn-delete" onclick="adminDeleteParticipant('${p.telefone}')">EXCLUIR</button>
+                        </div>
+                    </div>`;
                 }
             });
-        }
-
-        window.resetRifa = () => {
-            if(confirm("⚠️ RESETAR TODA A RIFA?")) remove(numRef).then(() => showToast("🔥 RESETADO!"));
+            lucide.createIcons();
         };
+
+        window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ ATUALIZADO!"); };
+        window.adminDeleteParticipant = async (ph) => { if(!confirm("⚠️ EXCLUIR?")) return; const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); };
+        window.resetRifa = () => { if(confirm("⚠️ RESET TOTAL?")) remove(numRef); };
+
+        const ns = new URLSearchParams(window.location.search).get('order_nsu');
+        if(ns) { get(numRef).then(s => { if(s.exists()){ const data = s.val(); const up = {}; let ok = false; Object.entries(data).forEach(([n, info]) => { if(info.order_nsu === ns && info.status === 'reserved') { up[`${n}/status`] = "paid"; ok = true; } }); if(ok) update(numRef, up).then(() => { window.history.replaceState({}, '', window.location.pathname); confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } }); showToast("🎉 PAGAMENTO CONFIRMADO!"); }); } }); }
     </script>
 </body>
 </html>
