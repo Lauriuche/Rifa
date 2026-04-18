@@ -66,7 +66,7 @@
             display: flex; flex-direction: column;
             gap: 15px;
             position: relative;
-            min-height: 0; /* Permite encolhimento flex */
+            min-height: 0;
         }
 
         .block-container {
@@ -77,7 +77,6 @@
             box-shadow: var(--neon-glow);
         }
 
-        /* Painéis Responsivos */
         @media (min-width: 900px) or (orientation: landscape) {
             .app-wrapper { flex-direction: row; align-items: stretch; }
             .header-panel { width: 340px; height: 100%; }
@@ -108,7 +107,7 @@
             gap: 15px; 
             overflow: hidden; 
             position: relative;
-            min-height: 0; /* Crucial para o scroll interno */
+            min-height: 0;
         }
 
         .nav-block { padding: 8px; flex-shrink: 0; }
@@ -119,34 +118,17 @@
         .promo-block { padding: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; flex-shrink: 0; }
         .promo-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; color: var(--promo-gold); font-weight: 800; font-size: 0.65rem; text-align: center; text-transform: uppercase; border: 1px dashed var(--promo-gold); }
 
-        /* CONTENT BLOCK CORRIGIDO */
-        .content-block { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            overflow: hidden; 
-            position: relative;
-            min-height: 0; /* Permite que o scroll-area interno role */
-        }
-
-        .content-scroll { 
-            flex: 1; 
-            overflow-y: auto !important; 
-            padding: 15px 15px 110px 15px; /* Espaço para o rodapé */
-            position: relative;
-            -webkit-overflow-scrolling: touch;
-        }
+        .content-block { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0; }
+        .content-scroll { flex: 1; overflow-y: auto !important; padding: 15px 15px 110px 15px; position: relative; -webkit-overflow-scrolling: touch; }
         .content-scroll::-webkit-scrollbar { width: 5px; }
         .content-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        /* Grid */
         .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; justify-content: center; }
         .num-cell { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; background: var(--cell-bg); border: 1px solid var(--border); border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-main); transition: 0.2s; position: relative; }
         .num-cell.selected { background: var(--selected); border-color: #fff; box-shadow: 0 0 12px var(--secondary-glow); transform: scale(1.08); z-index: 5; }
         .num-cell.reserved { background: var(--reserved); color: #000; opacity: 0.7; }
         .num-cell.paid { background: var(--paid); color: #000; box-shadow: 0 0 10px var(--primary); }
 
-        /* Filtros */
         .legend-filter { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
         .legend-chip { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--cell-bg); border-radius: 14px; font-size: 0.6rem; font-weight: 800; color: var(--text-dim); cursor: pointer; border: 1px solid transparent; transition: 0.3s; }
         .legend-chip.active { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.1); }
@@ -157,7 +139,6 @@
         .dot.reserved { background: var(--reserved); }
         .dot.paid { background: var(--paid); }
 
-        /* Botões de Ajuste */
         .adj-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 25px; }
         .adj-tile { background: var(--cell-bg); border: 1px solid var(--border); border-radius: 14px; padding: 12px 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
         .adj-tile b { font-size: 0.9rem; font-weight: 800; }
@@ -166,16 +147,11 @@
         .adj-tile.plus { color: var(--primary); border-color: rgba(0,255,136,0.3); }
         .adj-tile.clear { color: var(--promo-gold); border-color: rgba(255,204,0,0.3); }
 
-        /* RODAPÉ CORRIGIDO */
         .purchase-footer {
-            position: absolute; 
-            bottom: 15px; left: 15px; right: 15px;
+            position: absolute; bottom: 15px; left: 15px; right: 15px;
             background: var(--surface-bright); border: 1px solid var(--primary); border-radius: 25px;
-            padding: 14px 24px; 
-            display: flex !important;
-            align-items: center; justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
-            z-index: 200;
+            padding: 14px 24px; display: flex !important; align-items: center; justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 200;
         }
         .footer-price-info { text-align: left; }
         .footer-original { font-size: 0.65rem; color: var(--danger); text-decoration: line-through; opacity: 0.8; }
@@ -183,19 +159,65 @@
         .footer-total { font-size: 1.25rem; font-weight: 900; color: var(--primary); }
 
         .btn-pay { background: var(--primary); color: #000; padding: 12px 28px; border-radius: 18px; font-weight: 900; font-size: 0.9rem; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; }
-        .btn-pay:disabled { opacity: 0.3; filter: grayscale(1); }
+        .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 255, 136, 0.4); }
 
-        /* Admin Relatório */
+        /* --- VISUAL DOS BOTÕES ADMIN (RESTAURADO E ALINHADO) --- */
+        .admin-actions { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-top: 12px; 
+        }
+        .btn-admin-action { 
+            border: 1px solid transparent; 
+            padding: 12px; 
+            border-radius: 14px; 
+            font-weight: 800; 
+            font-size: 0.7rem; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 6px; 
+            text-transform: uppercase; 
+        }
+        .btn-paid { 
+            background: rgba(0, 255, 136, 0.05); 
+            color: var(--primary); 
+            border-color: rgba(0, 255, 136, 0.3); 
+        }
+        .btn-paid:hover:not(:disabled) { 
+            background: rgba(0, 255, 136, 0.15); 
+            border-color: var(--primary); 
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); 
+        }
+        .btn-unpaid { 
+            background: rgba(255, 170, 0, 0.05); 
+            color: var(--reserved); 
+            border-color: rgba(255, 170, 0, 0.3); 
+        }
+        .btn-unpaid:hover:not(:disabled) { 
+            background: rgba(255, 170, 0, 0.15); 
+            border-color: var(--reserved); 
+            box-shadow: 0 0 10px rgba(255, 170, 0, 0.2); 
+        }
+        .btn-delete { 
+            background: rgba(255, 77, 77, 0.05); 
+            color: var(--danger); 
+            border-color: rgba(255, 77, 77, 0.3); 
+        }
+        .btn-delete:hover:not(:disabled) { 
+            background: rgba(255, 77, 77, 0.15); 
+            border-color: var(--danger); 
+        }
+        .btn-admin-action:disabled { opacity: 0.15; cursor: not-allowed; grayscale(1); }
+
         .admin-stat-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
         .admin-card { background: var(--cell-bg); border: 1px solid var(--border); padding: 14px; border-radius: 22px; margin-bottom: 12px; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
         .admin-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
         .admin-card-details { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition); display: flex; flex-direction: column; gap: 10px; color: var(--text-main); }
         .admin-card.expanded .admin-card-details { max-height: 800px; margin-top: 15px; }
-        
-        .btn-admin-action { border: 1px solid transparent; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; text-transform: uppercase; }
-        .btn-paid { background: rgba(0, 255, 136, 0.05); color: var(--primary); border-color: rgba(0, 255, 136, 0.3); }
-        .btn-unpaid { background: rgba(255, 170, 0, 0.05); color: var(--reserved); border-color: rgba(255, 170, 0, 0.3); }
-        .btn-delete { background: rgba(255, 77, 77, 0.05); color: var(--danger); border-color: rgba(255, 77, 77, 0.3); }
 
         .custom-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 16px; color: #fff; text-align: center; outline: none; margin-bottom: 15px; appearance: none; -webkit-appearance: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -203,6 +225,10 @@
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px var(--primary-glow); }
         .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); text-align: left; }
+        .unlimited-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
+        .unlimited-row input { width: 18px; height: 18px; accent-color: var(--primary); }
     </style>
 </head>
 <body>
@@ -240,7 +266,6 @@
             <div class="block-container promo-block" id="promo-display-area"></div>
 
             <main class="block-container content-block">
-                <!-- ÁREA DE SCROLL ATIVA -->
                 <div class="content-scroll" id="main-scroll">
                     
                     <div id="view-rifa">
@@ -290,7 +315,6 @@
                     </div>
                 </div>
 
-                <!-- RODAPÉ PERMANENTE -->
                 <footer class="purchase-footer" id="footer-purchase">
                     <div class="footer-price-info">
                         <p style="font-size:0.6rem; color:var(--text-dim); font-weight:800; text-transform:uppercase;">Cotas: <span id="count-display" style="color:var(--primary)">0</span></p>
@@ -337,7 +361,6 @@
         </div>
     </div>
 
-    <!-- MODAL CONFIGURAÇÃO COMPLETO -->
     <div class="modal-overlay" id="modal-config">
         <div class="modal-card">
             <h3 style="color:var(--primary); margin-bottom:15px;">AJUSTES DA RIFA</h3>
@@ -601,9 +624,9 @@
                 card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="icon-btn" style="background:var(--whatsapp); color:#000; border:none;" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:18px"></i></button></div>
                 <div class="admin-card-details"><span>${p.telefone}</span><div style="background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                 <div class="admin-actions">
-                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
-                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
-                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR</button>
+                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))"><i data-lucide="check-circle" style="width:14px"></i> PAGOS</button>
+                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))"><i data-lucide="clock" style="width:14px"></i> PENDENTES</button>
+                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width:14px"></i> EXCLUIR</button>
                 </div></div>`;
                 list.appendChild(card);
             });
@@ -616,9 +639,9 @@
         window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ ATUALIZADO"); };
         window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); showToast("🗑️ EXCLUÍDO"); };
         window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 RESETADO"); }); };
-        window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
+        window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.legend-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
 
-        // CONFIG FUNCTIONS RESTAURADAS
+        // CONFIG FUNCTIONS RESTAURADAS E COMPLETAS
         window.openConfigModal = () => {
             document.getElementById('cfg-premio').value = config.premio || "";
             document.getElementById('cfg-valor').value = config.valor || 0;
@@ -626,10 +649,15 @@
             document.getElementById('cfg-pin').value = config.pin || "";
             document.getElementById('cfg-descricao').value = config.descricao || "";
             document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF";
-            document.getElementById('promos-list').innerHTML = '';
+            
+            const pList = document.getElementById('promos-list');
+            pList.innerHTML = '';
             if(config.promos) config.promos.forEach(p => window.addPromoRow(p));
-            document.getElementById('coupons-list').innerHTML = '';
+            
+            const cList = document.getElementById('coupons-list');
+            cList.innerHTML = '';
             if(config.coupons) config.coupons.forEach(c => window.addCouponRow(c));
+            
             document.getElementById('modal-config').style.display = 'flex';
         };
 
@@ -647,8 +675,13 @@
 
         window.saveRifaConfig = () => {
             const pr = [], cp = [];
-            document.querySelectorAll('#promos-list .promo-editor-card').forEach(c => pr.push({ min: parseInt(c.querySelector('.p-min').value), val: parseFloat(c.querySelector('.p-val').value), type: c.querySelector('.p-type').value }));
-            document.querySelectorAll('#coupons-list .promo-editor-card').forEach(c => cp.push({ code: c.querySelector('.c-code').value.toUpperCase(), type: c.querySelector('.c-type').value, val: parseFloat(card.querySelector('.c-val').value), unlimited: c.querySelector('.c-unlimited').checked, limit: parseInt(c.querySelector('.c-limit').value), used: config.coupons?.find(x => x.code === c.querySelector('.c-code').value.toUpperCase())?.used || 0 }));
+            document.querySelectorAll('#promos-list .promo-editor-card').forEach(row => {
+                pr.push({ min: parseInt(row.querySelector('.p-min').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value });
+            });
+            document.querySelectorAll('#coupons-list .promo-editor-card').forEach(row => {
+                const code = row.querySelector('.c-code').value.toUpperCase();
+                cp.push({ code: code, type: row.querySelector('.c-type').value, val: parseFloat(row.querySelector('.c-val').value), unlimited: row.querySelector('.c-unlimited').checked, limit: parseInt(row.querySelector('.c-limit').value), used: config.coupons?.find(x => x.code === code)?.used || 0 });
+            });
             const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr, coupons: cp, descricao: document.getElementById('cfg-descricao').value };
             set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO COM SUCESSO"); });
         };
@@ -683,13 +716,14 @@
             const btn = document.getElementById('btn-confirm-res');
             btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
             const res = calculateBestPrice(selected.size, true);
+            const valorUnidadeFixado = res.final / selected.size;
             const oid = "RN" + Date.now();
             try {
                 if(appliedCoupon) {
                     const idx = config.coupons.findIndex(c => c.code === appliedCoupon.code);
                     if(idx !== -1) await update(ref(db, `rifa_master/config/coupons/${idx}`), { used: (config.coupons[idx].used || 0) + 1 });
                 }
-                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: res.final / selected.size });
+                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado });
                 await update(numRef, up);
                 const payData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{ "quantity": 1, "price": Math.round(res.final * 100), "description": `Reserva Rifa` }] };
                 const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) });
