@@ -161,7 +161,7 @@
         .btn-pay { background: var(--primary); color: #000; padding: 12px 28px; border-radius: 18px; font-weight: 900; font-size: 0.9rem; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; }
         .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 255, 136, 0.4); }
 
-        /* --- VISUAL DOS BOTÕES ADMIN (RESTAURADO E ALINHADO) --- */
+        /* --- VISUAL DOS BOTÕES ADMIN ALINHADOS --- */
         .admin-actions { 
             display: grid; 
             grid-template-columns: 1fr 1fr; 
@@ -170,8 +170,8 @@
         }
         .btn-admin-action { 
             border: 1px solid transparent; 
-            padding: 12px; 
-            border-radius: 14px; 
+            padding: 14px 8px; 
+            border-radius: 16px; 
             font-weight: 800; 
             font-size: 0.7rem; 
             cursor: pointer; 
@@ -179,39 +179,42 @@
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            gap: 6px; 
+            gap: 8px; 
             text-transform: uppercase; 
         }
         .btn-paid { 
-            background: rgba(0, 255, 136, 0.05); 
+            background: rgba(0, 255, 136, 0.06); 
             color: var(--primary); 
-            border-color: rgba(0, 255, 136, 0.3); 
+            border-color: rgba(0, 255, 136, 0.25); 
         }
         .btn-paid:hover:not(:disabled) { 
             background: rgba(0, 255, 136, 0.15); 
             border-color: var(--primary); 
-            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2); 
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2); 
         }
         .btn-unpaid { 
-            background: rgba(255, 170, 0, 0.05); 
+            background: rgba(255, 170, 0, 0.06); 
             color: var(--reserved); 
-            border-color: rgba(255, 170, 0, 0.3); 
+            border-color: rgba(255, 170, 0, 0.25); 
         }
         .btn-unpaid:hover:not(:disabled) { 
             background: rgba(255, 170, 0, 0.15); 
             border-color: var(--reserved); 
-            box-shadow: 0 0 10px rgba(255, 170, 0, 0.2); 
+            box-shadow: 0 4px 15px rgba(255, 170, 0, 0.2); 
         }
         .btn-delete { 
-            background: rgba(255, 77, 77, 0.05); 
+            background: rgba(255, 77, 77, 0.06); 
             color: var(--danger); 
-            border-color: rgba(255, 77, 77, 0.3); 
+            border-color: rgba(255, 77, 77, 0.25); 
+            grid-column: span 2;
+            margin-top: 5px;
         }
         .btn-delete:hover:not(:disabled) { 
             background: rgba(255, 77, 77, 0.15); 
-            border-color: var(--danger); 
+            border-color: var(--danger);
+            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.2);
         }
-        .btn-admin-action:disabled { opacity: 0.15; cursor: not-allowed; grayscale(1); }
+        .btn-admin-action:disabled { opacity: 0.15; cursor: not-allowed; filter: grayscale(1); }
 
         .admin-stat-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
         .admin-card { background: var(--cell-bg); border: 1px solid var(--border); padding: 14px; border-radius: 22px; margin-bottom: 12px; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
@@ -229,6 +232,28 @@
         .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); text-align: left; }
         .unlimited-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
         .unlimited-row input { width: 18px; height: 18px; accent-color: var(--primary); }
+
+        .tooltip-bubble { 
+            position: fixed; 
+            background: var(--surface-bright); 
+            border: 1px solid var(--primary); 
+            padding: 8px 15px; 
+            border-radius: 12px; 
+            font-size: 0.7rem; 
+            font-weight: 800; 
+            z-index: 9999; 
+            animation: floatUpTooltip 2s forwards; 
+            pointer-events: none; 
+            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+        @keyframes floatUpTooltip { 
+            0% { opacity: 0; transform: translateY(5px); } 
+            15% { opacity: 1; transform: translateY(0); } 
+            85% { opacity: 1; transform: translateY(0); } 
+            100% { opacity: 0; transform: translateY(-15px); } 
+        }
     </style>
 </head>
 <body>
@@ -350,7 +375,7 @@
                 <input type="text" id="coupon-input" class="custom-input" placeholder="Cupom?" style="margin-bottom:0; flex:1">
                 <button class="icon-btn" style="height:50px; width:60px" onclick="window.applyCoupon()"><i data-lucide="check"></i></button>
             </div>
-            <div id="checkout-summary" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:15px; text-align:left">
+            <div id="checkout-summary" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left">
                 <p id="checkout-final-val" style="font-size:1.4rem; font-weight:900; color:var(--primary)">R$ 0,00</p>
                 <p id="checkout-discount-info" style="font-size:0.7rem; color:var(--promo-gold); font-weight:700"></p>
                 <p id="checkout-coupon-info" style="font-size:0.7rem; color:var(--promo-accent); font-weight:700"></p>
@@ -390,7 +415,7 @@
 
     <div class="modal-overlay" id="modal-confirm">
         <div class="modal-card" style="border-color: var(--danger);">
-            <h3 style="color: var(--danger); margin-bottom:15px;">CONFIRMAR AÇÃO?</h3>
+            <h3 style="color: var(--danger); margin-bottom:15px;">CONFIRMAR?</h3>
             <p id="confirm-msg" style="margin-bottom:25px; font-size:0.9rem; line-height:1.4"></p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
                 <button class="btn-pay" style="background:var(--danger); justify-content:center" onclick="window.executeConfirmedAction()">SIM</button>
@@ -465,6 +490,16 @@
             gridFilter = f;
             document.querySelectorAll('.legend-chip[data-grid-filter]').forEach(c => c.classList.toggle('active', c.dataset.gridFilter === f));
             renderGrid();
+        };
+
+        window.showOwnerTooltip = (e, name) => {
+            const old = document.querySelector('.tooltip-bubble'); if(old) old.remove();
+            const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase();
+            document.body.appendChild(b);
+            const rect = e.target.getBoundingClientRect();
+            b.style.left = `${rect.left + (rect.width / 2) - (b.offsetWidth / 2)}px`;
+            b.style.top = `${rect.top - 45}px`; 
+            setTimeout(() => b.remove(), 2000);
         };
 
         function calculateBestPrice(count, useCoupon = false) {
@@ -555,7 +590,6 @@
             } else showToast("❌ PIN INVÁLIDO");
             lucide.createIcons();
         };
-
         window.closeModal = id => document.getElementById(id).style.display = 'none';
 
         window.consultarMeusNumeros = async () => {
@@ -641,7 +675,6 @@
         window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 RESETADO"); }); };
         window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.legend-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
 
-        // CONFIG FUNCTIONS RESTAURADAS E COMPLETAS
         window.openConfigModal = () => {
             document.getElementById('cfg-premio').value = config.premio || "";
             document.getElementById('cfg-valor').value = config.valor || 0;
@@ -725,7 +758,7 @@
                 }
                 const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado });
                 await update(numRef, up);
-                const payData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{ "quantity": 1, "price": Math.round(res.final * 100), "description": `Reserva Rifa` }] };
+                const payData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{ "quantity": 1, "price": Math.round(res.final * 100), "description": `Reserva Rifa Premium` }] };
                 const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) });
                 const d = await payRes.json();
                 if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url;
@@ -733,7 +766,7 @@
             } catch(e) { showToast("❌ ERRO NO PROCESSO"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
         };
 
-        window.showOwnerTooltip = (e, name) => { const old = document.querySelector('.tooltip-bubble'); if(old) old.remove(); const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase(); document.body.appendChild(b); const rect = e.target.getBoundingClientRect(); b.style.left = `${rect.left + (rect.width/2) - (b.offsetWidth/2)}px`; b.style.top = `${rect.top + window.scrollY - 38}px`; setTimeout(() => b.remove(), 2000); };
+        window.showOwnerTooltip = (e, name) => { const old = document.querySelector('.tooltip-bubble'); if(old) old.remove(); const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase(); document.body.appendChild(b); const rect = e.target.getBoundingClientRect(); b.style.left = `${rect.left + (rect.width / 2) - (b.offsetWidth / 2)}px`; b.style.top = `${rect.top - 38}px`; setTimeout(() => b.remove(), 2000); };
         window.maskPhone = i => { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; };
         function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); }
     </script>
