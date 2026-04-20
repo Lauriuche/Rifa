@@ -1,3 +1,4 @@
+<Index>
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
@@ -5,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Rifa Master - SaaS Premium</title>
 
-    <!-- PWA & Mobile Meta Tags -->
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -26,7 +26,6 @@
             --text-main: #ffffff;
             --text-dim: #a1a1aa;
             --cell-bg: rgba(255, 255, 255, 0.03);
-            
             --reserved: #ffaa00;
             --paid: #00ff88;
             --selected: #007aff;
@@ -48,7 +47,6 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-
         html, body { height: 100%; width: 100%; overflow: hidden; }
 
         body {
@@ -94,22 +92,18 @@
             display: flex; align-items: center; justify-content: center; cursor: pointer; 
             transition: 0.3s; box-shadow: inset 0 0 5px rgba(255,255,255,0.05);
         }
-        .icon-btn:hover { border-color: var(--primary); transform: scale(1.05); }
 
         .prize-display { background: rgba(var(--primary-rgb), 0.03); border: 1px solid var(--border); border-radius: 20px; padding: 25px; }
         .prize-title { font-size: 1.4rem; font-weight: 800; text-shadow: 0 0 12px var(--primary-rgb); color: var(--text-main); line-height: 1.2; }
         .price-tag { font-size: 1.2rem; font-weight: 900; color: var(--primary); background: rgba(var(--primary-rgb), 0.15); padding: 12px 24px; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; align-self: center; }
 
-        .main-panel { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            gap: 15px; 
-            overflow: hidden; 
-            position: relative;
-            min-height: 0;
-        }
+        /* BARRA DE PROGRESSO NEON */
+        .progress-container { width: 100%; margin-top: 15px; text-align: left; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+        .progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), #00ffcc); box-shadow: 0 0 10px var(--primary); transition: width 1s var(--transition); }
 
+        .main-panel { flex: 1; display: flex; flex-direction: column; gap: 15px; overflow: hidden; position: relative; min-height: 0; }
         .nav-block { padding: 8px; flex-shrink: 0; }
         .nav-tabs { display: flex; gap: 8px; }
         .tab-btn { flex: 1; padding: 14px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: var(--text-dim); font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
@@ -161,66 +155,11 @@
         .btn-pay { background: var(--primary); color: #000; padding: 12px 28px; border-radius: 18px; font-weight: 900; font-size: 0.9rem; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; }
         .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0, 255, 136, 0.4); }
 
-        /* --- VISUAL DOS BOTÕES ADMIN ALINHADOS --- */
-        .admin-actions { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 10px; 
-            margin-top: 12px; 
-        }
-        .btn-admin-action { 
-            border: 1px solid transparent; 
-            padding: 14px 8px; 
-            border-radius: 16px; 
-            font-weight: 800; 
-            font-size: 0.7rem; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 8px; 
-            text-transform: uppercase; 
-        }
-        .btn-paid { 
-            background: rgba(0, 255, 136, 0.06); 
-            color: var(--primary); 
-            border-color: rgba(0, 255, 136, 0.25); 
-        }
-        .btn-paid:hover:not(:disabled) { 
-            background: rgba(0, 255, 136, 0.15); 
-            border-color: var(--primary); 
-            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2); 
-        }
-        .btn-unpaid { 
-            background: rgba(255, 170, 0, 0.06); 
-            color: var(--reserved); 
-            border-color: rgba(255, 170, 0, 0.25); 
-        }
-        .btn-unpaid:hover:not(:disabled) { 
-            background: rgba(255, 170, 0, 0.15); 
-            border-color: var(--reserved); 
-            box-shadow: 0 4px 15px rgba(255, 170, 0, 0.2); 
-        }
-        .btn-delete { 
-            background: rgba(255, 77, 77, 0.06); 
-            color: var(--danger); 
-            border-color: rgba(255, 77, 77, 0.25); 
-            grid-column: span 2;
-            margin-top: 5px;
-        }
-        .btn-delete:hover:not(:disabled) { 
-            background: rgba(255, 77, 77, 0.15); 
-            border-color: var(--danger);
-            box-shadow: 0 4px 15px rgba(255, 77, 77, 0.2);
-        }
-        .btn-admin-action:disabled { opacity: 0.15; cursor: not-allowed; filter: grayscale(1); }
-
-        .admin-stat-item { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 15px; border-radius: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
-        .admin-card { background: var(--cell-bg); border: 1px solid var(--border); padding: 14px; border-radius: 22px; margin-bottom: 12px; display: flex; flex-direction: column; overflow: hidden; transition: 0.3s; }
-        .admin-card-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .admin-card-details { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--transition); display: flex; flex-direction: column; gap: 10px; color: var(--text-main); }
-        .admin-card.expanded .admin-card-details { max-height: 800px; margin-top: 15px; }
+        .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+        .btn-admin-action { border: 1px solid transparent; padding: 14px 8px; border-radius: 16px; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
+        .btn-paid { background: rgba(0, 255, 136, 0.06); color: var(--primary); border-color: rgba(0, 255, 136, 0.25); }
+        .btn-unpaid { background: rgba(255, 170, 0, 0.06); color: var(--reserved); border-color: rgba(255, 170, 0, 0.25); }
+        .btn-delete { background: rgba(255, 77, 77, 0.06); color: var(--danger); border-color: rgba(255, 77, 77, 0.25); grid-column: span 2; margin-top: 5px; }
 
         .custom-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 16px; color: #fff; text-align: center; outline: none; margin-bottom: 15px; appearance: none; -webkit-appearance: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
@@ -228,32 +167,9 @@
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px var(--primary-glow); }
         .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); text-align: left; }
-        .unlimited-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
-        .unlimited-row input { width: 18px; height: 18px; accent-color: var(--primary); }
 
-        .tooltip-bubble { 
-            position: fixed; 
-            background: var(--surface-bright); 
-            border: 1px solid var(--primary); 
-            padding: 8px 15px; 
-            border-radius: 12px; 
-            font-size: 0.7rem; 
-            font-weight: 800; 
-            z-index: 9999; 
-            animation: floatUpTooltip 2s forwards; 
-            pointer-events: none; 
-            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
-            color: var(--text-main);
-            text-transform: uppercase;
-        }
-        @keyframes floatUpTooltip { 
-            0% { opacity: 0; transform: translateY(5px); } 
-            15% { opacity: 1; transform: translateY(0); } 
-            85% { opacity: 1; transform: translateY(0); } 
-            100% { opacity: 0; transform: translateY(-15px); } 
-        }
+        .tooltip-bubble { position: fixed; background: var(--surface-bright); border: 1px solid var(--primary); padding: 8px 15px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; z-index: 9999; animation: floatUpTooltip 2s forwards; pointer-events: none; box-shadow: 0 4px 15px rgba(0,255,136,0.3); color: var(--text-main); text-transform: uppercase; }
+        @keyframes floatUpTooltip { 0% { opacity: 0; transform: translateY(5px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-15px); } }
     </style>
 </head>
 <body>
@@ -261,7 +177,6 @@
     <div id="toast" class="toast">Mensagem</div>
 
     <div class="app-wrapper">
-        <!-- PAINEL ESQUERDO -->
         <header class="block-container header-panel">
             <div class="header-controls">
                 <button class="icon-btn" onclick="window.toggleTheme()"><i data-lucide="moon" id="theme-icon"></i></button>
@@ -275,10 +190,19 @@
                     <i data-lucide="ticket" style="width: 20px;"></i>
                     <span id="display-valor">R$ 0,00</span>
                 </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Vendido</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
             </div>
         </header>
 
-        <!-- PAINEL DIREITO -->
         <div class="main-panel">
             <nav class="block-container nav-block">
                 <div class="nav-tabs">
@@ -292,7 +216,6 @@
 
             <main class="block-container content-block">
                 <div class="content-scroll" id="main-scroll">
-                    
                     <div id="view-rifa">
                         <div class="adj-grid">
                             <div class="adj-tile minus" onclick="window.adjustSelection(-10)"><b>-10</b><span>COTAS</span></div>
@@ -311,7 +234,6 @@
                             <div class="legend-chip" data-grid-filter="reserved" onclick="window.setGridFilter('reserved')"><div class="dot reserved"></div>RESERVADOS</div>
                             <div class="legend-chip" data-grid-filter="paid" onclick="window.setGridFilter('paid')"><div class="dot paid"></div>PAGOS</div>
                         </div>
-
                         <div class="grid-container" id="grid"></div>
                     </div>
 
@@ -328,9 +250,9 @@
                         <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;"></div>
                         <input type="text" id="admin-search" class="custom-input" placeholder="Filtrar nome ou cota..." oninput="window.renderAdmin()">
                         <div class="legend-filter" style="margin-bottom:15px">
-                            <div class="legend-chip active" id="filter-admin-all" onclick="window.setAdminFilter('all')">TODOS</div>
-                            <div class="legend-chip" id="filter-admin-paid" onclick="window.setAdminFilter('paid')">PAGOS</div>
-                            <div class="legend-chip" id="filter-admin-reserved" onclick="window.setAdminFilter('reserved')">PENDENTES</div>
+                            <div class="legend-chip active" onclick="window.setAdminFilter('all')">TODOS</div>
+                            <div class="legend-chip" onclick="window.setAdminFilter('paid')">PAGOS</div>
+                            <div class="legend-chip" onclick="window.setAdminFilter('reserved')">PENDENTES</div>
                         </div>
                         <div style="display:flex; gap:10px; margin-bottom:15px;">
                             <button class="btn-pay" style="flex:1; background:var(--secondary);" onclick="window.openConfigModal()">CONFIGURAR</button>
@@ -355,14 +277,11 @@
         </div>
     </div>
 
-    <!-- MODAIS -->
     <div class="modal-overlay" id="modal-pin">
         <div class="modal-card" style="max-width:340px">
             <h3 style="margin-bottom:10px">ACESSO ADMIN</h3>
-            <p style="font-size:0.75rem; color:var(--text-dim); margin-bottom:25px">Insira a senha administrativa para continuar</p>
             <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="8" inputmode="numeric" style="letter-spacing:10px; font-size:1.5rem">
             <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.validateAdmin()">ENTRAR</button>
-            <button onclick="window.closeModal('modal-pin')" style="margin-top:15px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">CANCELAR</button>
         </div>
     </div>
 
@@ -391,31 +310,17 @@
             <h3 style="color:var(--primary); margin-bottom:15px;">AJUSTES DA RIFA</h3>
             <input type="text" id="cfg-premio" class="custom-input" placeholder="Prêmio">
             <textarea id="cfg-descricao" class="custom-input" placeholder="Descrição" style="height:60px;"></textarea>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                <input type="number" id="cfg-valor" class="custom-input" placeholder="Valor Unitário">
-                <input type="number" id="cfg-total" class="custom-input" placeholder="Total Números">
-            </div>
+            <input type="number" id="cfg-valor" class="custom-input" placeholder="Valor Unitário">
+            <input type="number" id="cfg-total" class="custom-input" placeholder="Total Números">
             <input type="password" id="cfg-pin" class="custom-input" placeholder="Novo PIN Admin">
-            
-            <div style="border-top:1px solid var(--border); padding-top:15px; margin-top: 10px;">
-                <h4 style="color:var(--promo-gold); margin-bottom: 10px; font-size: 0.8rem">PROMOÇÕES AUTOMÁTICAS</h4>
-                <button id="btn-toggle-promos" class="icon-btn" onclick="window.togglePromosState()" style="width:100%; margin-bottom:10px;">OFF</button>
-                <div id="promos-list"></div>
-                <button class="btn-pay" style="width:100%; margin-bottom:15px; justify-content:center; font-size: 0.7rem; height: 40px;" onclick="window.addPromoRow()">+ REGRA QUANTIDADE</button>
-
-                <h4 style="color:var(--promo-accent); margin-bottom: 10px; font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 15px">CUPONS DE DESCONTO</h4>
-                <div id="coupons-list"></div>
-                <button class="btn-pay" style="width:100%; justify-content:center; font-size: 0.7rem; background: var(--secondary); height: 40px;" onclick="window.addCouponRow()">+ NOVO CUPOM</button>
-            </div>
-
-            <button class="btn-pay" style="width:100%; margin-top:25px; justify-content:center" onclick="window.saveRifaConfig()">SALVAR TUDO</button>
+            <button class="btn-pay" style="width:100%; margin-top:20px; justify-content:center" onclick="window.saveRifaConfig()">SALVAR ALTERAÇÕES</button>
             <button onclick="window.closeModal('modal-config')" style="margin-top: 10px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">FECHAR</button>
         </div>
     </div>
 
     <div class="modal-overlay" id="modal-confirm">
         <div class="modal-card" style="border-color: var(--danger);">
-            <h3 style="color: var(--danger); margin-bottom:15px;">CONFIRMAR?</h3>
+            <h3 style="color: var(--danger); margin-bottom:15px;">CONFIRMAR AÇÃO?</h3>
             <p id="confirm-msg" style="margin-bottom:25px; font-size:0.9rem; line-height:1.4"></p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
                 <button class="btn-pay" style="background:var(--danger); justify-content:center" onclick="window.executeConfirmedAction()">SIM</button>
@@ -445,6 +350,7 @@
         const numRef = ref(db, "rifa_master/numeros");
 
         const HANDLE = "vagner_lauriuche--inc";
+        const DEFAULT_EMAIL = "cliente@rifamaster.com.br"; // E-mail genérico pré-preenchido
 
         let config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", promosActive: false, promos: [], coupons: [] };
         let dbNumbers = {};
@@ -459,7 +365,12 @@
 
         // Sync Database
         onValue(cfgRef, (s) => { if(s.exists()){ config = { ...config, ...s.val() }; renderUI(); } });
-        onValue(numRef, (s) => { dbNumbers = s.exists() ? s.val() : {}; renderGrid(); if(isAdmin) window.renderAdmin(); });
+        onValue(numRef, (s) => { 
+            dbNumbers = s.exists() ? s.val() : {}; 
+            renderGrid(); 
+            updateProgress();
+            if(isAdmin) window.renderAdmin(); 
+        });
 
         function renderUI() {
             document.getElementById('display-premio').innerText = (config.premio || '...').toUpperCase();
@@ -475,6 +386,15 @@
                 });
             } else area.style.display = 'none';
             updateFooter();
+        }
+
+        // ATUALIZAÇÃO DA BARRA DE PROGRESSO
+        function updateProgress() {
+            const total = config.total || 100;
+            const pagos = Object.values(dbNumbers).filter(n => n.status === 'paid').length;
+            const pct = Math.round((pagos / total) * 100);
+            document.getElementById('progress-pct').innerText = `${pct}%`;
+            document.getElementById('progress-bar').style.width = `${pct}%`;
         }
 
         window.toggleTheme = () => {
@@ -579,7 +499,6 @@
         };
 
         window.askAdmin = () => { if(isAdmin) window.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; };
-        
         window.validateAdmin = () => { 
             const typedPin = document.getElementById('admin-pin').value.trim();
             const correctPin = config.pin.toString().trim();
@@ -626,7 +545,12 @@
             try {
                 const up = {}; listaStr.split(',').forEach(n => up[`${n}/order_nsu`] = oid);
                 await update(numRef, up);
-                const payData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": nome, "phone_number": "55" + tel }, "items": [{"quantity":1, "price":Math.round(totalCusto * 100), "description":"Pagar Rifa"}] };
+                const payData = { 
+                    "handle": HANDLE, 
+                    "order_nsu": oid, 
+                    "customer": { "name": nome, "phone_number": "55" + tel, "email": DEFAULT_EMAIL }, 
+                    "items": [{"quantity":1, "price":Math.round(totalCusto * 100), "description":"Pagar Rifa"}] 
+                };
                 const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payData) });
                 const d = await res.json();
                 if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url;
@@ -658,9 +582,9 @@
                 card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="icon-btn" style="background:var(--whatsapp); color:#000; border:none;" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:18px"></i></button></div>
                 <div class="admin-card-details"><span>${p.telefone}</span><div style="background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                 <div class="admin-actions">
-                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))"><i data-lucide="check-circle" style="width:14px"></i> PAGOS</button>
-                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))"><i data-lucide="clock" style="width:14px"></i> PENDENTES</button>
-                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width:14px"></i> EXCLUIR</button>
+                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
+                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
+                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR</button>
                 </div></div>`;
                 list.appendChild(card);
             });
@@ -673,100 +597,34 @@
         window.adminUpdateStatus = async (ph, s) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); await update(numRef, up); showToast("✅ ATUALIZADO"); };
         window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); showToast("🗑️ EXCLUÍDO"); };
         window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 RESETADO"); }); };
-        window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.legend-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
-
-        window.openConfigModal = () => {
-            document.getElementById('cfg-premio').value = config.premio || "";
-            document.getElementById('cfg-valor').value = config.valor || 0;
-            document.getElementById('cfg-total').value = config.total || 0;
-            document.getElementById('cfg-pin').value = config.pin || "";
-            document.getElementById('cfg-descricao').value = config.descricao || "";
-            document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF";
-            
-            const pList = document.getElementById('promos-list');
-            pList.innerHTML = '';
-            if(config.promos) config.promos.forEach(p => window.addPromoRow(p));
-            
-            const cList = document.getElementById('coupons-list');
-            cList.innerHTML = '';
-            if(config.coupons) config.coupons.forEach(c => window.addCouponRow(c));
-            
-            document.getElementById('modal-config').style.display = 'flex';
+        window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
+        window.openConfigModal = () => { document.getElementById('cfg-premio').value = config.premio || ""; document.getElementById('cfg-valor').value = config.valor || 0; document.getElementById('cfg-total').value = config.total || 0; document.getElementById('cfg-pin').value = config.pin || ""; document.getElementById('cfg-descricao').value = config.descricao || ""; document.getElementById('modal-config').style.display = 'flex'; };
+        window.saveRifaConfig = () => { const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, descricao: document.getElementById('cfg-descricao').value }; set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO"); }); };
+        window.applyCoupon = () => { const code = document.getElementById('coupon-input').value.trim().toUpperCase(); const coupon = (config.coupons || []).find(c => c.code.toUpperCase() === code); if(!coupon) return showToast("❌ CUPOM INVÁLIDO"); appliedCoupon = coupon; const res = calculateBestPrice(selected.size, true); document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); showToast("✅ APLICADO"); };
+        window.abrirCheckout = () => { appliedCoupon = null; const res = calculateBestPrice(selected.size, true); document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); document.getElementById('modal-checkout').style.display = 'flex'; };
+        
+        window.confirmarReserva = async () => { 
+            const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim(); 
+            if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS"); 
+            const btn = document.getElementById('btn-confirm-res'); btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; 
+            const res = calculateBestPrice(selected.size, true); 
+            const oid = "RN" + Date.now(); 
+            try { 
+                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: res.final / selected.size }); 
+                await update(numRef, up); 
+                const payData = { 
+                    "handle": HANDLE, 
+                    "order_nsu": oid, 
+                    "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,''), "email": DEFAULT_EMAIL }, 
+                    "items": [{"quantity": 1, "price": Math.round(res.final * 100), "description": `Reserva Rifa`}] 
+                }; 
+                const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) }); 
+                const d = await payRes.json(); 
+                if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url; 
+                else { selected.clear(); window.closeModal('modal-checkout'); } 
+            } catch(e) { btn.disabled = false; btn.innerText = "ERRO - TENTAR NOVAMENTE"; } 
         };
 
-        window.addPromoRow = (d = {min:10, val:10, type:'pct'}) => {
-            const div = document.createElement('div'); div.className = 'promo-editor-card';
-            div.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px; margin-bottom:5px"><input type="number" class="custom-input p-min" value="${d.min}" style="margin:0"><select class="custom-input p-type" style="margin:0"><option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option><option value="free" ${d.type==='free'?'selected':''}>Grátis</option></select></div><input type="number" class="custom-input p-val" value="${d.val}"><button class="btn-pay" style="width:100%; height:40px; background:var(--danger); color:#fff; font-size:0.6rem" onclick="this.parentElement.remove()">REMOVER REGRA</button>`;
-            document.getElementById('promos-list').appendChild(div);
-        };
-
-        window.addCouponRow = (d = {code:'', val:5, unlimited:false, limit:0, type:'val'}) => {
-            const div = document.createElement('div'); div.className = 'promo-editor-card'; div.style.borderColor = 'var(--promo-accent)';
-            div.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="CÓDIGO"><div class="unlimited-row"><input type="checkbox" class="c-unlimited" ${d.unlimited?'checked':''}><span>ILIMITADO</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px"><div><input type="number" class="custom-input c-val" value="${d.val}" style="margin:0"></div><div><select class="custom-input c-type" style="margin:0"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><input type="number" class="custom-input c-limit" value="${d.limit}" placeholder="LIMITE"><button class="btn-pay" style="width:100%; height:40px; background:var(--danger); color:#fff; font-size:0.6rem" onclick="this.parentElement.remove()">REMOVER CUPOM</button>`;
-            document.getElementById('coupons-list').appendChild(div);
-        };
-
-        window.saveRifaConfig = () => {
-            const pr = [], cp = [];
-            document.querySelectorAll('#promos-list .promo-editor-card').forEach(row => {
-                pr.push({ min: parseInt(row.querySelector('.p-min').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value });
-            });
-            document.querySelectorAll('#coupons-list .promo-editor-card').forEach(row => {
-                const code = row.querySelector('.c-code').value.toUpperCase();
-                cp.push({ code: code, type: row.querySelector('.c-type').value, val: parseFloat(row.querySelector('.c-val').value), unlimited: row.querySelector('.c-unlimited').checked, limit: parseInt(row.querySelector('.c-limit').value), used: config.coupons?.find(x => x.code === code)?.used || 0 });
-            });
-            const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr, coupons: cp, descricao: document.getElementById('cfg-descricao').value };
-            set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO COM SUCESSO"); });
-        };
-
-        window.togglePromosState = () => { config.promosActive = !config.promosActive; document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF"; };
-
-        window.applyCoupon = () => {
-            const code = document.getElementById('coupon-input').value.trim().toUpperCase();
-            const coupon = (config.coupons || []).find(c => c.code.toUpperCase() === code);
-            if(!coupon) return showToast("❌ CUPOM INVÁLIDO");
-            if(!coupon.unlimited && coupon.limit > 0 && (coupon.used || 0) >= coupon.limit) return showToast("⚠️ ESGOTADO");
-            appliedCoupon = coupon;
-            const res = calculateBestPrice(selected.size, true);
-            document.getElementById('checkout-coupon-info').innerText = `Cupom: - ${coupon.type==='pct'?coupon.val+'%':'R$ '+coupon.val.toFixed(2)}`;
-            document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            showToast("✅ CUPOM APLICADO");
-        };
-
-        window.abrirCheckout = () => {
-            appliedCoupon = null;
-            document.getElementById('coupon-input').value = "";
-            document.getElementById('checkout-coupon-info').innerText = "";
-            const res = calculateBestPrice(selected.size, true);
-            document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-            document.getElementById('checkout-discount-info').innerText = res.promoDiscount > 0 ? `Promoção: - ${res.promoDiscount.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}` : "";
-            document.getElementById('modal-checkout').style.display = 'flex';
-        };
-
-        window.confirmarReserva = async () => {
-            const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim();
-            if(!n || t.length < 10) return showToast("⚠️ PREENCHA OS DADOS");
-            const btn = document.getElementById('btn-confirm-res');
-            btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>';
-            const res = calculateBestPrice(selected.size, true);
-            const valorUnidadeFixado = res.final / selected.size;
-            const oid = "RN" + Date.now();
-            try {
-                if(appliedCoupon) {
-                    const idx = config.coupons.findIndex(c => c.code === appliedCoupon.code);
-                    if(idx !== -1) await update(ref(db, `rifa_master/config/coupons/${idx}`), { used: (config.coupons[idx].used || 0) + 1 });
-                }
-                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado });
-                await update(numRef, up);
-                const payData = { "handle": HANDLE, "order_nsu": oid, "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,'') }, "items": [{ "quantity": 1, "price": Math.round(res.final * 100), "description": `Reserva Rifa Premium` }] };
-                const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) });
-                const d = await payRes.json();
-                if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url;
-                else { showToast("✅ RESERVADO!"); selected.clear(); window.closeModal('modal-checkout'); }
-            } catch(e) { showToast("❌ ERRO NO PROCESSO"); btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; }
-        };
-
-        window.showOwnerTooltip = (e, name) => { const old = document.querySelector('.tooltip-bubble'); if(old) old.remove(); const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase(); document.body.appendChild(b); const rect = e.target.getBoundingClientRect(); b.style.left = `${rect.left + (rect.width / 2) - (b.offsetWidth / 2)}px`; b.style.top = `${rect.top - 38}px`; setTimeout(() => b.remove(), 2000); };
         window.maskPhone = i => { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; };
         function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); }
     </script>
