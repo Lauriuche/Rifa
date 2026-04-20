@@ -60,19 +60,15 @@
         }
 
         .app-wrapper {
-            width: 100%; max-width: 1300px;
-            height: 100%;
-            display: flex; flex-direction: column;
-            gap: 15px;
-            position: relative;
-            min-height: 0;
+            width: 100%; max-width: 1300px; height: 100%;
+            display: flex; flex-direction: column; gap: 15px;
+            position: relative; min-height: 0;
         }
 
         .block-container {
             background: var(--surface);
             backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border);
-            border-radius: 28px;
+            border: 1px solid var(--border); border-radius: 28px;
             box-shadow: var(--neon-glow);
         }
 
@@ -98,7 +94,6 @@
         .prize-title { font-size: 1.4rem; font-weight: 800; text-shadow: 0 0 12px var(--primary-rgb); color: var(--text-main); line-height: 1.2; }
         .price-tag { font-size: 1.2rem; font-weight: 900; color: var(--primary); background: rgba(var(--primary-rgb), 0.15); padding: 12px 24px; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; align-self: center; }
 
-        /* BARRA DE PROGRESSO ATUALIZADA */
         .progress-container { width: 100%; margin-top: 18px; text-align: left; }
         .progress-label { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
         .progress-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
@@ -111,8 +106,9 @@
         .tab-btn { flex: 1; padding: 14px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: var(--text-dim); font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
         .tab-btn.active { background: var(--surface-bright); color: var(--primary); border-color: var(--primary); }
 
-        .promo-block { padding: 12px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; flex-shrink: 0; }
-        .promo-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 12px; color: var(--promo-gold); font-weight: 800; font-size: 0.65rem; text-align: center; text-transform: uppercase; border: 1px dashed var(--promo-gold); }
+        .promo-block { padding: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; flex-shrink: 0; }
+        .promo-item { background: rgba(var(--promo-gold), 0.05); padding: 12px 8px; border-radius: 16px; color: var(--promo-gold); font-weight: 800; font-size: 0.65rem; text-align: center; text-transform: uppercase; border: 1px solid rgba(var(--promo-gold), 0.2); display: flex; flex-direction: column; gap: 4px; transition: 0.3s; }
+        .promo-item b { font-size: 0.8rem; color: var(--promo-gold); }
 
         .content-block { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0; }
         .content-scroll { flex: 1; overflow-y: auto !important; padding: 15px 15px 110px 15px; position: relative; -webkit-overflow-scrolling: touch; }
@@ -166,10 +162,11 @@
         .custom-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 16px; color: #fff; text-align: center; outline: none; margin-bottom: 15px; appearance: none; -webkit-appearance: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { background: var(--surface-bright); width: 100%; max-width: 440px; border-radius: 35px; padding: 35px; border: 2px solid var(--primary); text-align: center; max-height: 90vh; overflow-y: auto; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4); }
-        .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px var(--primary-glow); }
+        .spinner { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
+        
+        .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); text-align: left; }
         .tooltip-bubble { position: fixed; background: var(--surface-bright); border: 1px solid var(--primary); padding: 8px 15px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; z-index: 9999; animation: floatUpTooltip 2s forwards; pointer-events: none; box-shadow: 0 4px 15px rgba(0,255,136,0.3); color: var(--text-main); text-transform: uppercase; }
         @keyframes floatUpTooltip { 0% { opacity: 0; transform: translateY(5px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-15px); } }
     </style>
@@ -194,10 +191,9 @@
                     <span id="display-valor">R$ 0,00</span>
                 </div>
                 
-                <!-- BARRA DE PROGRESSO ATUALIZADA -->
                 <div class="progress-container">
                     <div class="progress-label">
-                        <span>Total Vendido: <b id="stat-total-vendido" style="color:var(--text-main)">0</b></span>
+                        <span>Vendido: <b id="stat-total-vendido" style="color:var(--text-main)">0</b></span>
                         <span id="progress-pct">0%</span>
                     </div>
                     <div class="progress-bg">
@@ -320,10 +316,25 @@
             <h3 style="color:var(--primary); margin-bottom:15px;">AJUSTES DA RIFA</h3>
             <input type="text" id="cfg-premio" class="custom-input" placeholder="Prêmio">
             <textarea id="cfg-descricao" class="custom-input" placeholder="Descrição" style="height:60px;"></textarea>
-            <input type="number" id="cfg-valor" class="custom-input" placeholder="Valor Unitário">
-            <input type="number" id="cfg-total" class="custom-input" placeholder="Total Números">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <input type="number" id="cfg-valor" class="custom-input" placeholder="Valor Unitário">
+                <input type="number" id="cfg-total" class="custom-input" placeholder="Total Números">
+            </div>
+            <input type="text" id="cfg-handle" class="custom-input" placeholder="InfinitePay Handle">
             <input type="password" id="cfg-pin" class="custom-input" placeholder="Novo PIN Admin">
-            <button class="btn-pay" style="width:100%; margin-top:20px; justify-content:center" onclick="window.saveRifaConfig()">SALVAR ALTERAÇÕES</button>
+            
+            <div style="border-top:1px solid var(--border); padding-top:15px; margin-top: 10px;">
+                <h4 style="color:var(--promo-gold); margin-bottom: 10px; font-size: 0.8rem">PROMOÇÕES AUTOMÁTICAS</h4>
+                <button id="btn-toggle-promos" class="icon-btn" onclick="window.togglePromosState()" style="width:100%; margin-bottom:10px;">OFF</button>
+                <div id="promos-list"></div>
+                <button class="btn-pay" style="width:100%; margin-bottom:15px; justify-content:center; font-size: 0.7rem; height: 40px;" onclick="window.addPromoRow()">+ REGRA QUANTIDADE</button>
+
+                <h4 style="color:var(--promo-accent); margin-bottom: 10px; font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 15px">CUPONS DE DESCONTO</h4>
+                <div id="coupons-list"></div>
+                <button class="btn-pay" style="width:100%; justify-content:center; font-size: 0.7rem; background: var(--secondary); height: 40px;" onclick="window.addCouponRow()">+ NOVO CUPOM</button>
+            </div>
+
+            <button class="btn-pay" style="width:100%; margin-top:25px; justify-content:center" onclick="window.saveRifaConfig()">SALVAR TUDO</button>
             <button onclick="window.closeModal('modal-config')" style="margin-top: 10px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">FECHAR</button>
         </div>
     </div>
@@ -359,10 +370,9 @@
         const cfgRef = ref(db, "rifa_master/config");
         const numRef = ref(db, "rifa_master/numeros");
 
-        const HANDLE = "vagner_lauriuche--inc";
-        const DEFAULT_EMAIL = "cliente@rifamaster.com.br"; // E-mail genérico silencioso
+        const DEFAULT_EMAIL = "cliente@rifamaster.com.br";
 
-        let config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", promosActive: false, promos: [], coupons: [] };
+        let config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", handle: "vagner_lauriuche--inc", promosActive: false, promos: [], coupons: [] };
         let dbNumbers = {};
         let selected = new Set();
         let isAdmin = false;
@@ -373,7 +383,6 @@
 
         lucide.createIcons();
 
-        // Sync Database
         onValue(cfgRef, (s) => { if(s.exists()){ config = { ...config, ...s.val() }; renderUI(); } });
         onValue(numRef, (s) => { 
             dbNumbers = s.exists() ? s.val() : {}; 
@@ -391,23 +400,20 @@
             if(config.promosActive && config.promos && config.promos.length > 0) {
                 area.style.display = 'grid';
                 config.promos.forEach(p => {
-                    const text = p.type === 'pct' ? `GANHE ${p.val}% OFF` : `GANHE ${p.val} GRÁTIS`;
+                    const text = p.type === 'pct' ? `<b>${p.val}% OFF</b>` : `<b>${p.val} GRÁTIS</b>`;
                     area.innerHTML += `<div class="promo-item">COMPRE ${p.min}<br>${text}</div>`;
                 });
             } else area.style.display = 'none';
             updateFooter();
         }
 
-        // BARRA DE PROGRESSO EM TEMPO REAL
         function updateProgress() {
             const total = parseInt(config.total) || 1;
             const nums = Object.values(dbNumbers);
             const pagosCount = nums.filter(n => n.status === 'paid').length;
             const reservasCount = nums.filter(n => n.status === 'reserved').length;
             const totalVendidoCount = pagosCount + reservasCount;
-            
             const pctVendido = Math.min(100, Math.round((totalVendidoCount / total) * 100));
-
             document.getElementById('progress-pct').innerText = `${pctVendido}%`;
             document.getElementById('progress-bar').style.width = `${pctVendido}%`;
             document.getElementById('stat-pagos').innerText = pagosCount;
@@ -521,11 +527,7 @@
         window.validateAdmin = () => { 
             const typedPin = document.getElementById('admin-pin').value.trim();
             const correctPin = config.pin.toString().trim();
-            if(typedPin === correctPin) { 
-                isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; 
-                document.getElementById('admin-lock-icon').setAttribute('data-lucide', 'unlock');
-                window.closeModal('modal-pin'); window.switchTab('admin'); 
-            } else showToast("❌ PIN INVÁLIDO");
+            if(typedPin === correctPin) { isAdmin = true; document.getElementById('tab-admin').style.display = 'block'; document.getElementById('admin-lock-icon').setAttribute('data-lucide', 'unlock'); window.closeModal('modal-pin'); window.switchTab('admin'); } else showToast("❌ PIN INVÁLIDO");
             lucide.createIcons();
         };
 
@@ -543,13 +545,16 @@
                     const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
                     const nome = filtered[0][1].nome;
                     if(pendentes.length > 0) {
-                        const totalPendente = pendentes.reduce((acc, n) => acc + (all[n].valor_fixado_unidade || config.valor), 0);
+                        const totalPendente = pendentes.reduce((acc, n) => acc + (parseFloat(all[n].valor_fixado_unidade) || parseFloat(config.valor)), 0);
+                        const listaStr = pendentes.join(',');
+                        // Escape caracteres para o botão
+                        const nomeSafe = nome.replace(/'/g, "\\'"); 
                         area.innerHTML += `
                             <div class="block-container" style="padding:20px; margin-bottom:10px; border-color:var(--reserved); text-align:center;">
                                 <b style="color:var(--reserved); font-size:0.75rem">PENDENTES</b>
                                 <p style="font-weight:800; margin:10px 0; font-size:1.1rem;">${pendentes.join(', ')}</p>
-                                <p style="font-size:1.2rem; font-weight:900; color:var(--primary); margin-bottom:15px">R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
-                                <button class="btn-pay" id="btn-pay-pending" style="width:100%; justify-content:center" onclick="window.confirmarPagamentoExistente('${tel}', '${nome}', '${pendentes.join(',')}', ${totalPendente})">PAGAR AGORA (PIX)</button>
+                                <p style="font-size:1.2rem; font-weight:900; color:var(--primary); margin-bottom:15px">Total: R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
+                                <button class="btn-pay" id="btn-pay-pending" style="width:100%; justify-content:center" onclick="window.confirmarPagamentoExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
                             </div>`;
                     }
                     if(pagos.length > 0) area.innerHTML += `<div class="block-container" style="padding:15px; border-color:var(--paid); text-align:left;"><b style="color:var(--paid); font-size:0.7rem">PAGOS:</b><p style="font-weight:700; margin-top:5px; color:var(--primary)">${pagos.join(', ')}</p></div>`;
@@ -558,31 +563,40 @@
             lucide.createIcons();
         };
 
-        // CORREÇÃO PAGAMENTO (CONSULTA)
+        // CORREÇÃO: Pagamento robusto para consulta posterior
         window.confirmarPagamentoExistente = async (tel, nome, listaStr, totalCusto) => {
             const btn = document.getElementById('btn-pay-pending');
             if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
             showToast("⏳ GERANDO PAGAMENTO...");
+            
+            // Garantir cêntimos inteiros
+            const priceCents = Math.round(parseFloat(totalCusto).toFixed(2) * 100);
             const oid = "RP" + Date.now();
+            
             try {
                 const up = {}; listaStr.split(',').forEach(n => up[`${n}/order_nsu`] = oid);
                 await update(numRef, up);
                 
-                // Formatação robusta para centavos (inteiro)
-                const priceCents = Math.floor(parseFloat(totalCusto).toFixed(2) * 100);
-                
                 const payData = { 
-                    "handle": HANDLE, 
+                    "handle": config.handle, 
                     "order_nsu": oid, 
                     "customer": { "name": nome, "phone_number": "55" + tel.replace(/\D/g,''), "email": DEFAULT_EMAIL }, 
-                    "items": [{"quantity": 1, "price": priceCents, "description": "Pagamento de Rifa"}] 
+                    "items": [{"quantity": 1, "price": priceCents, "description": `Pagar Bilhetes Rifa`}] 
                 };
                 
-                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payData) });
+                const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { 
+                    method:'POST', 
+                    headers:{'Content-Type':'application/json'}, 
+                    body:JSON.stringify(payData) 
+                });
+                
                 const d = await res.json();
                 if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url;
-                else throw new Error();
-            } catch(e) { showToast("❌ ERRO NO SERVIDOR"); if(btn) { btn.disabled=false; btn.innerText="TENTAR NOVAMENTE"; } }
+                else throw new Error("API Fallback");
+            } catch(e) { 
+                showToast("❌ ERRO NO GATEWAY"); 
+                if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; } 
+            }
         };
 
         window.renderAdmin = () => {
@@ -590,7 +604,7 @@
             const search = document.getElementById('admin-search').value.toLowerCase();
             let tPaid = 0; const groups = {};
             Object.entries(dbNumbers).forEach(([n, d]) => {
-                const val = (d.valor_fixado_unidade || config.valor);
+                const val = (parseFloat(d.valor_fixado_unidade) || parseFloat(config.valor));
                 if(d.status === 'paid') tPaid += val;
                 const phKey = (d.telefone || "0").replace(/\D/g,'');
                 if(!groups[phKey]) groups[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
@@ -609,9 +623,9 @@
                 card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="icon-btn" style="background:var(--whatsapp); color:#000; border:none;" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:18px"></i></button></div>
                 <div class="admin-card-details"><span>${p.telefone}</span><div style="background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                 <div class="admin-actions">
-                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))"><i data-lucide="check-circle" style="width:14px"></i> PAGOS</button>
-                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))"><i data-lucide="clock" style="width:14px"></i> PENDENTES</button>
-                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width:14px"></i> EXCLUIR</button>
+                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Confirmar pagamento?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
+                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
+                    <button class="btn-admin-action btn-delete" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR</button>
                 </div></div>`;
                 list.appendChild(card);
             });
@@ -625,32 +639,67 @@
         window.adminDeleteParticipant = async (ph) => { const up = {}; Object.entries(dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); await update(numRef, up); showToast("🗑️ EXCLUÍDO"); };
         window.resetRifa = () => { window.requestConfirmAction('⚠️ RESET TOTAL?', async () => { await remove(numRef); showToast("🔥 RESETADO"); }); };
         window.setAdminFilter = v => { adminFilter = v; document.querySelectorAll('.filter-chip').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(v.toLowerCase()) || (v==='all' && c.innerText==='TODOS'))); window.renderAdmin(); };
-        window.openConfigModal = () => { document.getElementById('cfg-premio').value = config.premio || ""; document.getElementById('cfg-valor').value = config.valor || 0; document.getElementById('cfg-total').value = config.total || 0; document.getElementById('cfg-pin').value = config.pin || ""; document.getElementById('cfg-descricao').value = config.descricao || ""; document.getElementById('modal-config').style.display = 'flex'; };
-        window.saveRifaConfig = () => { const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), pin: document.getElementById('cfg-pin').value, descricao: document.getElementById('cfg-descricao').value }; set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO"); }); };
+
+        window.openConfigModal = () => {
+            document.getElementById('cfg-premio').value = config.premio || "";
+            document.getElementById('cfg-valor').value = config.valor || 0;
+            document.getElementById('cfg-total').value = config.total || 0;
+            document.getElementById('cfg-handle').value = config.handle || "";
+            document.getElementById('cfg-pin').value = config.pin || "";
+            document.getElementById('cfg-descricao').value = config.descricao || "";
+            document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF";
+            const pList = document.getElementById('promos-list'); pList.innerHTML = '';
+            if(config.promos) config.promos.forEach(p => window.addPromoRow(p));
+            const cList = document.getElementById('coupons-list'); cList.innerHTML = '';
+            if(config.coupons) config.coupons.forEach(c => window.addCouponRow(c));
+            document.getElementById('modal-config').style.display = 'flex';
+        };
+
+        window.addPromoRow = (d = {min:10, val:10, type:'pct'}) => {
+            const div = document.createElement('div'); div.className = 'promo-editor-card';
+            div.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px; margin-bottom:5px"><input type="number" class="custom-input p-min" value="${d.min}" style="margin:0"><select class="custom-input p-type" style="margin:0"><option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option><option value="free" ${d.type==='free'?'selected':''}>Grátis</option></select></div><input type="number" class="custom-input p-val" value="${d.val}"><button class="btn-pay" style="width:100%; height:40px; background:var(--danger); color:#fff; font-size:0.6rem" onclick="this.parentElement.remove()">REMOVER REGRA</button>`;
+            document.getElementById('promos-list').appendChild(div);
+        };
+
+        window.addCouponRow = (d = {code:'', val:5, unlimited:false, limit:0, type:'val'}) => {
+            const div = document.createElement('div'); div.className = 'promo-editor-card'; div.style.borderColor = 'var(--promo-accent)';
+            div.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="CÓDIGO"><div class="unlimited-row"><input type="checkbox" class="c-unlimited" ${d.unlimited?'checked':''}><span>ILIMITADO</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px"><div><input type="number" class="custom-input c-val" value="${d.val}" style="margin:0"></div><div><select class="custom-input c-type" style="margin:0"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><input type="number" class="custom-input c-limit" value="${d.limit}" placeholder="LIMITE"><button class="btn-pay" style="width:100%; height:40px; background:var(--danger); color:#fff; font-size:0.6rem" onclick="this.parentElement.remove()">REMOVER CUPOM</button>`;
+            document.getElementById('coupons-list').appendChild(div);
+        };
+
+        window.saveRifaConfig = () => {
+            const pr = [], cp = [];
+            document.querySelectorAll('#promos-list .promo-editor-card').forEach(row => { pr.push({ min: parseInt(row.querySelector('.p-min').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value }); });
+            document.querySelectorAll('#coupons-list .promo-editor-card').forEach(row => { const code = row.querySelector('.c-code').value.toUpperCase(); cp.push({ code: code, type: row.querySelector('.c-type').value, val: parseFloat(row.querySelector('.c-val').value), unlimited: row.querySelector('.c-unlimited').checked, limit: parseInt(row.querySelector('.c-limit').value), used: config.coupons?.find(x => x.code === code)?.used || 0 }); });
+            const up = { premio: document.getElementById('cfg-premio').value, valor: parseFloat(document.getElementById('cfg-valor').value), total: parseInt(document.getElementById('cfg-total').value), handle: document.getElementById('cfg-handle').value, pin: document.getElementById('cfg-pin').value, promosActive: config.promosActive, promos: pr, coupons: cp, descricao: document.getElementById('cfg-descricao').value };
+            set(cfgRef, up).then(() => { window.closeModal('modal-config'); showToast("✅ SALVO COM SUCESSO"); });
+        };
+
+        window.togglePromosState = () => { config.promosActive = !config.promosActive; document.getElementById('btn-toggle-promos').innerText = config.promosActive ? "ON" : "OFF"; };
         window.applyCoupon = () => { const code = document.getElementById('coupon-input').value.trim().toUpperCase(); const coupon = (config.coupons || []).find(c => c.code.toUpperCase() === code); if(!coupon) return showToast("❌ CUPOM INVÁLIDO"); appliedCoupon = coupon; const res = calculateBestPrice(selected.size, true); document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); showToast("✅ APLICADO"); };
         window.abrirCheckout = () => { appliedCoupon = null; const res = calculateBestPrice(selected.size, true); document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); document.getElementById('modal-checkout').style.display = 'flex'; };
         
-        // CORREÇÃO PAGAMENTO (RESERVA NOVA)
+        // CORREÇÃO: Pagamento robusto para checkout inicial
         window.confirmarReserva = async () => { 
             const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim(); 
             if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS"); 
             const btn = document.getElementById('btn-confirm-res'); btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; 
             const res = calculateBestPrice(selected.size, true); 
-            const priceCents = Math.floor(res.final.toFixed(2) * 100);
+            const valorUnidadeFixado = res.final / selected.size;
+            const priceCents = Math.round(res.final.toFixed(2) * 100);
             const oid = "RN" + Date.now(); 
             try { 
-                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: res.final / selected.size }); 
+                const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado }); 
                 await update(numRef, up); 
                 const payData = { 
-                    "handle": HANDLE, 
-                    "order_nsu": oid, 
+                    "handle": config.handle, "order_nsu": oid, 
                     "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,''), "email": DEFAULT_EMAIL }, 
-                    "items": [{"quantity": 1, "price": priceCents, "description": `Reserva de Rifa`}] 
+                    "items": [{"quantity": 1, "price": priceCents, "description": `Rifa ${config.premio}`}] 
                 }; 
                 const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) }); 
                 const d = await payRes.json(); 
                 if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url; 
-                else throw new Error();
+                else throw new Error("Payment link failed");
             } catch(e) { btn.disabled = false; btn.innerText = "ERRO - TENTAR NOVAMENTE"; } 
         };
 
