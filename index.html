@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Rifa Master - SaaS Premium</title>
 
+    <!-- PWA & Mobile Meta Tags -->
     <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -97,11 +98,12 @@
         .prize-title { font-size: 1.4rem; font-weight: 800; text-shadow: 0 0 12px var(--primary-rgb); color: var(--text-main); line-height: 1.2; }
         .price-tag { font-size: 1.2rem; font-weight: 900; color: var(--primary); background: rgba(var(--primary-rgb), 0.15); padding: 12px 24px; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; align-self: center; }
 
-        /* BARRA DE PROGRESSO NEON */
-        .progress-container { width: 100%; margin-top: 15px; text-align: left; }
-        .progress-label { display: flex; justify-content: space-between; font-size: 0.6rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
-        .progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+        /* BARRA DE PROGRESSO ATUALIZADA */
+        .progress-container { width: 100%; margin-top: 18px; text-align: left; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
+        .progress-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
         .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), #00ffcc); box-shadow: 0 0 10px var(--primary); transition: width 1s var(--transition); }
+        .progress-stats { display: flex; justify-content: space-between; font-size: 0.55rem; color: var(--text-dim); margin-top: 8px; font-weight: 800; }
 
         .main-panel { flex: 1; display: flex; flex-direction: column; gap: 15px; overflow: hidden; position: relative; min-height: 0; }
         .nav-block { padding: 8px; flex-shrink: 0; }
@@ -164,7 +166,7 @@
         .custom-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 16px; color: #fff; text-align: center; outline: none; margin-bottom: 15px; appearance: none; -webkit-appearance: none; }
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal-card { background: var(--surface-bright); width: 100%; max-width: 440px; border-radius: 35px; padding: 35px; border: 2px solid var(--primary); text-align: center; max-height: 90vh; overflow-y: auto; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px var(--primary-glow); }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px rgba(0, 255, 136, 0.4); }
         .spinner { width: 22px; height: 22px; border: 3px solid rgba(0,0,0,0.1); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
@@ -177,6 +179,7 @@
     <div id="toast" class="toast">Mensagem</div>
 
     <div class="app-wrapper">
+        <!-- PAINEL ESQUERDO -->
         <header class="block-container header-panel">
             <div class="header-controls">
                 <button class="icon-btn" onclick="window.toggleTheme()"><i data-lucide="moon" id="theme-icon"></i></button>
@@ -191,18 +194,24 @@
                     <span id="display-valor">R$ 0,00</span>
                 </div>
                 
+                <!-- BARRA DE PROGRESSO ATUALIZADA -->
                 <div class="progress-container">
                     <div class="progress-label">
-                        <span>Vendido</span>
+                        <span>Total Vendido: <b id="stat-total-vendido" style="color:var(--text-main)">0</b></span>
                         <span id="progress-pct">0%</span>
                     </div>
                     <div class="progress-bg">
                         <div class="progress-bar" id="progress-bar"></div>
                     </div>
+                    <div class="progress-stats">
+                        <span>PAGOS: <b id="stat-pagos" style="color:var(--primary)">0</b></span>
+                        <span>RESERVAS: <b id="stat-reservas" style="color:var(--reserved)">0</b></span>
+                    </div>
                 </div>
             </div>
         </header>
 
+        <!-- PAINEL DIREITO -->
         <div class="main-panel">
             <nav class="block-container nav-block">
                 <div class="nav-tabs">
@@ -277,6 +286,7 @@
         </div>
     </div>
 
+    <!-- MODAIS -->
     <div class="modal-overlay" id="modal-pin">
         <div class="modal-card" style="max-width:340px">
             <h3 style="margin-bottom:10px">ACESSO ADMIN</h3>
@@ -350,7 +360,7 @@
         const numRef = ref(db, "rifa_master/numeros");
 
         const HANDLE = "vagner_lauriuche--inc";
-        const DEFAULT_EMAIL = "cliente@rifamaster.com.br"; // E-mail genérico pré-preenchido
+        const DEFAULT_EMAIL = "cliente@rifamaster.com.br"; // E-mail genérico silencioso
 
         let config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", promosActive: false, promos: [], coupons: [] };
         let dbNumbers = {};
@@ -388,13 +398,21 @@
             updateFooter();
         }
 
-        // ATUALIZAÇÃO DA BARRA DE PROGRESSO
+        // BARRA DE PROGRESSO EM TEMPO REAL
         function updateProgress() {
-            const total = config.total || 100;
-            const pagos = Object.values(dbNumbers).filter(n => n.status === 'paid').length;
-            const pct = Math.round((pagos / total) * 100);
-            document.getElementById('progress-pct').innerText = `${pct}%`;
-            document.getElementById('progress-bar').style.width = `${pct}%`;
+            const total = parseInt(config.total) || 1;
+            const nums = Object.values(dbNumbers);
+            const pagosCount = nums.filter(n => n.status === 'paid').length;
+            const reservasCount = nums.filter(n => n.status === 'reserved').length;
+            const totalVendidoCount = pagosCount + reservasCount;
+            
+            const pctVendido = Math.min(100, Math.round((totalVendidoCount / total) * 100));
+
+            document.getElementById('progress-pct').innerText = `${pctVendido}%`;
+            document.getElementById('progress-bar').style.width = `${pctVendido}%`;
+            document.getElementById('stat-pagos').innerText = pagosCount;
+            document.getElementById('stat-reservas').innerText = reservasCount;
+            document.getElementById('stat-total-vendido').innerText = totalVendidoCount;
         }
 
         window.toggleTheme = () => {
@@ -499,6 +517,7 @@
         };
 
         window.askAdmin = () => { if(isAdmin) window.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; };
+        
         window.validateAdmin = () => { 
             const typedPin = document.getElementById('admin-pin').value.trim();
             const correctPin = config.pin.toString().trim();
@@ -509,6 +528,7 @@
             } else showToast("❌ PIN INVÁLIDO");
             lucide.createIcons();
         };
+
         window.closeModal = id => document.getElementById(id).style.display = 'none';
 
         window.consultarMeusNumeros = async () => {
@@ -538,23 +558,30 @@
             lucide.createIcons();
         };
 
+        // CORREÇÃO PAGAMENTO (CONSULTA)
         window.confirmarPagamentoExistente = async (tel, nome, listaStr, totalCusto) => {
             const btn = document.getElementById('btn-pay-pending');
             if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
+            showToast("⏳ GERANDO PAGAMENTO...");
             const oid = "RP" + Date.now();
             try {
                 const up = {}; listaStr.split(',').forEach(n => up[`${n}/order_nsu`] = oid);
                 await update(numRef, up);
+                
+                // Formatação robusta para centavos (inteiro)
+                const priceCents = Math.floor(parseFloat(totalCusto).toFixed(2) * 100);
+                
                 const payData = { 
                     "handle": HANDLE, 
                     "order_nsu": oid, 
-                    "customer": { "name": nome, "phone_number": "55" + tel, "email": DEFAULT_EMAIL }, 
-                    "items": [{"quantity":1, "price":Math.round(totalCusto * 100), "description":"Pagar Rifa"}] 
+                    "customer": { "name": nome, "phone_number": "55" + tel.replace(/\D/g,''), "email": DEFAULT_EMAIL }, 
+                    "items": [{"quantity": 1, "price": priceCents, "description": "Pagamento de Rifa"}] 
                 };
+                
                 const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payData) });
                 const d = await res.json();
                 if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url;
-                else { showToast("❌ ERRO NO LINK"); if(btn) { btn.disabled=false; btn.innerText="TENTAR NOVAMENTE"; } }
+                else throw new Error();
             } catch(e) { showToast("❌ ERRO NO SERVIDOR"); if(btn) { btn.disabled=false; btn.innerText="TENTAR NOVAMENTE"; } }
         };
 
@@ -582,9 +609,9 @@
                 card.innerHTML = `<div class="admin-card-header"><div onclick="window.toggleAdminCard('${phClean}')" style="flex:1;cursor:pointer"><b>${p.nome.toUpperCase()}</b></div><button class="icon-btn" style="background:var(--whatsapp); color:#000; border:none;" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:18px"></i></button></div>
                 <div class="admin-card-details"><span>${p.telefone}</span><div style="background:rgba(0,0,0,0.2);padding:10px;border-radius:10px">${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}</div>
                 <div class="admin-actions">
-                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))">PAGOS</button>
-                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
-                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))">EXCLUIR</button>
+                    <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.requestConfirmAction('Pagar tudo?', () => window.adminUpdateStatus('${p.telefone}', 'paid'))"><i data-lucide="check-circle" style="width:14px"></i> PAGOS</button>
+                    <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.requestConfirmAction('Pendente tudo?', () => window.adminUpdateStatus('${p.telefone}', 'reserved'))"><i data-lucide="clock" style="width:14px"></i> PENDENTES</button>
+                    <button class="btn-admin-action btn-delete" style="grid-column:span 2" onclick="window.requestConfirmAction('Excluir?', () => window.adminDeleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width:14px"></i> EXCLUIR</button>
                 </div></div>`;
                 list.appendChild(card);
             });
@@ -603,11 +630,13 @@
         window.applyCoupon = () => { const code = document.getElementById('coupon-input').value.trim().toUpperCase(); const coupon = (config.coupons || []).find(c => c.code.toUpperCase() === code); if(!coupon) return showToast("❌ CUPOM INVÁLIDO"); appliedCoupon = coupon; const res = calculateBestPrice(selected.size, true); document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); showToast("✅ APLICADO"); };
         window.abrirCheckout = () => { appliedCoupon = null; const res = calculateBestPrice(selected.size, true); document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); document.getElementById('modal-checkout').style.display = 'flex'; };
         
+        // CORREÇÃO PAGAMENTO (RESERVA NOVA)
         window.confirmarReserva = async () => { 
             const n = document.getElementById('cust-name').value.trim(), t = document.getElementById('cust-phone').value.trim(); 
             if(!n || t.length < 10) return showToast("⚠️ DADOS INVÁLIDOS"); 
             const btn = document.getElementById('btn-confirm-res'); btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; 
             const res = calculateBestPrice(selected.size, true); 
+            const priceCents = Math.floor(res.final.toFixed(2) * 100);
             const oid = "RN" + Date.now(); 
             try { 
                 const up = {}; selected.forEach(num => up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: res.final / selected.size }); 
@@ -616,12 +645,12 @@
                     "handle": HANDLE, 
                     "order_nsu": oid, 
                     "customer": { "name": n, "phone_number": "55" + t.replace(/\D/g,''), "email": DEFAULT_EMAIL }, 
-                    "items": [{"quantity": 1, "price": Math.round(res.final * 100), "description": `Reserva Rifa`}] 
+                    "items": [{"quantity": 1, "price": priceCents, "description": `Reserva de Rifa`}] 
                 }; 
                 const payRes = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payData) }); 
                 const d = await payRes.json(); 
                 if(d.url || d.checkout_url) window.location.href = d.url || d.checkout_url; 
-                else { selected.clear(); window.closeModal('modal-checkout'); } 
+                else throw new Error();
             } catch(e) { btn.disabled = false; btn.innerText = "ERRO - TENTAR NOVAMENTE"; } 
         };
 
