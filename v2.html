@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Rifa Master - SaaS Premium</title>
+    <meta property="og:title" content="Participe da Nossa Rifa Premium!">
+    <meta property="og:description" content="Garanta suas cotas agora e concorra a prêmios incríveis. Compra 100% segura.">
+    <meta property="og:image" content="https://placehold.co/600x315/000/10b981?text=RIFA+MASTER">
+    <meta property="og:type" content="website">
+
+    <meta name="theme-color" content="#09090b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- Fonte Inter: O Padrão Ouro de SaaS e FinTechs -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            /* Tema Verde Padrão - Refinado e Profissional */
+            --primary: #10b981;
+            --primary-rgb: 16, 185, 129;
+            --primary-hover: #059669;
+            --secondary: #3b82f6;
+            
+            /* Tons Neutros Modernos (Zinc) - Muito superior ao preto chapado */
+            --bg: #09090b;
+            --surface: #18181b;
+            --surface-hover: #27272a;
+            --border: #3f3f46;
+            --border-light: #27272a;
+            
+            --text-main: #f4f4f5;
+            --text-dim: #a1a1aa;
+            --text-muted: #71717a;
+            --cell-bg: #18181b;
+            
+            /* Status Cores Padrões SaaS */
+            --reserved: #f59e0b;
+            --paid: var(--primary);
+            --selected: var(--secondary);
+            --danger: #ef4444;
+            --promo-gold: #eab308;
+            
+            --transition: cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Soft Shadows para profundidade (Fim do visual Neon) */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+            --shadow-float: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+            
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Cores Dinâmicas do Motor de Temas */
+        [data-color-theme="blue"] { --primary: #3b82f6; --primary-rgb: 59, 130, 246; --secondary: #10b981; --primary-hover: #2563eb; }
+        [data-color-theme="purple"] { --primary: #8b5cf6; --primary-rgb: 139, 92, 246; --secondary: #ec4899; --primary-hover: #7c3aed; }
+        [data-color-theme="orange"] { --primary: #f97316; --primary-rgb: 249, 115, 22; --secondary: #3b82f6; --primary-hover: #ea580c; }
+        [data-color-theme="red"] { --primary: #ef4444; --primary-rgb: 239, 68, 68; --secondary: #f59e0b; --primary-hover: #dc2626; }
+        [data-color-theme="gold"] { --primary: #eab308; --primary-rgb: 234, 179, 8; --secondary: #8b5cf6; --primary-hover: #ca8a04; }
+        [data-color-theme="pink"] { --primary: #ec4899; --primary-rgb: 236, 72, 153; --secondary: #6366f1; --primary-hover: #db2777; }
+
+        /* Tema Claro (Light Mode) Suave */
+        [data-theme="light"] {
+            --bg: #f4f4f5;
+            --surface: #ffffff;
+            --surface-hover: #f4f4f5;
+            --border: #e4e4e7;
+            --border-light: #f4f4f5;
+            
+            --text-main: #09090b;
+            --text-dim: #52525b;
+            --text-muted: #a1a1aa;
+            
+            --cell-bg: #ffffff;
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-float: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--text-main); }
+
+        body { display: flex; justify-content: center; padding: 0; transition: background 0.3s ease, color 0.3s ease; }
+
+        .app-wrapper {
+            width: 100%; max-width: 1000px; height: 100%;
+            display: flex; flex-direction: column;
+            position: relative; min-height: 0;
+            background: var(--bg);
+        }
+
+        .block-container { background: var(--surface); border-bottom: 1px solid var(--border); }
+
+        .header-panel { padding: 16px 20px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; z-index: 10; transition: all 0.3s var(--transition); }
+        .header-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .header-center { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        
+        .logo-img { width: 56px; height: 56px; border-radius: 12px; object-fit: cover; border: 1px solid var(--border); transition: all 0.3s var(--transition); }
+        
+        .compact-info { display: flex; flex-direction: column; justify-content: center; text-align: left; opacity: 0; max-width: 0; overflow: hidden; transition: all 0.3s var(--transition); white-space: nowrap; }
+        #compact-title { font-size: 0.95rem; font-weight: 600; color: var(--text-main); }
+        #compact-price { font-size: 0.8rem; font-weight: 600; color: var(--primary); }
+
+        .icon-btn { 
+            background: transparent; border: 1px solid var(--border); color: var(--text-dim); 
+            width: 40px; height: 40px; border-radius: 10px; 
+            display: flex; align-items: center; justify-content: center; cursor: pointer; 
+            transition: all 0.2s ease;
+        }
+        .icon-btn:hover { background: var(--surface-hover); color: var(--text-main); }
+
+        .prize-display { padding: 10px 0; text-align: left; transition: all 0.3s ease; overflow: hidden; transform-origin: top; }
+        .prize-title { font-size: 1.5rem; font-weight: 700; color: var(--text-main); line-height: 1.3; letter-spacing: -0.02em; }
+        
+        .price-tag-container { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
+        .price-tag { font-size: 1.1rem; font-weight: 700; color: #fff; background: var(--primary); padding: 6px 16px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; }
+
+        /* Comportamento de Rolagem (Shrink Header Responsivo) */
+        @media (max-width: 899px) {
+            .app-wrapper.minimized .prize-display {
+                max-height: 0; padding: 0; margin: 0; opacity: 0; transform: scaleY(0.95); border-width: 0;
+            }
+            .app-wrapper.minimized .header-panel { padding: 12px 20px; box-shadow: var(--shadow-sm); }
+            .app-wrapper.minimized .logo-img { width: 40px; height: 40px; }
+            .app-wrapper.minimized .compact-info { max-width: 200px; opacity: 1; margin-left: 8px; }
+        }
+
+        @media (min-width: 900px) {
+            body { padding: 20px; }
+            .app-wrapper { flex-direction: row; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-lg); height: calc(100vh - 40px); }
+            .header-panel { width: 340px; height: 100%; border-right: 1px solid var(--border); border-bottom: none; }
+            .main-panel { height: 100%; flex: 1; }
+            .logo-img { width: 80px; height: 80px; margin: 0 auto 20px auto; }
+            .header-center { flex-direction: column; }
+            .prize-display { text-align: center; margin-top: 20px; }
+            .price-tag-container { justify-content: center; }
+        }
+
+        .progress-container { width: 100%; margin-top: 24px; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; }
+        .progress-bg { width: 100%; height: 6px; background: var(--border); border-radius: 4px; overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; background: var(--primary); border-radius: 4px; transition: width 1s var(--transition); }
+        .progress-stats { display: flex; justify-content: space-between; font-size: 0.7rem; color: var(--text-dim); margin-top: 8px; font-weight: 500; }
+
+        .main-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0; background: var(--bg); }
+        
+        /* Abas Estilo iOS Segmented Control */
+        .nav-block { padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--surface); flex-shrink: 0; }
+        .nav-tabs { display: flex; background: var(--bg); padding: 4px; border-radius: 10px; border: 1px solid var(--border); }
+        .tab-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; background: transparent; color: var(--text-dim); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: 0.2s; }
+        .tab-btn.active { background: var(--surface); color: var(--text-main); box-shadow: var(--shadow-sm); }
+
+        .promo-block { padding: 12px 20px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; flex-shrink: 0; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .promo-item { background: rgba(234, 179, 8, 0.1); padding: 10px; border-radius: 8px; color: var(--promo-gold); font-size: 0.75rem; text-align: center; border: 1px solid rgba(234, 179, 8, 0.2); display: flex; flex-direction: column; font-weight: 500; }
+        .promo-item b { font-size: 0.85rem; font-weight: 700; }
+
+        .content-block { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0; }
+        .content-scroll { flex: 1; overflow-y: auto !important; padding: 20px 20px 120px 20px; position: relative; -webkit-overflow-scrolling: touch; }
+        
+        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(42px, 1fr)); gap: 6px; justify-content: center; margin-bottom: 20px;}
+        .num-cell { 
+            aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; 
+            background: var(--cell-bg); border: 1px solid var(--border); border-radius: 8px; 
+            font-size: 0.85rem; font-weight: 500; cursor: pointer; color: var(--text-main); 
+            transition: all 0.2s ease; 
+        }
+        .num-cell:hover:not(.paid):not(.reserved) { border-color: var(--text-dim); }
+        .num-cell.selected { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 700; transform: scale(1.05); z-index: 2; box-shadow: var(--shadow-sm); }
+        .num-cell.reserved { background: var(--reserved); color: #fff; border-color: var(--reserved); opacity: 0.8; }
+        .num-cell.paid { background: var(--border); color: var(--text-muted); border-color: var(--border); opacity: 0.5; cursor: default; }
+
+        .pagination-controls { display: flex; justify-content: center; gap: 12px; margin-bottom: 20px; align-items: center; }
+        .pagination-btn { background: var(--surface); border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 0.8rem; }
+        .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        
+        .legend-filter { display: flex; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .legend-chip { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--surface); border-radius: 20px; font-size: 0.75rem; font-weight: 500; color: var(--text-dim); cursor: pointer; border: 1px solid var(--border); transition: 0.2s; }
+        .legend-chip.active { border-color: var(--text-main); color: var(--text-main); background: var(--border-light); }
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot.all { background: var(--text-dim); }
+        .dot.available { border: 1px solid var(--text-dim); }
+        .dot.selected { background: var(--primary); }
+        .dot.reserved { background: var(--reserved); }
+        .dot.paid { background: var(--border); }
+
+        .adj-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 24px; }
+        .adj-tile { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: 0.2s; }
+        .adj-tile:hover { background: var(--surface-hover); }
+        .adj-tile b { font-size: 0.9rem; font-weight: 600; color: var(--text-main); }
+        .adj-tile span { font-size: 0.6rem; font-weight: 500; color: var(--text-muted); margin-top: 2px; }
+
+        .purchase-footer {
+            position: absolute; bottom: 20px; left: 20px; right: 20px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+            padding: 16px 20px; display: flex !important; align-items: center; justify-content: space-between;
+            box-shadow: var(--shadow-float); z-index: 200;
+        }
+        .footer-price-info { text-align: left; display: flex; flex-direction: column; gap: 2px; }
+        .footer-price-info p { margin: 0; line-height: 1; }
+        .footer-original { font-size: 0.75rem; color: var(--text-muted); text-decoration: line-through; }
+        .footer-discount { font-size: 0.75rem; color: var(--primary); font-weight: 600; }
+        .footer-total { font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin-top: 4px !important; }
+
+        .btn-pay { 
+            background: var(--primary); color: #ffffff; padding: 0 24px; height: 48px; 
+            border-radius: 10px; font-weight: 600; font-size: 0.95rem; border: none; 
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
+            cursor: pointer; transition: 0.2s; width: auto;
+        }
+        .btn-pay:hover:not(:disabled) { background: var(--primary-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+        .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* Inputs Premium: Alinhados à Esquerda, Bordas Nítidas */
+        .custom-input { 
+            width: 100%; background: var(--bg); border: 1px solid var(--border); 
+            padding: 14px 16px; border-radius: 10px; color: var(--text-main); 
+            font-size: 0.95rem; outline: none; margin-bottom: 12px; transition: border-color 0.2s;
+            text-align: left;
+        }
+        .custom-input:focus { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(var(--primary-rgb), 0.1); }
+        .custom-input::placeholder { color: var(--text-muted); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: var(--surface); width: 100%; max-width: 420px; border-radius: 20px; padding: 30px 24px; border: 1px solid var(--border); text-align: left; box-shadow: var(--shadow-float); max-height: 90vh; overflow-y: auto; }
+        .modal-card h2, .modal-card h3 { color: var(--text-main); font-weight: 700; font-size: 1.25rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+        .checkout-timer-box { background: rgba(239, 68, 68, 0.1); color: var(--danger); padding: 12px; border-radius: 10px; margin-bottom: 20px; font-weight: 600; font-size: 0.9rem; display: flex; justify-content: center; align-items: center; gap: 8px; border: 1px solid rgba(239, 68, 68, 0.2); }
+        #checkout-summary { background: var(--bg); padding: 16px; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border); }
+
+        .admin-card { background: var(--surface); border: 1px solid var(--border); padding: 16px; border-radius: 12px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
+        .admin-card b { color: var(--text-main); font-weight: 600; }
+        .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 16px; }
+        .btn-admin-action { border: 1px solid var(--border); background: transparent; color: var(--text-main); padding: 10px; border-radius: 8px; font-weight: 600; font-size: 0.75rem; cursor: pointer; transition: 0.2s; }
+        .btn-admin-action:hover { background: var(--border-light); }
+        .btn-delete { color: var(--danger); border-color: rgba(239, 68, 68, 0.3); grid-column: span 2; }
+        .btn-delete:hover { background: rgba(239, 68, 68, 0.1); }
+
+        /* Acordeão do Admin (Livre, Não fecha os outros) */
+        .acc-item { margin-bottom: 12px; }
+        .acc-header { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; font-weight: 600; font-size: 0.9rem; color: var(--text-main); display: flex; justify-content: space-between; cursor: pointer; transition: 0.2s; }
+        .acc-header:hover { border-color: var(--text-muted); }
+        .acc-body { max-height: 0; overflow: hidden; opacity: 0; transition: all 0.3s ease; padding: 0 10px; }
+        
+        .acc-item.active .acc-header { border-color: var(--primary); color: var(--primary); background: rgba(var(--primary-rgb), 0.05); }
+        .acc-item.active .acc-header i { transform: rotate(180deg); }
+        .acc-item.active .acc-body { max-height: 1500px; opacity: 1; padding: 16px 10px; }
+
+        .theme-selector-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+        .color-option { width: 36px; height: 36px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .color-option.active { border-color: var(--text-main); transform: scale(1.1); box-shadow: var(--shadow-md); }
+
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--surface-bright); color: var(--text-main); padding: 12px 24px; border-radius: 30px; font-weight: 600; font-size: 0.9rem; z-index: 2000; display: none; border: 1px solid var(--border); box-shadow: var(--shadow-lg); }
+        .spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top: 2px solid currentColor; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast">Mensagem</div>
+
+    <div class="app-wrapper">
+        <!-- PAINEL ESQUERDO / CABEÇALHO -->
+        <header class="block-container header-panel">
+            <div class="header-controls">
+                <button class="icon-btn" onclick="window.rifaApp.toggleTheme()"><i data-lucide="moon" id="theme-icon" style="width: 20px;"></i></button>
+                
+                <div class="header-center">
+                    <img src="1776393050679.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/100x100/18181b/ffffff?text=LOGO'">
+                    <div class="compact-info">
+                        <span id="compact-title">...</span>
+                        <span id="compact-price">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <button class="icon-btn" onclick="window.rifaApp.askAdmin()"><i data-lucide="lock" id="admin-lock-icon" style="width: 20px;"></i></button>
+            </div>
+
+            <div class="prize-display">
+                <h1 class="prize-title" id="display-premio">...</h1>
+                <p id="display-descricao" style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">...</p>
+                <div class="price-tag-container">
+                    <div class="price-tag">
+                        <i data-lucide="ticket" style="width: 18px;"></i>
+                        <span id="display-valor">R$ 0,00</span>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Progresso de Vendas</span>
+                        <span id="progress-pct">0%</span>
+                    </div>
+                    <div class="progress-bg">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="progress-stats">
+                        <span>Pagos: <b id="stat-pagos" style="color:var(--text-main)">0</b></span>
+                        <span>Reservas: <b id="stat-reservas" style="color:var(--text-main)">0</b></span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- PAINEL DIREITO / CONTEÚDO -->
+        <div class="main-panel">
+            <nav class="nav-block">
+                <div class="nav-tabs">
+                    <button class="tab-btn active" id="tab-rifa" onclick="window.rifaApp.switchTab('rifa')">Cotas</button>
+                    <button class="tab-btn" id="tab-consulta" onclick="window.rifaApp.switchTab('consulta')">Meus Bilhetes</button>
+                    <button class="tab-btn" id="tab-admin" style="display:none;" onclick="window.rifaApp.switchTab('admin')">Admin</button>
+                </div>
+            </nav>
+
+            <div class="promo-block" id="promo-display-area"></div>
+
+            <main class="content-block">
+                <div class="content-scroll" id="main-scroll">
+                    
+                    <!-- ABA RIFA -->
+                    <div id="view-rifa">
+                        <div class="adj-grid">
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(-10)"><b>-10</b></div>
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(-5)"><b>-5</b></div>
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(-1)"><b>-1</b></div>
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(0)" style="color: var(--text-muted);"><b>Limpar</b></div>
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(1)"><b>+1</b></div>
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(5)"><b>+5</b></div>
+                            <div class="adj-tile" onclick="window.rifaApp.adjustSelection(10)"><b>+10</b></div>
+                        </div>
+
+                        <div class="legend-filter">
+                            <div class="legend-chip active" data-grid-filter="all" onclick="window.rifaApp.setGridFilter('all')"><div class="dot all"></div>Todos</div>
+                            <div class="legend-chip" data-grid-filter="available" onclick="window.rifaApp.setGridFilter('available')"><div class="dot available"></div>Livre</div>
+                            <div class="legend-chip" data-grid-filter="selected" onclick="window.rifaApp.setGridFilter('selected')"><div class="dot selected"></div>Seleção</div>
+                            <div class="legend-chip" data-grid-filter="reserved" onclick="window.rifaApp.setGridFilter('reserved')"><div class="dot reserved"></div>Reserva</div>
+                            <div class="legend-chip" data-grid-filter="paid" onclick="window.rifaApp.setGridFilter('paid')"><div class="dot paid"></div>Pago</div>
+                        </div>
+                        
+                        <div class="grid-container" id="grid"></div>
+                        
+                        <!-- Controles de Paginação -->
+                        <div class="pagination-controls" id="pagination-controls" style="display:none;">
+                            <button class="pagination-btn" id="btn-prev-page" onclick="window.rifaApp.changePage(-1)"><i data-lucide="chevron-left" style="width:16px"></i></button>
+                            <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim);" id="page-indicator">Pág 1 / 1</span>
+                            <button class="pagination-btn" id="btn-next-page" onclick="window.rifaApp.changePage(1)"><i data-lucide="chevron-right" style="width:16px"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- ABA CONSULTA -->
+                    <div id="view-consulta" style="display: none;">
+                        <div style="max-width:380px; margin:0 auto; padding-top: 20px;">
+                            <h3 style="margin-bottom:20px; font-weight: 700;">Localizar Meus Bilhetes</h3>
+                            <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px;">
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); margin-left: 4px;">Seu WhatsApp</label>
+                                <input type="tel" id="search-phone" class="custom-input" placeholder="(00) 00000-0000" oninput="window.rifaApp.maskPhone(this)">
+                            </div>
+                            <button class="btn-pay" style="width:100%" onclick="window.rifaApp.consultarMeusNumeros()">Buscar Números</button>
+                            <div id="results-area" style="margin-top: 30px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- ABA ADMIN -->
+                    <div id="view-admin" style="display: none;">
+                        <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;"></div>
+                        
+                        <button class="btn-pay" style="width:100%; background:var(--text-main); color:var(--bg); margin-bottom: 20px;" onclick="window.adminPanel.realizarSorteio()">
+                            <i data-lucide="gift"></i> REALIZAR SORTEIO AGORA
+                        </button>
+
+                        <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px;">
+                            <input type="text" id="admin-search" class="custom-input" placeholder="Pesquisar nome ou cota..." oninput="window.adminPanel.render(false)" style="margin-bottom: 0;">
+                        </div>
+                        
+                        <div class="legend-filter" style="margin-bottom:20px; justify-content: flex-start;">
+                            <div class="legend-chip active filter-chip" onclick="window.adminPanel.setFilter('all')">Todos</div>
+                            <div class="legend-chip filter-chip" onclick="window.adminPanel.setFilter('paid')">Pagos</div>
+                            <div class="legend-chip filter-chip" onclick="window.adminPanel.setFilter('reserved')">Pendentes</div>
+                        </div>
+
+                        <div style="display:flex; gap:10px; margin-bottom:20px;">
+                            <button class="btn-pay" style="flex:1; background:var(--surface); border:1px solid var(--border); color:var(--text-main); height: 44px;" onclick="window.adminPanel.openConfig()">
+                                <i data-lucide="settings" style="width:16px"></i> Ajustes
+                            </button>
+                            <button class="btn-pay" style="flex:1; background:rgba(239, 68, 68, 0.1); color:var(--danger); border:1px solid rgba(239,68,68,0.2); height: 44px;" onclick="window.adminPanel.resetRifa()">
+                                Reset Rifa
+                            </button>
+                        </div>
+                        
+                        <div id="admin-list"></div>
+                    </div>
+                </div>
+
+                <footer class="purchase-footer" id="footer-purchase">
+                    <div class="footer-price-info">
+                        <p style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">Cotas selecionadas: <span id="count-display" style="color:var(--text-main)">0</span></p>
+                        <div style="display:flex; gap: 8px; align-items: center;">
+                            <span id="footer-original-price" class="footer-original" style="display:none"></span>
+                            <span id="footer-discount-amount" class="footer-discount" style="display:none"></span>
+                        </div>
+                        <p id="footer-total" class="footer-total">R$ 0,00</p>
+                    </div>
+                    <button class="btn-pay" id="btn-checkout" disabled onclick="window.cartManager.abrirCheckout()">
+                        Comprar Agora
+                    </button>
+                </footer>
+            </main>
+        </div>
+    </div>
+
+    <!-- MODAIS -->
+    <div class="modal-overlay" id="modal-pin">
+        <div class="modal-card" style="max-width:320px; text-align: center;">
+            <h3 style="justify-content: center;">Acesso Restrito</h3>
+            <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="8" inputmode="numeric" style="letter-spacing:10px; font-size:1.5rem; text-align:center;">
+            <button class="btn-pay" style="width:100%" onclick="window.adminPanel.validate()">Entrar</button>
+            <button onclick="window.rifaApp.closeModal('modal-pin')" style="margin-top: 16px; background:none; border:none; color:var(--text-muted); font-weight:600; cursor:pointer">Cancelar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-checkout">
+        <div class="modal-card">
+            <h2>Finalizar Reserva</h2>
+            
+            <div class="checkout-timer-box">
+                <i data-lucide="clock" style="width: 18px;"></i> Expira em: <span id="checkout-timer-display">15:00</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim); margin-left: 4px;">Nome Completo</label>
+                <input type="text" id="cust-name" class="custom-input" placeholder="João Silva" style="margin:0;">
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim); margin-left: 4px;">WhatsApp</label>
+                <input type="tel" id="cust-phone" class="custom-input" placeholder="(00) 00000-0000" oninput="window.rifaApp.maskPhone(this)" style="margin:0;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 4px; margin-bottom: 20px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--text-dim); margin-left: 4px;">Cupom de Desconto</label>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="coupon-input" class="custom-input" placeholder="Código" style="margin-bottom:0; flex:1">
+                    <button class="btn-pay" style="height: auto; padding: 0 16px; background: var(--surface-hover); color: var(--text-main); border: 1px solid var(--border);" onclick="window.cartManager.applyCoupon()">Aplicar</button>
+                </div>
+            </div>
+
+            <div id="checkout-summary">
+                <p style="font-size:0.85rem; color:var(--text-dim); font-weight:600; margin-bottom:4px;">Total a pagar</p>
+                <p id="checkout-final-val" style="font-size:1.8rem; font-weight:700; color:var(--text-main)">R$ 0,00</p>
+                <p id="checkout-discount-info" style="font-size:0.8rem; color:var(--primary); font-weight:600; margin-top:4px;"></p>
+                <p id="checkout-coupon-info" style="font-size:0.8rem; color:var(--primary); font-weight:600;"></p>
+            </div>
+            
+            <button class="btn-pay" style="width:100%" onclick="window.cartManager.confirmarReserva()" id="btn-confirm-res">Gerar PIX Copia e Cola</button>
+            
+            <div style="text-align: center; margin-top: 16px;">
+                <button onclick="window.rifaApp.closeModal('modal-checkout')" style="background:none; border:none; color:var(--text-muted); font-weight:600; cursor:pointer">Voltar e editar cotas</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-sorteio">
+        <div class="modal-card" style="text-align: center; padding: 40px 20px;">
+            <h2 style="color:var(--text-main); justify-content: center; font-size: 1.5rem; margin-bottom:10px;">🎉 Ganhador Sorteado!</h2>
+            <p style="font-size: 1rem; color: var(--text-dim); margin-bottom: 24px;">A cota premiada foi a número</p>
+            <div style="font-size: 4.5rem; font-weight: 700; color: var(--primary); margin-bottom: 24px; line-height: 1;" id="sorteio-numero">00</div>
+            <p style="font-size: 1.25rem; font-weight: 600; color: var(--text-main); margin-bottom: 32px;" id="sorteio-nome">Nome do Ganhador</p>
+            <button class="btn-pay" style="width:100%; background: var(--border); color: var(--text-main);" onclick="window.rifaApp.closeModal('modal-sorteio')">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Modal de Configurações Refinado (Acordeão Independente) -->
+    <div class="modal-overlay" id="modal-config">
+        <div class="modal-card" style="padding: 24px;">
+            <h3><i data-lucide="settings" style="width: 20px;"></i> Configurações da Rifa</h3>
+            
+            <div class="accordion">
+                <div class="acc-item active">
+                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
+                        <span>Detalhes da Rifa</span>
+                        <i data-lucide="chevron-down" style="width:18px"></i>
+                    </div>
+                    <div class="acc-body">
+                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">Título do Prêmio</label>
+                        <input type="text" id="cfg-premio" class="custom-input" placeholder="Ex: iPhone 15 Pro">
+                        
+                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">Descrição Curta</label>
+                        <textarea id="cfg-descricao" class="custom-input" style="height:60px; resize:none;" placeholder="Detalhes do prêmio..."></textarea>
+                        
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">Preço Cota (R$)</label>
+                                <input type="number" id="cfg-valor" class="custom-input">
+                            </div>
+                            <div>
+                                <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">Qtd. Total</label>
+                                <input type="number" id="cfg-total" class="custom-input">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
+                        <span>Aparência e Temas</span>
+                        <i data-lucide="chevron-down" style="width:18px"></i>
+                    </div>
+                    <div class="acc-body">
+                        <p style="font-size: 0.8rem; font-weight: 500; color: var(--text-dim); margin-bottom: 12px;">Selecione a cor de destaque do seu sistema:</p>
+                        <div class="theme-selector-grid" style="padding-bottom: 10px;">
+                            <div class="color-option active" data-color="green" style="background: #10b981;" onclick="window.adminPanel.selectTheme('green')"></div>
+                            <div class="color-option" data-color="blue" style="background: #3b82f6;" onclick="window.adminPanel.selectTheme('blue')"></div>
+                            <div class="color-option" data-color="purple" style="background: #8b5cf6;" onclick="window.adminPanel.selectTheme('purple')"></div>
+                            <div class="color-option" data-color="pink" style="background: #ec4899;" onclick="window.adminPanel.selectTheme('pink')"></div>
+                            <div class="color-option" data-color="red" style="background: #ef4444;" onclick="window.adminPanel.selectTheme('red')"></div>
+                            <div class="color-option" data-color="orange" style="background: #f97316;" onclick="window.adminPanel.selectTheme('orange')"></div>
+                            <div class="color-option" data-color="gold" style="background: #eab308;" onclick="window.adminPanel.selectTheme('gold')"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
+                        <span>Integrações & Pagamento</span>
+                        <i data-lucide="chevron-down" style="width:18px"></i>
+                    </div>
+                    <div class="acc-body">
+                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">InfinitePay Handle</label>
+                        <input type="text" id="cfg-handle" class="custom-input" placeholder="@seunome">
+                        
+                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">ID Pixel Facebook</label>
+                        <input type="text" id="cfg-pixel" class="custom-input" placeholder="Ex: 1234567890">
+                        
+                        <label style="font-size: 0.8rem; font-weight: 600; color: var(--text-dim); display:block; margin-bottom:4px;">PIN de Acesso Admin</label>
+                        <input type="password" id="cfg-pin" class="custom-input" placeholder="Nova Senha">
+                    </div>
+                </div>
+
+                <div class="acc-item">
+                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
+                        <span>Promoções e Cupons</span>
+                        <i data-lucide="chevron-down" style="width:18px"></i>
+                    </div>
+                    <div class="acc-body">
+                        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px; padding-top:8px;">
+                            <span style="font-size: 0.85rem; font-weight: 600;">Ativar Promoções Auto</span>
+                            <button id="btn-toggle-promos" class="btn-pay" style="height: 32px; padding: 0 12px; font-size: 0.75rem;" onclick="window.adminPanel.togglePromos()">OFF</button>
+                        </div>
+                        <div id="promos-list"></div>
+                        <button class="btn-admin-action" style="width:100%; margin-bottom:24px;" onclick="window.adminPanel.addPromoRow()">+ Adicionar Regra por Quantidade</button>
+
+                        <span style="font-size: 0.85rem; font-weight: 600; display:block; margin-bottom:12px; border-top: 1px solid var(--border); padding-top: 16px;">Cupons de Desconto</span>
+                        <div id="coupons-list"></div>
+                        <button class="btn-admin-action" style="width:100%; margin-bottom:8px;" onclick="window.adminPanel.addCouponRow()">+ Criar Cupom</button>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; gap:12px; margin-top: 24px;">
+                <button class="btn-pay" style="flex:1; background: var(--border); color: var(--text-main);" onclick="window.rifaApp.closeModal('modal-config')">Cancelar</button>
+                <button class="btn-pay" style="flex:1;" onclick="window.adminPanel.save()">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-confirm">
+        <div class="modal-card" style="max-width: 320px; text-align: center;">
+            <h3 style="color: var(--text-main); justify-content: center;">Atenção</h3>
+            <p id="confirm-msg" style="margin-bottom:24px; font-size:0.95rem; color: var(--text-dim);"></p>
+            <div style="display:flex; flex-direction: column; gap:10px">
+                <button class="btn-pay" style="background:var(--danger); color: #fff;" onclick="window.rifaApp.executeConfirmedAction()">Confirmar Ação</button>
+                <button class="btn-pay" style="background:transparent; border:1px solid var(--border); color:var(--text-main);" onclick="window.rifaApp.closeModal('modal-confirm')">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
+            authDomain: "vagner-34d5b.firebaseapp.com",
+            databaseURL: "https://vagner-34d5b.firebaseio.com",
+            projectId: "vagner-34d5b",
+            storageBucket: "vagner-34d5b.firebasestorage.app",
+            messagingSenderId: "711539772164",
+            appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Dinamismo Multi-Tenant da URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const tenantId = urlParams.get('tenant') || 'rifa_master'; 
+        const rifaId = urlParams.get('rifa') || 'padrao';
+        
+        const dbPath = tenantId === 'rifa_master' ? 'rifa_master' : `tenants/${tenantId}/rifas/${rifaId}`;
+        const cfgRef = ref(db, `${dbPath}/config`);
+        const numRef = ref(db, `${dbPath}/numeros`);
+
+        const DEFAULT_EMAIL = "cliente@rifamaster.com.br";
+
+        class PaymentService {
+            static async generateLink(payData, handle) {
+                try {
+                    const payload = {
+                        "handle": handle, 
+                        "order_nsu": payData.nsu, 
+                        "customer": { "name": payData.nome, "phone_number": "55" + payData.telefone.replace(/\D/g,''), "email": DEFAULT_EMAIL }, 
+                        "items": [{"quantity": 1, "price": payData.priceCents, "description": payData.description }] 
+                    };
+                    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.infinitepay.io/invoices/public/checkout/links'), { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload) 
+                    });
+                    const data = await res.json();
+                    if(data.url || data.checkout_url) return data.url || data.checkout_url;
+                    throw new Error("Link não gerado pela API");
+                } catch(e) {
+                    console.error("Erro no Gateway:", e);
+                    throw e;
+                }
+            }
+        }
+
+        class RifaApp {
+            constructor() {
+                this.config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", handle: "", promosActive: false, promos: [], coupons: [], pixel: "", themeColor: "green" };
+                this.dbNumbers = {};
+                this.selected = new Set();
+                this.gridFilter = 'all';
+                this.pendingAction = null;
+                
+                this.currentPage = 0;
+                this.itemsPerPage = 1000; 
+            }
+
+            // CORREÇÃO: Init isolado para garantir que classes globais existam antes do firebase disparar cache
+            init() {
+                lucide.createIcons();
+                this.listenFirebase();
+                this.setupScrollListener(); 
+            }
+            
+            setupScrollListener() {
+                const scrollEl = document.getElementById('main-scroll');
+                const wrapper = document.querySelector('.app-wrapper');
+                
+                scrollEl.addEventListener('scroll', () => {
+                    if (window.innerWidth < 900) {
+                        const isAdminTab = document.getElementById('tab-admin').classList.contains('active');
+                        if (scrollEl.scrollTop > 50 && !isAdminTab) {
+                            wrapper.classList.add('minimized');
+                        } else {
+                            wrapper.classList.remove('minimized');
+                        }
+                    }
+                });
+            }
+
+            listenFirebase() {
+                onValue(cfgRef, (s) => { 
+                    if(s.exists()){ 
+                        this.config = { ...this.config, ...s.val() }; 
+                        this.renderUI();
+                        this.injectPixel(this.config.pixel);
+                        this.applyThemeColor(this.config.themeColor || 'green');
+                    } 
+                });
+                onValue(numRef, (s) => { 
+                    this.dbNumbers = s.exists() ? s.val() : {}; 
+                    this.renderGrid(); 
+                    this.updateProgress();
+                    // Atualiza admin silenciosamente sem travar scroll
+                    if(window.adminPanel && window.adminPanel.isAdmin) window.adminPanel.render(true); 
+                });
+            }
+
+            applyThemeColor(color) {
+                document.body.setAttribute('data-color-theme', color);
+            }
+
+            injectPixel(pixelId) {
+                if(!pixelId || window.fbq) return;
+                !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+                n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+                t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+                document,'script','https://connect.facebook.net/en_US/fbevents.js');
+                fbq('init', pixelId);
+                fbq('track', 'PageView');
+            }
+
+            renderUI() {
+                const tituloStr = (this.config.premio || '...').toUpperCase();
+                const valorStr = (this.config.valor || 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                
+                document.getElementById('display-premio').innerText = tituloStr;
+                document.getElementById('display-descricao').innerText = this.config.descricao || '';
+                document.getElementById('display-valor').innerText = valorStr;
+                
+                document.getElementById('compact-title').innerText = tituloStr;
+                document.getElementById('compact-price').innerText = valorStr;
+                
+                const area = document.getElementById('promo-display-area');
+                area.innerHTML = '';
+                if(this.config.promosActive && this.config.promos && this.config.promos.length > 0) {
+                    area.style.display = 'grid';
+                    this.config.promos.forEach(p => {
+                        const text = p.type === 'pct' ? `<b>${p.val}% OFF</b>` : `<b>${p.val} GRÁTIS</b>`;
+                        area.innerHTML += `<div class="promo-item">COMPRE ${p.min}<br>${text}</div>`;
+                    });
+                } else area.style.display = 'none';
+                
+                if (window.cartManager) window.cartManager.updateFooter();
+            }
+
+            updateProgress() {
+                const total = parseInt(this.config.total) || 1;
+                const nums = Object.values(this.dbNumbers);
+                const pagosCount = nums.filter(n => n.status === 'paid').length;
+                const reservasCount = nums.filter(n => n.status === 'reserved').length;
+                const totalVendidoCount = pagosCount + reservasCount;
+                const pctVendido = Math.min(100, Math.round((totalVendidoCount / total) * 100));
+                
+                document.getElementById('progress-pct').innerText = `${pctVendido}%`;
+                document.getElementById('progress-bar').style.width = `${pctVendido}%`;
+                document.getElementById('stat-pagos').innerText = pagosCount;
+                document.getElementById('stat-reservas').innerText = reservasCount;
+            }
+
+            renderGrid() {
+                const grid = document.getElementById('grid'); if(!grid) return;
+                grid.innerHTML = '';
+                
+                const total = parseInt(this.config.total) || 100;
+                const totalPages = Math.ceil(total / this.itemsPerPage);
+                if (this.currentPage >= totalPages) this.currentPage = Math.max(0, totalPages - 1);
+
+                const startIdx = this.currentPage * this.itemsPerPage;
+                const endIdx = Math.min(startIdx + this.itemsPerPage, total);
+
+                for(let i = startIdx; i < endIdx; i++) {
+                    const n = i.toString().padStart(2, '0');
+                    const info = this.dbNumbers[n];
+                    const isSel = this.selected.has(n);
+                    
+                    if (this.gridFilter !== 'all') {
+                        if (this.gridFilter === 'available' && (info || isSel)) continue;
+                        if (this.gridFilter === 'selected' && (!isSel || info)) continue; 
+                        if (this.gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
+                        if (this.gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
+                    }
+                    
+                    const el = document.createElement('div'); el.className = 'num-cell'; el.innerText = n;
+                    if(info) { 
+                        el.classList.add(info.status); 
+                        el.onclick = (e) => this.showOwnerTooltip(e, info.nome); 
+                    } else { 
+                        if(isSel) el.classList.add('selected'); 
+                        el.onclick = () => { 
+                            isSel ? this.selected.delete(n) : this.selected.add(n); 
+                            this.renderGrid(); window.cartManager.updateFooter(); 
+                        }; 
+                    }
+                    grid.appendChild(el);
+                }
+
+                const pagControls = document.getElementById('pagination-controls');
+                if (totalPages > 1) {
+                    pagControls.style.display = 'flex';
+                    document.getElementById('page-indicator').innerText = `Pág ${this.currentPage + 1} / ${totalPages}`;
+                    document.getElementById('btn-prev-page').disabled = this.currentPage === 0;
+                    document.getElementById('btn-next-page').disabled = this.currentPage >= (totalPages - 1);
+                } else {
+                    pagControls.style.display = 'none';
+                }
+            }
+
+            changePage(delta) {
+                this.currentPage += delta;
+                this.renderGrid();
+                document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            setGridFilter(f) {
+                this.gridFilter = f;
+                this.currentPage = 0; 
+                document.querySelectorAll('.legend-chip[data-grid-filter]').forEach(c => c.classList.toggle('active', c.dataset.gridFilter === f));
+                this.renderGrid();
+            }
+
+            adjustSelection(qty) {
+                if(qty === 0) this.selected.clear();
+                else if (qty > 0) {
+                    const av = []; 
+                    for(let i=0; i<this.config.total; i++){ 
+                        const n=i.toString().padStart(2,'0'); 
+                        if(!this.dbNumbers[n] && !this.selected.has(n)) av.push(n); 
+                    }
+                    av.sort(() => Math.random() - 0.5).slice(0, qty).forEach(n => this.selected.add(n));
+                } else {
+                    const arr = Array.from(this.selected); 
+                    for(let i=0; i<Math.min(Math.abs(qty), arr.length); i++) this.selected.delete(arr[arr.length-1-i]);
+                }
+                this.renderGrid(); window.cartManager.updateFooter();
+            }
+
+            switchTab(t) {
+                window.cartManager.appliedCoupon = null;
+                if (t === 'admin' || t === 'consulta') { document.querySelector('.app-wrapper').classList.remove('minimized'); }
+
+                ['rifa','consulta','admin'].forEach(v => { 
+                    const view=document.getElementById(`view-${v}`); if(view) view.style.display='none'; 
+                    const b=document.getElementById(`tab-${v}`); if(b) b.classList.remove('active'); 
+                });
+                document.getElementById(`view-${t}`).style.display='block'; 
+                document.getElementById(`tab-${t}`).classList.add('active');
+                document.getElementById('footer-purchase').style.display = t === 'rifa' ? 'flex' : 'none';
+                
+                if(t==='admin') window.adminPanel.render(false);
+            }
+
+            async consultarMeusNumeros() {
+                const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
+                const area = document.getElementById('results-area'); 
+                if(!tel || tel.length < 10) return;
+                
+                const s = await get(numRef); area.innerHTML = '';
+                if(s.exists()){
+                    const all = s.val();
+                    const filtered = Object.entries(all).filter(([n, d]) => d.telefone && d.telefone.replace(/\D/g,'') === tel);
+                    if(filtered.length > 0) {
+                        const pendentes = filtered.filter(([n, d]) => d.status === 'reserved').map(p => p[0]).sort();
+                        const pagos = filtered.filter(([n, d]) => d.status === 'paid').map(p => p[0]).sort();
+                        const nome = filtered[0][1].nome;
+                        
+                        if(pendentes.length > 0) {
+                            const totalPendente = pendentes.reduce((acc, n) => acc + (parseFloat(all[n].valor_fixado_unidade) || parseFloat(this.config.valor)), 0);
+                            const listaStr = pendentes.join(',');
+                            const nomeSafe = nome.replace(/'/g, "\\'"); 
+                            area.innerHTML += `
+                                <div class="admin-card" style="border-color:var(--reserved); text-align:center;">
+                                    <b style="color:var(--reserved); font-size:0.8rem">AGUARDANDO PAGAMENTO</b>
+                                    <p style="font-weight:600; margin:10px 0; font-size:1.1rem;">${pendentes.join(', ')}</p>
+                                    <p style="font-size:1.2rem; font-weight:700; color:var(--text-main); margin-bottom:15px">Total: R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
+                                    <button class="btn-pay" id="btn-pay-pending" style="width:100%; background: var(--reserved);" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">Pagar Agora (PIX)</button>
+                                </div>`;
+                        }
+                        if(pagos.length > 0) area.innerHTML += `<div class="admin-card" style="text-align:left;"><b style="color:var(--primary); font-size:0.8rem">COTAS PAGAS:</b><p style="font-weight:600; margin-top:5px; color:var(--text-main)">${pagos.join(', ')}</p></div>`;
+                    } else {
+                        area.innerHTML = '<p style="text-align:center; color: var(--text-dim); margin-top: 20px;">Nenhum bilhete encontrado.</p>';
+                    }
+                }
+                lucide.createIcons();
+            }
+
+            toggleTheme() {
+                const body = document.body;
+                const next = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+                body.setAttribute('data-theme', next);
+                const icon = document.getElementById('theme-icon');
+                icon.setAttribute('data-lucide', next === 'light' ? 'moon' : 'sun');
+                lucide.createIcons();
+            }
+            
+            showOwnerTooltip(e, name) {
+                const old = document.querySelector('.tooltip-bubble'); if(old) old.remove();
+                const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase();
+                document.body.appendChild(b);
+                const rect = e.target.getBoundingClientRect();
+                b.style.left = `${rect.left + (rect.width / 2) - (b.offsetWidth / 2)}px`;
+                b.style.top = `${rect.top - 45}px`; 
+                setTimeout(() => b.remove(), 2000);
+            }
+            askAdmin() { if(window.adminPanel.isAdmin) this.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; }
+            closeModal(id) { document.getElementById(id).style.display = 'none'; }
+            maskPhone(i) { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
+            showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
+            requestConfirmAction(msg, action) { this.pendingAction = action; document.getElementById('confirm-msg').innerText = msg; document.getElementById('modal-confirm').style.display = 'flex'; }
+            async executeConfirmedAction() { if(this.pendingAction) await this.pendingAction(); this.closeModal('modal-confirm'); }
+        }
+
+        class CartManager {
+            constructor(app) {
+                this.app = app;
+                this.appliedCoupon = null;
+                this.timerInterval = null;
+            }
+
+            calculateBestPrice(count, useCoupon = false) {
+                let original = count * this.app.config.valor;
+                let final = original;
+                let promoDiscount = 0;
+                if(this.app.config.promosActive && this.app.config.promos) {
+                    this.app.config.promos.forEach(p => {
+                        if(count >= p.min) {
+                            let price = original;
+                            if(p.type === 'pct') price = original * (1 - (p.val / 100));
+                            else if(p.type === 'free') price = original - (p.val * this.app.config.valor);
+                            if(price < final) final = price;
+                        }
+                    });
+                }
+                promoDiscount = original - final;
+                if(useCoupon && this.appliedCoupon) { 
+                    if(this.appliedCoupon.type === 'pct') final -= (final * (this.appliedCoupon.val / 100));
+                    else final -= this.appliedCoupon.val;
+                    if(final < 0) final = 0;
+                }
+                return { final, original, promoDiscount };
+            }
+
+            updateFooter() {
+                const p = this.calculateBestPrice(this.app.selected.size, false);
+                document.getElementById('count-display').innerText = this.app.selected.size;
+                document.getElementById('footer-total').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                
+                const origEl = document.getElementById('footer-original-price');
+                const discEl = document.getElementById('footer-discount-amount');
+                
+                if(p.promoDiscount > 0) {
+                    origEl.innerText = p.original.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+                    discEl.innerText = `Desconto ativo`;
+                    origEl.style.display = 'block'; discEl.style.display = 'block';
+                } else { origEl.style.display = 'none'; discEl.style.display = 'none'; }
+                
+                document.getElementById('btn-checkout').disabled = this.app.selected.size === 0;
+            }
+
+            applyCoupon() {
+                const code = document.getElementById('coupon-input').value.trim().toUpperCase(); 
+                const coupon = (this.app.config.coupons || []).find(c => c.code.toUpperCase() === code); 
+                if(!coupon) return this.app.showToast("Cupom inválido"); 
+                this.appliedCoupon = coupon; 
+                const res = this.calculateBestPrice(this.app.selected.size, true); 
+                document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
+                this.app.showToast("Cupom aplicado!"); 
+            }
+
+            abrirCheckout() {
+                this.appliedCoupon = null; 
+                const res = this.calculateBestPrice(this.app.selected.size, true); 
+                document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
+                document.getElementById('modal-checkout').style.display = 'flex';
+                
+                if(window.fbq) window.fbq('track', 'InitiateCheckout');
+                this.startTimer(15); 
+            }
+
+            startTimer(minutes) {
+                let time = minutes * 60;
+                clearInterval(this.timerInterval);
+                this.timerInterval = setInterval(() => {
+                    time--;
+                    const m = Math.floor(time / 60).toString().padStart(2, '0');
+                    const s = (time % 60).toString().padStart(2, '0');
+                    document.getElementById('checkout-timer-display').innerText = `${m}:${s}`;
+                    if(time <= 0) {
+                        clearInterval(this.timerInterval);
+                        this.app.closeModal('modal-checkout');
+                        this.app.showToast("O tempo de reserva expirou!");
+                    }
+                }, 1000);
+            }
+
+            async confirmarReserva() {
+                const n = document.getElementById('cust-name').value.trim();
+                const t = document.getElementById('cust-phone').value.trim(); 
+                
+                if(!n || t.length < 10) return this.app.showToast("Preencha todos os dados corretamente"); 
+                
+                const btn = document.getElementById('btn-confirm-res'); 
+                btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; 
+                
+                const res = this.calculateBestPrice(this.app.selected.size, true); 
+                const valorUnidadeFixado = res.final / this.app.selected.size;
+                const priceCents = Math.round(res.final.toFixed(2) * 100);
+                const oid = "RN" + Date.now(); 
+                
+                try { 
+                    const up = {}; 
+                    this.app.selected.forEach(num => {
+                        up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado };
+                    }); 
+                    await update(numRef, up); 
+                    
+                    if(window.fbq) window.fbq('track', 'Purchase', {value: res.final, currency: 'BRL'});
+
+                    const payData = { nsu: oid, nome: n, telefone: t, priceCents: priceCents, description: `Cotas ${this.app.config.premio}` };
+                    const link = await PaymentService.generateLink(payData, this.app.config.handle);
+                    window.location.href = link;
+                } catch(e) { 
+                    btn.disabled = false; btn.innerText = "Tentar Novamente"; 
+                    this.app.showToast("Erro ao conectar ao banco");
+                } 
+            }
+
+            async pagarExistente(tel, nome, listaStr, totalCusto) {
+                const btn = document.getElementById('btn-pay-pending');
+                if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
+                this.app.showToast("Gerando pagamento...");
+                
+                const priceCents = Math.round(parseFloat(totalCusto).toFixed(2) * 100);
+                const oid = "RP" + Date.now();
+                
+                try {
+                    const up = {}; listaStr.split(',').forEach(n => up[`${n}/order_nsu`] = oid);
+                    await update(numRef, up);
+                    
+                    const payData = { nsu: oid, nome: nome, telefone: tel, priceCents: priceCents, description: `Pagar Bilhetes` };
+                    const link = await PaymentService.generateLink(payData, this.app.config.handle);
+                    window.location.href = link;
+                } catch(e) { 
+                    this.app.showToast("Erro no Gateway"); 
+                    if(btn) { btn.disabled = false; btn.innerText = "Tentar Novamente"; } 
+                }
+            }
+        }
+
+        class AdminPanel {
+            constructor(app) {
+                this.app = app;
+                this.isAdmin = false;
+                this.filter = 'all';
+                this.tempTheme = 'green';
+            }
+
+            validate() {
+                const typedPin = document.getElementById('admin-pin').value.trim();
+                const correctPin = this.app.config.pin.toString().trim();
+                if(typedPin === correctPin) { 
+                    this.isAdmin = true; 
+                    document.getElementById('tab-admin').style.display = 'block'; 
+                    document.getElementById('admin-lock-icon').setAttribute('data-lucide', 'unlock'); 
+                    this.app.closeModal('modal-pin'); 
+                    this.app.switchTab('admin'); 
+                } else {
+                    this.app.showToast("PIN Incorreto");
+                }
+                lucide.createIcons();
+            }
+
+            setFilter(f) {
+                this.filter = f;
+                document.querySelectorAll('.filter-chip').forEach(c => {
+                    c.classList.toggle('active', c.innerText.toLowerCase().includes(f.toLowerCase()) || (f==='all' && c.innerText==='Todos'));
+                });
+                this.render(false); 
+            }
+
+            render(forceRebuild = true) {
+                const list = document.getElementById('admin-list'); 
+                if(!list) return;
+
+                if (forceRebuild) {
+                    list.innerHTML = '';
+                    let tPaid = 0; const groups = {};
+                    
+                    Object.entries(this.app.dbNumbers).forEach(([n, d]) => {
+                        const val = (parseFloat(d.valor_fixado_unidade) || parseFloat(this.app.config.valor));
+                        if(d.status === 'paid') tPaid += val;
+                        const phKey = (d.telefone || "0").replace(/\D/g,'');
+                        if(!groups[phKey]) groups[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
+                        groups[phKey].cotas.push({n, status: d.status});
+                    });
+
+                    document.getElementById('admin-stats').innerHTML = `
+                        <div class="admin-card" style="border-color:var(--primary); padding:16px;">
+                            <span style="font-size:0.75rem; color:var(--text-dim); font-weight:600;">Receita</span>
+                            <b style="color:var(--primary); display:block; font-size:1.4rem">R$ ${tPaid.toFixed(2)}</b>
+                        </div>
+                        <div class="admin-card" style="border-color:var(--secondary); padding:16px;">
+                            <span style="font-size:0.75rem; color:var(--text-dim); font-weight:600;">Vendas</span>
+                            <b style="color:var(--secondary); display:block; font-size:1.4rem">${Object.keys(this.app.dbNumbers).length}</b>
+                        </div>`;
+
+                    Object.values(groups).forEach(p => {
+                        const phClean = p.telefone.replace(/\D/g,'');
+                        const card = document.createElement('div'); card.className = 'admin-card'; card.id = `card-${phClean}`;
+                        
+                        card.dataset.nome = p.nome.toLowerCase();
+                        card.dataset.telefone = phClean;
+                        card.dataset.cotas = p.cotas.map(c => c.n).join(',');
+                        
+                        const allPaid = p.cotas.every(c => c.status === 'paid');
+                        const allRes = p.cotas.every(c => c.status === 'reserved');
+                        
+                        if (allPaid) card.dataset.statusGroup = 'paid';
+                        else if (allRes) card.dataset.statusGroup = 'reserved';
+                        else card.dataset.statusGroup = 'mixed';
+                        
+                        card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px">
+                            <b style="font-size:0.95rem">${p.nome}</b>
+                            <button class="icon-btn" style="background:#25D366; color:#fff; border:none; height:28px; width:28px; border-radius:6px;" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:14px"></i></button>
+                        </div>
+                        <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:12px">${p.telefone}</div>
+                        <div style="background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--border); font-size:0.85rem">
+                            ${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'; font-weight:600;}">${c.n}</span>`).join(', ')}
+                        </div>
+                        <div class="admin-actions">
+                            <button class="btn-admin-action" style="color:var(--primary); border-color:var(--primary);" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Marcar como pago?', () => window.adminPanel.updateStatus('${p.telefone}', 'paid'))">PAGO</button>
+                            <button class="btn-admin-action" style="color:var(--reserved); border-color:var(--reserved);" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Marcar como pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'reserved'))">PENDENTE</button>
+                            <button class="btn-admin-action btn-delete" onclick="window.rifaApp.requestConfirmAction('Excluir participações?', () => window.adminPanel.deleteParticipant('${p.telefone}'))">EXCLUIR</button>
+                        </div>`;
+                        list.appendChild(card);
+                    });
+                    lucide.createIcons();
+                }
+
+                const searchTxt = document.getElementById('admin-search').value.toLowerCase().trim();
+                document.querySelectorAll('.admin-card').forEach(card => {
+                    if (card.id === 'admin-stats') return;
+                    const matchSearch = card.dataset.nome.includes(searchTxt) || card.dataset.cotas.includes(searchTxt) || card.dataset.telefone.includes(searchTxt);
+                    
+                    let matchTab = true;
+                    if (this.filter === 'paid' && card.dataset.statusGroup !== 'paid') matchTab = false;
+                    if (this.filter === 'reserved' && !['reserved', 'mixed'].includes(card.dataset.statusGroup)) matchTab = false;
+
+                    card.style.display = (matchSearch && matchTab) ? 'block' : 'none';
+                });
+            }
+
+            realizarSorteio() {
+                const pagos = Object.entries(this.app.dbNumbers).filter(([n, d]) => d.status === 'paid');
+                if (pagos.length === 0) return this.app.showToast("Nenhuma cota paga para sorteio.");
+                
+                const ganhadorIndex = Math.floor(Math.random() * pagos.length);
+                const [numeroSorteado, infoGanhador] = pagos[ganhadorIndex];
+
+                document.getElementById('sorteio-numero').innerText = numeroSorteado;
+                document.getElementById('sorteio-nome').innerText = infoGanhador.nome;
+                document.getElementById('modal-sorteio').style.display = 'flex';
+
+                var duration = 3 * 1000;
+                var animationEnd = Date.now() + duration;
+                var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+
+                var interval = setInterval(function() {
+                    var timeLeft = animationEnd - Date.now();
+                    if (timeLeft <= 0) return clearInterval(interval);
+                    var particleCount = 50 * (timeLeft / duration);
+                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
+                }, 250);
+            }
+
+            async updateStatus(ph, s) { 
+                const up = {}; 
+                Object.entries(this.app.dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); 
+                await update(numRef, up); this.app.showToast("Atualizado"); 
+            }
+            
+            async deleteParticipant(ph) { 
+                const up = {}; 
+                Object.entries(this.app.dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); 
+                await update(numRef, up); this.app.showToast("Excluído"); 
+            }
+            
+            resetRifa() { 
+                this.app.requestConfirmAction('Isso apagará TODOS os dados. Continuar?', async () => { 
+                    await remove(numRef); this.app.showToast("Resetado com sucesso"); 
+                }); 
+            }
+
+            toggleAccordion(headerElement) {
+                const item = headerElement.parentElement;
+                item.classList.toggle('active');
+            }
+
+            selectTheme(color) {
+                this.tempTheme = color;
+                document.querySelectorAll('.color-option').forEach(el => {
+                    el.classList.toggle('active', el.dataset.color === color);
+                });
+                this.app.applyThemeColor(color);
+            }
+
+            openConfig() {
+                document.getElementById('cfg-premio').value = this.app.config.premio || "";
+                document.getElementById('cfg-valor').value = this.app.config.valor || 0;
+                document.getElementById('cfg-total').value = this.app.config.total || 0;
+                document.getElementById('cfg-handle').value = this.app.config.handle || "";
+                document.getElementById('cfg-pin').value = this.app.config.pin || "";
+                document.getElementById('cfg-descricao').value = this.app.config.descricao || "";
+                document.getElementById('cfg-pixel').value = this.app.config.pixel || ""; 
+                
+                this.selectTheme(this.app.config.themeColor || 'green');
+                
+                document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF";
+                
+                const pList = document.getElementById('promos-list'); pList.innerHTML = '';
+                if(this.app.config.promos) this.app.config.promos.forEach(p => this.addPromoRow(p));
+                
+                const cList = document.getElementById('coupons-list'); cList.innerHTML = '';
+                if(this.app.config.coupons) this.app.config.coupons.forEach(c => this.addCouponRow(c));
+                
+                document.getElementById('modal-config').style.display = 'flex';
+            }
+
+            togglePromos() { 
+                this.app.config.promosActive = !this.app.config.promosActive; 
+                document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF"; 
+            }
+
+            addPromoRow(d = {min:10, val:10, type:'pct'}) {
+                const div = document.createElement('div'); div.className = 'admin-card'; div.style.marginBottom = '8px';
+                div.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px; margin-bottom:8px"><input type="number" class="custom-input" placeholder="Qtd. Min" value="${d.min}" style="margin:0"><select class="custom-input p-type" style="margin:0; padding:14px;"><option value="pct" ${d.type==='pct'?'selected':''}>% de Desconto</option><option value="free" ${d.type==='free'?'selected':''}>Cotas Grátis</option></select></div><input type="number" class="custom-input p-val" placeholder="Valor do Desconto/Cotas" value="${d.val}"><button class="btn-admin-action btn-delete" style="width:100%; border:none; background:rgba(239, 68, 68, 0.1);" onclick="this.parentElement.remove()">Remover Regra</button>`;
+                document.getElementById('promos-list').appendChild(div);
+            }
+
+            addCouponRow(d = {code:'', val:5, unlimited:false, limit:0, type:'val'}) {
+                const div = document.createElement('div'); div.className = 'admin-card'; div.style.marginBottom = '8px';
+                div.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="Nome do Cupom"><div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><input type="checkbox" class="c-unlimited" ${d.unlimited?'checked':''} style="width:16px;height:16px;"> <span style="font-size:0.8rem; font-weight:500; color:var(--text-dim);">Uso Ilimitado</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px"><div><input type="number" class="custom-input c-val" placeholder="Valor" value="${d.val}" style="margin:0"></div><div><select class="custom-input c-type" style="margin:0; padding:14px;"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><input type="number" class="custom-input c-limit" value="${d.limit}" placeholder="Limite de Usos (Ex: 100)"><button class="btn-admin-action btn-delete" style="width:100%; border:none; background:rgba(239, 68, 68, 0.1);" onclick="this.parentElement.remove()">Remover Cupom</button>`;
+                document.getElementById('coupons-list').appendChild(div);
+            }
+
+            save() {
+                const pr = [], cp = [];
+                document.querySelectorAll('#promos-list .admin-card').forEach(row => { 
+                    pr.push({ min: parseInt(row.querySelector('input[type="number"]').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value }); 
+                });
+                document.querySelectorAll('#coupons-list .admin-card').forEach(row => { 
+                    const code = row.querySelector('.c-code').value.toUpperCase(); 
+                    cp.push({ code: code, type: row.querySelector('.c-type').value, val: parseFloat(row.querySelector('.c-val').value), unlimited: row.querySelector('.c-unlimited').checked, limit: parseInt(row.querySelector('.c-limit').value), used: this.app.config.coupons?.find(x => x.code === code)?.used || 0 }); 
+                });
+                
+                const up = { 
+                    premio: document.getElementById('cfg-premio').value, 
+                    valor: parseFloat(document.getElementById('cfg-valor').value), 
+                    total: parseInt(document.getElementById('cfg-total').value), 
+                    handle: document.getElementById('cfg-handle').value, 
+                    pin: document.getElementById('cfg-pin').value, 
+                    pixel: document.getElementById('cfg-pixel').value, 
+                    themeColor: this.tempTheme, 
+                    promosActive: this.app.config.promosActive, 
+                    promos: pr, 
+                    coupons: cp, 
+                    descricao: document.getElementById('cfg-descricao').value 
+                };
+                
+                set(cfgRef, up).then(() => { 
+                    this.app.closeModal('modal-config'); 
+                    this.app.showToast("Configurações salvas com sucesso!"); 
+                });
+            }
+        }
+
+        // Garantimos a instância completa primeiro, evitando o erro de undefined
+        window.rifaApp = new RifaApp();
+        window.cartManager = new CartManager(window.rifaApp);
+        window.adminPanel = new AdminPanel(window.rifaApp);
+
+        // Só depois de todas as classes existirem e se conectarem, acionamos o Firebase
+        window.rifaApp.init();
+
+    </script>
+</body>
+</html>
