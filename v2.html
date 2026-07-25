@@ -342,6 +342,7 @@
                         <button class="filter-tab active" data-filter="all" onclick="window.rifaApp.setGridFilter('all')">Todos</button>
                         <button class="filter-tab" data-filter="available" onclick="window.rifaApp.setGridFilter('available')">Disponíveis</button>
                         <button class="filter-tab" data-filter="paid" onclick="window.rifaApp.setGridFilter('paid')">Comprados</button>
+                        <button class="filter-tab" data-filter="selected" onclick="window.rifaApp.setGridFilter('selected')">Selecionados</button>
                     </div>
                     
                     <div class="numbers-grid" id="grid"></div>
@@ -350,7 +351,7 @@
                     
                 </div>
                 <div style="text-align: center; margin-top: 24px; font-size: 11px; color: var(--text-color); font-weight: 500; text-transform: uppercase;">
-                        <>Todos direitos reservados copyright <br> © 2026 Vagner Lauriuche
+                        <br>Todos direitos reservados copyright <br> © 2026 Vagner Lauriuche
                 </div>
             </div>
 
@@ -786,16 +787,17 @@
                 grid.innerHTML = '';
                 
                 const total = parseInt(this.config.total) || 100;
-                const limit = Math.min(total, 500); 
+                const padLen = Math.max(3, (total - 1).toString().length);
 
-                for(let i = 0; i < limit; i++) {
-                    const n = i.toString().padStart(3, '0'); 
+                for(let i = 0; i < total; i++) {
+                    const n = i.toString().padStart(padLen, '0');
                     const info = this.dbNumbers[n];
                     const isSel = this.selected.has(n);
                     
                     if (this.gridFilter !== 'all') {
                         if (this.gridFilter === 'available' && (info || isSel)) continue;
                         if (this.gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
+                        if (this.gridFilter === 'selected' && !isSel) continue;
                     }
                     
                     const el = document.createElement('div'); el.className = 'num-cell'; el.innerText = n;
@@ -816,7 +818,9 @@
             setGridFilter(f) {
                 this.gridFilter = f;
                 document.querySelectorAll('.filter-tabs .filter-tab').forEach(c => {
-                    if(!c.classList.contains('admin-tab')) c.classList.toggle('active', c.dataset.filter === f);
+                    if(!c.classList.contains('admin-tab')) {
+                        c.classList.toggle('active', c.dataset.filter === f);
+                    }
                 });
                 this.renderGrid();
             }
@@ -830,8 +834,9 @@
                 if (targetCount > currentCount) {
                     let diff = targetCount - currentCount;
                     const available = []; 
+                    const padLen = Math.max(3, (this.config.total - 1).toString().length);
                     for(let i=0; i<this.config.total; i++){ 
-                        const n = i.toString().padStart(3,'0'); 
+                        const n = i.toString().padStart(padLen,'0'); 
                         if(!this.dbNumbers[n] && !this.selected.has(n)) available.push(n); 
                     }
                     available.sort(() => Math.random() - 0.5).slice(0, diff).forEach(n => this.selected.add(n));
@@ -1159,11 +1164,87 @@
                 const ganhadorIndex = Math.floor(Math.random() * pagos.length);
                 const [numeroSorteado, infoGanhador] = pagos[ganhadorIndex];
 
-                document.getElementById('sorteio-numero').innerText = numeroSorteado;
-                document.getElementById('sorteio-nome').innerText = infoGanhador.nome;
+                const padLen = Math.max(3, (this.app.config.total - 1).toString().length);
+                const numeroFormatado = numeroSorteado.toString().padStart(padLen, '0');
+
+                const numContainer = document.getElementById('sorteio-numero');
+                const nomeContainer = document.getElementById('sorteio-nome');
+
+                // Prepara a tela (Esconde o nome e limpa os números)
+                numContainer.innerHTML = '';
+                numContainer.style.display = 'flex';
+                numContainer.style.justifyContent = 'center';
+                numContainer.style.gap = '10px';
+                
+                nomeContainer.style.opacity = '0';
+                nomeContainer.innerText = infoGanhador.nome;
+                nomeContainer.style.transition = 'opacity 0.5s ease-in-out';
+                
                 document.getElementById('modal-sorteio').style.display = 'flex';
 
-                confetti({ particleCount: 150, spread: 180, origin: { y: 0.3 } });
+                // Cria as roletas (Slots) individuais
+                const digitElements = [];
+                for (let i = 0; i < padLen; i++) {
+                    const span = document.createElement('span');
+                    span.style.background = 'var(--gray-400)';
+                    span.style.border = '2px solid var(--border-color)';
+                    span.style.borderRadius = '12px';
+                    span.style.width = '64px';
+                    span.style.height = '86px';
+                    span.style.display = 'flex';
+                    span.style.alignItems = 'center';
+                    span.style.justifyContent = 'center';
+                    span.style.fontSize = '50px';
+                    span.style.fontWeight = '900';
+                    span.style.color = '#fff';
+                    span.style.boxShadow = 'inset 0 5px 15px rgba(0,0,0,0.6)';
+                    span.style.transition = 'all 0.2s';
+                    span.innerText = '0';
+                    numContainer.appendChild(span);
+                    digitElements.push(span);
+                }
+
+                // Inicia o giro frenético de todos os números
+                const intervals = [];
+                digitElements.forEach((el) => {
+                    const interval = setInterval(() => {
+                        el.innerText = Math.floor(Math.random() * 10);
+                    }, 50); // Velocidade do giro
+                    intervals.push(interval);
+                });
+
+                // Para os números um a um (Da Direita para a Esquerda)
+                let tempoParadaBase = 2100; // O primeiro número da direita pára após 1.2s
+                let tempoIncremento = 2100; // Cada número a seguir demora mais 0.8s a parar
+
+                for (let i = padLen - 1; i >= 0; i--) {
+                    // Calcula quando esta roleta vai parar
+                    const tempoParada = tempoParadaBase + ((padLen - 1 - i) * tempoIncremento);
+                    
+                    setTimeout(() => {
+                        clearInterval(intervals[i]); // Para o giro
+                        digitElements[i].innerText = numeroFormatado[i]; // Mostra o número real
+                        
+                        // Efeito visual de quando trava o número
+                        digitElements[i].style.background = 'var(--reserved)';
+                        digitElements[i].style.borderColor = 'var(--reserved)';
+                        digitElements[i].style.color = '#000';
+                        digitElements[i].style.transform = 'scale(1.1)';
+                        digitElements[i].style.boxShadow = '0 0 20px rgba(255, 170, 0, 0.6)';
+                        
+                        setTimeout(() => { 
+                            digitElements[i].style.transform = 'scale(1)'; 
+                        }, 200);
+
+                        // Se for a última roleta a parar (a da extrema esquerda, i === 0)
+                        if (i === 0) {
+                            setTimeout(() => {
+                                nomeContainer.style.opacity = '1'; // Revela o nome
+                                confetti({ particleCount: 150, spread: 180, origin: { y: 0.3 } });
+                            }, 500);
+                        }
+                    }, tempoParada);
+                }
             }
 
             async updateStatus(ph, s) { 
