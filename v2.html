@@ -135,27 +135,33 @@
         }
 
         .quick-select-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 24px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px;
         }
-        @media(min-width: 480px) { .quick-select-grid { grid-template-columns: repeat(3, 1fr); } }
 
         .btn-quick {
             background-color: var(--button-color); border: 1px solid var(--button-border);
-            border-radius: 12px; padding: 14px 10px; text-align: center;
+            border-radius: 12px; padding: 12px 6px; text-align: center;
             color: var(--title-color); cursor: pointer; transition: 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
+            position: relative; overflow: hidden; min-height: 76px;
         }
         .btn-quick:hover { filter: brightness(1.2); }
-        .btn-quick span.lbl { font-size: 11px; text-transform: uppercase; color: var(--text-color); margin-bottom: 4px; }
-        .btn-quick span.val { font-size: 24px; font-weight: 700; line-height: 1; }
-        .btn-quick.popular { border: 2px solid var(--primary-color); background-color: var(--gray-400); }
+        .btn-quick span.lbl { font-size: 10px; text-transform: uppercase; color: var(--text-color); margin-bottom: 4px; }
+        .btn-quick span.val { font-size: 22px; font-weight: 700; line-height: 1; }
+        
+        .btn-quick.popular { 
+            border: 2px solid var(--primary-color); background-color: var(--gray-400); 
+            padding: 0;
+            justify-content: flex-start;
+        }
         .badge-popular {
-            position: absolute; top: 0; left: 0; right: 0; background-color: var(--primary-color);
-            color: #fff; font-size: 10px; font-weight: 700; padding: 4px 0; 
+            width: 100%; height: 22px; min-height: 22px; margin-bottom: 6px;
+            background-color: var(--primary-color);
+            color: #fff; font-size: 10px; font-weight: 700; 
             display: flex; align-items: center; justify-content: center; gap: 4px; text-transform: uppercase;
         }
-        .btn-quick.popular span.lbl { margin-top: 14px; }
+        .btn-quick.popular span.lbl { margin-top: 2px; }
+        .btn-quick.popular span.val { margin-bottom: 8px; }
 
         .custom-amount-row {
             display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px;
@@ -262,7 +268,7 @@
             <i data-lucide="menu" style="width: 24px;"></i>
         </button>
         
-        <img src="https://images.rfstatic.com/uploads/logos/mffpsz6g2g0eixk7948hu97o.png?h=100&mode=max&q=90" alt="Logo" class="header-logo" id="header-logo" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Logo" class="header-logo" id="header-logo" onerror="this.style.display='none'">
         
         <button class="header-btn" onclick="window.rifaApp.switchTab('consulta')">
             <i data-lucide="shopping-cart" style="width: 20px;"></i>
@@ -272,10 +278,10 @@
 
     <div class="main-container">
         <div class="hero-blur">
-            <img src="capa.jpg" alt="Blur Background" id="img-blur">
+            <img src="capa.png" alt="Blur Background" id="img-blur">
         </div>
         <div class="hero-image-container">
-            <img src="capa.jpg" alt="Campanha" id="img-main">
+            <img src="capa.png" alt="Campanha" id="img-main">
         </div>
 
         <div class="content-wrapper">
@@ -296,7 +302,7 @@
                     <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--title-color);">Prêmios:</h3>
                     <div id="premios-list">
                         <div class="prize-item">
-                            <b>🥇 1º Ganhador(a):</b>
+                            <b>🥇 1º Prêmio:</b>
                             <p>Prêmio Principal da Rifa</p>
                         </div>
                     </div>
@@ -312,27 +318,9 @@
                         </div>
                     </div>
 
-                    <!-- Botões de Seleção Rápida -->
-                    <div class="quick-select-grid">
-                        <div class="btn-quick" onclick="window.rifaApp.addSelection(1)">
-                            <span class="lbl">Selecionar</span><span class="val">+1</span>
-                        </div>
-                        <div class="btn-quick" onclick="window.rifaApp.addSelection(2)">
-                            <span class="lbl">Selecionar</span><span class="val">+2</span>
-                        </div>
-                        <div class="btn-quick popular" onclick="window.rifaApp.addSelection(3)">
-                            <div class="badge-popular"><i data-lucide="star" style="width: 10px;"></i> Popular</div>
-                            <span class="lbl">Selecionar</span><span class="val">+3</span>
-                        </div>
-                        <div class="btn-quick" onclick="window.rifaApp.addSelection(10)">
-                            <span class="lbl">Selecionar</span><span class="val">+10</span>
-                        </div>
-                        <div class="btn-quick" onclick="window.rifaApp.addSelection(25)">
-                            <span class="lbl">Selecionar</span><span class="val">+25</span>
-                        </div>
-                        <div class="btn-quick" onclick="window.rifaApp.addSelection(30)">
-                            <span class="lbl">Selecionar</span><span class="val">+30</span>
-                        </div>
+                    <!-- Botões de Seleção Rápida Dinâmicos -->
+                    <div class="quick-select-grid" id="quick-select-grid">
+                        <!-- Renderizado via JS -->
                     </div>
 
                     <!-- Input Customizado de Quantidade -->
@@ -357,11 +345,19 @@
                     </div>
                     
                     <div class="numbers-grid" id="grid"></div>
+                    
+                    <!-- Copyright -->
+                    <div style="text-align: center; margin-top: 24px; font-size: 11px; color: var(--text-color); font-weight: 500; text-transform: uppercase;">
+                        Todos direitos reservados copyright © 2026 Vagner Lauriuche
+                    </div>
                 </div>
             </div>
 
             <div id="view-consulta" class="view-content">
                 <div class="card" style="text-align: center;">
+                    <button onclick="window.rifaApp.switchTab('rifa')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 24px; cursor: pointer; border: none; font-size: 14px;">
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
+                    </button>
                     <div class="icon-box" style="margin: 0 auto 16px auto; width: 56px; height: 56px; border-radius: 50%; background: var(--gray-400); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
                         <i data-lucide="search" style="color: var(--title-color); width: 24px;"></i>
                     </div>
@@ -380,6 +376,9 @@
 
             <div id="view-admin" class="view-content">
                 <div class="card">
+                    <button onclick="window.rifaApp.switchTab('rifa')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer; border: none; font-size: 14px;">
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
+                    </button>
                     <h2 style="color: var(--title-color); margin-bottom: 20px; font-size: 22px; display: flex; align-items: center; gap: 8px;">
                         <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
                     </h2>
@@ -442,10 +441,15 @@
             <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo">
             <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
             
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <input type="text" id="checkout-cupom" class="input-form" placeholder="Tem cupom de desconto?" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
+                <button class="btn-participar" style="width: auto; padding: 0 20px; font-size: 14px; margin-bottom: 0;" onclick="window.cartManager.aplicarCupom()">Aplicar</button>
+            </div>
+
             <div style="background: var(--background-color); padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color); text-align: center;">
                 <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Total a pagar:</span>
                 <p id="checkout-final-val" style="font-size: 28px; font-weight: 800; color: var(--primary-color); margin-top: 4px;">R$ 0,00</p>
-                <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px;"></p>
+                <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px; line-height: 1.6;"></p>
             </div>
             
             <button class="btn-participar" onclick="window.cartManager.confirmarReserva()" id="btn-confirm-res">
@@ -517,11 +521,27 @@
                 </div>
                 <div>
                     <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">PIN Admin</label>
-                    <input type="text" id="cfg-pin" class="input-form" placeholder="Nova Senha">
+                    <input type="password" id="cfg-pin" class="input-form" placeholder="Nova Senha">
                 </div>
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 8px;">
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 12px;">Seleção Rápida de Cotas</label>
+                <div id="quick-select-config-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addQuickSelectRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Botão Rápido
+                </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 12px;">Prêmios do Sorteio</label>
+                <div id="premios-config-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPremioRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Prêmio
+                </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
                     <label style="font-size: 13px; font-weight: 700; color: var(--reserved);">Promoção Cascata</label>
                     <button class="btn-admin" id="btn-toggle-promos" onclick="window.adminPanel.togglePromos()" style="background: var(--gray-400); padding: 6px 12px; border: 1px solid var(--border-color); color: var(--title-color);">OFF</button>
@@ -529,6 +549,14 @@
                 <div id="promos-list"></div>
                 <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPromoRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Regra
+                </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--danger); display: block; margin-bottom: 12px;">Cupons de Desconto</label>
+                <div id="cupons-config-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addCupomRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Cupom
                 </button>
             </div>
 
@@ -592,7 +620,6 @@
 
         class PaymentService {
             static async generateLink(payData, config) {
-                // Seleciona o Gateway com base na configuração
                 if (config.gateway === 'mercadopago') {
                     return this.generateMercadoPagoLink(payData, config.mpToken);
                 } else {
@@ -600,7 +627,6 @@
                 }
             }
 
-            // Geração de PIX via Mercado Pago (API Preferences)
             static async generateMercadoPagoLink(payData, token) {
                 try {
                     if(!token) throw new Error("Access Token do Mercado Pago não configurado.");
@@ -623,7 +649,6 @@
                         }
                     };
 
-                    // Utilizamos o corsproxy para evitar bloqueios de CORS do navegador direto para o Mercado Pago
                     const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.mercadopago.com/checkout/preferences'), {
                         method: 'POST',
                         headers: {
@@ -640,7 +665,6 @@
                 } catch(e) { throw e; }
             }
 
-            // Geração de Link via InfinitePay
             static async generateInfinitePayLink(payData, handle) {
                 try {
                     if(!handle) throw new Error("Handle da InfinitePay não configurado.");
@@ -665,8 +689,7 @@
 
         class RifaApp {
             constructor() {
-                // Novas propriedades default para o Gateway de Pagamento
-                this.config = { premio: "Carregando...", descricao: "", valor: 5, total: 1000, pin: "6261", gateway: "infinitepay", handle: "", mpToken: "", promosActive: false, promos: [], pixel: "" };
+                this.config = { premio: "Carregando...", descricao: "", valor: 5, total: 1000, pin: "6261", gateway: "infinitepay", handle: "", mpToken: "", promosActive: false, promos: [], pixel: "", premios: [], cupons: [], quickSelects: [] };
                 this.dbNumbers = {};
                 this.selected = new Set();
                 this.gridFilter = 'all';
@@ -680,7 +703,6 @@
                 onValue(cfgRef, (s) => { 
                     if(s.exists()){ 
                         this.config = { ...this.config, ...s.val() }; 
-                        // Se não tiver gateway salvo (rifas antigas), padroniza para infinitepay
                         if(!this.config.gateway) this.config.gateway = "infinitepay";
                         this.renderUI();
                         this.injectPixel(this.config.pixel);
@@ -712,7 +734,50 @@
                 document.getElementById('display-descricao').innerText = this.config.descricao || '';
                 document.getElementById('display-valor').innerText = valorStr;
                 
+                const premiosList = document.getElementById('premios-list');
+                if (premiosList) {
+                    premiosList.innerHTML = '';
+                    if (this.config.premios && this.config.premios.length > 0) {
+                        this.config.premios.forEach((p, index) => {
+                            const medalhas = ['🥇', '🥈', '🥉', '🎖️', '🏅'];
+                            const medalha = medalhas[index] || '🎁';
+                            premiosList.innerHTML += `
+                                <div class="prize-item">
+                                    <b>${medalha} ${index + 1}º Prêmio:</b>
+                                    <p>${p.descricao}</p>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        premiosList.innerHTML = `
+                            <div class="prize-item">
+                                <b>🥇 1º Prêmio:</b>
+                                <p>Prêmio Principal da Rifa</p>
+                            </div>
+                        `;
+                    }
+                }
+
+                const qsGrid = document.getElementById('quick-select-grid');
+                if (qsGrid) {
+                    qsGrid.innerHTML = '';
+                    const selects = (this.config.quickSelects && this.config.quickSelects.length > 0) 
+                        ? this.config.quickSelects 
+                        : [{qty:1}, {qty:2}, {qty:3, popular:true}, {qty:10}, {qty:25}, {qty:30}];
+                    
+                    selects.forEach(btn => {
+                        const isPop = btn.popular;
+                        qsGrid.innerHTML += `
+                            <div class="btn-quick ${isPop ? 'popular' : ''}" onclick="window.rifaApp.addSelection(${btn.qty})">
+                                ${isPop ? '<div class="badge-popular"><i data-lucide="star" style="width: 10px;"></i> Popular</div>' : ''}
+                                <span class="lbl">Selecionar</span><span class="val">+${btn.qty}</span>
+                            </div>
+                        `;
+                    });
+                }
+
                 window.cartManager.updateCartUI();
+                lucide.createIcons();
             }
 
             renderGrid() {
@@ -791,7 +856,6 @@
                 const view = document.getElementById(`view-${t}`);
                 if(view) view.classList.add('active');
                 
-                // Mostra a barra fixa apenas na tela de Rifa
                 document.getElementById('fixed-checkout').style.display = t === 'rifa' ? 'flex' : 'none';
 
                 if(t==='admin') window.adminPanel.render(false);
@@ -843,6 +907,7 @@
             constructor(app) {
                 this.app = app;
                 this.timerInterval = null;
+                this.cupomAplicado = null;
             }
 
             calculateBestPrice(count) {
@@ -860,7 +925,46 @@
                     });
                 }
                 promoDiscount = original - final;
-                return { final, original, promoDiscount };
+
+                let cupomDiscount = 0;
+                if (this.cupomAplicado) {
+                    if (this.cupomAplicado.tipo === 'pct') {
+                        cupomDiscount = final * (this.cupomAplicado.valor / 100);
+                    } else {
+                        cupomDiscount = this.cupomAplicado.valor;
+                    }
+                    final -= cupomDiscount;
+                    if (final < 0) final = 0;
+                }
+
+                return { final, original, promoDiscount, cupomDiscount };
+            }
+
+            aplicarCupom() {
+                const cod = document.getElementById('checkout-cupom').value.trim().toUpperCase();
+                if (!cod) return;
+                
+                const cupom = (this.app.config.cupons || []).find(c => c.codigo.toUpperCase() === cod);
+                if (cupom) {
+                    this.cupomAplicado = cupom;
+                    this.app.showToast("Cupom aplicado com sucesso!");
+                    this.atualizarValoresCheckout();
+                } else {
+                    this.app.showToast("Cupom inválido ou inativo.");
+                    this.cupomAplicado = null;
+                    this.atualizarValoresCheckout();
+                }
+            }
+
+            atualizarValoresCheckout() {
+                const res = this.calculateBestPrice(this.app.selected.size); 
+                document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
+                
+                const desc = document.getElementById('checkout-discount-info');
+                let infoText = "";
+                if(res.promoDiscount > 0) infoText += `Desconto cascata: - R$ ${res.promoDiscount.toFixed(2).replace('.',',')}<br>`;
+                if(res.cupomDiscount > 0) infoText += `<span style="color:var(--primary-color)">Cupom aplicado: - R$ ${res.cupomDiscount.toFixed(2).replace('.',',')}</span>`;
+                desc.innerHTML = infoText;
             }
 
             updateCartUI() {
@@ -875,19 +979,19 @@
                 lucide.createIcons();
 
                 const textDesc = document.getElementById('promo-discount-text');
-                if(p.promoDiscount > 0) {
-                    textDesc.innerText = `🎁 Desconto Aplicado: - ${p.promoDiscount.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+                if(p.promoDiscount > 0 || p.cupomDiscount > 0) {
+                    let totalDesc = p.promoDiscount + (p.cupomDiscount || 0);
+                    textDesc.innerText = `🎁 Desconto: - ${totalDesc.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
                     textDesc.style.display = 'block';
                 } else { textDesc.style.display = 'none'; }
             }
 
             abrirCheckout() {
-                const res = this.calculateBestPrice(this.app.selected.size); 
-                document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
-                
-                const desc = document.getElementById('checkout-discount-info');
-                if(res.promoDiscount > 0) desc.innerText = `Desconto de promoção: - R$ ${res.promoDiscount.toFixed(2).replace('.',',')}`;
-                else desc.innerText = '';
+                this.cupomAplicado = null;
+                const inputCupom = document.getElementById('checkout-cupom');
+                if(inputCupom) inputCupom.value = "";
+
+                this.atualizarValoresCheckout();
 
                 document.getElementById('modal-checkout').style.display = 'flex';
                 
@@ -936,7 +1040,6 @@
 
                     const payData = { nsu: oid, nome: n, telefone: t, priceCents: priceCents, description: `Cotas ${this.app.config.premio}` };
                     
-                    // Chama a geração de link com a Configuração completa (para decidir Gateway)
                     const link = await PaymentService.generateLink(payData, this.app.config);
                     window.location.href = link;
                 } catch(e) { 
@@ -1080,7 +1183,6 @@
                 }); 
             }
 
-            // Interface de Escolha de Gateway
             toggleGateway() {
                 const gateway = document.getElementById('cfg-gateway').value;
                 if(gateway === 'infinitepay') {
@@ -1099,7 +1201,6 @@
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
                 document.getElementById('cfg-pixel').value = this.app.config.pixel || "";
                 
-                // Gateways
                 document.getElementById('cfg-gateway').value = this.app.config.gateway || "infinitepay";
                 document.getElementById('cfg-handle').value = this.app.config.handle || "";
                 document.getElementById('cfg-mptoken').value = this.app.config.mpToken || "";
@@ -1109,6 +1210,16 @@
                 
                 const pList = document.getElementById('promos-list'); pList.innerHTML = '';
                 if(this.app.config.promos) this.app.config.promos.forEach(p => this.addPromoRow(p));
+
+                const qList = document.getElementById('quick-select-config-list'); qList.innerHTML = '';
+                const selects = (this.app.config.quickSelects && this.app.config.quickSelects.length > 0) ? this.app.config.quickSelects : [{qty:1}, {qty:2}, {qty:3, popular:true}, {qty:10}, {qty:25}, {qty:30}];
+                selects.forEach(q => this.addQuickSelectRow(q));
+
+                const preList = document.getElementById('premios-config-list'); preList.innerHTML = '';
+                if(this.app.config.premios) this.app.config.premios.forEach(p => this.addPremioRow(p));
+
+                const cList = document.getElementById('cupons-config-list'); cList.innerHTML = '';
+                if(this.app.config.cupons) this.app.config.cupons.forEach(c => this.addCupomRow(c));
                 
                 document.getElementById('modal-config').style.display = 'flex';
             }
@@ -1116,6 +1227,19 @@
             togglePromos() { 
                 this.app.config.promosActive = !this.app.config.promosActive; 
                 document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF"; 
+            }
+
+            addQuickSelectRow(d = {qty: 10, popular: false}) {
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <div style="display:flex;gap:8px; margin-bottom:8px; align-items:center;">
+                        <input type="number" class="input-form qs-qty" value="${d.qty}" style="margin:0; width:50%;" placeholder="Qtd">
+                        <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight: 600; color:var(--text-color); width:50%; cursor:pointer;">
+                            <input type="radio" name="qs_popular" class="qs-pop" style="width: 18px; height: 18px;" ${d.popular ? 'checked' : ''}> Popular?
+                        </label>
+                    </div>
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Botão</button>`;
+                document.getElementById('quick-select-config-list').appendChild(div);
             }
 
             addPromoRow(d = {min:10, val:10, type:'pct'}) {
@@ -1129,14 +1253,54 @@
                         </select>
                     </div>
                     <input type="number" class="input-form p-val" value="${d.val}" placeholder="Valor Desconto">
-                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover</button>`;
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Regra</button>`;
                 document.getElementById('promos-list').appendChild(div);
+            }
+
+            addPremioRow(d = {descricao: ''}) {
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <div style="display:flex;gap:8px; margin-bottom:8px">
+                        <input type="text" class="input-form p-desc" value="${d.descricao}" style="margin:0; width:100%;" placeholder="Ex: Moto 0km">
+                    </div>
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Prêmio</button>`;
+                document.getElementById('premios-config-list').appendChild(div);
+            }
+
+            addCupomRow(d = {codigo: '', valor: 10, tipo: 'pct'}) {
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <input type="text" class="input-form c-cod" value="${d.codigo}" style="margin-bottom:8px; text-transform: uppercase;" placeholder="Código Ex: VIP10">
+                    <div style="display:flex;gap:8px; margin-bottom:8px">
+                        <input type="number" class="input-form c-val" value="${d.valor}" style="margin:0; width:50%;" placeholder="Desconto">
+                        <select class="input-form c-tipo" style="margin:0; width:50%;">
+                            <option value="pct" ${d.tipo==='pct'?'selected':''}>% OFF</option>
+                            <option value="fixo" ${d.tipo==='fixo'?'selected':''}>R$ Fixo</option>
+                        </select>
+                    </div>
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Cupom</button>`;
+                document.getElementById('cupons-config-list').appendChild(div);
             }
 
             save() {
                 const pr = [];
                 document.querySelectorAll('#promos-list .admin-item').forEach(row => { 
                     pr.push({ min: parseInt(row.querySelector('.p-min').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value }); 
+                });
+
+                const qSelects = [];
+                document.querySelectorAll('#quick-select-config-list .admin-item').forEach(row => { 
+                    qSelects.push({ qty: parseInt(row.querySelector('.qs-qty').value), popular: row.querySelector('.qs-pop').checked }); 
+                });
+
+                const premios = [];
+                document.querySelectorAll('#premios-config-list .admin-item').forEach(row => { 
+                    premios.push({ descricao: row.querySelector('.p-desc').value }); 
+                });
+
+                const cupons = [];
+                document.querySelectorAll('#cupons-config-list .admin-item').forEach(row => { 
+                    cupons.push({ codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), valor: parseFloat(row.querySelector('.c-val').value), tipo: row.querySelector('.c-tipo').value }); 
                 });
                 
                 const up = { 
@@ -1149,7 +1313,10 @@
                     pin: document.getElementById('cfg-pin').value, 
                     pixel: document.getElementById('cfg-pixel').value, 
                     promosActive: this.app.config.promosActive, 
-                    promos: pr
+                    quickSelects: qSelects,
+                    promos: pr,
+                    premios: premios,
+                    cupons: cupons
                 };
                 
                 set(cfgRef, up).then(() => { 
