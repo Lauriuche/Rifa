@@ -151,17 +151,13 @@
         
         .btn-quick.popular { 
             border: 2px solid var(--primary-color); background-color: var(--gray-400); 
-            padding: 0;
-            justify-content: flex-start;
+            padding-top: 24px; position: relative;
         }
         .badge-popular {
-            width: 100%; height: 22px; min-height: 22px; margin-bottom: 6px;
-            background-color: var(--primary-color);
-            color: #fff; font-size: 10px; font-weight: 700; 
+            position: absolute; top: 0; left: 0; right: 0; height: 22px;
+            background-color: var(--primary-color); color: #fff; font-size: 10px; font-weight: 700;
             display: flex; align-items: center; justify-content: center; gap: 4px; text-transform: uppercase;
         }
-        .btn-quick.popular span.lbl { margin-top: 2px; }
-        .btn-quick.popular span.val { margin-bottom: 8px; }
 
         .custom-amount-row {
             display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px;
@@ -257,6 +253,8 @@
         .bg-green { background-color: var(--paid); color: #000;}
         .bg-orange { background-color: var(--reserved); color: #000;}
         .bg-red { background-color: var(--danger); border: none; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -278,17 +276,16 @@
 
     <div class="main-container">
         <div class="hero-blur">
-            <img src="capa.jpg" alt="Blur Background" id="img-blur">
+            <img src="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" alt="Blur Background" id="img-blur">
         </div>
         <div class="hero-image-container">
-            <img src="capa.jpg" alt="Campanha" id="img-main">
+            <img src="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" alt="Campanha" id="img-main">
         </div>
 
         <div class="content-wrapper">
             
             <div id="view-rifa" class="view-content active">
                 
-                <!-- Informações do Sorteio -->
                 <div class="card" style="margin-bottom: 24px;">
                     <div class="card-header">
                         <h1 class="card-title" id="display-premio">Carregando...</h1>
@@ -300,15 +297,9 @@
                     </div>
                     
                     <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--title-color);">Prêmios:</h3>
-                    <div id="premios-list">
-                        <div class="prize-item">
-                            <b>🥇 1º Prêmio:</b>
-                            <p>Prêmio Principal da Rifa</p>
-                        </div>
-                    </div>
+                    <div id="premios-list"></div>
                 </div>
 
-                <!-- Painel de Compra de Bilhetes -->
                 <div class="card" style="margin-bottom: 24px;">
                     <div class="section-title">
                         <div class="icon-box"><i data-lucide="ticket" style="width: 20px;"></i></div>
@@ -318,12 +309,8 @@
                         </div>
                     </div>
 
-                    <!-- Botões de Seleção Rápida Dinâmicos -->
-                    <div class="quick-select-grid" id="quick-select-grid">
-                        <!-- Renderizado via JS -->
-                    </div>
+                    <div class="quick-select-grid" id="quick-select-grid"></div>
 
-                    <!-- Input Customizado de Quantidade -->
                     <div class="custom-amount-row">
                         <button class="btn-qty" onclick="window.rifaApp.addSelection(-1)"><i data-lucide="minus"></i></button>
                         <input type="number" class="input-qty" id="qty-input" value="0" readonly>
@@ -331,7 +318,6 @@
                     </div>
                 </div>
 
-                <!-- Grade Visual de Números -->
                 <div class="card">
                     <div class="section-title">
                         <div class="icon-box"><i data-lucide="grid" style="width: 20px;"></i></div>
@@ -346,12 +332,10 @@
                     </div>
                     
                     <div class="numbers-grid" id="grid"></div>
-                    
-                    <!-- Copyright -->
-                    
                 </div>
+                
                 <div style="text-align: center; margin-top: 24px; font-size: 11px; color: var(--text-color); font-weight: 500; text-transform: uppercase;">
-                        <br>Todos direitos reservados copyright <br> © 2026 Vagner Lauriuche
+                    <br>Todos direitos reservados copyright <br> © 2026 Vagner Lauriuche
                 </div>
             </div>
 
@@ -431,35 +415,64 @@
         </button>
     </div>
 
-    <!-- Modal Checkout -->
+    <!-- Modal Checkout Integrado -->
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
-            <h2 style="color:var(--title-color); margin-bottom:16px; font-size: 20px;">Finalizar Reserva</h2>
             
-            <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                <i data-lucide="clock" style="width: 16px;"></i> Pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
-            </div>
+            <!-- PASSO 1: DADOS E RESUMO -->
+            <div id="checkout-step-1">
+                <h2 style="color:var(--title-color); margin-bottom:16px; font-size: 20px;">Finalizar Reserva</h2>
+                
+                <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i data-lucide="clock" style="width: 16px;"></i> Pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
+                </div>
 
-            <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo">
-            <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
-            
-            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                <input type="text" id="checkout-cupom" class="input-form" placeholder="Tem cupom de desconto?" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
-                <button class="btn-participar" style="width: auto; padding: 0 20px; font-size: 14px; margin-bottom: 0;" onclick="window.cartManager.aplicarCupom()">Aplicar</button>
-            </div>
+                <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo">
+                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <input type="text" id="checkout-cupom" class="input-form" placeholder="Tem cupom de desconto?" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
+                    <button class="btn-participar" style="width: auto; padding: 0 20px; font-size: 14px; margin-bottom: 0;" onclick="window.cartManager.aplicarCupom()">Aplicar</button>
+                </div>
 
-            <div style="background: var(--background-color); padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color); text-align: center;">
-                <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Total a pagar:</span>
-                <p id="checkout-final-val" style="font-size: 28px; font-weight: 800; color: var(--primary-color); margin-top: 4px;">R$ 0,00</p>
-                <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px; line-height: 1.6;"></p>
+                <div style="background: var(--background-color); padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Total a pagar:</span>
+                    <p id="checkout-final-val" style="font-size: 28px; font-weight: 800; color: var(--primary-color); margin-top: 4px;">R$ 0,00</p>
+                    <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px; line-height: 1.6;"></p>
+                </div>
+                
+                <button class="btn-participar" onclick="window.cartManager.confirmarReserva()" id="btn-confirm-res">
+                    Gerar PIX Copia e Cola
+                </button>
+                <button onclick="window.rifaApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
+                    Voltar e alterar cotas
+                </button>
             </div>
             
-            <button class="btn-participar" onclick="window.cartManager.confirmarReserva()" id="btn-confirm-res">
-                Gerar PIX Copia e Cola
-            </button>
-            <button onclick="window.rifaApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
-                Voltar e alterar cotas
-            </button>
+            <!-- PASSO 2: PIX NA TELA COM POLLING -->
+            <div id="checkout-step-2" style="display: none; text-align: center;">
+                <h2 style="color:var(--title-color); margin-bottom:16px; font-size: 20px;">Pagamento PIX</h2>
+                <p style="font-size: 13px; color: var(--text-color); margin-bottom: 20px;">Escaneie o QR Code ou copie o código abaixo para pagar no aplicativo do seu banco.</p>
+                
+                <div style="background: #fff; padding: 10px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
+                    <img id="pix-qr-img" src="" alt="QR Code PIX" style="width: 200px; height: 200px; display: block;">
+                </div>
+                
+                <input type="text" id="pix-copia-cola" class="input-form" readonly style="text-align: center; font-size: 12px; margin-bottom: 12px; padding: 12px;">
+                <button class="btn-participar" onclick="window.cartManager.copiarPix()" style="margin-bottom: 24px; background-color: var(--gray-400); color: var(--title-color);">
+                    <i data-lucide="copy" style="width: 18px;"></i> Copiar Código PIX
+                </button>
+                
+                <div id="pix-status-container" style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--reserved); font-weight: 700; background: rgba(255, 170, 0, 0.1); border: 1px solid var(--reserved); padding: 14px; border-radius: 8px;">
+                    <div class="spinner" style="width: 18px; height: 18px; border: 2px solid var(--reserved); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div> 
+                    Aguardando pagamento...
+                </div>
+                
+                <button onclick="window.rifaApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
+                    Fechar e Voltar
+                </button>
+            </div>
+            
         </div>
     </div>
 
@@ -497,22 +510,21 @@
                 </div>
             </div>
             
-            <!-- Configurações de Pagamento Dinâmicas -->
             <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
                 <label style="font-size: 12px; color: var(--title-color); margin-bottom: 8px; display: block; font-weight: 700;">Gateway de Pagamento</label>
                 <select id="cfg-gateway" class="input-form" onchange="window.adminPanel.toggleGateway()" style="margin-bottom: 16px; background-color: var(--gray-400);">
+                    <option value="mercadopago">Mercado Pago (PIX na Tela)</option>
                     <option value="infinitepay">InfinitePay</option>
-                    <option value="mercadopago">Mercado Pago</option>
                 </select>
 
-                <div id="wrap-infinitepay">
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">InfinitePay Handle (Ex: @vagner)</label>
-                    <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario" style="margin-bottom: 0;">
-                </div>
-
-                <div id="wrap-mercadopago" style="display: none;">
+                <div id="wrap-mercadopago">
                     <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">Access Token (Mercado Pago)</label>
                     <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;">
+                </div>
+
+                <div id="wrap-infinitepay" style="display: none;">
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">InfinitePay Handle (Ex: @vagner)</label>
+                    <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario" style="margin-bottom: 0;">
                 </div>
             </div>
 
@@ -572,8 +584,10 @@
         <div class="modal-card" style="text-align: center; border-color: var(--reserved); background: linear-gradient(180deg, var(--gray-500) 0%, #1a1a1a 100%);">
             <h2 style="color:var(--reserved); font-size: 28px; margin-bottom:12px; text-transform: uppercase;">🎉 GANHADOR! 🎉</h2>
             <p style="font-size: 14px; color: var(--text-color); margin-bottom: 20px;">O bilhete sorteado foi:</p>
-            <div style="font-size: 56px; font-weight: 800; color: #fff; margin-bottom: 20px; line-height: 1; text-shadow: 0 4px 20px rgba(255, 170, 0, 0.4);" id="sorteio-numero">00</div>
-            <p style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 30px;" id="sorteio-nome">Nome</p>
+            
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;" id="sorteio-numero"></div>
+            
+            <p style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; opacity: 0;" id="sorteio-nome">Nome</p>
             <button class="btn-participar" style="background: var(--gray-400); color: #fff;" onclick="window.rifaApp.closeModal('modal-sorteio')">Fechar</button>
         </div>
     </div>
@@ -621,37 +635,18 @@
         const DEFAULT_EMAIL = "cliente@rifamaster.com.br";
 
         class PaymentService {
-            static async generateLink(payData, config) {
-                if (config.gateway === 'mercadopago') {
-                    return this.generateMercadoPagoLink(payData, config.mpToken);
-                } else {
-                    return this.generateInfinitePayLink(payData, config.handle);
-                }
-            }
-
-            static async generateMercadoPagoLink(payData, token) {
+            static async createMercadoPagoPix(payData, token) {
                 try {
                     if(!token) throw new Error("Access Token do Mercado Pago não configurado.");
                     
                     const payload = {
-                        items: [{
-                            title: payData.description,
-                            quantity: 1,
-                            unit_price: payData.priceCents / 100,
-                            currency_id: "BRL"
-                        }],
-                        payer: {
-                            name: payData.nome,
-                            email: DEFAULT_EMAIL
-                        },
-                        external_reference: payData.nsu,
-                        payment_methods: {
-                            excluded_payment_types: [{"id": "ticket"}, {"id": "credit_card"}, {"id": "debit_card"}],
-                            installments: 1
-                        }
+                        transaction_amount: payData.priceCents / 100,
+                        description: payData.description,
+                        payment_method_id: "pix",
+                        payer: { email: DEFAULT_EMAIL, first_name: payData.nome }
                     };
 
-                    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.mercadopago.com/checkout/preferences'), {
+                    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.mercadopago.com/v1/payments'), {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -661,10 +656,25 @@
                     });
                     
                     const data = await res.json();
-                    if(data.init_point) return data.init_point;
-                    
-                    throw new Error("Erro na API Mercado Pago: " + JSON.stringify(data));
+                    if(data.id && data.point_of_interaction) {
+                        return {
+                            id: data.id,
+                            qr_code: data.point_of_interaction.transaction_data.qr_code,
+                            qr_code_base64: data.point_of_interaction.transaction_data.qr_code_base64
+                        };
+                    }
+                    throw new Error("Erro na API Mercado Pago ao gerar PIX.");
                 } catch(e) { throw e; }
+            }
+
+            static async checkMercadoPagoStatus(paymentId, token) {
+                try {
+                    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(`https://api.mercadopago.com/v1/payments/${paymentId}`), {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await res.json();
+                    return data.status;
+                } catch(e) { return null; }
             }
 
             static async generateInfinitePayLink(payData, handle) {
@@ -691,7 +701,7 @@
 
         class RifaApp {
             constructor() {
-                this.config = { premio: "Carregando...", descricao: "", valor: 5, total: 1000, pin: "6261", gateway: "infinitepay", handle: "", mpToken: "", promosActive: false, promos: [], pixel: "", premios: [], cupons: [], quickSelects: [] };
+                this.config = { premio: "Carregando...", descricao: "", valor: 5, total: 1000, pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", promosActive: false, promos: [], pixel: "", premios: [], cupons: [], quickSelects: [] };
                 this.dbNumbers = {};
                 this.selected = new Set();
                 this.gridFilter = 'all';
@@ -705,7 +715,7 @@
                 onValue(cfgRef, (s) => { 
                     if(s.exists()){ 
                         this.config = { ...this.config, ...s.val() }; 
-                        if(!this.config.gateway) this.config.gateway = "infinitepay";
+                        if(!this.config.gateway) this.config.gateway = "mercadopago";
                         this.renderUI();
                         this.injectPixel(this.config.pixel);
                     } 
@@ -891,7 +901,7 @@
                                     <b style="color:var(--reserved); font-size:13px; text-transform: uppercase;">Aguardando Pagamento</b>
                                     <p style="font-weight:700; margin:12px 0; font-size:16px; color: var(--title-color);">${pendentes.join(', ')}</p>
                                     <p style="font-size:20px; font-weight:800; color:var(--primary-color); margin-bottom:16px">R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
-                                    <button class="btn-participar" style="padding: 14px; font-size: 14px;" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
+                                    <button class="btn-participar" id="btn-pay-existing" style="padding: 14px; font-size: 14px;" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
                                 </div>`;
                         }
                         if(pagos.length > 0) area.innerHTML += `<div class="admin-item" style="border-color:var(--paid);"><b style="color:var(--paid); font-size:12px; text-transform: uppercase;">Pagos:</b><p style="font-weight:600; margin-top:8px; color:var(--title-color); font-size: 15px;">${pagos.join(', ')}</p></div>`;
@@ -902,7 +912,21 @@
             }
 
             askAdmin() { if(window.adminPanel.isAdmin) this.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; }
-            closeModal(id) { document.getElementById(id).style.display = 'none'; }
+            
+            closeModal(id) { 
+                document.getElementById(id).style.display = 'none'; 
+                if (id === 'modal-checkout') {
+                    if (window.cartManager && window.cartManager.pixInterval) {
+                        clearInterval(window.cartManager.pixInterval);
+                    }
+                    document.getElementById('checkout-step-1').style.display = 'block';
+                    const step2 = document.getElementById('checkout-step-2');
+                    if(step2) step2.style.display = 'none';
+                    const btn = document.getElementById('btn-confirm-res');
+                    if(btn) { btn.disabled = false; btn.innerText = 'Gerar PIX Copia e Cola'; }
+                }
+            }
+            
             maskPhone(i) { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
             showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
             requestConfirmAction(msg, action) { this.pendingAction = action; document.getElementById('confirm-msg').innerText = msg; document.getElementById('modal-confirm').style.display = 'flex'; }
@@ -913,6 +937,7 @@
             constructor(app) {
                 this.app = app;
                 this.timerInterval = null;
+                this.pixInterval = null;
                 this.cupomAplicado = null;
             }
 
@@ -1001,7 +1026,6 @@
 
                 document.getElementById('modal-checkout').style.display = 'flex';
                 
-                if(window.fbq) window.fbq('track', 'InitiateCheckout');
                 this.startTimer(15); 
             }
 
@@ -1021,14 +1045,81 @@
                 }, 1000);
             }
 
+            copiarPix() {
+                const copyText = document.getElementById("pix-copia-cola");
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); 
+                document.execCommand("copy");
+                this.app.showToast("Código PIX Copiado!");
+            }
+
+            async processarPagamentoPix(payData, isExisting = false, listaStr = '') {
+                const btn = isExisting ? document.getElementById('btn-pay-existing') : document.getElementById('btn-confirm-res');
+                if(btn) { btn.disabled = true; btn.innerText = 'Processando...'; }
+
+                if (this.app.config.gateway === 'mercadopago') {
+                    try {
+                        const pixData = await PaymentService.createMercadoPagoPix(payData, this.app.config.mpToken);
+                        
+                        document.getElementById('modal-checkout').style.display = 'flex';
+                        document.getElementById('checkout-step-1').style.display = 'none';
+                        document.getElementById('checkout-step-2').style.display = 'block';
+                        
+                        document.getElementById('pix-qr-img').src = 'data:image/jpeg;base64,' + pixData.qr_code_base64;
+                        document.getElementById('pix-copia-cola').value = pixData.qr_code;
+                        document.getElementById('pix-status-container').innerHTML = '<div class="spinner" style="width: 18px; height: 18px; border: 2px solid var(--reserved); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div> Aguardando pagamento...';
+
+                        clearInterval(this.pixInterval);
+                        this.pixInterval = setInterval(async () => {
+                            const status = await PaymentService.checkMercadoPagoStatus(pixData.id, this.app.config.mpToken);
+                            if (status === 'approved') {
+                                clearInterval(this.pixInterval);
+                                document.getElementById('pix-status-container').innerHTML = '<span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>';
+                                
+                                const up = {};
+                                if (isExisting) {
+                                    listaStr.split(',').forEach(n => up[`${n}/status`] = 'paid');
+                                } else {
+                                    this.app.selected.forEach(num => up[`${num}/status`] = 'paid');
+                                }
+                                await update(numRef, up);
+                                
+                                this.app.showToast("Pagamento Confirmado!");
+                                if(window.fbq && !isExisting) window.fbq('track', 'Purchase', {value: payData.priceCents / 100, currency: 'BRL'});
+                                
+                                setTimeout(() => {
+                                    this.app.closeModal('modal-checkout');
+                                    if (!isExisting) {
+                                        this.app.selected.clear();
+                                        this.app.renderGrid();
+                                        this.updateCartUI();
+                                    } else {
+                                        this.app.consultarMeusNumeros();
+                                    }
+                                }, 3000);
+                            }
+                        }, 5000);
+                        
+                    } catch(e) {
+                        if(btn) { btn.disabled = false; btn.innerText = isExisting ? 'PAGAR AGORA (PIX)' : 'Gerar PIX Copia e Cola'; }
+                        this.app.showToast(e.message || "Erro ao gerar PIX MP.");
+                    }
+                } else {
+                    try {
+                        const link = await PaymentService.generateInfinitePayLink(payData, this.app.config.handle);
+                        window.location.href = link;
+                    } catch(e) {
+                        if(btn) { btn.disabled = false; btn.innerText = isExisting ? 'PAGAR AGORA (PIX)' : 'Gerar PIX Copia e Cola'; }
+                        this.app.showToast(e.message || "Erro no Gateway.");
+                    }
+                }
+            }
+
             async confirmarReserva() {
                 const n = document.getElementById('cust-name').value.trim();
                 const t = document.getElementById('cust-phone').value.trim(); 
                 
                 if(!n || t.length < 10) return this.app.showToast("DADOS INVÁLIDOS"); 
-                
-                const btn = document.getElementById('btn-confirm-res'); 
-                btn.disabled = true; btn.innerText = 'Processando...'; 
                 
                 const res = this.calculateBestPrice(this.app.selected.size); 
                 const valorUnidadeFixado = res.final / this.app.selected.size;
@@ -1042,15 +1133,15 @@
                     }); 
                     await update(numRef, up); 
                     
-                    if(window.fbq) window.fbq('track', 'Purchase', {value: res.final, currency: 'BRL'});
+                    if(window.fbq) window.fbq('track', 'InitiateCheckout');
 
                     const payData = { nsu: oid, nome: n, telefone: t, priceCents: priceCents, description: `Cotas ${this.app.config.premio}` };
                     
-                    const link = await PaymentService.generateLink(payData, this.app.config);
-                    window.location.href = link;
+                    await this.processarPagamentoPix(payData, false);
                 } catch(e) { 
-                    btn.disabled = false; btn.innerText = "Tentar Novamente"; 
-                    this.app.showToast(e.message || "Erro ao gerar link de pagamento.");
+                    const btn = document.getElementById('btn-confirm-res');
+                    if(btn) { btn.disabled = false; btn.innerText = "Tentar Novamente"; }
+                    this.app.showToast(e.message || "Erro ao iniciar reserva.");
                 } 
             }
 
@@ -1064,10 +1155,8 @@
                     await update(numRef, up);
                     
                     const payData = { nsu: oid, nome: nome, telefone: tel, priceCents: priceCents, description: `Pagar Bilhetes` };
-                    
-                    const link = await PaymentService.generateLink(payData, this.app.config);
-                    window.location.href = link;
-                } catch(e) { this.app.showToast("Erro no Gateway de Pagamento"); }
+                    await this.processarPagamentoPix(payData, true, listaStr);
+                } catch(e) { this.app.showToast("Erro ao iniciar pagamento"); }
             }
         }
 
@@ -1170,7 +1259,6 @@
                 const numContainer = document.getElementById('sorteio-numero');
                 const nomeContainer = document.getElementById('sorteio-nome');
 
-                // Prepara a tela (Esconde o nome e limpa os números)
                 numContainer.innerHTML = '';
                 numContainer.style.display = 'flex';
                 numContainer.style.justifyContent = 'center';
@@ -1182,7 +1270,6 @@
                 
                 document.getElementById('modal-sorteio').style.display = 'flex';
 
-                // Cria as roletas (Slots) individuais
                 const digitElements = [];
                 for (let i = 0; i < padLen; i++) {
                     const span = document.createElement('span');
@@ -1204,28 +1291,24 @@
                     digitElements.push(span);
                 }
 
-                // Inicia o giro frenético de todos os números
                 const intervals = [];
                 digitElements.forEach((el) => {
                     const interval = setInterval(() => {
                         el.innerText = Math.floor(Math.random() * 10);
-                    }, 50); // Velocidade do giro
+                    }, 50);
                     intervals.push(interval);
                 });
 
-                // Para os números um a um (Da Direita para a Esquerda)
-                let tempoParadaBase = 2100; // O primeiro número da direita pára após 1.2s
-                let tempoIncremento = 2100; // Cada número a seguir demora mais 0.8s a parar
+                let tempoParadaBase = 2100;
+                let tempoIncremento = 800;
 
                 for (let i = padLen - 1; i >= 0; i--) {
-                    // Calcula quando esta roleta vai parar
                     const tempoParada = tempoParadaBase + ((padLen - 1 - i) * tempoIncremento);
                     
                     setTimeout(() => {
-                        clearInterval(intervals[i]); // Para o giro
-                        digitElements[i].innerText = numeroFormatado[i]; // Mostra o número real
+                        clearInterval(intervals[i]);
+                        digitElements[i].innerText = numeroFormatado[i];
                         
-                        // Efeito visual de quando trava o número
                         digitElements[i].style.background = 'var(--reserved)';
                         digitElements[i].style.borderColor = 'var(--reserved)';
                         digitElements[i].style.color = '#000';
@@ -1236,10 +1319,9 @@
                             digitElements[i].style.transform = 'scale(1)'; 
                         }, 200);
 
-                        // Se for a última roleta a parar (a da extrema esquerda, i === 0)
                         if (i === 0) {
                             setTimeout(() => {
-                                nomeContainer.style.opacity = '1'; // Revela o nome
+                                nomeContainer.style.opacity = '1';
                                 confetti({ particleCount: 150, spread: 180, origin: { y: 0.3 } });
                             }, 500);
                         }
@@ -1283,7 +1365,7 @@
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
                 document.getElementById('cfg-pixel').value = this.app.config.pixel || "";
                 
-                document.getElementById('cfg-gateway').value = this.app.config.gateway || "infinitepay";
+                document.getElementById('cfg-gateway').value = this.app.config.gateway || "mercadopago";
                 document.getElementById('cfg-handle').value = this.app.config.handle || "";
                 document.getElementById('cfg-mptoken').value = this.app.config.mpToken || "";
                 this.toggleGateway();
