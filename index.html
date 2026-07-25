@@ -1,535 +1,608 @@
-
-<html>
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>SORTEIO PREMIADO | RIFA MASTER</title>
     
-    <!-- Open Graph Meta Tags -->
-    <title>Rifa Master - SaaS Premium</title>
-    <meta property="og:title" content="Participe da Nossa Rifa Premium!">
-    <meta property="og:description" content="Garanta suas cotas agora e concorra a prêmios incríveis. Compra 100% segura.">
-    <meta property="og:image" content="https://placehold.co/600x315/000/00FF88?text=RIFA+MASTER">
-    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="RIFA MASTER" />
+    <meta name="theme-color" content="#1c1d1f" />
+    <meta property="og:title" content="RIFA CHUVA DE PIX | RIFA MASTER" />
+    <meta property="og:description" content="Participe a partir de R$ 4,99. Sorteios semanais!" />
+    <meta property="og:image" content="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" />
+    <meta property="og:type" content="website" />
 
-    <!-- PWA & Mobile Meta Tags -->
-    <meta name="theme-color" content="#000000">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
+
     <style>
         :root {
-            /* Tema Verde Padrão (Green) */
-            --primary: #00ff88;
-            --primary-rgb: 0, 255, 136;
-            --secondary: #007aff;
-            --secondary-glow: rgba(0, 122, 255, 0.4);
+            --background-color: #1c1d1f;
+            --primary-color: #008b77;
+            --primary-text-color: #ffffff;
+            --primary-color-15: rgba(0, 139, 119, 0.15);
+            --header-color: #151617;
+            --header-border-color: #302f2f;
+            --border-color: #36383e;
+            --gray-50: #2f3238;
+            --gray-100: #444444;
+            --gray-200: #383c43;
+            --gray-300: #34343a;
+            --gray-400: #292b31;
+            --gray-500: #26282c;
+            --button-color: #303238;
+            --button-border: #3e4145;
+            --title-color: #eaeaef;
+            --text-color: #aaaaaa;
             
-            --bg: #050505;
-            --surface: rgba(15, 15, 15, 0.85);
-            --surface-bright: rgba(28, 28, 30, 0.95);
-            --border: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-dim: #a1a1aa;
-            --cell-bg: rgba(255, 255, 255, 0.03);
+            --paid: #00db87;
             --reserved: #ffaa00;
-            --paid: var(--primary);
-            --selected: var(--secondary);
+            --selected: var(--primary-color);
             --danger: #ff4d4d;
-            --promo-gold: #ffcc00;
-            --transition: cubic-bezier(0.4, 0, 0.2, 1);
-            --neon-glow: 0 0 15px rgba(var(--primary-rgb), 0.3);
         }
 
-        /* -------------------------------------
-           SISTEMA DE TEMAS DE CORES
-        -------------------------------------- */
-        [data-color-theme="blue"] {
-            --primary: #007aff; --primary-rgb: 0, 122, 255; --secondary: #00ff88;
-        }
-        [data-color-theme="purple"] {
-            --primary: #bf5af2; --primary-rgb: 191, 90, 242; --secondary: #ff375f;
-        }
-        [data-color-theme="orange"] {
-            --primary: #ff9f0a; --primary-rgb: 255, 159, 10; --secondary: #32ade6;
-        }
-        [data-color-theme="red"] {
-            --primary: #ff375f; --primary-rgb: 255, 55, 95; --secondary: #ff9f0a;
-        }
-        [data-color-theme="gold"] {
-            --primary: #ffd60a; --primary-rgb: 255, 214, 10; --secondary: #bf5af2;
-        }
-        [data-color-theme="pink"] {
-            --primary: #ff2d55; --primary-rgb: 255, 45, 85; --secondary: #5856d6;
-        }
-
-        /* Tema Claro (Light Mode) */
-        [data-theme="light"] {
-            --bg: #f4f4f5;
-            --surface: rgba(255, 255, 255, 0.9);
-            --surface-bright: #ffffff;
-            --border: rgba(0, 0, 0, 0.1);
-            --text-main: #09090b;
-            --text-dim: #71717a;
-            --cell-bg: rgba(0, 0, 0, 0.04);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        html, body { height: 100%; width: 100%; overflow: hidden; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            background: var(--bg);
-            background-image: radial-gradient(at 0% 0%, rgba(var(--primary-rgb), 0.05) 0px, transparent 50%);
-            color: var(--text-main);
-            display: flex; justify-content: center;
-            padding: 15px 15px 0 15px; 
-            transition: background 0.4s var(--transition), color 0.4s var(--transition);
-        }
-
-        .app-wrapper {
-            width: 100%; max-width: 1300px; height: 100%;
-            display: flex; flex-direction: column; gap: 15px;
-            position: relative; min-height: 0;
-        }
-
-        .block-container {
-            background: var(--surface);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid var(--border); border-radius: 28px;
-            box-shadow: var(--neon-glow);
-        }
-
-        .header-panel { padding: 20px; flex-shrink: 0; text-align: center; display: flex; flex-direction: column; gap: 15px; z-index: 10; }
-        .header-controls { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .header-center { display: flex; align-items: center; justify-content: center; }
-        .logo-img { width: 75px; height: auto; border-radius: 18px; filter: drop-shadow(0 0 10px var(--primary)); transition: all 0.4s var(--transition); }
-        
-        .compact-info { display: none; }
-
-        .icon-btn { 
-            background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main); 
-            width: 44px; height: 44px; border-radius: 14px; 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; 
-            transition: all 0.3s var(--transition); box-shadow: inset 0 0 5px rgba(255,255,255,0.05);
-        }
-
-        .prize-display { background: rgba(var(--primary-rgb), 0.03); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: all 0.4s var(--transition); overflow: hidden; transform-origin: top; }
-        .prize-title { font-size: 1.4rem; font-weight: 800; text-shadow: 0 0 12px rgba(var(--primary-rgb), 0.5); color: var(--text-main); line-height: 1.2; transition: text-shadow 0.4s; }
-        .price-tag { font-size: 1.2rem; font-weight: 900; color: var(--primary); background: rgba(var(--primary-rgb), 0.15); padding: 12px 24px; border-radius: 14px; display: inline-flex; align-items: center; gap: 8px; margin-top: 20px; align-self: center; }
-
-        @media (max-width: 899px) {
-            .header-panel { transition: all 0.4s var(--transition); }
-            
-            .compact-info {
-                display: flex; flex-direction: column; justify-content: center; text-align: left;
-                padding-left: 0; max-width: 0; opacity: 0; white-space: nowrap;
-                transition: all 0.4s var(--transition);
-            }
-            
-            .app-wrapper.minimized .header-panel { padding: 12px 15px; gap: 0; }
-            .app-wrapper.minimized .prize-display {
-                max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: 0;
-                opacity: 0; border-width: 0; transform: scaleY(0.9);
-            }
-            .app-wrapper.minimized .logo-img { width: 40px; height: 40px; border-radius: 12px; }
-            .app-wrapper.minimized .compact-info { max-width: 200px; opacity: 1; padding-left: 12px; }
-            .app-wrapper.minimized .icon-btn { width: 40px; height: 40px; }
-        }
-
-        @media (min-width: 900px) or (orientation: landscape) {
-            .app-wrapper { flex-direction: row; align-items: stretch; }
-            .header-panel { width: 340px; height: 100%; }
-            .main-panel { height: 100%; flex: 1; }
-            .prize-display { height: auto; flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        }
-
-        .progress-container { width: 100%; margin-top: 18px; text-align: left; }
-        .progress-label { display: flex; justify-content: space-between; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; }
-        .progress-bg { width: 100%; height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
-        .progress-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), rgba(var(--primary-rgb), 0.5)); box-shadow: 0 0 10px var(--primary); transition: width 1s var(--transition), background 0.4s; }
-        .progress-stats { display: flex; justify-content: space-between; font-size: 0.55rem; color: var(--text-dim); margin-top: 8px; font-weight: 800; }
-
-        .main-panel { flex: 1; display: flex; flex-direction: column; gap: 15px; overflow: hidden; position: relative; min-height: 0; }
-        .nav-block { padding: 8px; flex-shrink: 0; }
-        .nav-tabs { display: flex; gap: 8px; }
-        .tab-btn { flex: 1; padding: 14px; border-radius: 18px; border: 1px solid transparent; background: transparent; color: var(--text-dim); font-size: 0.75rem; font-weight: 800; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
-        .tab-btn.active { background: var(--surface-bright); color: var(--primary); border-color: var(--primary); }
-
-        .promo-block { padding: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; flex-shrink: 0; }
-        .promo-item { background: rgba(var(--promo-gold), 0.05); padding: 12px 8px; border-radius: 16px; color: var(--promo-gold); font-weight: 800; font-size: 0.65rem; text-align: center; text-transform: uppercase; border: 1px solid rgba(var(--promo-gold), 0.2); display: flex; flex-direction: column; gap: 4px; transition: 0.3s; }
-        .promo-item b { font-size: 0.8rem; color: var(--promo-gold); }
-
-        .content-block { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; min-height: 0; }
-        .content-scroll { flex: 1; overflow-y: auto !important; padding: 15px 15px 110px 15px; position: relative; -webkit-overflow-scrolling: touch; }
-        .content-scroll::-webkit-scrollbar { width: 5px; }
-        .content-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
-
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); gap: 8px; justify-content: center; margin-bottom: 20px;}
-        .num-cell { aspect-ratio: 1/1; display: flex; align-items: center; justify-content: center; background: var(--cell-bg); border: 1px solid var(--border); border-radius: 12px; font-size: 0.85rem; font-weight: 700; cursor: pointer; color: var(--text-main); transition: 0.2s; position: relative; }
-        .num-cell.selected { background: var(--selected); border-color: #fff; box-shadow: 0 0 12px var(--secondary-glow); transform: scale(1.08); z-index: 5; }
-        .num-cell.reserved { background: var(--reserved); color: #000; opacity: 0.7; }
-        .num-cell.paid { background: var(--paid); color: #000; box-shadow: 0 0 10px var(--primary); }
-
-        .pagination-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; align-items: center; }
-        .pagination-btn { background: var(--cell-bg); border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 12px; cursor: pointer; font-weight: 800; font-size: 0.75rem; }
-        .pagination-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-        
-        .legend-filter { display: flex; justify-content: center; gap: 8px; margin-bottom: 25px; flex-wrap: wrap; }
-        .legend-chip { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: var(--cell-bg); border-radius: 14px; font-size: 0.6rem; font-weight: 800; color: var(--text-dim); cursor: pointer; border: 1px solid transparent; transition: 0.3s; }
-        .legend-chip.active { border-color: var(--text-main); color: var(--text-main); background: rgba(255,255,255,0.1); }
-        .dot { width: 8px; height: 8px; border-radius: 2px; }
-        .dot.all { background: #fff; }
-        .dot.available { border: 1px solid var(--border); }
-        .dot.selected { background: var(--selected); border: 1px solid #fff; }
-        .dot.reserved { background: var(--reserved); }
-        .dot.paid { background: var(--paid); }
-
-        .adj-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 25px; }
-        .adj-tile { background: var(--cell-bg); border: 1px solid var(--border); border-radius: 14px; padding: 12px 2px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s; }
-        .adj-tile b { font-size: 0.9rem; font-weight: 800; }
-        .adj-tile span { font-size: 0.45rem; font-weight: 700; text-transform: uppercase; opacity: 0.7; margin-top: 2px; }
-        .adj-tile.minus { color: var(--danger); border-color: rgba(255,77,77,0.3); }
-        .adj-tile.plus { color: var(--primary); border-color: rgba(var(--primary-rgb),0.3); }
-        .adj-tile.clear { color: var(--promo-gold); border-color: rgba(255,204,0,0.3); }
-
-        .purchase-footer {
-            position: absolute; bottom: 15px; left: 15px; right: 15px;
-            background: var(--surface-bright); border: 1px solid var(--primary); border-radius: 25px;
-            padding: 14px 24px; display: flex !important; align-items: center; justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 200;
-        }
-        .footer-price-info { text-align: left; }
-        .footer-original { font-size: 0.65rem; color: var(--danger); text-decoration: line-through; opacity: 0.8; }
-        .footer-discount { font-size: 0.6rem; color: var(--primary); font-weight: 800; text-transform: uppercase; }
-        .footer-total { font-size: 1.25rem; font-weight: 900; color: var(--primary); }
-
-        .btn-pay { background: var(--primary); color: #000; padding: 12px 28px; border-radius: 18px; font-weight: 900; font-size: 0.9rem; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer; transition: 0.3s; }
-        .btn-pay:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(var(--primary-rgb), 0.4); }
-
-        .admin-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
-        .btn-admin-action { border: 1px solid transparent; padding: 14px 8px; border-radius: 16px; font-weight: 800; font-size: 0.7rem; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; }
-        .btn-paid { background: rgba(var(--primary-rgb), 0.06); color: var(--primary); border-color: rgba(var(--primary-rgb), 0.25); }
-        .btn-unpaid { background: rgba(255, 170, 0, 0.06); color: var(--reserved); border-color: rgba(255, 170, 0, 0.25); }
-        .btn-delete { background: rgba(255, 77, 77, 0.06); color: var(--danger); border-color: rgba(255, 77, 77, 0.25); grid-column: span 2; margin-top: 5px; }
-
-        .custom-input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 16px; border-radius: 16px; color: var(--text-main); text-align: center; outline: none; margin-bottom: 15px; appearance: none; -webkit-appearance: none; }
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { background: var(--surface-bright); width: 100%; max-width: 440px; border-radius: 35px; padding: 35px; border: 2px solid var(--primary); text-align: center; max-height: 90vh; overflow-y: auto; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: var(--primary); color: #000; padding: 14px 28px; border-radius: 50px; font-weight: 800; z-index: 2000; display: none; box-shadow: 0 10px 30px var(--primary-glow); }
-        .spinner { width: 22px; height: 22px; border: 3px solid rgba(255,255,255,0.2); border-top: 3px solid #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        
-        .promo-editor-card { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 18px; margin-bottom: 12px; border: 1px solid var(--border); text-align: left; }
-        .tooltip-bubble { position: fixed; background: var(--surface-bright); border: 1px solid var(--primary); padding: 8px 15px; border-radius: 12px; font-size: 0.7rem; font-weight: 800; z-index: 9999; animation: floatUpTooltip 2s forwards; pointer-events: none; box-shadow: 0 4px 15px rgba(var(--primary-rgb),0.3); color: var(--text-main); text-transform: uppercase; }
-        @keyframes floatUpTooltip { 0% { opacity: 0; transform: translateY(5px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-15px); } }
-        
-        .checkout-timer-box { background: rgba(255,77,77,0.1); border: 1px solid var(--danger); color: var(--danger); padding: 10px; border-radius: 12px; margin-bottom: 15px; font-weight: 800; display: flex; justify-content: center; align-items: center; gap: 8px; }
-
-        /* -------------------------------------
-           ESTILOS DO ACORDEÃO (GAVETAS) LIVRES
-        -------------------------------------- */
-        .acc-item { margin-bottom: 10px; text-align: left; }
-        .acc-header { 
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 16px; 
-            padding: 16px; font-weight: 800; font-size: 0.85rem; color: var(--text-main); 
-            display: flex; justify-content: space-between; align-items: center; cursor: pointer;
-            transition: all 0.3s var(--transition); text-transform: uppercase;
-        }
-        .acc-header:hover { background: rgba(255,255,255,0.08); }
-        .acc-body { 
-            max-height: 0; overflow: hidden; opacity: 0; 
-            transition: all 0.4s var(--transition); padding: 0 10px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 14px;
+            overflow-x: hidden;
         }
         
-        /* Estado Aberto (Active) - SEM TRAVAR AS OUTRAS */
-        .acc-item.active .acc-header { 
-            border-color: var(--primary); color: var(--primary); 
-            background: rgba(var(--primary-rgb), 0.05); 
-        }
-        .acc-item.active .acc-header i { transform: rotate(180deg); }
-        .acc-item.active .acc-body { 
-            max-height: 2000px; opacity: 1; padding: 15px 10px;
+        button, input, select, textarea { outline: none; border: none; font-family: inherit; }
+        a { text-decoration: none; color: inherit; }
+
+        .header-fixed {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 66px;
+            background-color: var(--header-color);
+            border-bottom: 1px solid var(--header-border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
         }
 
-        .theme-selector-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 10px 0; }
-        .color-option { 
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; 
-            border: 2px solid transparent; transition: 0.3s; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        .header-logo { height: 40px; border-radius: 8px; object-fit: cover; }
+        
+        .header-btn {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: none; color: var(--text-color); gap: 4px; cursor: pointer; transition: 0.2s;
         }
-        .color-option:hover { transform: scale(1.1); }
-        .color-option.active { border-color: #fff; transform: scale(1.15); box-shadow: 0 0 15px currentColor; }
+        .header-btn:hover { color: var(--primary-color); }
+        .header-btn span { font-size: 10px; font-weight: 500; }
+
+        .main-container { margin-top: 50px; position: center; min-height: calc(100vh - 66px); padding-bottom: 90px; }
+
+        .hero-blur {
+            position: absolute; top: 0; left: 0; right: 0; width: 100%; height: 350px;
+            opacity: 0.4; filter: blur(20px); pointer-events: none;
+            mask-image: linear-gradient(to bottom, black, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+            z-index: 0;
+        }
+        .hero-blur img { width: 100%; height: 100%; object-fit: cover; }
+
+        .hero-image-container {
+            position: center; width: 100%; max-width: 1000px; margin: 0 auto;
+            height: auto; aspect-ratio: 20/9; z-index: 15; padding: 20px;
+        }
+        .hero-image-container img {
+            width: 100%; height: 100%; object-fit: justify; border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); background: #0000;
+        }
+
+        .content-wrapper {
+            position: relative; z-index: 10; max-width: 800px; margin: -20px auto 40px auto;
+            padding: 0 16px; display: flex; flex-direction: column; gap: 16px;
+        }
+
+        .card {
+            background-color: var(--gray-500);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .card-header { border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px; }
+        .card-title { font-size: 20px; font-weight: 700; color: var(--title-color); margin-bottom: 8px; line-height: 1.2; }
+        .price-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background-color: var(--gray-200); color: var(--title-color);
+            padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 14px;
+        }
+
+        .prize-item {
+            background-color: var(--gray-50); border: 1px solid var(--border-color);
+            padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 4px;
+        }
+        .prize-item b { color: var(--title-color); font-size: 13px; }
+        .prize-item p { font-size: 12px; color: var(--text-color); }
+
+        .section-title {
+            display: flex; align-items: center; gap: 12px; color: var(--title-color);
+            font-size: 18px; font-weight: 700; margin-bottom: 20px;
+        }
+        .section-title .icon-box {
+            width: 42px; height: 42px; background-color: var(--gray-400);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            display: flex; align-items: center; justify-content: center; color: var(--title-color);
+        }
+
+        .quick-select-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px;
+        }
+
+        .btn-quick {
+            background-color: var(--button-color); border: 1px solid var(--button-border);
+            border-radius: 12px; padding: 12px 6px; text-align: center;
+            color: var(--title-color); cursor: pointer; transition: 0.2s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; min-height: 76px;
+        }
+        .btn-quick:hover { filter: brightness(1.2); }
+        .btn-quick span.lbl { font-size: 10px; text-transform: uppercase; color: var(--text-color); margin-bottom: 4px; }
+        .btn-quick span.val { font-size: 22px; font-weight: 700; line-height: 1; }
+        
+        .btn-quick.popular { 
+            border: 2px solid var(--primary-color); background-color: var(--gray-400); 
+            padding-top: 24px; position: relative;
+        }
+        .badge-popular {
+            position: absolute; top: 0; left: 0; right: 0; height: 22px;
+            background-color: var(--primary-color); color: #fff; font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; gap: 4px; text-transform: uppercase;
+        }
+
+        .custom-amount-row {
+            display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 10px;
+        }
+        .btn-qty {
+            width: 48px; height: 48px; border-radius: 50%; background-color: var(--button-color);
+            border: 1px solid var(--button-border); color: var(--title-color);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+        }
+        .btn-qty:hover { background-color: var(--gray-400); }
+        .input-qty {
+            width: 120px; height: 48px; background-color: var(--button-color);
+            border: 1px solid var(--border-color); border-radius: 12px;
+            color: var(--title-color); font-size: 20px; font-weight: 700; text-align: center;
+        }
+
+        .fixed-bottom-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background-color: var(--header-color);
+            border-top: 1px solid var(--header-border-color);
+            padding: 16px; z-index: 200;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+        }
+
+        .btn-participar {
+            width: 100%; max-width: 600px; background-color: var(--primary-color); color: #fff;
+            font-size: 16px; font-weight: 700; padding: 16px; border-radius: 12px;
+            cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-transform: uppercase;
+        }
+        .btn-participar:disabled { opacity: 0.5; cursor: not-allowed; background-color: var(--gray-200); color: var(--text-color); }
+        .btn-participar:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        .filter-tabs {
+            display: flex; flex-wrap: wrap; gap: 8px; background-color: var(--gray-400); padding: 6px;
+            border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px;
+        }
+        .filter-tab {
+            flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: 600;
+            color: var(--title-color); border-radius: 8px; cursor: pointer; transition: 0.2s; background: transparent;
+        }
+        .filter-tab.active { background-color: var(--primary-color-15); color: var(--primary-color); }
+
+        .numbers-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 8px;
+            max-height: 400px; overflow-y: auto; padding-right: 4px;
+        }
+        .numbers-grid::-webkit-scrollbar { width: 6px; }
+        .numbers-grid::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        .num-cell {
+            aspect-ratio: 1/1; background-color: var(--gray-100); border: 1px solid var(--border-color);
+            border-radius: 8px; display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 700; color: var(--title-color); cursor: pointer; transition: 0.2s;
+        }
+        .num-cell:hover { filter: brightness(1.2); }
+        .num-cell.selected { background-color: var(--selected); border-color: var(--selected); color: #fff; transform: scale(1.05); }
+        .num-cell.paid { background-color: var(--paid); border-color: var(--paid); color: #000; cursor: not-allowed;}
+        .num-cell.reserved { background-color: var(--reserved); border-color: var(--reserved); color: #000; cursor: not-allowed;}
+
+        .view-content { display: none; }
+        .view-content.active { display: block; }
+
+        .input-form {
+            width: 100%; padding: 14px; background-color: var(--background-color);
+            border: 1px solid var(--border-color); border-radius: 10px;
+            color: var(--title-color); margin-bottom: 12px; font-size: 14px;
+        }
+        .input-form:focus { border-color: var(--primary-color); }
+
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-card {
+            background-color: var(--gray-500); width: 100%; max-width: 400px;
+            border-radius: 16px; padding: 24px; border: 1px solid var(--border-color);
+            max-height: 90vh; overflow-y: auto;
+        }
+
+        .toast {
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+            background: #fff; color: #000; padding: 12px 24px; border-radius: 8px;
+            font-weight: 700; z-index: 2000; display: none; font-size: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        
+        .admin-item {
+            background: var(--background-color); border: 1px solid var(--border-color);
+            padding: 16px; border-radius: 12px; margin-bottom: 10px;
+        }
+        .btn-admin { padding: 8px 12px; border-radius: 6px; font-weight: 600; font-size: 12px; cursor: pointer; color: #fff;}
+        .bg-green { background-color: var(--paid); color: #000;}
+        .bg-orange { background-color: var(--reserved); color: #000;}
+        .bg-red { background-color: var(--danger); border: none; }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div id="toast" class="toast">Mensagem</div>
 
-    <div class="app-wrapper">
-        <!-- PAINEL ESQUERDO -->
-        <header class="block-container header-panel">
-            <div class="header-controls">
-                <button class="icon-btn" onclick="window.rifaApp.toggleTheme()"><i data-lucide="moon" id="theme-icon"></i></button>
+    <header class="header-fixed">
+        <button class="header-btn" onclick="window.rifaApp.askAdmin()">
+            <i data-lucide="menu" style="width: 24px;"></i>
+        </button>
+        
+        <img src="" alt="Logo" class="header-logo" id="header-logo" onerror="this.style.display='none'">
+        
+        <button class="header-btn" onclick="window.rifaApp.switchTab('consulta')">
+            <i data-lucide="shopping-cart" style="width: 20px;"></i>
+            <span>Meus bilhetes</span>
+        </button>
+    </header>
+
+    <div class="main-container">
+        <div class="hero-blur">
+            <img src="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" alt="Blur Background" id="img-blur">
+        </div>
+        <div class="hero-image-container">
+            <img src="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" alt="Campanha" id="img-main">
+        </div>
+
+        <div class="content-wrapper">
+            
+            <div id="view-rifa" class="view-content active">
                 
-                <div class="header-center">
-                    <img src="1776393050679.png" alt="Logo" class="logo-img" onerror="this.src='https://placehold.co/100x100/000/00FF88?text=RIFA'">
-                    <div class="compact-info">
-                        <b id="compact-title" style="font-size: 0.85rem; text-overflow: ellipsis; overflow: hidden;">...</b>
-                        <span id="compact-price" style="font-size: 0.7rem; color: var(--primary);">R$ 0,00</span>
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h1 class="card-title" id="display-premio">Carregando...</h1>
+                        <p style="font-size: 13px; color: var(--text-color); margin-bottom: 16px; line-height: 1.5;" id="display-descricao">...</p>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-size: 13px; font-weight: 500;">Por apenas</span>
+                            <div class="price-badge" id="display-valor">R$ 0,00</div>
+                        </div>
+                    </div>
+                    
+                    <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--title-color);">Prêmios:</h3>
+                    <div id="premios-list"></div>
+                </div>
+
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="section-title">
+                        <div class="icon-box"><i data-lucide="ticket" style="width: 20px;"></i></div>
+                        <div>
+                            <h2 style="font-size: 20px;">Bilhetes</h2>
+                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Selecione a quantidade desejada</p>
+                        </div>
+                    </div>
+
+                    <div class="quick-select-grid" id="quick-select-grid"></div>
+
+                    <div class="custom-amount-row">
+                        <button class="btn-qty" onclick="window.rifaApp.addSelection(-1)"><i data-lucide="minus"></i></button>
+                        <input type="number" class="input-qty" id="qty-input" value="0" readonly>
+                        <button class="btn-qty" onclick="window.rifaApp.addSelection(1)"><i data-lucide="plus"></i></button>
                     </div>
                 </div>
 
-                <button class="icon-btn" onclick="window.rifaApp.askAdmin()"><i data-lucide="lock" id="admin-lock-icon"></i></button>
+                <div class="card">
+                    <div class="section-title">
+                        <div class="icon-box"><i data-lucide="grid" style="width: 20px;"></i></div>
+                        <h2 style="font-size: 20px;">Visualizar Cotas</h2>
+                    </div>
+                    
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all" onclick="window.rifaApp.setGridFilter('all')">Todos</button>
+                        <button class="filter-tab" data-filter="available" onclick="window.rifaApp.setGridFilter('available')">Disponíveis</button>
+                        <button class="filter-tab" data-filter="paid" onclick="window.rifaApp.setGridFilter('paid')">Comprados</button>
+                        <button class="filter-tab" data-filter="selected" onclick="window.rifaApp.setGridFilter('selected')">Selecionados</button>
+                    </div>
+                    
+                    <div class="numbers-grid" id="grid"></div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 24px; font-size: 11px; color: var(--text-color); font-weight: 500; text-transform: uppercase;">
+                    <br>Todos direitos reservados copyright <br> © 2026 Vagner Lauriuche
+                </div>
             </div>
 
-            <div class="prize-display">
-                <h1 class="prize-title" id="display-premio">...</h1>
-                <p id="display-descricao" style="font-size:0.75rem; color:var(--text-dim); margin-top:5px;">...</p>
-                <div class="price-tag">
-                    <i data-lucide="ticket" style="width: 20px;"></i>
-                    <span id="display-valor">R$ 0,00</span>
-                </div>
-                
-                <div class="progress-container">
-                    <div class="progress-label">
-                        <span>Vendido: <b id="stat-total-vendido" style="color:var(--text-main)">0</b></span>
-                        <span id="progress-pct">0%</span>
-                    </div>
-                    <div class="progress-bg">
-                        <div class="progress-bar" id="progress-bar"></div>
-                    </div>
-                    <div class="progress-stats">
-                        <span>PAGOS: <b id="stat-pagos" style="color:var(--primary)">0</b></span>
-                        <span>RESERVAS: <b id="stat-reservas" style="color:var(--reserved)">0</b></span>
-                    </div>
-                </div>
-            </div>
-        </header>
-
-        <!-- PAINEL DIREITO -->
-        <div class="main-panel">
-            <nav class="block-container nav-block">
-                <div class="nav-tabs">
-                    <button class="tab-btn active" id="tab-rifa" onclick="window.rifaApp.switchTab('rifa')">RIFA</button>
-                    <button class="tab-btn" id="tab-consulta" onclick="window.rifaApp.switchTab('consulta')">MEUS NÚMEROS</button>
-                    <button class="tab-btn" id="tab-admin" style="display:none;" onclick="window.rifaApp.switchTab('admin')">ADMIN</button>
-                </div>
-            </nav>
-
-            <div class="block-container promo-block" id="promo-display-area"></div>
-
-            <main class="block-container content-block">
-                <div class="content-scroll" id="main-scroll">
-                    <div id="view-rifa">
-                        <div class="adj-grid">
-                            <div class="adj-tile minus" onclick="window.rifaApp.adjustSelection(-10)"><b>-10</b><span>COTAS</span></div>
-                            <div class="adj-tile minus" onclick="window.rifaApp.adjustSelection(-5)"><b>-5</b><span>COTAS</span></div>
-                            <div class="adj-tile minus" onclick="window.rifaApp.adjustSelection(-1)"><b>-1</b><span>COTA</span></div>
-                            <div class="adj-tile clear" onclick="window.rifaApp.adjustSelection(0)"><b>LIMPAR</b><span>RESET</span></div>
-                            <div class="adj-tile plus" onclick="window.rifaApp.adjustSelection(1)"><b>+1</b><span>COTA</span></div>
-                            <div class="adj-tile plus" onclick="window.rifaApp.adjustSelection(5)"><b>+5</b><span>COTAS</span></div>
-                            <div class="adj-tile plus" onclick="window.rifaApp.adjustSelection(10)"><b>+10</b><span>COTAS</span></div>
-                        </div>
-
-                        <div class="legend-filter">
-                            <div class="legend-chip active" data-grid-filter="all" onclick="window.rifaApp.setGridFilter('all')"><div class="dot all"></div>TODOS</div>
-                            <div class="legend-chip" data-grid-filter="available" onclick="window.rifaApp.setGridFilter('available')"><div class="dot available"></div>LIVRE</div>
-                            <div class="legend-chip" data-grid-filter="selected" onclick="window.rifaApp.setGridFilter('selected')"><div class="dot selected"></div>SELECIONADOS</div>
-                            <div class="legend-chip" data-grid-filter="reserved" onclick="window.rifaApp.setGridFilter('reserved')"><div class="dot reserved"></div>RESERVADOS</div>
-                            <div class="legend-chip" data-grid-filter="paid" onclick="window.rifaApp.setGridFilter('paid')"><div class="dot paid"></div>PAGOS</div>
-                        </div>
-                        
-                        <div class="grid-container" id="grid"></div>
-                        
-                        <div class="pagination-controls" id="pagination-controls" style="display:none;">
-                            <button class="pagination-btn" id="btn-prev-page" onclick="window.rifaApp.changePage(-1)"><i data-lucide="chevron-left"></i></button>
-                            <span style="font-size: 0.8rem; font-weight: 800; color: var(--text-dim);" id="page-indicator">Pág 1 / 1</span>
-                            <button class="pagination-btn" id="btn-next-page" onclick="window.rifaApp.changePage(1)"><i data-lucide="chevron-right"></i></button>
-                        </div>
-                    </div>
-
-                    <div id="view-consulta" style="display: none;">
-                        <div style="max-width:380px; margin:0 auto; text-align:center">
-                            <h3 style="margin-bottom:20px;">Localizar Meus Bilhetes</h3>
-                            <input type="tel" id="search-phone" class="custom-input" placeholder="(00) 00000-0000" oninput="window.rifaApp.maskPhone(this)">
-                            <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.rifaApp.consultarMeusNumeros()">BUSCAR NÚMEROS</button>
-                            <div id="results-area" style="margin-top: 30px;"></div>
-                        </div>
-                    </div>
-
-                    <div id="view-admin" style="display: none;">
-                        <div id="admin-stats" style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px;"></div>
-                        
-                        <button class="btn-pay" style="width:100%; background:var(--promo-gold); color:#000; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(255,204,0,0.3)" onclick="window.adminPanel.realizarSorteio()">
-                            <i data-lucide="gift"></i> REALIZAR SORTEIO AGORA
-                        </button>
-
-                        <!-- CORREÇÃO 1: Oninput atualizado para render(false) para NÃO TRAVAR a tela enquanto digita -->
-                        <input type="text" id="admin-search" class="custom-input" placeholder="Filtrar nome ou cota..." oninput="window.adminPanel.render(false)">
-                        
-                        <div class="legend-filter" style="margin-bottom:15px">
-                            <!-- CORREÇÃO: Setar aba altera display (false), evitando travamento -->
-                            <div class="legend-chip active filter-chip" onclick="window.adminPanel.setFilter('all')">TODOS</div>
-                            <div class="legend-chip filter-chip" onclick="window.adminPanel.setFilter('paid')">PAGOS</div>
-                            <div class="legend-chip filter-chip" onclick="window.adminPanel.setFilter('reserved')">PENDENTES</div>
-                        </div>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <button class="btn-pay" style="flex:1; background:var(--secondary);" onclick="window.adminPanel.openConfig()">CONFIGURAÇÕES</button>
-                            <button class="btn-pay" style="flex:1; background:rgba(255,77,77,0.1); color:var(--danger); border:1px solid var(--danger); box-shadow:none;" onclick="window.adminPanel.resetRifa()">RESET</button>
-                        </div>
-                        
-                        <!-- Lista do Admin renderizada de forma otimizada -->
-                        <div id="admin-list"></div>
-                    </div>
-                </div>
-
-                <footer class="purchase-footer" id="footer-purchase">
-                    <div class="footer-price-info">
-                        <p style="font-size:0.6rem; color:var(--text-dim); font-weight:800; text-transform:uppercase;">Cotas: <span id="count-display" style="color:var(--primary)">0</span></p>
-                        <p id="footer-original-price" class="footer-original" style="display:none"></p>
-                        <p id="footer-discount-amount" class="footer-discount" style="display:none"></p>
-                        <p id="footer-total" class="footer-total">R$ 0,00</p>
-                    </div>
-                    <button class="btn-pay" id="btn-checkout" disabled onclick="window.cartManager.abrirCheckout()">
-                        COMPRAR <i data-lucide="zap" style="width: 18px; fill: currentColor;"></i>
+            <div id="view-consulta" class="view-content">
+                <div class="card" style="text-align: center;">
+                    <button onclick="window.rifaApp.switchTab('rifa')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 24px; cursor: pointer; border: none; font-size: 14px;">
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
                     </button>
-                </footer>
-            </main>
+                    <div class="icon-box" style="margin: 0 auto 16px auto; width: 56px; height: 56px; border-radius: 50%; background: var(--gray-400); display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-color);">
+                        <i data-lucide="search" style="color: var(--title-color); width: 24px;"></i>
+                    </div>
+                    <h2 style="color: var(--title-color); margin-bottom: 8px; font-size: 22px;">Consultar pedidos</h2>
+                    <p style="color: var(--text-color); margin-bottom: 24px; font-size: 13px;">Informe o seu número de WhatsApp para localizar os bilhetes.</p>
+                    
+                    <input type="tel" id="search-phone" class="input-form" placeholder="(00) 00000-0000" oninput="window.rifaApp.maskPhone(this)" style="text-align: center; font-size: 18px; font-weight: 600; padding: 16px;">
+                    
+                    <button class="btn-participar" onclick="window.rifaApp.consultarMeusNumeros()" style="background-color: var(--gray-400); color: var(--title-color); margin-top: 8px; padding: 14px;">
+                        Buscar Números
+                    </button>
+                    
+                    <div id="results-area" style="margin-top: 24px; text-align: left;"></div>
+                </div>
+            </div>
+
+            <div id="view-admin" class="view-content">
+                <div class="card">
+                    <button onclick="window.rifaApp.switchTab('rifa')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer; border: none; font-size: 14px;">
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
+                    </button>
+                    <h2 style="color: var(--title-color); margin-bottom: 20px; font-size: 22px; display: flex; align-items: center; gap: 8px;">
+                        <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
+                    </h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px;">
+                        <div style="background: var(--background-color); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Receita Total</span>
+                            <b style="display: block; color: var(--paid); font-size: 20px; margin-top: 6px;" id="admin-receita">R$ 0,00</b>
+                        </div>
+                        <div style="background: var(--background-color); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Cotas Vendidas</span>
+                            <b style="display: block; color: var(--title-color); font-size: 20px; margin-top: 6px;" id="admin-vendas">0</b>
+                        </div>
+                    </div>
+
+                    <button class="btn-participar" style="background-color: var(--reserved); color: #000; margin-bottom: 24px;" onclick="window.adminPanel.realizarSorteio()">
+                        <i data-lucide="gift"></i> Sortear Ganhador
+                    </button>
+
+                    <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante ou cota..." oninput="window.adminPanel.render(false)">
+                    
+                    <div class="filter-tabs" style="margin-bottom: 20px;">
+                        <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
+                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
+                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
+                    </div>
+
+                    <div id="admin-list" style="max-height: 500px; overflow-y: auto; padding-right: 4px;"></div>
+
+                    <div style="display: flex; gap: 12px; margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+                        <button class="btn-participar" style="background-color: var(--gray-400); color: var(--title-color); flex: 1; font-size: 14px; padding: 14px;" onclick="window.adminPanel.openConfig()">
+                            Ajustes
+                        </button>
+                        <button class="btn-participar" style="background-color: transparent; border: 1px solid var(--danger); color: var(--danger); flex: 1; font-size: 14px; padding: 14px;" onclick="window.adminPanel.resetRifa()">
+                            Resetar Rifa
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- MODAIS -->
-    <div class="modal-overlay" id="modal-pin">
-        <div class="modal-card" style="max-width:340px">
-            <h3 style="margin-bottom:10px">ACESSO ADMIN</h3>
-            <input type="password" id="admin-pin" class="custom-input" placeholder="****" maxlength="8" inputmode="numeric" style="letter-spacing:10px; font-size:1.5rem">
-            <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.adminPanel.validate()">ENTRAR</button>
-            <button onclick="window.rifaApp.closeModal('modal-pin')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">VOLTAR</button>
-        </div>
+    <div class="fixed-bottom-bar" id="fixed-checkout">
+        <div id="promo-discount-text" style="color: var(--paid); font-size: 12px; font-weight: 700; margin-bottom: 8px; display: none;"></div>
+        <button class="btn-participar" id="btn-checkout" onclick="window.cartManager.abrirCheckout()" disabled>
+            <i data-lucide="shopping-cart"></i> Participar (R$ 0,00)
+        </button>
     </div>
 
+    <!-- Modal Checkout Integrado -->
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
-            <h2 style="color:var(--primary); margin-bottom:15px;">DADOS DA RESERVA</h2>
             
-            <div class="checkout-timer-box">
-                <i data-lucide="clock" style="width: 18px;"></i> Tempo Restante: <span id="checkout-timer-display">15:00</span>
-            </div>
+            <!-- PASSO 1: DADOS E RESUMO -->
+            <div id="checkout-step-1">
+                <h2 style="color:var(--title-color); margin-bottom:16px; font-size: 20px;">Finalizar Reserva</h2>
+                
+                <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i data-lucide="clock" style="width: 16px;"></i> Pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
+                </div>
 
-            <input type="text" id="cust-name" class="custom-input" placeholder="Nome Completo">
-            <input type="tel" id="cust-phone" class="custom-input" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
-            <div style="display:flex; gap:8px; margin-bottom:15px;">
-                <input type="text" id="coupon-input" class="custom-input" placeholder="Cupom?" style="margin-bottom:0; flex:1">
-                <button class="icon-btn" style="height:50px; width:60px" onclick="window.cartManager.applyCoupon()"><i data-lucide="check"></i></button>
+                <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo">
+                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                    <input type="text" id="checkout-cupom" class="input-form" placeholder="Tem cupom de desconto?" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
+                    <button class="btn-participar" style="width: auto; padding: 0 20px; font-size: 14px; margin-bottom: 0;" onclick="window.cartManager.aplicarCupom()">Aplicar</button>
+                </div>
+
+                <div style="background: var(--background-color); padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color); text-align: center;">
+                    <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Total a pagar:</span>
+                    <p id="checkout-final-val" style="font-size: 28px; font-weight: 800; color: var(--primary-color); margin-top: 4px;">R$ 0,00</p>
+                    <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px; line-height: 1.6;"></p>
+                </div>
+                
+                <button class="btn-participar" onclick="window.cartManager.confirmarReserva()" id="btn-confirm-res">
+                    Gerar PIX Copia e Cola
+                </button>
+                <button onclick="window.rifaApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
+                    Voltar e alterar cotas
+                </button>
             </div>
-            <div id="checkout-summary" style="background:rgba(0,0,0,0.2); padding:15px; border-radius:15px; margin-bottom:10px; text-align:left">
-                <p id="checkout-final-val" style="font-size:1.4rem; font-weight:900; color:var(--primary)">R$ 0,00</p>
-                <p id="checkout-discount-info" style="font-size:0.7rem; color:var(--promo-gold); font-weight:700"></p>
-                <p id="checkout-coupon-info" style="font-size:0.7rem; color:var(--promo-accent); font-weight:700"></p>
+            
+            <!-- PASSO 2: PIX NA TELA COM POLLING -->
+            <div id="checkout-step-2" style="display: none; text-align: center;">
+                <h2 style="color:var(--title-color); margin-bottom:16px; font-size: 20px;">Pagamento PIX</h2>
+                <p style="font-size: 13px; color: var(--text-color); margin-bottom: 20px;">Escaneie o QR Code ou copie o código abaixo para pagar no aplicativo do seu banco.</p>
+                
+                <div style="background: #fff; padding: 10px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
+                    <img id="pix-qr-img" src="" alt="QR Code PIX" style="width: 200px; height: 200px; display: block;">
+                </div>
+                
+                <input type="text" id="pix-copia-cola" class="input-form" readonly style="text-align: center; font-size: 12px; margin-bottom: 12px; padding: 12px;">
+                <button class="btn-participar" onclick="window.cartManager.copiarPix()" style="margin-bottom: 24px; background-color: var(--gray-400); color: var(--title-color);">
+                    <i data-lucide="copy" style="width: 18px;"></i> Copiar Código PIX
+                </button>
+                
+                <div id="pix-status-container" style="display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--reserved); font-weight: 700; background: rgba(255, 170, 0, 0.1); border: 1px solid var(--reserved); padding: 14px; border-radius: 8px;">
+                    <div class="spinner" style="width: 18px; height: 18px; border: 2px solid var(--reserved); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div> 
+                    Aguardando pagamento...
+                </div>
+                
+                <button onclick="window.rifaApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
+                    Fechar e Voltar
+                </button>
             </div>
-            <p style="font-size: 0.65rem; color: var(--danger); margin-bottom: 20px; font-weight: 800; text-transform: uppercase;">⚠️ Efetue o PIX antes do tempo acabar.</p>
-            <button class="btn-pay" style="width:100%; justify-content:center" onclick="window.cartManager.confirmarReserva()" id="btn-confirm-res">GERAR PAGAMENTO (PIX)</button>
-            <button onclick="window.rifaApp.closeModal('modal-checkout')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">VOLTAR</button>
+            
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-sorteio">
-        <div class="modal-card" style="border-color: var(--promo-gold); background: linear-gradient(145deg, var(--surface-bright), #1a1a1a);">
-            <h2 style="color:var(--promo-gold); font-size: 2rem; margin-bottom:10px;">🎉 TEMOS UM GANHADOR! 🎉</h2>
-            <p style="font-size: 1rem; color: var(--text-dim); margin-bottom: 20px;">O número sorteado foi:</p>
-            <div style="font-size: 4rem; font-weight: 900; color: #fff; text-shadow: 0 0 20px var(--promo-gold); margin-bottom: 20px;" id="sorteio-numero">00</div>
-            <p style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin-bottom: 30px;" id="sorteio-nome">Nome do Ganhador</p>
-            <button class="btn-pay" style="width:100%; justify-content:center; background: var(--surface); color: #fff; border: 1px solid var(--border);" onclick="window.rifaApp.closeModal('modal-sorteio')">FECHAR</button>
+    <!-- Modal PIN Admin -->
+    <div class="modal-overlay" id="modal-pin">
+        <div class="modal-card" style="text-align: center; max-width: 320px;">
+            <div style="width: 56px; height: 56px; background-color: var(--gray-400); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid var(--border-color);">
+                <i data-lucide="lock" style="color: var(--title-color);"></i>
+            </div>
+            <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 18px;">Acesso Restrito</h3>
+            <input type="password" id="admin-pin" class="input-form" placeholder="****" maxlength="8" inputmode="numeric" style="text-align: center; letter-spacing: 12px; font-size: 24px; font-weight: 700;">
+            <button class="btn-participar" onclick="window.adminPanel.validate()">Entrar no Painel</button>
+            <button onclick="window.rifaApp.closeModal('modal-pin')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600;">Cancelar</button>
         </div>
     </div>
 
-    <!-- MODAL DE CONFIGURAÇÃO (AGORA COM ABAS LIVRES) -->
+    <!-- Modal Configurações -->
     <div class="modal-overlay" id="modal-config">
-        <div class="modal-card" style="padding: 25px 20px;">
-            <h3 style="color:var(--primary); margin-bottom:20px; font-size: 1.2rem;"><i data-lucide="settings" style="vertical-align: middle; margin-right: 5px;"></i> PAINEL DE CONTROLO</h3>
+        <div class="modal-card" style="max-width: 450px;">
+            <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="settings"></i> Configurações
+            </h3>
             
-            <div class="accordion">
-                <div class="acc-item active">
-                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
-                        <span><i data-lucide="file-text" style="width:16px; margin-right:6px; vertical-align:text-bottom;"></i> Detalhes da Rifa</span>
-                        <i data-lucide="chevron-down" style="transition:0.3s"></i>
-                    </div>
-                    <div class="acc-body">
-                        <input type="text" id="cfg-premio" class="custom-input" placeholder="Nome do Prêmio">
-                        <textarea id="cfg-descricao" class="custom-input" placeholder="Descrição da Rifa" style="height:60px;"></textarea>
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                            <input type="number" id="cfg-valor" class="custom-input" placeholder="Valor Unitário (R$)">
-                            <input type="number" id="cfg-total" class="custom-input" placeholder="Total de Números">
-                        </div>
-                    </div>
+            <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Título do Prêmio</label>
+            <input type="text" id="cfg-premio" class="input-form" placeholder="Ex: iPhone 15 Pro">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Valor (R$)</label>
+                    <input type="number" id="cfg-valor" class="input-form">
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Total Bilhetes</label>
+                    <input type="number" id="cfg-total" class="input-form">
+                </div>
+            </div>
+            
+            <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                <label style="font-size: 12px; color: var(--title-color); margin-bottom: 8px; display: block; font-weight: 700;">Gateway de Pagamento</label>
+                <select id="cfg-gateway" class="input-form" onchange="window.adminPanel.toggleGateway()" style="margin-bottom: 16px; background-color: var(--gray-400);">
+                    <option value="mercadopago">Mercado Pago (PIX na Tela)</option>
+                    <option value="infinitepay">InfinitePay</option>
+                </select>
+
+                <div id="wrap-mercadopago">
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">Access Token (Mercado Pago)</label>
+                    <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;">
                 </div>
 
-                <div class="acc-item">
-                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
-                        <span><i data-lucide="palette" style="width:16px; margin-right:6px; vertical-align:text-bottom;"></i> Aparência (Temas)</span>
-                        <i data-lucide="chevron-down" style="transition:0.3s"></i>
-                    </div>
-                    <div class="acc-body" style="text-align: center;">
-                        <p style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px;">Selecione a cor principal do seu sistema:</p>
-                        <div class="theme-selector-grid">
-                            <div class="color-option active" data-color="green" style="background: #00ff88; color: #00ff88;" onclick="window.adminPanel.selectTheme('green')"></div>
-                            <div class="color-option" data-color="blue" style="background: #007aff; color: #007aff;" onclick="window.adminPanel.selectTheme('blue')"></div>
-                            <div class="color-option" data-color="purple" style="background: #bf5af2; color: #bf5af2;" onclick="window.adminPanel.selectTheme('purple')"></div>
-                            <div class="color-option" data-color="pink" style="background: #ff2d55; color: #ff2d55;" onclick="window.adminPanel.selectTheme('pink')"></div>
-                            <div class="color-option" data-color="red" style="background: #ff375f; color: #ff375f;" onclick="window.adminPanel.selectTheme('red')"></div>
-                            <div class="color-option" data-color="orange" style="background: #ff9f0a; color: #ff9f0a;" onclick="window.adminPanel.selectTheme('orange')"></div>
-                            <div class="color-option" data-color="gold" style="background: #ffd60a; color: #ffd60a;" onclick="window.adminPanel.selectTheme('gold')"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="acc-item">
-                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
-                        <span><i data-lucide="credit-card" style="width:16px; margin-right:6px; vertical-align:text-bottom;"></i> Pagamentos & Tracking</span>
-                        <i data-lucide="chevron-down" style="transition:0.3s"></i>
-                    </div>
-                    <div class="acc-body">
-                        <input type="text" id="cfg-handle" class="custom-input" placeholder="InfinitePay Handle">
-                        <input type="text" id="cfg-pixel" class="custom-input" placeholder="ID do Pixel Facebook (Opcional)">
-                        <input type="password" id="cfg-pin" class="custom-input" placeholder="Alterar PIN de Acesso">
-                    </div>
-                </div>
-
-                <div class="acc-item">
-                    <div class="acc-header" onclick="window.adminPanel.toggleAccordion(this)">
-                        <span><i data-lucide="tag" style="width:16px; margin-right:6px; vertical-align:text-bottom;"></i> Descontos & Cupons</span>
-                        <i data-lucide="chevron-down" style="transition:0.3s"></i>
-                    </div>
-                    <div class="acc-body" style="background: rgba(0,0,0,0.2); border-radius: 12px; margin-top: 5px;">
-                        <h4 style="color:var(--promo-gold); margin-bottom: 10px; font-size: 0.8rem">PROMOÇÕES AUTOMÁTICAS</h4>
-                        <button id="btn-toggle-promos" class="icon-btn" onclick="window.adminPanel.togglePromos()" style="width:100%; margin-bottom:10px;">OFF</button>
-                        <div id="promos-list"></div>
-                        <button class="btn-pay" style="width:100%; margin-bottom:20px; justify-content:center; font-size: 0.7rem; height: 40px;" onclick="window.adminPanel.addPromoRow()">+ ADICIONAR REGRA</button>
-
-                        <h4 style="color:var(--secondary); margin-bottom: 10px; font-size: 0.8rem; border-top: 1px solid var(--border); padding-top: 15px">CUPONS DE DESCONTO</h4>
-                        <div id="coupons-list"></div>
-                        <button class="btn-pay" style="width:100%; justify-content:center; font-size: 0.7rem; background: var(--secondary); height: 40px;" onclick="window.adminPanel.addCouponRow()">+ NOVO CUPOM</button>
-                    </div>
+                <div id="wrap-infinitepay" style="display: none;">
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">InfinitePay Handle (Ex: @vagner)</label>
+                    <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario" style="margin-bottom: 0;">
                 </div>
             </div>
 
-            <button class="btn-pay" style="width:100%; margin-top:20px; justify-content:center; padding: 16px;" onclick="window.adminPanel.save()">SALVAR ALTERAÇÕES</button>
-            <button onclick="window.rifaApp.closeModal('modal-config')" style="margin-top: 15px; background:none; border:none; color:var(--text-dim); font-weight:800; cursor:pointer">FECHAR</button>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div>
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Pixel FB (Opcional)</label>
+                    <input type="text" id="cfg-pixel" class="input-form" placeholder="ID do Pixel">
+                </div>
+                <div>
+                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">PIN Admin</label>
+                    <input type="password" id="cfg-pin" class="input-form" placeholder="Nova Senha">
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 12px;">Seleção Rápida de Cotas</label>
+                <div id="quick-select-config-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addQuickSelectRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Botão Rápido
+                </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 12px;">Prêmios do Sorteio</label>
+                <div id="premios-config-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPremioRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Prêmio
+                </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
+                    <label style="font-size: 13px; font-weight: 700; color: var(--reserved);">Promoção Cascata</label>
+                    <button class="btn-admin" id="btn-toggle-promos" onclick="window.adminPanel.togglePromos()" style="background: var(--gray-400); padding: 6px 12px; border: 1px solid var(--border-color); color: var(--title-color);">OFF</button>
+                </div>
+                <div id="promos-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPromoRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Regra
+                </button>
+            </div>
+
+            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
+                <label style="font-size: 13px; font-weight: 700; color: var(--danger); display: block; margin-bottom: 12px;">Cupons de Desconto</label>
+                <div id="cupons-config-list"></div>
+                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addCupomRow()">
+                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Cupom
+                </button>
+            </div>
+
+            <button class="btn-participar" style="margin-top:24px;" onclick="window.adminPanel.save()">Salvar Tudo</button>
+            <button onclick="window.rifaApp.closeModal('modal-config')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600;">Fechar</button>
         </div>
     </div>
 
+    <!-- Modal Sorteio -->
+    <div class="modal-overlay" id="modal-sorteio">
+        <div class="modal-card" style="text-align: center; border-color: var(--reserved); background: linear-gradient(180deg, var(--gray-500) 0%, #1a1a1a 100%);">
+            <h2 style="color:var(--reserved); font-size: 28px; margin-bottom:12px; text-transform: uppercase;">🎉 GANHADOR! 🎉</h2>
+            <p style="font-size: 14px; color: var(--text-color); margin-bottom: 20px;">O bilhete sorteado foi:</p>
+            
+            <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;" id="sorteio-numero"></div>
+            
+            <p style="font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; opacity: 0;" id="sorteio-nome">Nome</p>
+            <button class="btn-participar" style="background: var(--gray-400); color: #fff;" onclick="window.rifaApp.closeModal('modal-sorteio')">Fechar</button>
+        </div>
+    </div>
+    
+    <!-- Modal Confirmação -->
     <div class="modal-overlay" id="modal-confirm">
-        <div class="modal-card" style="border-color: var(--danger);">
-            <h3 style="color: var(--danger); margin-bottom:15px;">CONFIRMAR AÇÃO?</h3>
-            <p id="confirm-msg" style="margin-bottom:25px; font-size:0.9rem; line-height:1.4"></p>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
-                <button class="btn-pay" style="background:var(--danger); justify-content:center" onclick="window.rifaApp.executeConfirmedAction()">SIM</button>
-                <button class="btn-pay" style="background:var(--surface-bright); border:1px solid var(--border); color:#fff; box-shadow:none; justify-content:center" onclick="window.rifaApp.closeModal('modal-confirm')">NÃO</button>
+        <div class="modal-card" style="text-align: center; max-width: 320px;">
+            <div style="width: 56px; height: 56px; background-color: rgba(255, 77, 77, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid var(--danger);">
+                <i data-lucide="alert-triangle" style="color: var(--danger);"></i>
+            </div>
+            <h3 style="color: var(--title-color); margin-bottom:12px; font-size: 18px;">Atenção</h3>
+            <p id="confirm-msg" style="margin-bottom:24px; font-size:14px; color: var(--text-color);"></p>
+            <div style="display:flex; flex-direction: column; gap:10px">
+                <button class="btn-participar" style="background:var(--primary-color);" onclick="window.rifaApp.executeConfirmedAction()">Confirmar</button>
+                <button class="btn-participar" style="background:var(--gray-400); color: var(--title-color);" onclick="window.rifaApp.closeModal('modal-confirm')">Cancelar</button>
             </div>
         </div>
     </div>
@@ -562,8 +635,52 @@
         const DEFAULT_EMAIL = "cliente@rifamaster.com.br";
 
         class PaymentService {
-            static async generateLink(payData, handle) {
+            static async createMercadoPagoPix(payData, token) {
                 try {
+                    if(!token) throw new Error("Access Token do Mercado Pago não configurado.");
+                    
+                    const payload = {
+                        transaction_amount: payData.priceCents / 100,
+                        description: payData.description,
+                        payment_method_id: "pix",
+                        payer: { email: DEFAULT_EMAIL, first_name: payData.nome }
+                    };
+
+                    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.mercadopago.com/v1/payments'), {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const data = await res.json();
+                    if(data.id && data.point_of_interaction) {
+                        return {
+                            id: data.id,
+                            qr_code: data.point_of_interaction.transaction_data.qr_code,
+                            qr_code_base64: data.point_of_interaction.transaction_data.qr_code_base64
+                        };
+                    }
+                    throw new Error("Erro na API Mercado Pago ao gerar PIX.");
+                } catch(e) { throw e; }
+            }
+
+            static async checkMercadoPagoStatus(paymentId, token) {
+                try {
+                    const res = await fetch('https://corsproxy.io/?' + encodeURIComponent(`https://api.mercadopago.com/v1/payments/${paymentId}`), {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const data = await res.json();
+                    return data.status;
+                } catch(e) { return null; }
+            }
+
+            static async generateInfinitePayLink(payData, handle) {
+                try {
+                    if(!handle) throw new Error("Handle da InfinitePay não configurado.");
+                    
                     const payload = {
                         "handle": handle, 
                         "order_nsu": payData.nsu, 
@@ -577,67 +694,37 @@
                     });
                     const data = await res.json();
                     if(data.url || data.checkout_url) return data.url || data.checkout_url;
-                    throw new Error("Link não gerado pela API");
-                } catch(e) {
-                    console.error("Erro no Gateway:", e);
-                    throw e;
-                }
+                    throw new Error("Link não gerado pela API InfinitePay");
+                } catch(e) { throw e; }
             }
         }
 
         class RifaApp {
             constructor() {
-                this.config = { premio: "...", descricao: "...", valor: 10, total: 100, pin: "6261", handle: "", promosActive: false, promos: [], coupons: [], pixel: "", themeColor: "green" };
+                this.config = { premio: "Carregando...", descricao: "", valor: 5, total: 1000, pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", promosActive: false, promos: [], pixel: "", premios: [], cupons: [], quickSelects: [] };
                 this.dbNumbers = {};
                 this.selected = new Set();
                 this.gridFilter = 'all';
                 this.pendingAction = null;
                 
-                this.currentPage = 0;
-                this.itemsPerPage = 1000; 
-                
                 lucide.createIcons();
                 this.listenFirebase();
-                this.setupScrollListener(); 
-            }
-            
-            setupScrollListener() {
-                const scrollEl = document.getElementById('main-scroll');
-                const wrapper = document.querySelector('.app-wrapper');
-                
-                scrollEl.addEventListener('scroll', () => {
-                    if (window.innerWidth < 900) {
-                        // Não encolher se estivermos na aba Admin (para não conflitar com a lista longa)
-                        const isAdminTab = document.getElementById('tab-admin').classList.contains('active');
-                        if (scrollEl.scrollTop > 50 && !isAdminTab) {
-                            wrapper.classList.add('minimized');
-                        } else {
-                            wrapper.classList.remove('minimized');
-                        }
-                    }
-                });
             }
 
             listenFirebase() {
                 onValue(cfgRef, (s) => { 
                     if(s.exists()){ 
                         this.config = { ...this.config, ...s.val() }; 
+                        if(!this.config.gateway) this.config.gateway = "mercadopago";
                         this.renderUI();
                         this.injectPixel(this.config.pixel);
-                        this.applyThemeColor(this.config.themeColor || 'green');
                     } 
                 });
                 onValue(numRef, (s) => { 
                     this.dbNumbers = s.exists() ? s.val() : {}; 
                     this.renderGrid(); 
-                    this.updateProgress();
-                    // Renderiza Admin com forceRebuild=true para atualizar dados reais
                     if(window.adminPanel && window.adminPanel.isAdmin) window.adminPanel.render(true); 
                 });
-            }
-
-            applyThemeColor(color) {
-                document.body.setAttribute('data-color-theme', color);
             }
 
             injectPixel(pixelId) {
@@ -652,42 +739,57 @@
             }
 
             renderUI() {
-                const tituloStr = (this.config.premio || '...').toUpperCase();
+                const tituloStr = this.config.premio.toUpperCase();
                 const valorStr = (this.config.valor || 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
                 
                 document.getElementById('display-premio').innerText = tituloStr;
-                document.getElementById('display-descricao').innerText = this.config.descricao || '...';
+                document.getElementById('display-descricao').innerText = this.config.descricao || '';
                 document.getElementById('display-valor').innerText = valorStr;
                 
-                document.getElementById('compact-title').innerText = tituloStr;
-                document.getElementById('compact-price').innerText = valorStr;
-                
-                const area = document.getElementById('promo-display-area');
-                area.innerHTML = '';
-                if(this.config.promosActive && this.config.promos && this.config.promos.length > 0) {
-                    area.style.display = 'grid';
-                    this.config.promos.forEach(p => {
-                        const text = p.type === 'pct' ? `<b>${p.val}% OFF</b>` : `<b>${p.val} GRÁTIS</b>`;
-                        area.innerHTML += `<div class="promo-item">COMPRE ${p.min}<br>${text}</div>`;
-                    });
-                } else area.style.display = 'none';
-                
-                window.cartManager.updateFooter();
-            }
+                const premiosList = document.getElementById('premios-list');
+                if (premiosList) {
+                    premiosList.innerHTML = '';
+                    if (this.config.premios && this.config.premios.length > 0) {
+                        this.config.premios.forEach((p, index) => {
+                            const medalhas = ['🥇', '🥈', '🥉', '🎖️', '🏅'];
+                            const medalha = medalhas[index] || '🎁';
+                            premiosList.innerHTML += `
+                                <div class="prize-item">
+                                    <b>${medalha} ${index + 1}º Prêmio:</b>
+                                    <p>${p.descricao}</p>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        premiosList.innerHTML = `
+                            <div class="prize-item">
+                                <b>🥇 1º Prêmio:</b>
+                                <p>Prêmio Principal da Rifa</p>
+                            </div>
+                        `;
+                    }
+                }
 
-            updateProgress() {
-                const total = parseInt(this.config.total) || 1;
-                const nums = Object.values(this.dbNumbers);
-                const pagosCount = nums.filter(n => n.status === 'paid').length;
-                const reservasCount = nums.filter(n => n.status === 'reserved').length;
-                const totalVendidoCount = pagosCount + reservasCount;
-                const pctVendido = Math.min(100, Math.round((totalVendidoCount / total) * 100));
-                
-                document.getElementById('progress-pct').innerText = `${pctVendido}%`;
-                document.getElementById('progress-bar').style.width = `${pctVendido}%`;
-                document.getElementById('stat-pagos').innerText = pagosCount;
-                document.getElementById('stat-reservas').innerText = reservasCount;
-                document.getElementById('stat-total-vendido').innerText = totalVendidoCount;
+                const qsGrid = document.getElementById('quick-select-grid');
+                if (qsGrid) {
+                    qsGrid.innerHTML = '';
+                    const selects = (this.config.quickSelects && this.config.quickSelects.length > 0) 
+                        ? this.config.quickSelects 
+                        : [{qty:1}, {qty:2}, {qty:3, popular:true}, {qty:10}, {qty:25}, {qty:30}];
+                    
+                    selects.forEach(btn => {
+                        const isPop = btn.popular;
+                        qsGrid.innerHTML += `
+                            <div class="btn-quick ${isPop ? 'popular' : ''}" onclick="window.rifaApp.addSelection(${btn.qty})">
+                                ${isPop ? '<div class="badge-popular"><i data-lucide="star" style="width: 10px;"></i> Popular</div>' : ''}
+                                <span class="lbl">Selecionar</span><span class="val">+${btn.qty}</span>
+                            </div>
+                        `;
+                    });
+                }
+
+                window.cartManager.updateCartUI();
+                lucide.createIcons();
             }
 
             renderGrid() {
@@ -695,95 +797,85 @@
                 grid.innerHTML = '';
                 
                 const total = parseInt(this.config.total) || 100;
-                const totalPages = Math.ceil(total / this.itemsPerPage);
-                if (this.currentPage >= totalPages) this.currentPage = Math.max(0, totalPages - 1);
+                const padLen = Math.max(3, (total - 1).toString().length);
 
-                const startIdx = this.currentPage * this.itemsPerPage;
-                const endIdx = Math.min(startIdx + this.itemsPerPage, total);
-
-                for(let i = startIdx; i < endIdx; i++) {
-                    const n = i.toString().padStart(2, '0');
+                for(let i = 0; i < total; i++) {
+                    const n = i.toString().padStart(padLen, '0');
                     const info = this.dbNumbers[n];
                     const isSel = this.selected.has(n);
                     
                     if (this.gridFilter !== 'all') {
                         if (this.gridFilter === 'available' && (info || isSel)) continue;
-                        if (this.gridFilter === 'selected' && (!isSel || info)) continue; 
-                        if (this.gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
                         if (this.gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
+                        if (this.gridFilter === 'selected' && !isSel) continue;
                     }
                     
                     const el = document.createElement('div'); el.className = 'num-cell'; el.innerText = n;
                     if(info) { 
                         el.classList.add(info.status); 
-                        el.onclick = (e) => this.showOwnerTooltip(e, info.nome); 
+                        el.onclick = () => this.showToast(`Cota ${info.status === 'paid' ? 'Paga' : 'Reservada'}`); 
                     } else { 
                         if(isSel) el.classList.add('selected'); 
                         el.onclick = () => { 
                             isSel ? this.selected.delete(n) : this.selected.add(n); 
-                            this.renderGrid(); window.cartManager.updateFooter(); 
+                            this.renderGrid(); window.cartManager.updateCartUI(); 
                         }; 
                     }
                     grid.appendChild(el);
                 }
-
-                const pagControls = document.getElementById('pagination-controls');
-                if (totalPages > 1) {
-                    pagControls.style.display = 'flex';
-                    document.getElementById('page-indicator').innerText = `Pág ${this.currentPage + 1} / ${totalPages}`;
-                    document.getElementById('btn-prev-page').disabled = this.currentPage === 0;
-                    document.getElementById('btn-next-page').disabled = this.currentPage >= (totalPages - 1);
-                } else {
-                    pagControls.style.display = 'none';
-                }
-            }
-
-            changePage(delta) {
-                this.currentPage += delta;
-                this.renderGrid();
-                document.getElementById('main-scroll').scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             setGridFilter(f) {
                 this.gridFilter = f;
-                this.currentPage = 0; 
-                document.querySelectorAll('.legend-chip[data-grid-filter]').forEach(c => c.classList.toggle('active', c.dataset.gridFilter === f));
+                document.querySelectorAll('.filter-tabs .filter-tab').forEach(c => {
+                    if(!c.classList.contains('admin-tab')) {
+                        c.classList.toggle('active', c.dataset.filter === f);
+                    }
+                });
                 this.renderGrid();
             }
 
-            adjustSelection(qty) {
-                if(qty === 0) this.selected.clear();
-                else if (qty > 0) {
-                    const av = []; 
+            setSelectionCount(targetCount) {
+                targetCount = parseInt(targetCount) || 0;
+                if (targetCount < 0) targetCount = 0;
+                
+                let currentCount = this.selected.size;
+                
+                if (targetCount > currentCount) {
+                    let diff = targetCount - currentCount;
+                    const available = []; 
+                    const padLen = Math.max(3, (this.config.total - 1).toString().length);
                     for(let i=0; i<this.config.total; i++){ 
-                        const n=i.toString().padStart(2,'0'); 
-                        if(!this.dbNumbers[n] && !this.selected.has(n)) av.push(n); 
+                        const n = i.toString().padStart(padLen,'0'); 
+                        if(!this.dbNumbers[n] && !this.selected.has(n)) available.push(n); 
                     }
-                    av.sort(() => Math.random() - 0.5).slice(0, qty).forEach(n => this.selected.add(n));
-                } else {
+                    available.sort(() => Math.random() - 0.5).slice(0, diff).forEach(n => this.selected.add(n));
+                } else if (targetCount < currentCount) {
+                    let diff = currentCount - targetCount;
                     const arr = Array.from(this.selected); 
-                    for(let i=0; i<Math.min(Math.abs(qty), arr.length); i++) this.selected.delete(arr[arr.length-1-i]);
+                    for(let i=0; i<diff; i++) {
+                        this.selected.delete(arr[arr.length - 1 - i]);
+                    }
                 }
-                this.renderGrid(); window.cartManager.updateFooter();
+                
+                this.renderGrid();
+                window.cartManager.updateCartUI();
+            }
+
+            addSelection(qty) {
+                const newTotal = this.selected.size + qty;
+                this.setSelectionCount(newTotal < 0 ? 0 : newTotal);
             }
 
             switchTab(t) {
-                window.cartManager.appliedCoupon = null;
+                document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+                const view = document.getElementById(`view-${t}`);
+                if(view) view.classList.add('active');
                 
-                // Desfazer minimized se mudarmos de aba
-                if (t === 'admin' || t === 'consulta') {
-                    document.querySelector('.app-wrapper').classList.remove('minimized');
-                }
+                document.getElementById('fixed-checkout').style.display = t === 'rifa' ? 'flex' : 'none';
 
-                ['rifa','consulta','admin'].forEach(v => { 
-                    const view=document.getElementById(`view-${v}`); if(view) view.style.display='none'; 
-                    const b=document.getElementById(`tab-${v}`); if(b) b.classList.remove('active'); 
-                });
-                document.getElementById(`view-${t}`).style.display='block'; 
-                document.getElementById(`tab-${t}`).classList.add('active');
-                document.getElementById('footer-purchase').style.display = t === 'rifa' ? 'flex' : 'none';
-                
-                if(t==='admin') window.adminPanel.render(false); // Atualiza só os filtros visuais
+                if(t==='admin') window.adminPanel.render(false);
+                window.scrollTo(0,0);
             }
 
             async consultarMeusNumeros() {
@@ -805,43 +897,38 @@
                             const listaStr = pendentes.join(',');
                             const nomeSafe = nome.replace(/'/g, "\\'"); 
                             area.innerHTML += `
-                                <div class="block-container" style="padding:20px; margin-bottom:10px; border-color:var(--reserved); text-align:center;">
-                                    <b style="color:var(--reserved); font-size:0.75rem">PENDENTES</b>
-                                    <p style="font-weight:800; margin:10px 0; font-size:1.1rem;">${pendentes.join(', ')}</p>
-                                    <p style="font-size:1.2rem; font-weight:900; color:var(--primary); margin-bottom:15px">Total: R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
-                                    <button class="btn-pay" id="btn-pay-pending" style="width:100%; justify-content:center" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
+                                <div class="admin-item" style="border-color:var(--reserved); text-align:center;">
+                                    <b style="color:var(--reserved); font-size:13px; text-transform: uppercase;">Aguardando Pagamento</b>
+                                    <p style="font-weight:700; margin:12px 0; font-size:16px; color: var(--title-color);">${pendentes.join(', ')}</p>
+                                    <p style="font-size:20px; font-weight:800; color:var(--primary-color); margin-bottom:16px">R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
+                                    <button class="btn-participar" id="btn-pay-existing" style="padding: 14px; font-size: 14px;" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
                                 </div>`;
                         }
-                        if(pagos.length > 0) area.innerHTML += `<div class="block-container" style="padding:15px; border-color:var(--paid); text-align:left;"><b style="color:var(--paid); font-size:0.7rem">PAGOS:</b><p style="font-weight:700; margin-top:5px; color:var(--primary)">${pagos.join(', ')}</p></div>`;
+                        if(pagos.length > 0) area.innerHTML += `<div class="admin-item" style="border-color:var(--paid);"><b style="color:var(--paid); font-size:12px; text-transform: uppercase;">Pagos:</b><p style="font-weight:600; margin-top:8px; color:var(--title-color); font-size: 15px;">${pagos.join(', ')}</p></div>`;
                     } else {
-                        area.innerHTML = '<p style="text-align:center">NENHUM BILHETE ENCONTRADO</p>';
+                        area.innerHTML = '<p style="text-align:center; font-size: 14px; padding: 20px; background: var(--gray-400); border-radius: 10px;">Nenhum bilhete encontrado.</p>';
                     }
                 }
-                lucide.createIcons();
             }
 
-            toggleTheme() {
-                const body = document.body;
-                const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-                body.setAttribute('data-theme', next);
-                const icon = document.getElementById('theme-icon');
-                icon.setAttribute('data-lucide', next === 'dark' ? 'moon' : 'sun');
-                lucide.createIcons();
+            askAdmin() { if(window.adminPanel.isAdmin) this.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; }
+            
+            closeModal(id) { 
+                document.getElementById(id).style.display = 'none'; 
+                if (id === 'modal-checkout') {
+                    if (window.cartManager && window.cartManager.pixInterval) {
+                        clearInterval(window.cartManager.pixInterval);
+                    }
+                    document.getElementById('checkout-step-1').style.display = 'block';
+                    const step2 = document.getElementById('checkout-step-2');
+                    if(step2) step2.style.display = 'none';
+                    const btn = document.getElementById('btn-confirm-res');
+                    if(btn) { btn.disabled = false; btn.innerText = 'Gerar PIX Copia e Cola'; }
+                }
             }
             
-            showOwnerTooltip(e, name) {
-                const old = document.querySelector('.tooltip-bubble'); if(old) old.remove();
-                const b = document.createElement('div'); b.className = 'tooltip-bubble'; b.innerText = name.toUpperCase();
-                document.body.appendChild(b);
-                const rect = e.target.getBoundingClientRect();
-                b.style.left = `${rect.left + (rect.width / 2) - (b.offsetWidth / 2)}px`;
-                b.style.top = `${rect.top - 45}px`; 
-                setTimeout(() => b.remove(), 2000);
-            }
-            askAdmin() { if(window.adminPanel.isAdmin) this.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; }
-            closeModal(id) { document.getElementById(id).style.display = 'none'; }
             maskPhone(i) { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
-            showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3500); }
+            showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
             requestConfirmAction(msg, action) { this.pendingAction = action; document.getElementById('confirm-msg').innerText = msg; document.getElementById('modal-confirm').style.display = 'flex'; }
             async executeConfirmedAction() { if(this.pendingAction) await this.pendingAction(); this.closeModal('modal-confirm'); }
         }
@@ -849,11 +936,12 @@
         class CartManager {
             constructor(app) {
                 this.app = app;
-                this.appliedCoupon = null;
                 this.timerInterval = null;
+                this.pixInterval = null;
+                this.cupomAplicado = null;
             }
 
-            calculateBestPrice(count, useCoupon = false) {
+            calculateBestPrice(count) {
                 let original = count * this.app.config.valor;
                 let final = original;
                 let promoDiscount = 0;
@@ -868,48 +956,76 @@
                     });
                 }
                 promoDiscount = original - final;
-                if(useCoupon && this.appliedCoupon) { 
-                    if(this.appliedCoupon.type === 'pct') final -= (final * (this.appliedCoupon.val / 100));
-                    else final -= this.appliedCoupon.val;
-                    if(final < 0) final = 0;
+
+                let cupomDiscount = 0;
+                if (this.cupomAplicado) {
+                    if (this.cupomAplicado.tipo === 'pct') {
+                        cupomDiscount = final * (this.cupomAplicado.valor / 100);
+                    } else {
+                        cupomDiscount = this.cupomAplicado.valor;
+                    }
+                    final -= cupomDiscount;
+                    if (final < 0) final = 0;
                 }
-                return { final, original, promoDiscount };
+
+                return { final, original, promoDiscount, cupomDiscount };
             }
 
-            updateFooter() {
-                const p = this.calculateBestPrice(this.app.selected.size, false);
-                document.getElementById('count-display').innerText = this.app.selected.size;
-                document.getElementById('footer-total').innerText = p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+            aplicarCupom() {
+                const cod = document.getElementById('checkout-cupom').value.trim().toUpperCase();
+                if (!cod) return;
                 
-                const origEl = document.getElementById('footer-original-price');
-                const discEl = document.getElementById('footer-discount-amount');
-                
-                if(p.promoDiscount > 0) {
-                    origEl.innerText = p.original.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
-                    discEl.innerText = `Desconto: - ${p.promoDiscount.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
-                    origEl.style.display = 'block'; discEl.style.display = 'block';
-                } else { origEl.style.display = 'none'; discEl.style.display = 'none'; }
-                
-                document.getElementById('btn-checkout').disabled = this.app.selected.size === 0;
+                const cupom = (this.app.config.cupons || []).find(c => c.codigo.toUpperCase() === cod);
+                if (cupom) {
+                    this.cupomAplicado = cupom;
+                    this.app.showToast("Cupom aplicado com sucesso!");
+                    this.atualizarValoresCheckout();
+                } else {
+                    this.app.showToast("Cupom inválido ou inativo.");
+                    this.cupomAplicado = null;
+                    this.atualizarValoresCheckout();
+                }
             }
 
-            applyCoupon() {
-                const code = document.getElementById('coupon-input').value.trim().toUpperCase(); 
-                const coupon = (this.app.config.coupons || []).find(c => c.code.toUpperCase() === code); 
-                if(!coupon) return this.app.showToast("❌ CUPOM INVÁLIDO"); 
-                this.appliedCoupon = coupon; 
-                const res = this.calculateBestPrice(this.app.selected.size, true); 
+            atualizarValoresCheckout() {
+                const res = this.calculateBestPrice(this.app.selected.size); 
                 document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
-                this.app.showToast("✅ APLICADO"); 
+                
+                const desc = document.getElementById('checkout-discount-info');
+                let infoText = "";
+                if(res.promoDiscount > 0) infoText += `Desconto cascata: - R$ ${res.promoDiscount.toFixed(2).replace('.',',')}<br>`;
+                if(res.cupomDiscount > 0) infoText += `<span style="color:var(--primary-color)">Cupom aplicado: - R$ ${res.cupomDiscount.toFixed(2).replace('.',',')}</span>`;
+                desc.innerHTML = infoText;
+            }
+
+            updateCartUI() {
+                const count = this.app.selected.size;
+                const p = this.calculateBestPrice(count);
+                
+                document.getElementById('qty-input').value = count;
+                
+                const btn = document.getElementById('btn-checkout');
+                btn.innerHTML = `<i data-lucide="shopping-cart"></i> Participar (${p.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})})`;
+                btn.disabled = count === 0;
+                lucide.createIcons();
+
+                const textDesc = document.getElementById('promo-discount-text');
+                if(p.promoDiscount > 0 || p.cupomDiscount > 0) {
+                    let totalDesc = p.promoDiscount + (p.cupomDiscount || 0);
+                    textDesc.innerText = `🎁 Desconto: - ${totalDesc.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+                    textDesc.style.display = 'block';
+                } else { textDesc.style.display = 'none'; }
             }
 
             abrirCheckout() {
-                this.appliedCoupon = null; 
-                const res = this.calculateBestPrice(this.app.selected.size, true); 
-                document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
+                this.cupomAplicado = null;
+                const inputCupom = document.getElementById('checkout-cupom');
+                if(inputCupom) inputCupom.value = "";
+
+                this.atualizarValoresCheckout();
+
                 document.getElementById('modal-checkout').style.display = 'flex';
                 
-                if(window.fbq) window.fbq('track', 'InitiateCheckout');
                 this.startTimer(15); 
             }
 
@@ -924,21 +1040,88 @@
                     if(time <= 0) {
                         clearInterval(this.timerInterval);
                         this.app.closeModal('modal-checkout');
-                        this.app.showToast("⚠️ O tempo de reserva expirou!");
+                        this.app.showToast("O tempo de reserva expirou!");
                     }
                 }, 1000);
+            }
+
+            copiarPix() {
+                const copyText = document.getElementById("pix-copia-cola");
+                copyText.select();
+                copyText.setSelectionRange(0, 99999); 
+                document.execCommand("copy");
+                this.app.showToast("Código PIX Copiado!");
+            }
+
+            async processarPagamentoPix(payData, isExisting = false, listaStr = '') {
+                const btn = isExisting ? document.getElementById('btn-pay-existing') : document.getElementById('btn-confirm-res');
+                if(btn) { btn.disabled = true; btn.innerText = 'Processando...'; }
+
+                if (this.app.config.gateway === 'mercadopago') {
+                    try {
+                        const pixData = await PaymentService.createMercadoPagoPix(payData, this.app.config.mpToken);
+                        
+                        document.getElementById('modal-checkout').style.display = 'flex';
+                        document.getElementById('checkout-step-1').style.display = 'none';
+                        document.getElementById('checkout-step-2').style.display = 'block';
+                        
+                        document.getElementById('pix-qr-img').src = 'data:image/jpeg;base64,' + pixData.qr_code_base64;
+                        document.getElementById('pix-copia-cola').value = pixData.qr_code;
+                        document.getElementById('pix-status-container').innerHTML = '<div class="spinner" style="width: 18px; height: 18px; border: 2px solid var(--reserved); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div> Aguardando pagamento...';
+
+                        clearInterval(this.pixInterval);
+                        this.pixInterval = setInterval(async () => {
+                            const status = await PaymentService.checkMercadoPagoStatus(pixData.id, this.app.config.mpToken);
+                            if (status === 'approved') {
+                                clearInterval(this.pixInterval);
+                                document.getElementById('pix-status-container').innerHTML = '<span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>';
+                                
+                                const up = {};
+                                if (isExisting) {
+                                    listaStr.split(',').forEach(n => up[`${n}/status`] = 'paid');
+                                } else {
+                                    this.app.selected.forEach(num => up[`${num}/status`] = 'paid');
+                                }
+                                await update(numRef, up);
+                                
+                                this.app.showToast("Pagamento Confirmado!");
+                                if(window.fbq && !isExisting) window.fbq('track', 'Purchase', {value: payData.priceCents / 100, currency: 'BRL'});
+                                
+                                setTimeout(() => {
+                                    this.app.closeModal('modal-checkout');
+                                    if (!isExisting) {
+                                        this.app.selected.clear();
+                                        this.app.renderGrid();
+                                        this.updateCartUI();
+                                    } else {
+                                        this.app.consultarMeusNumeros();
+                                    }
+                                }, 3000);
+                            }
+                        }, 5000);
+                        
+                    } catch(e) {
+                        if(btn) { btn.disabled = false; btn.innerText = isExisting ? 'PAGAR AGORA (PIX)' : 'Gerar PIX Copia e Cola'; }
+                        this.app.showToast(e.message || "Erro ao gerar PIX MP.");
+                    }
+                } else {
+                    try {
+                        const link = await PaymentService.generateInfinitePayLink(payData, this.app.config.handle);
+                        window.location.href = link;
+                    } catch(e) {
+                        if(btn) { btn.disabled = false; btn.innerText = isExisting ? 'PAGAR AGORA (PIX)' : 'Gerar PIX Copia e Cola'; }
+                        this.app.showToast(e.message || "Erro no Gateway.");
+                    }
+                }
             }
 
             async confirmarReserva() {
                 const n = document.getElementById('cust-name').value.trim();
                 const t = document.getElementById('cust-phone').value.trim(); 
                 
-                if(!n || t.length < 10) return this.app.showToast("⚠️ DADOS INVÁLIDOS"); 
+                if(!n || t.length < 10) return this.app.showToast("DADOS INVÁLIDOS"); 
                 
-                const btn = document.getElementById('btn-confirm-res'); 
-                btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; 
-                
-                const res = this.calculateBestPrice(this.app.selected.size, true); 
+                const res = this.calculateBestPrice(this.app.selected.size); 
                 const valorUnidadeFixado = res.final / this.app.selected.size;
                 const priceCents = Math.round(res.final.toFixed(2) * 100);
                 const oid = "RN" + Date.now(); 
@@ -950,22 +1133,20 @@
                     }); 
                     await update(numRef, up); 
                     
-                    if(window.fbq) window.fbq('track', 'Purchase', {value: res.final, currency: 'BRL'});
+                    if(window.fbq) window.fbq('track', 'InitiateCheckout');
 
-                    const payData = { nsu: oid, nome: n, telefone: t, priceCents: priceCents, description: `Rifa ${this.app.config.premio}` };
-                    const link = await PaymentService.generateLink(payData, this.app.config.handle);
-                    window.location.href = link;
+                    const payData = { nsu: oid, nome: n, telefone: t, priceCents: priceCents, description: `Cotas ${this.app.config.premio}` };
+                    
+                    await this.processarPagamentoPix(payData, false);
                 } catch(e) { 
-                    btn.disabled = false; btn.innerText = "ERRO - TENTAR NOVAMENTE"; 
-                    this.app.showToast("❌ Erro ao conectar banco");
+                    const btn = document.getElementById('btn-confirm-res');
+                    if(btn) { btn.disabled = false; btn.innerText = "Tentar Novamente"; }
+                    this.app.showToast(e.message || "Erro ao iniciar reserva.");
                 } 
             }
 
             async pagarExistente(tel, nome, listaStr, totalCusto) {
-                const btn = document.getElementById('btn-pay-pending');
-                if(btn) { btn.disabled = true; btn.innerHTML = '<div class="spinner"></div>'; }
-                this.app.showToast("⏳ GERANDO PAGAMENTO...");
-                
+                this.app.showToast("Gerando PIX...");
                 const priceCents = Math.round(parseFloat(totalCusto).toFixed(2) * 100);
                 const oid = "RP" + Date.now();
                 
@@ -973,13 +1154,9 @@
                     const up = {}; listaStr.split(',').forEach(n => up[`${n}/order_nsu`] = oid);
                     await update(numRef, up);
                     
-                    const payData = { nsu: oid, nome: nome, telefone: tel, priceCents: priceCents, description: `Pagar Bilhetes Rifa` };
-                    const link = await PaymentService.generateLink(payData, this.app.config.handle);
-                    window.location.href = link;
-                } catch(e) { 
-                    this.app.showToast("❌ ERRO NO GATEWAY"); 
-                    if(btn) { btn.disabled = false; btn.innerText = "TENTAR NOVAMENTE"; } 
-                }
+                    const payData = { nsu: oid, nome: nome, telefone: tel, priceCents: priceCents, description: `Pagar Bilhetes` };
+                    await this.processarPagamentoPix(payData, true, listaStr);
+                } catch(e) { this.app.showToast("Erro ao iniciar pagamento"); }
             }
         }
 
@@ -988,7 +1165,6 @@
                 this.app = app;
                 this.isAdmin = false;
                 this.filter = 'all';
-                this.tempTheme = 'green';
             }
 
             validate() {
@@ -996,29 +1172,21 @@
                 const correctPin = this.app.config.pin.toString().trim();
                 if(typedPin === correctPin) { 
                     this.isAdmin = true; 
-                    document.getElementById('tab-admin').style.display = 'block'; 
-                    document.getElementById('admin-lock-icon').setAttribute('data-lucide', 'unlock'); 
                     this.app.closeModal('modal-pin'); 
                     this.app.switchTab('admin'); 
                 } else {
-                    this.app.showToast("❌ PIN INVÁLIDO");
+                    this.app.showToast("PIN Incorreto");
                 }
-                lucide.createIcons();
             }
 
             setFilter(f) {
                 this.filter = f;
-                document.querySelectorAll('.filter-chip').forEach(c => {
-                    c.classList.toggle('active', c.innerText.toLowerCase().includes(f.toLowerCase()) || (f==='all' && c.innerText==='TODOS'));
-                });
-                this.render(false); // Atualiza os filtros visuais sem recriar DOM
+                document.querySelectorAll('.admin-tab').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(f.toLowerCase()) || (f==='all' && c.innerText==='Todos')));
+                this.render(false);
             }
 
-            // CORREÇÃO 1: Renderização com opção forceRebuild.
-            // Isso previne que a lista inteira seja destruída e recriada enquanto o utilizador digita
             render(forceRebuild = true) {
-                const list = document.getElementById('admin-list'); 
-                if(!list) return;
+                const list = document.getElementById('admin-list'); if(!list) return;
 
                 if (forceRebuild) {
                     list.innerHTML = '';
@@ -1032,21 +1200,13 @@
                         groups[phKey].cotas.push({n, status: d.status});
                     });
 
-                    document.getElementById('admin-stats').innerHTML = `
-                        <div class="admin-stat-item" style="border-color:var(--primary); padding:10px; background:var(--cell-bg); border-radius:12px">
-                            <span class="admin-stat-label" style="font-size:0.7rem; color:var(--text-dim)">Recebido</span>
-                            <b class="admin-stat-value" style="color:var(--primary); display:block; font-size:1.2rem">R$ ${tPaid.toFixed(2)}</b>
-                        </div>
-                        <div class="admin-stat-item" style="border-color:var(--secondary); padding:10px; background:var(--cell-bg); border-radius:12px">
-                            <span class="admin-stat-label" style="font-size:0.7rem; color:var(--text-dim)">Vendas</span>
-                            <b class="admin-stat-value" style="color:var(--secondary); display:block; font-size:1.2rem">${Object.keys(this.app.dbNumbers).length}</b>
-                        </div>`;
+                    document.getElementById('admin-receita').innerText = `R$ ${tPaid.toFixed(2).replace('.',',')}`;
+                    document.getElementById('admin-vendas').innerText = Object.keys(this.app.dbNumbers).length;
 
                     Object.values(groups).forEach(p => {
                         const phClean = p.telefone.replace(/\D/g,'');
-                        const card = document.createElement('div'); card.className = 'admin-card'; card.id = `card-${phClean}`;
+                        const card = document.createElement('div'); card.className = 'admin-item'; card.id = `card-${phClean}`;
                         
-                        // Guardar dados nos atributos para o filtro CSS rápido
                         card.dataset.nome = p.nome.toLowerCase();
                         card.dataset.telefone = phClean;
                         card.dataset.cotas = p.cotas.map(c => c.n).join(',');
@@ -1058,115 +1218,172 @@
                         else if (allRes) card.dataset.statusGroup = 'reserved';
                         else card.dataset.statusGroup = 'mixed';
                         
-                        card.style.background = 'rgba(0,0,0,0.2)'; card.style.padding = '15px'; card.style.borderRadius = '15px'; card.style.marginBottom = '10px';
-                        
                         card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; margin-bottom:10px">
-                            <b style="font-size:1rem">${p.nome.toUpperCase()}</b>
-                            <button class="icon-btn" style="background:#25D366; color:#fff; border:none; height:32px; width:32px;" onclick="window.open('https://wa.me/55${phClean}')"><i data-lucide="message-circle" style="width:16px"></i></button>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items: center;">
+                            <b style="color:var(--title-color); font-size: 15px;">${p.nome.toUpperCase()}</b>
+                            <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.telefone}</span>
                         </div>
-                        <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:10px">${p.telefone}</div>
-                        <div style="background:var(--cell-bg); padding:10px; border-radius:10px; margin-bottom:10px; font-size:0.85rem">
-                            ${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}">${c.n}</span>`).join(', ')}
+                        <div style="background:var(--gray-400); padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; color: var(--text-color); border: 1px solid var(--border-color);">
+                            ${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}; font-weight: 600;">${c.n}</span>`).join(', ')}
                         </div>
-                        <div class="admin-actions">
-                            <button class="btn-admin-action btn-paid" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar pagamento?', () => window.adminPanel.updateStatus('${p.telefone}', 'paid'))">PAGOS</button>
-                            <button class="btn-admin-action btn-unpaid" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'reserved'))">PENDENTES</button>
-                            <button class="btn-admin-action btn-delete" onclick="window.rifaApp.requestConfirmAction('Excluir participações?', () => window.adminPanel.deleteParticipant('${p.telefone}'))">EXCLUIR</button>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn-admin bg-green" style="flex:1" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar Pagamento?', () => window.adminPanel.updateStatus('${p.telefone}', 'paid'))">PAGO</button>
+                            <button class="btn-admin bg-orange" style="flex:1" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'reserved'))">PENDENTE</button>
+                            <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
                         </div>`;
                         list.appendChild(card);
                     });
                     lucide.createIcons();
                 }
 
-                // Aplicar filtros visuais (Oculta/Exibe os cartões) sem lag!
                 const searchTxt = document.getElementById('admin-search').value.toLowerCase().trim();
-                document.querySelectorAll('.admin-card').forEach(card => {
+                document.querySelectorAll('.admin-item').forEach(card => {
                     const matchSearch = card.dataset.nome.includes(searchTxt) || card.dataset.cotas.includes(searchTxt) || card.dataset.telefone.includes(searchTxt);
-                    
                     let matchTab = true;
                     if (this.filter === 'paid' && card.dataset.statusGroup !== 'paid') matchTab = false;
-                    // Se estivermos em "pendentes", mostramos quem tem 'reserved' e 'mixed' (mistura de pago/reserva)
                     if (this.filter === 'reserved' && !['reserved', 'mixed'].includes(card.dataset.statusGroup)) matchTab = false;
-
                     card.style.display = (matchSearch && matchTab) ? 'block' : 'none';
                 });
             }
 
             realizarSorteio() {
                 const pagos = Object.entries(this.app.dbNumbers).filter(([n, d]) => d.status === 'paid');
-                if (pagos.length === 0) return this.app.showToast("Nenhum número pago disponível para sorteio!");
+                if (pagos.length === 0) return this.app.showToast("Nenhum pago para sortear!");
                 
                 const ganhadorIndex = Math.floor(Math.random() * pagos.length);
                 const [numeroSorteado, infoGanhador] = pagos[ganhadorIndex];
 
-                document.getElementById('sorteio-numero').innerText = numeroSorteado;
-                document.getElementById('sorteio-nome').innerText = infoGanhador.nome;
+                const padLen = Math.max(3, (this.app.config.total - 1).toString().length);
+                const numeroFormatado = numeroSorteado.toString().padStart(padLen, '0');
+
+                const numContainer = document.getElementById('sorteio-numero');
+                const nomeContainer = document.getElementById('sorteio-nome');
+
+                numContainer.innerHTML = '';
+                numContainer.style.display = 'flex';
+                numContainer.style.justifyContent = 'center';
+                numContainer.style.gap = '10px';
+                
+                nomeContainer.style.opacity = '0';
+                nomeContainer.innerText = infoGanhador.nome;
+                nomeContainer.style.transition = 'opacity 0.5s ease-in-out';
+                
                 document.getElementById('modal-sorteio').style.display = 'flex';
 
-                var duration = 3 * 1000;
-                var animationEnd = Date.now() + duration;
-                var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 9999 };
+                const digitElements = [];
+                for (let i = 0; i < padLen; i++) {
+                    const span = document.createElement('span');
+                    span.style.background = 'var(--gray-400)';
+                    span.style.border = '2px solid var(--border-color)';
+                    span.style.borderRadius = '12px';
+                    span.style.width = '64px';
+                    span.style.height = '86px';
+                    span.style.display = 'flex';
+                    span.style.alignItems = 'center';
+                    span.style.justifyContent = 'center';
+                    span.style.fontSize = '50px';
+                    span.style.fontWeight = '900';
+                    span.style.color = '#fff';
+                    span.style.boxShadow = 'inset 0 5px 15px rgba(0,0,0,0.6)';
+                    span.style.transition = 'all 0.2s';
+                    span.innerText = '0';
+                    numContainer.appendChild(span);
+                    digitElements.push(span);
+                }
 
-                var interval = setInterval(function() {
-                    var timeLeft = animationEnd - Date.now();
-                    if (timeLeft <= 0) return clearInterval(interval);
-                    var particleCount = 50 * (timeLeft / duration);
-                    confetti(Object.assign({}, defaults, { particleCount, origin: { x: Math.random(), y: Math.random() - 0.2 } }));
-                }, 250);
+                const intervals = [];
+                digitElements.forEach((el) => {
+                    const interval = setInterval(() => {
+                        el.innerText = Math.floor(Math.random() * 10);
+                    }, 50);
+                    intervals.push(interval);
+                });
+
+                let tempoParadaBase = 2100;
+                let tempoIncremento = 800;
+
+                for (let i = padLen - 1; i >= 0; i--) {
+                    const tempoParada = tempoParadaBase + ((padLen - 1 - i) * tempoIncremento);
+                    
+                    setTimeout(() => {
+                        clearInterval(intervals[i]);
+                        digitElements[i].innerText = numeroFormatado[i];
+                        
+                        digitElements[i].style.background = 'var(--reserved)';
+                        digitElements[i].style.borderColor = 'var(--reserved)';
+                        digitElements[i].style.color = '#000';
+                        digitElements[i].style.transform = 'scale(1.1)';
+                        digitElements[i].style.boxShadow = '0 0 20px rgba(255, 170, 0, 0.6)';
+                        
+                        setTimeout(() => { 
+                            digitElements[i].style.transform = 'scale(1)'; 
+                        }, 200);
+
+                        if (i === 0) {
+                            setTimeout(() => {
+                                nomeContainer.style.opacity = '1';
+                                confetti({ particleCount: 150, spread: 180, origin: { y: 0.3 } });
+                            }, 500);
+                        }
+                    }, tempoParada);
+                }
             }
 
             async updateStatus(ph, s) { 
                 const up = {}; 
                 Object.entries(this.app.dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[`${n}/status`] = s; }); 
-                await update(numRef, up); this.app.showToast("✅ ATUALIZADO"); 
+                await update(numRef, up); this.app.showToast("Atualizado"); 
             }
             
             async deleteParticipant(ph) { 
                 const up = {}; 
                 Object.entries(this.app.dbNumbers).forEach(([n, d]) => { if(d.telefone === ph) up[n] = null; }); 
-                await update(numRef, up); this.app.showToast("🗑️ EXCLUÍDO"); 
+                await update(numRef, up); this.app.showToast("Excluído"); 
             }
             
             resetRifa() { 
-                this.app.requestConfirmAction('⚠️ RESET TOTAL DA RIFA? \nIsso apagará todos os bilhetes.', async () => { 
-                    await remove(numRef); this.app.showToast("🔥 RESETADO"); 
+                this.app.requestConfirmAction('Certeza que deseja deletar TODAS as cotas?', async () => { 
+                    await remove(numRef); this.app.showToast("Rifa Resetada"); 
                 }); 
             }
 
-            // CORREÇÃO 2: Acordeão livre. As gavetas não bloqueiam/fecham umas às outras.
-            toggleAccordion(headerElement) {
-                const item = headerElement.parentElement;
-                // Removida a "trava" que fechava os outros painéis.
-                item.classList.toggle('active');
-            }
-
-            selectTheme(color) {
-                this.tempTheme = color;
-                document.querySelectorAll('.color-option').forEach(el => {
-                    el.classList.toggle('active', el.dataset.color === color);
-                });
-                this.app.applyThemeColor(color);
+            toggleGateway() {
+                const gateway = document.getElementById('cfg-gateway').value;
+                if(gateway === 'infinitepay') {
+                    document.getElementById('wrap-infinitepay').style.display = 'block';
+                    document.getElementById('wrap-mercadopago').style.display = 'none';
+                } else {
+                    document.getElementById('wrap-infinitepay').style.display = 'none';
+                    document.getElementById('wrap-mercadopago').style.display = 'block';
+                }
             }
 
             openConfig() {
                 document.getElementById('cfg-premio').value = this.app.config.premio || "";
                 document.getElementById('cfg-valor').value = this.app.config.valor || 0;
                 document.getElementById('cfg-total').value = this.app.config.total || 0;
-                document.getElementById('cfg-handle').value = this.app.config.handle || "";
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
-                document.getElementById('cfg-descricao').value = this.app.config.descricao || "";
-                document.getElementById('cfg-pixel').value = this.app.config.pixel || ""; 
+                document.getElementById('cfg-pixel').value = this.app.config.pixel || "";
                 
-                this.selectTheme(this.app.config.themeColor || 'green');
-                
+                document.getElementById('cfg-gateway').value = this.app.config.gateway || "mercadopago";
+                document.getElementById('cfg-handle').value = this.app.config.handle || "";
+                document.getElementById('cfg-mptoken').value = this.app.config.mpToken || "";
+                this.toggleGateway();
+
                 document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF";
                 
                 const pList = document.getElementById('promos-list'); pList.innerHTML = '';
                 if(this.app.config.promos) this.app.config.promos.forEach(p => this.addPromoRow(p));
-                
-                const cList = document.getElementById('coupons-list'); cList.innerHTML = '';
-                if(this.app.config.coupons) this.app.config.coupons.forEach(c => this.addCouponRow(c));
+
+                const qList = document.getElementById('quick-select-config-list'); qList.innerHTML = '';
+                const selects = (this.app.config.quickSelects && this.app.config.quickSelects.length > 0) ? this.app.config.quickSelects : [{qty:1}, {qty:2}, {qty:3, popular:true}, {qty:10}, {qty:25}, {qty:30}];
+                selects.forEach(q => this.addQuickSelectRow(q));
+
+                const preList = document.getElementById('premios-config-list'); preList.innerHTML = '';
+                if(this.app.config.premios) this.app.config.premios.forEach(p => this.addPremioRow(p));
+
+                const cList = document.getElementById('cupons-config-list'); cList.innerHTML = '';
+                if(this.app.config.cupons) this.app.config.cupons.forEach(c => this.addCupomRow(c));
                 
                 document.getElementById('modal-config').style.display = 'flex';
             }
@@ -1176,45 +1393,99 @@
                 document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF"; 
             }
 
+            addQuickSelectRow(d = {qty: 10, popular: false}) {
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <div style="display:flex;gap:8px; margin-bottom:8px; align-items:center;">
+                        <input type="number" class="input-form qs-qty" value="${d.qty}" style="margin:0; width:50%;" placeholder="Qtd">
+                        <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight: 600; color:var(--text-color); width:50%; cursor:pointer;">
+                            <input type="radio" name="qs_popular" class="qs-pop" style="width: 18px; height: 18px;" ${d.popular ? 'checked' : ''}> Popular?
+                        </label>
+                    </div>
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Botão</button>`;
+                document.getElementById('quick-select-config-list').appendChild(div);
+            }
+
             addPromoRow(d = {min:10, val:10, type:'pct'}) {
-                const div = document.createElement('div'); div.className = 'promo-editor-card';
-                div.innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:5px; margin-bottom:5px"><input type="number" class="custom-input p-min" value="${d.min}" style="margin:0"><select class="custom-input p-type" style="margin:0"><option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option><option value="free" ${d.type==='free'?'selected':''}>Grátis</option></select></div><input type="number" class="custom-input p-val" value="${d.val}"><button class="btn-pay" style="width:100%; height:40px; background:var(--danger); color:#fff; font-size:0.6rem" onclick="this.parentElement.remove()">REMOVER REGRA</button>`;
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <div style="display:flex;gap:8px; margin-bottom:8px">
+                        <input type="number" class="input-form p-min" value="${d.min}" style="margin:0; width:50%;" placeholder="Qtd">
+                        <select class="input-form p-type" style="margin:0; width:50%;">
+                            <option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option>
+                            <option value="free" ${d.type==='free'?'selected':''}>Bilhetes Grátis</option>
+                        </select>
+                    </div>
+                    <input type="number" class="input-form p-val" value="${d.val}" placeholder="Valor Desconto">
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Regra</button>`;
                 document.getElementById('promos-list').appendChild(div);
             }
 
-            addCouponRow(d = {code:'', val:5, unlimited:false, limit:0, type:'val'}) {
-                const div = document.createElement('div'); div.className = 'promo-editor-card'; div.style.borderColor = 'var(--promo-accent)';
-                div.innerHTML = `<input type="text" class="custom-input c-code" value="${d.code}" placeholder="CÓDIGO"><div class="unlimited-row" style="margin:10px 0;"><input type="checkbox" class="c-unlimited" ${d.unlimited?'checked':''}> <span style="font-size:0.8rem">ILIMITADO</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px"><div><input type="number" class="custom-input c-val" value="${d.val}" style="margin:0"></div><div><select class="custom-input c-type" style="margin:0"><option value="val" ${d.type==='val'?'selected':''}>R$</option><option value="pct" ${d.type==='pct'?'selected':''}>%</option></select></div></div><input type="number" class="custom-input c-limit" value="${d.limit}" placeholder="LIMITE USO (Ex: 100)"><button class="btn-pay" style="width:100%; height:40px; background:var(--danger); color:#fff; font-size:0.6rem; margin-top:5px" onclick="this.parentElement.remove()">REMOVER CUPOM</button>`;
-                document.getElementById('coupons-list').appendChild(div);
+            addPremioRow(d = {descricao: ''}) {
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <div style="display:flex;gap:8px; margin-bottom:8px">
+                        <input type="text" class="input-form p-desc" value="${d.descricao}" style="margin:0; width:100%;" placeholder="Ex: Moto 0km">
+                    </div>
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Prêmio</button>`;
+                document.getElementById('premios-config-list').appendChild(div);
+            }
+
+            addCupomRow(d = {codigo: '', valor: 10, tipo: 'pct'}) {
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                div.innerHTML = `
+                    <input type="text" class="input-form c-cod" value="${d.codigo}" style="margin-bottom:8px; text-transform: uppercase;" placeholder="Código Ex: VIP10">
+                    <div style="display:flex;gap:8px; margin-bottom:8px">
+                        <input type="number" class="input-form c-val" value="${d.valor}" style="margin:0; width:50%;" placeholder="Desconto">
+                        <select class="input-form c-tipo" style="margin:0; width:50%;">
+                            <option value="pct" ${d.tipo==='pct'?'selected':''}>% OFF</option>
+                            <option value="fixo" ${d.tipo==='fixo'?'selected':''}>R$ Fixo</option>
+                        </select>
+                    </div>
+                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Cupom</button>`;
+                document.getElementById('cupons-config-list').appendChild(div);
             }
 
             save() {
-                const pr = [], cp = [];
-                document.querySelectorAll('#promos-list .promo-editor-card').forEach(row => { 
+                const pr = [];
+                document.querySelectorAll('#promos-list .admin-item').forEach(row => { 
                     pr.push({ min: parseInt(row.querySelector('.p-min').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value }); 
                 });
-                document.querySelectorAll('#coupons-list .promo-editor-card').forEach(row => { 
-                    const code = row.querySelector('.c-code').value.toUpperCase(); 
-                    cp.push({ code: code, type: row.querySelector('.c-type').value, val: parseFloat(row.querySelector('.c-val').value), unlimited: row.querySelector('.c-unlimited').checked, limit: parseInt(row.querySelector('.c-limit').value), used: this.app.config.coupons?.find(x => x.code === code)?.used || 0 }); 
+
+                const qSelects = [];
+                document.querySelectorAll('#quick-select-config-list .admin-item').forEach(row => { 
+                    qSelects.push({ qty: parseInt(row.querySelector('.qs-qty').value), popular: row.querySelector('.qs-pop').checked }); 
+                });
+
+                const premios = [];
+                document.querySelectorAll('#premios-config-list .admin-item').forEach(row => { 
+                    premios.push({ descricao: row.querySelector('.p-desc').value }); 
+                });
+
+                const cupons = [];
+                document.querySelectorAll('#cupons-config-list .admin-item').forEach(row => { 
+                    cupons.push({ codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), valor: parseFloat(row.querySelector('.c-val').value), tipo: row.querySelector('.c-tipo').value }); 
                 });
                 
                 const up = { 
                     premio: document.getElementById('cfg-premio').value, 
                     valor: parseFloat(document.getElementById('cfg-valor').value), 
                     total: parseInt(document.getElementById('cfg-total').value), 
+                    gateway: document.getElementById('cfg-gateway').value,
                     handle: document.getElementById('cfg-handle').value, 
+                    mpToken: document.getElementById('cfg-mptoken').value,
                     pin: document.getElementById('cfg-pin').value, 
                     pixel: document.getElementById('cfg-pixel').value, 
-                    themeColor: this.tempTheme, 
                     promosActive: this.app.config.promosActive, 
-                    promos: pr, 
-                    coupons: cp, 
-                    descricao: document.getElementById('cfg-descricao').value 
+                    quickSelects: qSelects,
+                    promos: pr,
+                    premios: premios,
+                    cupons: cupons
                 };
                 
                 set(cfgRef, up).then(() => { 
                     this.app.closeModal('modal-config'); 
-                    this.app.showToast("✅ SALVO COM SUCESSO"); 
+                    this.app.showToast("Salvo com sucesso!"); 
                 });
             }
         }
