@@ -195,7 +195,7 @@
         .btn-participar:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-2px); }
 
         .filter-tabs {
-            display: flex; flex-wrap: wrap; gap: 2px; background-color: var(--gray-400); padding: 1px;
+            display: flex; flex-wrap: wrap; gap: 1px; background-color: var(--gray-400); padding: 0px 10px;
             border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 5px;
         }
         .filter-tab {
@@ -207,10 +207,10 @@
         .filter-tab.tab-donated.active { background-color: rgba(214, 51, 132, 0.15); color: var(--donated); }
 
         .numbers-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 10px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px;
             max-height: 500px; overflow-y: auto; padding-right: 4px;
         }
-        .numbers-grid::-webkit-scrollbar { width: 20px; }
+        .numbers-grid::-webkit-scrollbar { width: 0px; }
         .numbers-grid::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         .num-cell {
@@ -284,6 +284,15 @@
             transform: scale(1.1);
             background-color: #20ba59;
             color: #fff;
+        }
+        .footer-copyright {
+            text-align: center;
+            font-size: 12px;           /* Tamanho menor e mais discreto */
+            color: var(--text-color);  /* Ou use uma cor como #888888 */
+            opacity: 0.7;              /* Deixa o texto mais suave */
+            margin-top: 24px;          /* Dá um respiro em relação ao conteúdo de cima */
+            padding-bottom: 20px;
+            font-weight: 400;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -372,18 +381,18 @@
                     
                     <div class="filter-tabs">
                         <button class="filter-tab active" data-filter="all" onclick="window.rifaApp.setGridFilter('all')">Todos</button>
-                        <button class="filter-tab" data-filter="available" onclick="window.rifaApp.setGridFilter('available')">Disponíveis</button>
-                        <button class="filter-tab" data-filter="reserved" onclick="window.rifaApp.setGridFilter('reserved')">Reservados</button>
+                        <button class="filter-tab" data-filter="available" onclick="window.rifaApp.setGridFilter('available')">Disp.</button>
+                        <button class="filter-tab" data-filter="reserved" onclick="window.rifaApp.setGridFilter('reserved')">Reser.</button>
                         <button class="filter-tab" data-filter="paid" onclick="window.rifaApp.setGridFilter('paid')">Pagos</button>
-                        <button class="filter-tab" data-filter="selected" onclick="window.rifaApp.setGridFilter('selected')">Selecionados</button>
+                        <button class="filter-tab" data-filter="selected" onclick="window.rifaApp.setGridFilter('selected')">Selec.</button>
                         <button class="filter-tab tab-donated" id="tab-doacoes-grid" data-filter="donated" onclick="window.rifaApp.setGridFilter('donated')" style="display:none;">Doações</button>
                     </div>
                     
                     <div class="numbers-grid" id="grid"></div>
                 </div>
                 
-                <div style="text-align: center; margin-top: 24px; font-size: 11px; color: var(--text-color); font-weight: 500; text-transform: uppercase;">
-                    <br>TODOS DIREITOS RESERVADOS COPYRIGHT <br> © 2026 VAGNER LAURIUCHE
+                <div class="footer-copyright">
+                   <br>Lauriuche Company - Todos os direitos reservados<br> Desenvolvido por Vagner Lauriuche.<br> 2026
                 </div>
             </div>
 
@@ -438,7 +447,7 @@
 
                     <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante ou cota..." oninput="window.adminPanel.render(false)">
                     
-                    <div class="filter-tabs" style="margin-bottom: 20px;">
+                    <div class="filter-tabs" style="margin-bottom: 0px;">
                         <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
