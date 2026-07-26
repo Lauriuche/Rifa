@@ -1,5 +1,3 @@
-
-
 const express = require('express');
 const cors = require('cors');
 const { MercadoPagoConfig, Payment } = require('mercadopago');
@@ -9,8 +7,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Inicializar Firebase Admin (Acesso root seguro ao banco)
-// As credenciais virão das Variáveis de Ambiente do Render
+let db = null;
+
+// Inicializar Firebase Admin
 try {
     if (process.env.FIREBASE_CREDENTIALS) {
         const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
@@ -19,14 +18,13 @@ try {
             databaseURL: "https://vagner-34d5b.firebaseio.com" // URL do seu Firebase
         });
         console.log("🔥 Firebase Admin Inicializado com Sucesso!");
+        db = admin.database();
     } else {
         console.warn("⚠️ FIREBASE_CREDENTIALS não encontrado no ambiente.");
     }
 } catch (error) {
     console.error("Erro ao inicializar Firebase:", error);
 }
-
-const db = admin.database ? admin.database() : null;
 
 // ==========================================
 // ROTA 1: CRIAR PIX NO MERCADO PAGO
@@ -39,7 +37,8 @@ app.post('/api/create-pix', async (req, res) => {
         const payment = new Payment(client);
 
         // URL do Webhook do seu servidor no Render
-        const webhookUrl = `${process.env.BACKEND_URL}/api/webhook?tenant=${tenantId}&rifa=${rifaId}`;
+        const backendUrl = process.env.BACKEND_URL || 'https://rifa-1-m8tv.onrender.com';
+        const webhookUrl = `${backendUrl}/api/webhook?tenant=${tenantId}&rifa=${rifaId}`;
 
         const request = {
             transaction_amount: payData.priceCents / 100,
@@ -49,7 +48,7 @@ app.post('/api/create-pix', async (req, res) => {
                 email: "cliente@rifamaster.com.br",
                 first_name: payData.nome
             },
-            external_reference: payData.nsu, // Chave para achar o bilhete depois
+            external_reference: payData.nsu,
             notification_url: webhookUrl
         };
 
@@ -124,7 +123,6 @@ app.post('/api/webhook', async (req, res) => {
             const paymentId = dataData.id;
             const dbPath = tenant === 'rifa_master' ? 'rifa_master' : `tenants/${tenant}/rifas/${rifa}`;
             
-            // Buscar token daquele tenant no Firebase
             const configSnap = await db.ref(`${dbPath}/config`).once('value');
             const config = configSnap.val();
 
@@ -155,7 +153,6 @@ app.post('/api/webhook', async (req, res) => {
                 }
             }
         }
-        // Sempre retorne 200 OK para o Mercado Pago parar de enviar
         res.status(200).send('OK');
     } catch (error) {
         console.error('Erro no webhook:', error);
@@ -165,5 +162,5 @@ app.post('/api/webhook', async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor SaaS rodando na porta ${PORT}`);
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });
