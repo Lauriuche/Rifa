@@ -195,8 +195,8 @@
         .btn-participar:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-2px); }
 
         .filter-tabs {
-            display: flex; flex-wrap: wrap; gap: 8px; background-color: var(--gray-400); padding: 6px;
-            border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 16px;
+            display: flex; flex-wrap: wrap; gap: 2px; background-color: var(--gray-400); padding: 1px;
+            border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 5px;
         }
         .filter-tab {
             flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: 600;
@@ -207,10 +207,10 @@
         .filter-tab.tab-donated.active { background-color: rgba(214, 51, 132, 0.15); color: var(--donated); }
 
         .numbers-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 8px;
-            max-height: 400px; overflow-y: auto; padding-right: 4px;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(30px, 1fr)); gap: 10px;
+            max-height: 500px; overflow-y: auto; padding-right: 4px;
         }
-        .numbers-grid::-webkit-scrollbar { width: 6px; }
+        .numbers-grid::-webkit-scrollbar { width: 20px; }
         .numbers-grid::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
 
         .num-cell {
@@ -308,10 +308,10 @@
 
     <div class="main-container">
         <div class="hero-blur">
-            <img src="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" id="img-blur">
+            <img src="img/capa.jpg" id="img-blur">
         </div>
         <div class="hero-image-container">
-            <img src="https://drive.google.com/uc?export=view&id=1Q_1pGlSeTggDIXmf4Hsxh2nJrbVe7mIy" alt="Campanha" id="img-main">
+            <img src="img/capa.jpg" alt="Campanha" id="img-main">
         </div>
 
         <div class="content-wrapper">
@@ -329,7 +329,7 @@
                     </div>
                     
                     <h3 style="font-size: 14px; margin-bottom: 12px; color: var(--title-color);">Prêmios:</h3>
-                    <div id="premios-list"></div>
+                    <div id="premios-list" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"></div>
                 </div>
 
                 <!-- Secção de Doações (Chá de Fraldas) -->
