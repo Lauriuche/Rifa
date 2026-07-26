@@ -9,21 +9,26 @@ app.use(express.json());
 
 let db = null;
 
-// Inicializar Firebase Admin
+// Inicializar Firebase Admin com proteção contra falhas
 try {
     if (process.env.FIREBASE_CREDENTIALS) {
         const serviceAccount = JSON.parse(process.env.FIREBASE_CREDENTIALS);
-        admin.initializeApp({
-            credential: admin.credential.cert(serviceAccount),
-            databaseURL: "https://vagner-34d5b.firebaseio.com" // URL do seu Firebase
-        });
+        
+        // Verifica se já não existe uma app inicializada para evitar duplicados
+        if (!admin.apps.length) {
+            admin.initializeApp({
+                credential: admin.credential.cert(serviceAccount),
+                databaseURL: "https://vagner-34d5b.firebaseio.com" // URL do seu Firebase
+            });
+        }
         console.log("🔥 Firebase Admin Inicializado com Sucesso!");
         db = admin.database();
     } else {
-        console.warn("⚠️ FIREBASE_CREDENTIALS não encontrado no ambiente.");
+        console.warn("⚠️ AVISO: FIREBASE_CREDENTIALS não foi configurado no Render.");
+        console.warn("O servidor está online, mas a baixa automática do PIX não vai funcionar até você adicionar a chave no painel do Render.");
     }
 } catch (error) {
-    console.error("Erro ao inicializar Firebase:", error);
+    console.error("Erro ao inicializar Firebase (Verifique se colou o JSON corretamente):", error.message);
 }
 
 // ==========================================
@@ -36,7 +41,7 @@ app.post('/api/create-pix', async (req, res) => {
         const client = new MercadoPagoConfig({ accessToken: mpToken });
         const payment = new Payment(client);
 
-        // URL do Webhook do seu servidor no Render
+        // URL do Webhook
         const backendUrl = process.env.BACKEND_URL || 'https://rifa-1-m8tv.onrender.com';
         const webhookUrl = `${backendUrl}/api/webhook?tenant=${tenantId}&rifa=${rifaId}`;
 
