@@ -141,10 +141,11 @@
 
         .btn-quick {
             background-color: var(--button-color); border: 1px solid var(--button-border);
-            border-radius: 12px; padding: 12px 6px; text-align: center;
+            border-radius: 15px; padding: 12px 6px; text-align: center;
             color: var(--title-color); cursor: pointer; transition: 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden; min-height: 76px;
+            position: relative; overflow: hidden; height: 70px;
+            
         }
         .btn-quick:hover { filter: brightness(1.2); }
         .btn-quick span.lbl { font-size: 10px; text-transform: uppercase; color: var(--text-color); margin-bottom: 4px; }
@@ -208,7 +209,7 @@
 
         .numbers-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px;
-            max-height: 500px; overflow-y: auto; padding-right: 4px;
+            max-height: 1000px; overflow-y: auto; padding-right: 4px;
         }
         .numbers-grid::-webkit-scrollbar { width: 0px; }
         .numbers-grid::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -334,6 +335,8 @@
                         <div style="display: flex; gap: 8px; align-items: center;">
                             <span style="font-size: 13px; font-weight: 500;">Por apenas</span>
                             <div class="price-badge" id="display-valor">R$ 0,00</div>
+                            <span style="font-size: 13px; font-weight: 500;">Ou um item infantil</span>
+                            
                         </div>
                     </div>
                     
