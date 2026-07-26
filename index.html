@@ -294,13 +294,14 @@
             padding-bottom: 20px;
             font-weight: 400;
         }
+        
         .progress-container {
-            margin: 24px 16px; /* Espaçamento ao redor da barra */
+            margin: 24px 16px; 
         }
 
         .progress-info {
             display: flex;
-            justify-content: space-between; /* Coloca o texto de um lado e a % do outro */
+            justify-content: space-between; 
             font-size: 14px;
             color: var(--text-color);
             margin-bottom: 8px;
@@ -309,17 +310,26 @@
 
         .progress-bar-bg {
             width: 100%;
-            height: 12px; /* Espessura da barra */
-            background-color: var(--gray-300); /* Fundo escuro da barra usando sua variável */
-            border-radius: 10px; /* Bordas arredondadas */
+            height: 12px; 
+            background-color: var(--gray-300); 
+            border-radius: 10px; 
             overflow: hidden;
         }
 
         .progress-bar-fill {
             height: 100%;
-            background-color: var(--primary-color); /* A cor verde de preenchimento */
+            background-color: var(--primary-color); 
             border-radius: 10px;
-            transition: width 0.5s ease-in-out; /* Efeito suave ao encher a barra */
+            transition: width 0.5s ease-in-out; 
+        }
+        
+        /* CSS Ocultar Seta Nativa do <details> para o Acordeão funcionar bonito */
+        details > summary { list-style: none; outline: none; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] summary ~ * { animation: sweep .3s ease-in-out; }
+        @keyframes sweep {
+            0%    {opacity: 0; margin-top: 0px}
+            100%  {opacity: 1; margin-top: 12px}
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -478,9 +488,12 @@
                         </div>
                     </div>
 
-                    <button class="btn-participar" style="background-color: var(--reserved); color: #000; margin-bottom: 24px;" onclick="window.adminPanel.realizarSorteio()">
+                    <button class="btn-participar" style="background-color: var(--reserved); color: #000; margin-bottom: 24px;" onclick="window.adminPanel.abrirModalSorteio()">
                         <i data-lucide="gift"></i> Sortear Ganhador
                     </button>
+
+                    <!-- DIV PARA LISTA DE GANHADORES -->
+                    <div id="admin-ganhadores-list"></div>
 
                     <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante ou cota..." oninput="window.adminPanel.render(false)">
                     
@@ -741,6 +754,15 @@
         </div>
     </div>
 
+    <!-- NOVO MODAL: SELECIONAR PRÊMIO PARA SORTEIO -->
+    <div class="modal-overlay" id="modal-selecionar-premio">
+        <div class="modal-card">
+            <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 20px; text-align: center;">Escolha o Prêmio</h3>
+            <div id="lista-premios-sorteio" style="display:flex; flex-direction:column; gap:10px;"></div>
+            <button onclick="window.rifaApp.closeModal('modal-selecionar-premio')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600;">Cancelar</button>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getDatabase, ref, set, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
@@ -765,6 +787,7 @@
         const dbPath = tenantId === 'rifa_master' ? 'rifa_master' : `tenants/${tenantId}/rifas/${rifaId}`;
         const cfgRef = ref(db, `${dbPath}/config`);
         const numRef = ref(db, `${dbPath}/numeros`);
+        const ganhadoresRef = ref(db, `${dbPath}/ganhadores`);
 
         const BACKEND_URL = "https://rifa-1-m8tv.onrender.com";
 
@@ -813,6 +836,7 @@
                     cupons: [], quickSelects: [], doacoes: [] 
                 };
                 this.dbNumbers = {};
+                this.ganhadores = {}; 
                 this.selected = new Set();
                 this.gridFilter = 'all';
                 this.pendingAction = null;
@@ -835,6 +859,10 @@
                     this.dbNumbers = s.exists() ? s.val() : {}; 
                     this.renderGrid(); 
                     if(window.adminPanel && window.adminPanel.isAdmin) window.adminPanel.render(true); 
+                });
+                onValue(ganhadoresRef, (s) => {
+                    this.ganhadores = s.exists() ? s.val() : {};
+                    if(window.adminPanel && window.adminPanel.isAdmin) window.adminPanel.render(true);
                 });
             }
 
@@ -970,7 +998,6 @@
                     }
                 };
 
-                // Atualiza a barra de progresso
                 const cotasVendidas = Object.keys(this.dbNumbers).length;
                 let porcentagem = total > 0 ? (cotasVendidas / total) * 100 : 0;
                 if (porcentagem > 100) porcentagem = 100;
@@ -1032,7 +1059,7 @@
                 
                 document.getElementById('fixed-checkout').style.display = t === 'rifa' ? 'flex' : 'none';
 
-                if(t==='admin') window.adminPanel.render(true); // Garante que atualiza dados 
+                if(t==='admin') window.adminPanel.render(true); 
                 window.scrollTo(0,0);
             }
 
@@ -1467,13 +1494,49 @@
                 document.querySelectorAll('.admin-tab').forEach(c => c.classList.toggle('active', c.innerText.toLowerCase().includes(f.toLowerCase()) || (f==='all' && c.innerText==='Todos')));
                 this.render(false);
             }
+            
+            renderGanhadores() {
+                const container = document.getElementById('admin-ganhadores-list');
+                if(!container) return;
+                
+                const ganhadores = Object.values(this.app.ganhadores || {});
+                if(ganhadores.length === 0) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                let html = `<h3 style="color:var(--title-color); margin-bottom: 16px; font-size: 18px; display: flex; align-items: center; gap: 8px;"><i data-lucide="award" style="color:var(--reserved);"></i> Ganhadores</h3>`;
+                ganhadores.forEach(g => {
+                    const msg = encodeURIComponent(`Olá ${g.nome.split(' ')[0]}, parabéns! Você ganhou o prêmio: ${g.premioDesc} na nossa rifa com a cota ${g.cota}!`);
+                    html += `
+                    <div class="admin-item" style="border-color: var(--primary-color); margin-bottom:12px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <b style="color:var(--primary-color); font-size:14px;">${g.premioDesc}</b>
+                            <span style="background:var(--primary-color); color:#fff; padding:4px 8px; border-radius:6px; font-weight:bold; font-size:12px;">Cota ${g.cota}</span>
+                        </div>
+                        <p style="color:var(--title-color); font-size:16px; font-weight:700; margin-bottom:4px;">${g.nome}</p>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px;">
+                            <span style="color:var(--text-color); font-size:13px;">${g.telefone}</span>
+                            <a href="https://wa.me/55${g.telefone.replace(/\D/g,'')}?text=${msg}" target="_blank" style="background:#25d366; color:#fff; padding:6px 12px; border-radius:6px; text-decoration:none; font-size:12px; font-weight:600; display:flex; align-items:center; gap:6px;">
+                                <i data-lucide="message-circle" style="width:14px;"></i> Contatar
+                            </a>
+                        </div>
+                    </div>`;
+                });
+                
+                html += `<div style="border-bottom: 1px solid var(--border-color); margin: 24px 0;"></div>`;
+                container.innerHTML = html;
+                lucide.createIcons();
+            }
 
             render(forceRebuild = true) {
                 const list = document.getElementById('admin-list'); if(!list) return;
 
                 if (forceRebuild) {
                     list.innerHTML = '';
-                    let tPaid = 0; let tDoacoes = 0; const groups = {};
+                    let tPaid = 0; let tDoacoes = 0; 
+                    const compras = {};
+                    const doacoes = {};
                     
                     Object.entries(this.app.dbNumbers).forEach(([n, d]) => {
                         const val = (d.valor_fixado_unidade !== undefined) ? parseFloat(d.valor_fixado_unidade) : parseFloat(this.app.config.valor || 0);
@@ -1483,75 +1546,144 @@
                         const phKey = (d.telefone || "0").replace(/\D/g,'');
                         const isDoacao = !!d.item_doacao;
                         
-                        const gKey = phKey + (isDoacao ? '_doa' : '_comp');
-
-                        if(!groups[gKey]) groups[gKey] = { nome: d.nome, telefone: d.telefone, cotas: [], item_doacao: d.item_doacao || null, isDoacao: isDoacao };
-                        groups[gKey].cotas.push({n, status: d.status});
+                        if (isDoacao) {
+                            const item = d.item_doacao.toUpperCase();
+                            if (!doacoes[item]) doacoes[item] = {};
+                            if (!doacoes[item][phKey]) doacoes[item][phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
+                            doacoes[item][phKey].cotas.push({n, status: d.status});
+                        } else {
+                            if(!compras[phKey]) compras[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
+                            compras[phKey].cotas.push({n, status: d.status});
+                        }
                     });
 
                     document.getElementById('admin-receita').innerText = `R$ ${tPaid.toFixed(2).replace('.',',')}`;
                     document.getElementById('admin-doacoes').innerText = tDoacoes;
                     document.getElementById('admin-vendas').innerText = Object.keys(this.app.dbNumbers).length;
 
-                    Object.values(groups).forEach(p => {
-                        const phClean = p.telefone.replace(/\D/g,'');
+                    // 1º - GERAR DOAÇÕES NO TOPO
+                    Object.entries(doacoes).forEach(([itemName, donorsObj]) => {
+                        const card = document.createElement('div'); card.className = 'admin-item';
+                        card.dataset.isDoacao = 'true';
+
+                        let totalCotas = 0;
+                        let nomes = [];
+                        let telefones = [];
+                        let cotasStrs = [];
+                        let temPendente = false;
+                        let temConfirmado = false;
+                        let donorsHTML = '';
+
+                        Object.values(donorsObj).forEach(p => {
+                            totalCotas += p.cotas.length;
+                            nomes.push(p.nome.toLowerCase());
+                            telefones.push(p.telefone);
+                            cotasStrs.push(p.cotas.map(c => c.n).join(','));
+
+                            const allDonated = p.cotas.every(c => c.status === 'donated');
+                            const allDonatedPending = p.cotas.every(c => c.status === 'donated_pending');
+                            if(!allDonated) temPendente = true;
+                            if(allDonated) temConfirmado = true;
+
+                            donorsHTML += `
+                            <details style="cursor: pointer; background: var(--background-color); padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border-color);">
+                                <summary style="display:flex; justify-content:space-between; align-items: center;">
+                                    <div><b style="color:var(--title-color); font-size: 13px;">${p.nome.toUpperCase()}</b></div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="font-size: 11px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.cotas.length} cota(s)</span>
+                                        <i data-lucide="chevron-down" style="width: 16px; color:var(--text-color);"></i>
+                                    </div>
+                                </summary>
+                                <div style="padding-top:12px; margin-top:12px; border-top:1px dashed var(--border-color);">
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                        <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px; color:var(--text-color);">Tel: ${p.telefone}</span>
+                                        <a href="https://wa.me/55${p.telefone.replace(/\D/g,'')}?text=Olá ${p.nome.split(' ')[0]}" target="_blank" style="font-size: 11px; background: #25d366; color: #fff; padding: 4px 8px; border-radius: 6px; text-decoration: none;"><i data-lucide="message-circle" style="width:12px; display:inline-block; vertical-align:middle;"></i> WhatsApp</a>
+                                    </div>
+                                    <div style="background:var(--gray-400); padding:10px; border-radius:8px; margin-bottom:12px; font-size:12px; color: var(--text-color); border: 1px solid var(--border-color);">
+                                        ${p.cotas.map(c => `<span style="color:${c.status.includes('donated')?'var(--donated)':(c.status==='paid'?'var(--paid)':'var(--reserved)')}; font-weight: 600;">${c.n}</span>`).join(', ')}
+                                    </div>
+                                    <div style="display:flex; gap:8px;">
+                                        <button class="btn-admin bg-pink" style="flex:1" ${allDonated?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar entrega da Doação?', () => window.adminPanel.updateStatus('${p.telefone}', 'donated', true))">${allDonated ? 'RECEBIDA' : 'CONFIRMAR'}</button>
+                                        <button class="btn-admin bg-orange" style="flex:1" ${allDonatedPending?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar doação pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'donated_pending', true))">PENDENTE</button>
+                                        <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Doação?', () => window.adminPanel.deleteParticipant('${p.telefone}', true))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
+                                    </div>
+                                </div>
+                            </details>
+                            `;
+                        });
+
+                        card.dataset.nome = nomes.join(' ');
+                        card.dataset.telefone = telefones.join(' ');
+                        card.dataset.cotas = cotasStrs.join(',');
+                        
+                        if (temConfirmado && !temPendente) card.dataset.statusGroup = 'donated';
+                        else if (!temConfirmado && temPendente) card.dataset.statusGroup = 'donated_pending';
+                        else card.dataset.statusGroup = 'mixed_donated';
+
+                        card.innerHTML = `
+                        <div style="display:flex; justify-content:space-between; align-items: center; padding-bottom: 12px; margin-bottom: 8px;">
+                            <div><b style="color:var(--donated); font-size: 15px; text-transform: uppercase;"><i data-lucide="gift" style="width:18px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> ${itemName}</b></div>
+                            <span style="font-size: 12px; background: rgba(214, 51, 132, 0.1); color: var(--donated); padding: 4px 8px; border-radius: 6px; font-weight: 700;">${totalCotas} cota(s)</span>
+                        </div>
+                        <div>
+                            ${donorsHTML}
+                        </div>`;
+
+                        list.appendChild(card);
+                    });
+
+                    // 2º - GERAR COMPRAS (Abaixo das Doações)
+                    Object.values(compras).forEach(p => {
                         const card = document.createElement('div'); card.className = 'admin-item'; 
+                        const phClean = p.telefone.replace(/\D/g,'');
                         
                         card.dataset.nome = p.nome.toLowerCase();
                         card.dataset.telefone = phClean;
                         card.dataset.cotas = p.cotas.map(c => c.n).join(',');
-                        card.dataset.isDoacao = p.isDoacao ? 'true' : 'false';
+                        card.dataset.isDoacao = 'false';
                         
                         const allPaid = p.cotas.every(c => c.status === 'paid');
                         const allRes = p.cotas.every(c => c.status === 'reserved');
-                        const allDonated = p.cotas.every(c => c.status === 'donated');
-                        const allDonatedPending = p.cotas.every(c => c.status === 'donated_pending');
                         
-                        if (p.isDoacao) {
-                            if (allDonated) card.dataset.statusGroup = 'donated';
-                            else if (allDonatedPending) card.dataset.statusGroup = 'donated_pending';
-                            else card.dataset.statusGroup = 'mixed_donated';
-                        } else {
-                            if (allPaid) card.dataset.statusGroup = 'paid';
-                            else if (allRes) card.dataset.statusGroup = 'reserved';
-                            else card.dataset.statusGroup = 'mixed';
-                        }
+                        if (allPaid) card.dataset.statusGroup = 'paid';
+                        else if (allRes) card.dataset.statusGroup = 'reserved';
+                        else card.dataset.statusGroup = 'mixed';
                         
-                        let buttonsHTML = '';
-                        if (p.isDoacao) {
-                            buttonsHTML = `
-                                <div style="display:flex; gap:8px;">
-                                    <button class="btn-admin bg-pink" style="flex:1" ${allDonated?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar entrega da Doação?', () => window.adminPanel.updateStatus('${p.telefone}', 'donated', true))">${allDonated ? 'DOAÇÃO RECEBIDA' : 'CONFIRMAR DOAÇÃO'}</button>
-                                    <button class="btn-admin bg-orange" style="flex:1" ${allDonatedPending?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar doação pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'donated_pending', true))">PENDENTE</button>
-                                    <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Doação?', () => window.adminPanel.deleteParticipant('${p.telefone}', true))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
-                                </div>
-                            `;
-                        } else {
-                            buttonsHTML = `
-                                <div style="display:flex; gap:8px;">
-                                    <button class="btn-admin bg-green" style="flex:1" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar Pagamento?', () => window.adminPanel.updateStatus('${p.telefone}', 'paid', false))">PAGO</button>
-                                    <button class="btn-admin bg-orange" style="flex:1" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'reserved', false))">PENDENTE</button>
-                                    <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}', false))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
-                                </div>
-                            `;
-                        }
+                        let buttonsHTML = `
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn-admin bg-green" style="flex:1" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar Pagamento?', () => window.adminPanel.updateStatus('${p.telefone}', 'paid', false))">PAGO</button>
+                                <button class="btn-admin bg-orange" style="flex:1" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'reserved', false))">PENDENTE</button>
+                                <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}', false))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
+                            </div>
+                        `;
 
                         let titleHTML = `<b style="color:var(--title-color); font-size: 15px;">${p.nome.toUpperCase()}</b>`;
-                        if (p.isDoacao) {
-                            titleHTML = `<b style="color:var(--donated); font-size: 14px;"><i data-lucide="gift" style="width:16px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> ${p.item_doacao}</b><br><span style="font-size:12px; color:var(--text-color);">${p.nome.toUpperCase()}</span>`;
-                        }
 
                         card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; margin-bottom:12px; align-items: flex-start;">
-                            <div>${titleHTML}</div>
-                            <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.telefone}</span>
-                        </div>
-                        <div style="background:var(--gray-400); padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; color: var(--text-color); border: 1px solid var(--border-color);">
-                            ${p.cotas.map(c => `<span style="color:${c.status.includes('donated')?'var(--donated)':(c.status==='paid'?'var(--paid)':'var(--reserved)')}; font-weight: 600;">${c.n}</span>`).join(', ')}
-                        </div>
-                        ${buttonsHTML}`;
+                        <details style="cursor: pointer;">
+                            <summary style="display:flex; justify-content:space-between; align-items: center;">
+                                <div>${titleHTML}</div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.cotas.length} cota(s)</span>
+                                    <i data-lucide="chevron-down" style="width: 18px; color:var(--text-color);"></i>
+                                </div>
+                            </summary>
+                            <div style="padding-top:16px; margin-top:12px; border-top:1px solid var(--border-color);">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px; color:var(--text-color);">Tel: ${p.telefone}</span>
+                                    <a href="https://wa.me/55${p.telefone.replace(/\D/g,'')}?text=Olá ${p.nome.split(' ')[0]}" target="_blank" style="font-size: 12px; background: #25d366; color: #fff; padding: 6px 10px; border-radius: 6px; text-decoration: none;"><i data-lucide="message-circle" style="width:14px; display:inline-block; vertical-align:middle;"></i> WhatsApp</a>
+                                </div>
+                                <div style="background:var(--gray-400); padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; color: var(--text-color); border: 1px solid var(--border-color);">
+                                    ${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}; font-weight: 600;">${c.n}</span>`).join(', ')}
+                                </div>
+                                ${buttonsHTML}
+                            </div>
+                        </details>`;
+                        
                         list.appendChild(card);
                     });
+                    
+                    this.renderGanhadores(); 
                     lucide.createIcons();
                 }
 
@@ -1564,14 +1696,34 @@
                     const matchSearch = dNome.includes(searchTxt) || dCotas.includes(searchTxt) || dTel.includes(searchTxt);
                     let matchTab = true;
                     if (this.filter === 'paid' && card.dataset.statusGroup !== 'paid') matchTab = false;
-                    if (this.filter === 'reserved' && !['reserved', 'mixed', 'donated_pending', 'mixed_donated'].includes(card.dataset.statusGroup)) matchTab = false;
+                    if (this.filter === 'reserved' && !['reserved', 'mixed'].includes(card.dataset.statusGroup)) matchTab = false;
                     if (this.filter === 'donated' && card.dataset.isDoacao !== 'true') matchTab = false; 
                     
                     card.style.display = (matchSearch && matchTab) ? 'block' : 'none';
                 });
             }
 
-            realizarSorteio() {
+            abrirModalSorteio() {
+                const lista = document.getElementById('lista-premios-sorteio');
+                lista.innerHTML = '';
+                
+                const premios = this.app.config.premios && this.app.config.premios.length > 0 
+                    ? this.app.config.premios 
+                    : [{descricao: '1º Prêmio Principal'}];
+                
+                premios.forEach((p, idx) => {
+                    const jaSorteado = Object.values(this.app.ganhadores || {}).find(g => g.premioIndex === idx);
+                    if(jaSorteado) {
+                        lista.innerHTML += `<div style="padding:12px; background:var(--gray-400); border-radius:8px; color:var(--text-color); font-size:13px; display:flex; justify-content:space-between; align-items:center;"><span>${idx+1}º: ${p.descricao}</span> <b style="color:var(--primary-color); font-size:11px;">SORTEADO</b></div>`;
+                    } else {
+                        const descSafe = p.descricao.replace(/'/g, "\\'"); 
+                        lista.innerHTML += `<button class="btn-participar" style="background:var(--primary-color); text-transform:none; padding:12px; font-size:14px;" onclick="window.rifaApp.closeModal('modal-selecionar-premio'); window.adminPanel.realizarSorteio(${idx}, '${descSafe}')">Sortear: ${p.descricao}</button>`;
+                    }
+                });
+                document.getElementById('modal-selecionar-premio').style.display = 'flex';
+            }
+
+            realizarSorteio(premioIndex, premioDesc) {
                 const validos = Object.entries(this.app.dbNumbers).filter(([n, d]) => d.status === 'paid' || d.status === 'donated');
                 if (validos.length === 0) return this.app.showToast("Nenhum bilhete confirmado para sortear!");
                 
@@ -1644,6 +1796,17 @@
                             setTimeout(() => {
                                 nomeContainer.style.opacity = '1';
                                 confetti({ particleCount: 150, spread: 180, origin: { y: 0.3 } });
+                                
+                                const ganhadorRef = ref(db, `${dbPath}/ganhadores/${premioIndex}`);
+                                set(ganhadorRef, {
+                                    nome: infoGanhador.nome,
+                                    telefone: infoGanhador.telefone,
+                                    cota: numeroFormatado,
+                                    premioIndex: premioIndex,
+                                    premioDesc: premioDesc,
+                                    data: Date.now()
+                                });
+
                             }, 500);
                         }
                     }, tempoParada);
@@ -1673,8 +1836,10 @@
             }
             
             resetRifa() { 
-                this.app.requestConfirmAction('Certeza que deseja deletar TODAS as cotas e doações?', async () => { 
-                    await remove(numRef); this.app.showToast("Rifa Resetada"); 
+                this.app.requestConfirmAction('Certeza que deseja deletar TODAS as cotas, doações e ganhadores?', async () => { 
+                    await remove(numRef); 
+                    await remove(ganhadoresRef);
+                    this.app.showToast("Rifa Resetada"); 
                 }); 
             }
 
