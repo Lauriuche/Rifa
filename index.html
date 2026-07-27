@@ -793,10 +793,10 @@
 
     <div class="main-container">
         <div class="hero-blur">
-            <img src="https://lauriuche.github.io/Rifa/img/capa.jpg" id="img-blur" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Rifa+Master'">
+            <img src="img/capa.jpg" id="img-blur" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Rifa+Master'">
         </div>
         <div class="hero-image-container">
-            <img src="https://lauriuche.github.io/Rifa/img/capa.jpg" alt="Campanha" id="img-main" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Imagem+da+Rifa'">
+            <img src="img/capa.jpg" alt="Campanha" id="img-main" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Imagem+da+Rifa'">
         </div>
 
         <div class="content-wrapper">
@@ -1139,6 +1139,12 @@
                 </div>
 
                 <div class="cfg-section">
+                    <label class="cfg-label">Imagem de Capa (URL)</label>
+                    <input type="url" id="cfg-capa" class="input-form" placeholder="https://... ou img/capa.jpg" style="margin-bottom: 0; font-size: 12px;">
+                    <p style="font-size: 11px; color: var(--text-color); margin-top: 8px;">A mesma URL é usada na capa principal e no fundo desfocada.</p>
+                </div>
+
+                <div class="cfg-section">
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                         <div>
                             <label class="cfg-label">Valor do Bilhete (R$)</label>
@@ -1150,6 +1156,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 <div class="cfg-section">
                     <div class="cfg-section-title"><i data-lucide="credit-card" style="width:16px;"></i> Gateway de Pagamento</div>
@@ -1369,7 +1376,8 @@
                     premio: "Carregando...", descricao: "", valor: 5, total: 1000, 
                     pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", 
                     promosActive: false, promos: [], pixel: "", premios: [], 
-                    cupons: [], quickSelects: [], doacoes: [], ocultarNumeros: false
+                    cupons: [], quickSelects: [], doacoes: [], ocultarNumeros: false,
+                    capa: ""
                 };
                 this.dbNumbers = {};
                 this.ganhadores = {}; 
@@ -1422,6 +1430,14 @@
                 document.getElementById('display-premio').innerText = tituloStr;
                 document.getElementById('display-descricao').innerText = this.config.descricao || '';
                 document.getElementById('display-valor').innerText = valorStr;
+
+                // Capa (mesma URL nos 2 locais: principal + blur)
+                const capaUrl = (this.config.capa && this.config.capa.trim()) ? this.config.capa.trim() : 'img/capa.jpg';
+                const imgMain = document.getElementById('img-main');
+                const imgBlur = document.getElementById('img-blur');
+                if (imgMain) imgMain.src = capaUrl;
+                if (imgBlur) imgBlur.src = capaUrl;
+
 
                 const premiosList = document.getElementById('premios-list');
                 if (premiosList) {
@@ -2568,6 +2584,7 @@
 
             openConfig() {
                 document.getElementById('cfg-premio').value = this.app.config.premio || "";
+                document.getElementById('cfg-capa').value = this.app.config.capa || "";
                 document.getElementById('cfg-valor').value = this.app.config.valor || 0;
                 document.getElementById('cfg-total').value = this.app.config.total || 0;
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
@@ -2577,6 +2594,7 @@
                 document.getElementById('cfg-handle').value = this.app.config.handle || "";
                 document.getElementById('cfg-mptoken').value = this.app.config.mpToken || "";
                 this.toggleGateway();
+
 
                 this._updateToggleUI(document.getElementById('btn-toggle-promos'), !!this.app.config.promosActive);
                 this._updateToggleUI(document.getElementById('btn-toggle-ocultar'), !!this.app.config.ocultarNumeros);
@@ -2754,6 +2772,7 @@
 
                 const up = { 
                     premio: document.getElementById('cfg-premio').value || "", 
+                    capa: document.getElementById('cfg-capa').value.trim() || "",
                     valor: parseFloat(document.getElementById('cfg-valor').value) || 0, 
                     total: parseInt(document.getElementById('cfg-total').value) || 0, 
                     gateway: document.getElementById('cfg-gateway').value,
@@ -2769,6 +2788,7 @@
                     premios: premios,
                     cupons: cupons
                 };
+
 
                 set(cfgRef, up).then(() => { 
                     this.app.closeModal('modal-config'); 
