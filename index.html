@@ -593,7 +593,7 @@
             padding: 14px 10px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.25s ease;
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -663,6 +663,103 @@
             font-weight: 800;
             color: #fff;
         }
+
+        /* Estado expandido com +/- laterais */
+        .btn-doacao.expanded {
+            min-height: 130px;
+            padding: 12px 8px;
+            border-color: var(--donated);
+            box-shadow: 0 6px 18px rgba(214, 51, 132, 0.3);
+            overflow: visible;
+        }
+        .btn-doacao.expanded:hover {
+            transform: none;
+        }
+        .btn-doacao .doacao-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            width: 100%;
+        }
+        .btn-doacao .doacao-qty-row {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 4px;
+        }
+        .btn-doacao.expanded .doacao-qty-row {
+            display: flex;
+            animation: doacaoExpand 0.25s ease;
+        }
+        @keyframes doacaoExpand {
+            from { opacity: 0; transform: scaleX(0.6); }
+            to   { opacity: 1; transform: scaleX(1); }
+        }
+        .btn-doacao .doacao-qty-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--donated);
+            color: #fff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: 800;
+            flex-shrink: 0;
+            transition: 0.15s;
+            box-shadow: 0 2px 8px rgba(214, 51, 132, 0.4);
+        }
+        .btn-doacao .doacao-qty-btn:hover {
+            filter: brightness(1.15);
+            transform: scale(1.08);
+        }
+        .btn-doacao .doacao-qty-btn:active {
+            transform: scale(0.95);
+        }
+        .btn-doacao .doacao-qty-btn.minus {
+            background: var(--gray-300);
+            color: var(--title-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+        }
+        .btn-doacao .doacao-qty-value {
+            min-width: 32px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--title-color);
+        }
+        .btn-doacao .doacao-confirm {
+            display: none;
+            margin-top: 6px;
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 8px;
+            background: var(--donated);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+        .btn-doacao.expanded .doacao-confirm {
+            display: block;
+        }
+        .btn-doacao .doacao-confirm:hover {
+            filter: brightness(1.1);
+        }
+        .btn-doacao.expanded .doacao-badge .val {
+            color: #fff;
+        }
+
         .doacoes-grid-improved {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -673,6 +770,7 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
+
     </style>
 
 </head>
@@ -695,10 +793,10 @@
 
     <div class="main-container">
         <div class="hero-blur">
-            <img src="img/capa.jpg" id="img-blur" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Rifa+Master'">
+            <img src="https://lauriuche.github.io/Rifa/img/capa.jpg" id="img-blur" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Rifa+Master'">
         </div>
         <div class="hero-image-container">
-            <img src="img/capa.jpg" alt="Campanha" id="img-main" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Imagem+da+Rifa'">
+            <img src="https://lauriuche.github.io/Rifa/img/capa.jpg" alt="Campanha" id="img-main" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Imagem+da+Rifa'">
         </div>
 
         <div class="content-wrapper">
@@ -778,9 +876,9 @@
                     </div>
 
                     <div class="legend-bar">
-                        <div class="legend-item"><span class="legend-dot" style="background:#444;"></span> Dispo.</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#008b77;"></span> Selec.</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#ffaa00;"></span> Reserv.</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#444;"></span> Disponível</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#008b77;"></span> Selecionado</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#ffaa00;"></span> Reservado</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#00db87;"></span> Pago</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#9b59b6;"></span> Doação Pend.</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#d63384;"></span> Doação OK</div>
@@ -886,26 +984,65 @@
 
     <div class="modal-overlay" id="modal-doacao">
         <div class="modal-card">
-            <div style="text-align: center; margin-bottom: 16px;">
-                <div style="width: 56px; height: 56px; background-color: rgba(214, 51, 132, 0.1); border: 1px solid var(--donated); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
-                    <i data-lucide="gift" style="color: var(--donated); width: 28px; height: 28px;"></i>
+            <div id="doacao-step-1">
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <div style="width: 56px; height: 56px; background-color: rgba(214, 51, 132, 0.1); border: 1px solid var(--donated); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto;">
+                        <i data-lucide="gift" style="color: var(--donated); width: 28px; height: 28px;"></i>
+                    </div>
+                    <h2 style="color:var(--title-color); margin-bottom:8px; font-size: 20px;">Confirmar Doação</h2>
+                    <p style="font-size: 13px; color: var(--text-color);" id="doacao-item-desc"></p>
+                    <p style="font-size: 16px; color: var(--donated); font-weight: 700; margin-top: 8px;" id="doacao-bilhetes-desc"></p>
                 </div>
-                <h2 style="color:var(--title-color); margin-bottom:8px; font-size: 20px;">Confirmar Doação</h2>
-                <p style="font-size: 13px; color: var(--text-color);" id="doacao-item-desc"></p>
-                <p style="font-size: 16px; color: var(--donated); font-weight: 700; margin-top: 8px;" id="doacao-bilhetes-desc"></p>
+
+                <input type="text" id="doacao-name" class="input-form" placeholder="Seu Nome Completo">
+                <input type="tel" id="doacao-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
+
+                <button class="btn-participar" id="btn-doacao-confirmar" style="background-color: var(--donated); width: 100%; margin-top: 8px;" onclick="window.rifaApp.processarDoacao()">
+                    Confirmar Reserva (Item)
+                </button>
+                <button onclick="window.rifaApp.closeModal('modal-doacao')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
+                    Cancelar
+                </button>
             </div>
 
-            <input type="text" id="doacao-name" class="input-form" placeholder="Seu Nome Completo">
-            <input type="tel" id="doacao-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
+            <div id="doacao-step-2" style="display: none; text-align: center;">
+                <div style="width: 64px; height: 64px; background-color: rgba(214, 51, 132, 0.15); border: 2px solid var(--donated); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+                    <i data-lucide="check-circle" style="color: var(--donated); width: 32px; height: 32px;"></i>
+                </div>
+                <h2 style="color:var(--title-color); margin-bottom:8px; font-size: 20px;">Doação Reservada!</h2>
+                <p style="font-size: 13px; color: var(--text-color); margin-bottom: 16px;">Sua reserva foi registrada. Combine a entrega do item com o organizador.</p>
 
-            <button class="btn-participar" style="background-color: var(--donated); width: 100%; margin-top: 8px;" onclick="window.rifaApp.processarDoacao()">
-                Confirmar Reserva (Item)
-            </button>
-            <button onclick="window.rifaApp.closeModal('modal-doacao')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
-                Cancelar
-            </button>
+                <div style="background: var(--background-color); border: 1px solid var(--donated); border-radius: 12px; padding: 16px; margin-bottom: 16px; text-align: left;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="font-size:12px; color:var(--text-color); font-weight:600;">Item</span>
+                        <span id="doacao-sucesso-item" style="font-size:13px; color:var(--donated); font-weight:700;"></span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                        <span style="font-size:12px; color:var(--text-color); font-weight:600;">Bilhetes</span>
+                        <span id="doacao-sucesso-qtd" style="font-size:13px; color:var(--title-color); font-weight:700;"></span>
+                    </div>
+                    <div style="margin-top:10px; padding-top:10px; border-top:1px dashed var(--border-color);">
+                        <span style="font-size:11px; color:var(--text-color); font-weight:600; display:block; margin-bottom:6px;">Números reservados:</span>
+                        <p id="doacao-sucesso-numeros" style="font-size:14px; color:var(--donated); font-weight:700; line-height:1.5; word-break:break-word;"></p>
+                    </div>
+                </div>
+
+                <a id="doacao-btn-whatsapp" href="#" target="_blank" class="btn-participar" style="background-color:#25d366; color:#fff; width:100%; margin-bottom:10px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16"><path d="M13.601 2.326A7.854 7.854 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.933 7.933 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.898 7.898 0 0 0 13.6 2.326zM7.994 14.521a6.573 6.573 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.557 6.557 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592zm3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.729.729 0 0 0-.529.247c-.182.198-.691.677-.691 1.654 0 .977.71 1.916.81 2.049.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232z"/></svg>
+                    Entrar em contato
+                </a>
+
+                <button class="btn-participar" style="background-color: var(--gray-400); color: var(--title-color); width:100%; margin-bottom:10px;" onclick="window.rifaApp.closeModal('modal-doacao'); window.rifaApp.switchTab('consulta');">
+                    Ver meus bilhetes
+                </button>
+
+                <button onclick="window.rifaApp.closeModal('modal-doacao')" style="width: 100%; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
+                    Fechar
+                </button>
+            </div>
         </div>
     </div>
+
 
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
@@ -1357,18 +1494,28 @@
 
                     this.config.doacoes.forEach((d, index) => {
                         const vRifa = this.config.valor > 0 ? this.config.valor : 1;
-                        const qtd = Math.ceil(d.valor / vRifa);
+                        const bilhetesUnidade = Math.ceil(d.valor / vRifa);
                         doacoesGrid.innerHTML += `
-                            <div class="btn-doacao" onclick="window.rifaApp.abrirDoacao(${index})">
-                                <div class="doacao-icon">
-                                    <i data-lucide="gift" style="width: 18px; height: 18px;"></i>
+                            <div class="btn-doacao" data-index="${index}" data-qty="1" data-bilhetes-unidade="${bilhetesUnidade}" onclick="window.rifaApp.toggleDoacaoExpand(event, ${index})">
+                                <div class="doacao-body">
+                                    <div class="doacao-icon">
+                                        <i data-lucide="gift" style="width: 18px; height: 18px;"></i>
+                                    </div>
+                                    <span class="doacao-nome">${d.nome}</span>
+                                    <div class="doacao-badge">
+                                        <span>+</span>
+                                        <span class="val doacao-bilhetes-val">${bilhetesUnidade}</span>
+                                        <span>bilhetes</span>
+                                    </div>
                                 </div>
-                                <span class="doacao-nome">${d.nome}</span>
-                                <div class="doacao-badge">
-                                    <span>+</span>
-                                    <span class="val">${qtd}</span>
-                                    <span>bilhetes</span>
+                                <div class="doacao-qty-row">
+                                    <button type="button" class="doacao-qty-btn minus" onclick="window.rifaApp.adjustDoacaoQty(event, ${index}, -1)">−</button>
+                                    <span class="doacao-qty-value">1</span>
+                                    <button type="button" class="doacao-qty-btn plus" onclick="window.rifaApp.adjustDoacaoQty(event, ${index}, 1)">+</button>
                                 </div>
+                                <button type="button" class="doacao-confirm" onclick="window.rifaApp.abrirDoacao(event, ${index})">
+                                    Confirmar doação
+                                </button>
                             </div>
                         `;
                     });
@@ -1376,6 +1523,7 @@
                     cardDoacoes.style.display = 'none';
                     tabDoacaoGrid.style.display = 'none';
                 }
+
 
 
                 const cardGrid = document.getElementById('card-grid');
@@ -1496,68 +1644,152 @@
                 window.scrollTo(0,0);
             }
 
-            abrirDoacao(index) {
+            toggleDoacaoExpand(e, index) {
+                // ignora cliques nos botões internos
+                if (e.target.closest('.doacao-qty-btn') || e.target.closest('.doacao-confirm')) return;
+
+                const card = document.querySelector(`.btn-doacao[data-index="${index}"]`);
+                if (!card) return;
+
+                const wasExpanded = card.classList.contains('expanded');
+
+                // fecha outros
+                document.querySelectorAll('.btn-doacao.expanded').forEach(el => {
+                    el.classList.remove('expanded');
+                });
+
+                if (!wasExpanded) {
+                    card.classList.add('expanded');
+                    // garante qty mínima 1
+                    if (parseInt(card.dataset.qty) < 1) {
+                        card.dataset.qty = '1';
+                        this._updateDoacaoCardUI(card);
+                    }
+                }
+            }
+
+            adjustDoacaoQty(e, index, delta) {
+                e.stopPropagation();
+                const card = document.querySelector(`.btn-doacao[data-index="${index}"]`);
+                if (!card) return;
+
+                let qty = parseInt(card.dataset.qty) || 1;
+                qty = Math.max(1, qty + delta);
+                card.dataset.qty = String(qty);
+                this._updateDoacaoCardUI(card);
+            }
+
+            _updateDoacaoCardUI(card) {
+                const qty = parseInt(card.dataset.qty) || 1;
+                const bilhetesUnidade = parseInt(card.dataset.bilhetesUnidade) || 1;
+                const totalBilhetes = qty * bilhetesUnidade;
+
+                const qtyEl = card.querySelector('.doacao-qty-value');
+                if (qtyEl) qtyEl.innerText = qty;
+
+                const bilhetesEl = card.querySelector('.doacao-bilhetes-val');
+                if (bilhetesEl) bilhetesEl.innerText = totalBilhetes;
+            }
+
+            abrirDoacao(e, index) {
+                if (e) e.stopPropagation();
+
                 const item = this.config.doacoes[index];
-                if(!item) return;
+                if (!item) return;
+
+                const card = document.querySelector(`.btn-doacao[data-index="${index}"]`);
+                const itemQty = card ? (parseInt(card.dataset.qty) || 1) : 1;
 
                 const vRifa = this.config.valor > 0 ? this.config.valor : 1;
-                const qtd = Math.ceil(item.valor / vRifa);
+                const bilhetesUnidade = Math.ceil(item.valor / vRifa);
+                const qtd = bilhetesUnidade * itemQty;
 
-                this.doacaoAtiva = { item, qtd };
+                this.doacaoAtiva = { item, qtd, itemQty };
 
-                document.getElementById('doacao-item-desc').innerText = `${item.nome}`;
-                document.getElementById('doacao-bilhetes-desc').innerText = `🎁 Você ganhará ${qtd} bilhetes!`;
+                const itemLabel = itemQty > 1 ? `${itemQty}x ${item.nome}` : item.nome;
+                document.getElementById('doacao-item-desc').innerText = itemLabel;
+                document.getElementById('doacao-bilhetes-desc').innerText = `🎁 Você ganhará ${qtd} bilhete${qtd > 1 ? 's' : ''}!`;
 
                 document.getElementById('doacao-name').value = '';
                 document.getElementById('doacao-phone').value = '';
 
+                // reseta steps do modal
+                document.getElementById('doacao-step-1').style.display = 'block';
+                document.getElementById('doacao-step-2').style.display = 'none';
+                const btnConf = document.getElementById('btn-doacao-confirmar');
+                if (btnConf) btnConf.disabled = false;
+
                 document.getElementById('modal-doacao').style.display = 'flex';
+                lucide.createIcons();
             }
 
             async processarDoacao() {
-                if(!this.doacaoAtiva) return;
+                if (!this.doacaoAtiva) return;
 
                 const n = document.getElementById('doacao-name').value.trim();
-                const t = document.getElementById('doacao-phone').value.trim(); 
+                const t = document.getElementById('doacao-phone').value.trim();
 
-                if(!n || t.length < 10) return this.showToast("Preencha Nome e WhatsApp"); 
+                if (!n || t.length < 10) return this.showToast("Preencha Nome e WhatsApp");
 
-                const available = []; 
+                const btnConf = document.getElementById('btn-doacao-confirmar');
+                if (btnConf) btnConf.disabled = true;
+
+                const available = [];
                 const padLen = Math.max(3, (this.config.total - 1).toString().length);
-                for(let i=0; i<this.config.total; i++){ 
-                    const num = i.toString().padStart(padLen,'0'); 
-                    if(!this.dbNumbers[num]) available.push(num); 
+                for (let i = 0; i < this.config.total; i++) {
+                    const num = i.toString().padStart(padLen, '0');
+                    if (!this.dbNumbers[num]) available.push(num);
                 }
 
                 if (available.length < this.doacaoAtiva.qtd) {
+                    if (btnConf) btnConf.disabled = false;
                     return this.showToast("Não há bilhetes suficientes disponíveis.");
                 }
 
                 const selectedForDonation = available.sort(() => Math.random() - 0.5).slice(0, this.doacaoAtiva.qtd);
-                const oid = "DOA" + Date.now(); 
+                const oid = "DOA" + Date.now();
+                const itemLabel = this.doacaoAtiva.itemQty > 1
+                    ? `${this.doacaoAtiva.itemQty}x ${this.doacaoAtiva.item.nome}`
+                    : this.doacaoAtiva.item.nome;
 
                 try {
-                    const up = {}; 
+                    const up = {};
                     selectedForDonation.forEach(num => {
-                        up[num] = { 
-                            nome: n, 
-                            telefone: t, 
-                            status: 'donated_pending', 
-                            order_nsu: oid, 
-                            item_doacao: this.doacaoAtiva.item.nome,
+                        up[num] = {
+                            nome: n,
+                            telefone: t,
+                            status: 'donated_pending',
+                            order_nsu: oid,
+                            item_doacao: itemLabel,
                             valor_fixado_unidade: 0
                         };
-                    }); 
-                    await update(numRef, up); 
+                    });
+                    await update(numRef, up);
 
-                    if(window.fbq) window.fbq('track', 'Donate');
+                    if (window.fbq) window.fbq('track', 'Donate');
 
-                    this.showToast(`Reserva concluída! Aguardando o item chegar.`);
-                    this.closeModal('modal-doacao');
+                    // tela de sucesso (igual fluxo de compra)
+                    const numerosStr = selectedForDonation.slice().sort().join(', ');
+                    document.getElementById('doacao-sucesso-item').innerText = itemLabel;
+                    document.getElementById('doacao-sucesso-qtd').innerText = `${this.doacaoAtiva.qtd} bilhete${this.doacaoAtiva.qtd > 1 ? 's' : ''}`;
+                    document.getElementById('doacao-sucesso-numeros').innerText = numerosStr;
+
+                    const msgWa = encodeURIComponent(`Olá! Fiz a reserva do item ${itemLabel} e gostaria de combinar a entrega. Meus bilhetes: ${numerosStr}`);
+                    document.getElementById('doacao-btn-whatsapp').href = `https://wa.me/5599991026112?text=${msgWa}`;
+
+                    document.getElementById('doacao-step-1').style.display = 'none';
+                    document.getElementById('doacao-step-2').style.display = 'block';
+                    lucide.createIcons();
+
+                    // recolhe cards de doação
+                    document.querySelectorAll('.btn-doacao.expanded').forEach(el => el.classList.remove('expanded'));
                 } catch (e) {
+                    if (btnConf) btnConf.disabled = false;
                     this.showToast("Erro ao processar doação.");
                 }
             }
+
+
 
             async consultarMeusNumeros() {
                 const tel = document.getElementById('search-phone').value.replace(/\D/g, '');
@@ -1633,7 +1865,14 @@
                     const btnLater = document.getElementById('btn-pay-later');
                     if(btnLater) btnLater.disabled = false;
                 }
+                if (id === 'modal-doacao') {
+                    document.getElementById('doacao-step-1').style.display = 'block';
+                    document.getElementById('doacao-step-2').style.display = 'none';
+                    const btnConf = document.getElementById('btn-doacao-confirmar');
+                    if (btnConf) btnConf.disabled = false;
+                }
             }
+
 
             maskPhone(i) { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
             showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
