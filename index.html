@@ -295,33 +295,10 @@
             font-weight: 400;
         }
         
-        .progress-container {
-            margin: 24px 16px; 
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between; 
-            font-size: 14px;
-            color: var(--text-color);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .progress-bar-bg {
-            width: 100%;
-            height: 12px; 
-            background-color: var(--gray-300); 
-            border-radius: 10px; 
-            overflow: hidden;
-        }
-
-        .progress-bar-fill {
-            height: 100%;
-            background-color: var(--primary-color); 
-            border-radius: 10px;
-            transition: width 0.5s ease-in-out; 
-        }
+        .progress-container { margin: 24px 16px; }
+        .progress-info { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-color); margin-bottom: 8px; font-weight: 600; }
+        .progress-bar-bg { width: 100%; height: 12px; background-color: var(--gray-300); border-radius: 10px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background-color: var(--primary-color); border-radius: 10px; transition: width 0.5s ease-in-out; }
         
         /* CSS Ocultar Seta Nativa do <details> para o Acordeão funcionar bonito */
         details > summary { list-style: none; outline: none; }
@@ -331,8 +308,28 @@
             0%    {opacity: 0; margin-top: 0px}
             100%  {opacity: 1; margin-top: 12px}
         }
-
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .config-tabs-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 4px;
+            padding: 4px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            background-color: var(--gray-400);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .config-tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+        .config-tabs-container .filter-tab {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -420,7 +417,7 @@
                     </div>
                 </div>
 
-                <div class="card">
+                <div class="card" id="card-grid">
                     <div class="section-title">
                         <div class="icon-box"><i data-lucide="grid" style="width: 20px;"></i></div>
                         <h2 style="font-size: 20px;">Visualizar Cotas</h2>
@@ -492,7 +489,6 @@
                         <i data-lucide="gift"></i> Sortear Ganhador
                     </button>
 
-                    <!-- DIV PARA LISTA DE GANHADORES -->
                     <div id="admin-ganhadores-list"></div>
 
                     <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante ou cota..." oninput="window.adminPanel.render(false)">
@@ -632,95 +628,115 @@
 
     <div class="modal-overlay" id="modal-config">
         <div class="modal-card" style="max-width: 450px;">
-            <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+            <h3 style="color:var(--title-color); margin-bottom:16px; font-size: 20px; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="settings"></i> Configurações
             </h3>
             
-            <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Título do Prêmio</label>
-            <input type="text" id="cfg-premio" class="input-form" placeholder="Ex: iPhone 15 Pro">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div>
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Valor do Bilhete (R$)</label>
-                    <input type="number" id="cfg-valor" class="input-form">
-                </div>
-                <div>
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Total Bilhetes</label>
-                    <input type="number" id="cfg-total" class="input-form">
-                </div>
-            </div>
-            
-            <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
-                <label style="font-size: 12px; color: var(--title-color); margin-bottom: 8px; display: block; font-weight: 700;">Gateway de Pagamento</label>
-                <select id="cfg-gateway" class="input-form" onchange="window.adminPanel.toggleGateway()" style="margin-bottom: 16px; background-color: var(--gray-400);">
-                    <option value="mercadopago">Mercado Pago (PIX na Tela)</option>
-                    <option value="infinitepay">InfinitePay</option>
-                </select>
-
-                <div id="wrap-mercadopago">
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">Access Token (Mercado Pago)</label>
-                    <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;">
-                </div>
-
-                <div id="wrap-infinitepay" style="display: none;">
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">InfinitePay Handle (Ex: @vagner)</label>
-                    <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario" style="margin-bottom: 0;">
-                </div>
+            <div class="config-tabs-container">
+                <button class="filter-tab config-tab active" onclick="window.adminPanel.switchConfigTab('geral', this)">Ajustes</button>
+                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('botoes', this)">Sel. Rápida</button>
+                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('doacoes', this)">Doações</button>
+                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('premios', this)">Prêmios</button>
+                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('ofertas', this)">Ofertas</button>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div>
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Pixel FB (Opcional)</label>
-                    <input type="text" id="cfg-pixel" class="input-form" placeholder="ID do Pixel">
+            <div id="cfg-tab-geral" class="cfg-content" style="display: block;">
+                <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Título do Prêmio</label>
+                <input type="text" id="cfg-premio" class="input-form" placeholder="Ex: iPhone 15 Pro">
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Valor do Bilhete (R$)</label>
+                        <input type="number" id="cfg-valor" class="input-form">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Total Bilhetes</label>
+                        <input type="number" id="cfg-total" class="input-form">
+                    </div>
                 </div>
-                <div>
-                    <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">PIN Admin</label>
-                    <input type="password" id="cfg-pin" class="input-form" placeholder="Nova Senha">
+                
+                <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                    <label style="font-size: 12px; color: var(--title-color); margin-bottom: 8px; display: block; font-weight: 700;">Gateway de Pagamento</label>
+                    <select id="cfg-gateway" class="input-form" onchange="window.adminPanel.toggleGateway()" style="margin-bottom: 16px; background-color: var(--gray-400);">
+                        <option value="mercadopago">Mercado Pago (PIX na Tela)</option>
+                        <option value="infinitepay">InfinitePay</option>
+                    </select>
+
+                    <div id="wrap-mercadopago">
+                        <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">Access Token (Mercado Pago)</label>
+                        <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;">
+                    </div>
+
+                    <div id="wrap-infinitepay" style="display: none;">
+                        <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block;">InfinitePay Handle (Ex: @vagner)</label>
+                        <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario" style="margin-bottom: 0;">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">Pixel FB (Opcional)</label>
+                        <input type="text" id="cfg-pixel" class="input-form" placeholder="ID do Pixel" style="margin-bottom: 0;">
+                    </div>
+                    <div>
+                        <label style="font-size: 12px; color: var(--text-color); margin-bottom: 4px; display: block; font-weight: 600;">PIN Admin</label>
+                        <input type="password" id="cfg-pin" class="input-form" placeholder="Nova Senha" style="margin-bottom: 0;">
+                    </div>
+                </div>
+
+                <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <label style="font-size: 13px; font-weight: 700; color: var(--title-color);">Ocultar Grelha de Números</label>
+                        <button class="btn-admin" id="btn-toggle-ocultar" onclick="window.adminPanel.toggleOcultarNumeros()" style="background: var(--gray-400); padding: 6px 12px; border: 1px solid var(--border-color); color: var(--title-color);">OFF</button>
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-color); margin-top: 8px;">Modo cego: os clientes compram apenas por seleção rápida ou doação.</p>
                 </div>
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
-                <label style="font-size: 13px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 12px;">Seleção Rápida de Cotas</label>
+            <div id="cfg-tab-botoes" class="cfg-content" style="display: none;">
+                <label style="font-size: 14px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 16px;">Seleção Rápida de Cotas</label>
                 <div id="quick-select-config-list"></div>
                 <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addQuickSelectRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Botão Rápido
                 </button>
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
-                <label style="font-size: 13px; font-weight: 700; color: var(--donated); display: block; margin-bottom: 12px;">Itens de Doação (Chá de Bebê)</label>
-                <p style="font-size: 11px; color: var(--text-color); margin-bottom: 12px;">Defina os itens e valores. O sistema calculará os bilhetes automaticamente (arredondando para cima).</p>
+            <div id="cfg-tab-doacoes" class="cfg-content" style="display: none;">
+                <label style="font-size: 14px; font-weight: 700; color: var(--donated); display: block; margin-bottom: 8px;">Itens de Doação (Chá de Bebê)</label>
+                <p style="font-size: 12px; color: var(--text-color); margin-bottom: 16px;">Defina os itens e valores. O sistema calculará os bilhetes automaticamente (arredondando para cima).</p>
                 <div id="doacoes-config-list"></div>
                 <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addDoacaoRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Item de Doação
                 </button>
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
-                <label style="font-size: 13px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 12px;">Prêmios do Sorteio</label>
+            <div id="cfg-tab-premios" class="cfg-content" style="display: none;">
+                <label style="font-size: 14px; font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 16px;">Prêmios do Sorteio</label>
                 <div id="premios-config-list"></div>
                 <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPremioRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Prêmio
                 </button>
             </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; align-items: center;">
-                    <label style="font-size: 13px; font-weight: 700; color: var(--reserved);">Promoção Cascata</label>
-                    <button class="btn-admin" id="btn-toggle-promos" onclick="window.adminPanel.togglePromos()" style="background: var(--gray-400); padding: 6px 12px; border: 1px solid var(--border-color); color: var(--title-color);">OFF</button>
+            <div id="cfg-tab-ofertas" class="cfg-content" style="display: none;">
+                <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px; margin-bottom: 20px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px; align-items: center;">
+                        <label style="font-size: 14px; font-weight: 700; color: var(--reserved);">Promoção Cascata</label>
+                        <button class="btn-admin" id="btn-toggle-promos" onclick="window.adminPanel.togglePromos()" style="background: var(--gray-400); padding: 6px 10px; border: 1px solid var(--border-color); color: var(--title-color);">OFF</button>
+                    </div>
+                    <div id="promos-list"></div>
+                    <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPromoRow()">
+                        <i data-lucide="plus" style="width: 16px;"></i> Adicionar Regra
+                    </button>
                 </div>
-                <div id="promos-list"></div>
-                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addPromoRow()">
-                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Regra
-                </button>
-            </div>
 
-            <div style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 16px;">
-                <label style="font-size: 13px; font-weight: 700; color: var(--danger); display: block; margin-bottom: 12px;">Cupons de Desconto</label>
-                <div id="cupons-config-list"></div>
-                <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addCupomRow()">
-                    <i data-lucide="plus" style="width: 16px;"></i> Adicionar Cupom
-                </button>
+                <div style="background-color: var(--background-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 12px;">
+                    <label style="font-size: 14px; font-weight: 700; color: var(--danger); display: block; margin-bottom: 16px;">Cupons de Desconto</label>
+                    <div id="cupons-config-list"></div>
+                    <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color); font-size: 13px; padding: 12px;" onclick="window.adminPanel.addCupomRow()">
+                        <i data-lucide="plus" style="width: 16px;"></i> Adicionar Cupom
+                    </button>
+                </div>
             </div>
 
             <button class="btn-participar" style="margin-top:24px;" onclick="window.adminPanel.save()">Salvar Tudo</button>
@@ -754,7 +770,6 @@
         </div>
     </div>
 
-    <!-- NOVO MODAL: SELECIONAR PRÊMIO PARA SORTEIO -->
     <div class="modal-overlay" id="modal-selecionar-premio">
         <div class="modal-card">
             <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 20px; text-align: center;">Escolha o Prêmio</h3>
@@ -833,7 +848,7 @@
                     premio: "Carregando...", descricao: "", valor: 5, total: 1000, 
                     pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", 
                     promosActive: false, promos: [], pixel: "", premios: [], 
-                    cupons: [], quickSelects: [], doacoes: [] 
+                    cupons: [], quickSelects: [], doacoes: [], ocultarNumeros: false
                 };
                 this.dbNumbers = {};
                 this.ganhadores = {}; 
@@ -936,7 +951,7 @@
                         const qtd = Math.ceil(d.valor / vRifa);
                         doacoesGrid.innerHTML += `
                             <div class="btn-quick" style="border-color: var(--donated); min-height: 85px;" onclick="window.rifaApp.abrirDoacao(${index})">
-                                <span style="font-size: 11px; font-weight: 800; color: var(--donated); margin-bottom: 2px; text-transform: uppercase;">${d.nome}</span>
+                                <span style="font-size: 11px; font-weight: 800; color: var(--donated); margin-bottom: 2px; margin-top: 6px; text-transform: uppercase;">${d.nome}</span>
                                 <div style="display: flex; align-items: center; gap: 4px; margin-top: 6px;">
                                     <span style="font-size: 10px; color: var(--text-color);">+</span>
                                     <span class="val" style="color: var(--title-color); font-size: 18px;">${qtd}</span>
@@ -948,6 +963,11 @@
                 } else {
                     cardDoacoes.style.display = 'none';
                     tabDoacaoGrid.style.display = 'none';
+                }
+
+                const cardGrid = document.getElementById('card-grid');
+                if (cardGrid) {
+                    cardGrid.style.display = this.config.ocultarNumeros ? 'none' : 'block';
                 }
 
                 window.cartManager.updateCartUI();
@@ -1013,7 +1033,7 @@
             setGridFilter(f) {
                 this.gridFilter = f;
                 document.querySelectorAll('.filter-tabs .filter-tab').forEach(c => {
-                    if(!c.classList.contains('admin-tab')) {
+                    if(!c.classList.contains('admin-tab') && !c.classList.contains('config-tab')) {
                         c.classList.toggle('active', c.dataset.filter === f);
                     }
                 });
@@ -1854,6 +1874,13 @@
                 }
             }
 
+            switchConfigTab(tabId, btn) {
+                document.querySelectorAll('.cfg-content').forEach(el => el.style.display = 'none');
+                document.getElementById(`cfg-tab-${tabId}`).style.display = 'block';
+                document.querySelectorAll('.config-tab').forEach(el => el.classList.remove('active'));
+                if(btn) btn.classList.add('active');
+            }
+
             openConfig() {
                 document.getElementById('cfg-premio').value = this.app.config.premio || "";
                 document.getElementById('cfg-valor').value = this.app.config.valor || 0;
@@ -1867,6 +1894,7 @@
                 this.toggleGateway();
 
                 document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF";
+                document.getElementById('btn-toggle-ocultar').innerText = this.app.config.ocultarNumeros ? "ON" : "OFF";
                 
                 const pList = document.getElementById('promos-list'); pList.innerHTML = '';
                 if(this.app.config.promos) this.app.config.promos.forEach(p => this.addPromoRow(p));
@@ -1884,6 +1912,8 @@
                 const cList = document.getElementById('cupons-config-list'); cList.innerHTML = '';
                 if(this.app.config.cupons) this.app.config.cupons.forEach(c => this.addCupomRow(c));
                 
+                this.switchConfigTab('geral', document.querySelector('.config-tab'));
+                
                 document.getElementById('modal-config').style.display = 'flex';
             }
 
@@ -1892,47 +1922,63 @@
                 document.getElementById('btn-toggle-promos').innerText = this.app.config.promosActive ? "ON" : "OFF"; 
             }
 
+            toggleOcultarNumeros() { 
+                this.app.config.ocultarNumeros = !this.app.config.ocultarNumeros; 
+                document.getElementById('btn-toggle-ocultar').innerText = this.app.config.ocultarNumeros ? "ON" : "OFF"; 
+            }
+
             addQuickSelectRow(d = {qty: 10, popular: false}) {
-                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--background-color)';
                 div.innerHTML = `
-                    <div style="display:flex;gap:8px; margin-bottom:8px; align-items:center;">
-                        <input type="number" class="input-form qs-qty" value="${d.qty}" style="margin:0; width:50%;" placeholder="Qtd">
-                        <label style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight: 600; color:var(--text-color); width:50%; cursor:pointer;">
-                            <input type="radio" name="qs_popular" class="qs-pop" style="width: 18px; height: 18px;" ${d.popular ? 'checked' : ''}> Popular?
-                        </label>
-                    </div>
-                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Botão</button>`;
-                document.getElementById('quick-select-config-list').appendChild(div);
+                    <div style="display:flex; gap:12px; align-items:center; justify-content:space-between;">
+                        <input type="radio" name="qs_popular" class="qs-pop" title="Marcar como popular" style="width: 22px; height: 22px; cursor: pointer; flex-shrink: 0;" ${d.popular ? 'checked' : ''}> 
+                        <input type="number" class="input-form qs-qty" value="${d.qty}" style="margin:0; flex-grow: 1;" placeholder="Qtd">
+                        <button class="btn-admin bg-red" style="padding: 10px 15px; flex-shrink: 0;" onclick="this.closest('.admin-item').remove()">Remover</button>
+                    </div>`;
+                 document.getElementById('quick-select-config-list').appendChild(div);
             }
 
             addDoacaoRow(d = {nome: '', valor: 10}) {
-                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--background-color)';
                 div.innerHTML = `
-                    <input type="text" class="input-form d-nome" value="${d.nome}" style="margin-bottom:8px;" placeholder="Nome do Item (Ex: Fralda G)">
-                    <div style="display:flex;gap:8px; margin-bottom:8px">
+                    <div style="display:flex; gap:10px; align-items:center; justify-content:space-between;">
+                        <input type="text" class="input-form d-nome" value="${d.nome}" style="margin-bottom:8px;" placeholder="Nome do Item (Ex: Fralda G)">
                         <input type="number" class="input-form d-valor" value="${d.valor}" style="margin:0; width:100%;" placeholder="Valor (R$)">
-                    </div>
-                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Item</button>`;
+                        <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover</button>
+                    </div>`;
                 document.getElementById('doacoes-config-list').appendChild(div);
             }
 
-            addPromoRow(d = {min:10, val:10, type:'pct'}) {
-                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
-                div.innerHTML = `
-                    <div style="display:flex;gap:8px; margin-bottom:8px">
-                        <input type="number" class="input-form p-min" value="${d.min}" style="margin:0; width:50%;" placeholder="Qtd">
-                        <select class="input-form p-type" style="margin:0; width:50%;">
-                            <option value="pct" ${d.type==='pct'?'selected':''}>% OFF</option>
-                            <option value="free" ${d.type==='free'?'selected':''}>Bilhetes Grátis</option>
-                        </select>
+            addPromoRow(d = {qty: 10, type: 'percent', value: 10}) {
+                const details = document.createElement('details');
+                details.className = 'admin-item';
+                details.style.padding = '12px';
+                details.style.backgroundColor = 'var(--background-color)';
+                details.style.marginBottom = '12px';
+                
+                details.innerHTML = `
+                    <summary style="font-weight: bold; cursor: pointer; outline: none; margin-bottom: 4px;">
+                        Regra: <span class="promo-title">Comprando ${d.qty || '0'}</span>
+                    </summary>
+                    
+                    <div style="margin-top: 12px;">
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; width: 100%;">
+                            <input type="number" class="input-form p-min" value="${d.qty}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Qtd" oninput="this.closest('details').querySelector('.promo-title').innerText = 'Comprando ' + (this.value || '0')">
+                            <select class="input-form p-type" style="flex: 1; margin: 0; padding: 10px;">
+                                <option value="percent" ${d.type === 'percent' ? 'selected' : ''}>% OFF</option>
+                                <option value="free_tickets" ${d.type === 'free_tickets' ? 'selected' : ''}>Bilhetes Grátis</option>
+                            </select>
+                            <input type="number" class="input-form p-val" value="${d.value}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Valor/Qtd">
+                        </div>
+                        <button class="btn-admin bg-red" style="width: 100%; padding: 10px;" onclick="this.closest('.admin-item').remove()">Remover Regra</button>
                     </div>
-                    <input type="number" class="input-form p-val" value="${d.val}" placeholder="Valor Desconto">
-                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Regra</button>`;
-                document.getElementById('promos-list').appendChild(div);
+                `;
+                
+                document.getElementById('promos-list').appendChild(details);
             }
 
             addPremioRow(d = {descricao: ''}) {
-                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
+                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--background-color)';
                 div.innerHTML = `
                     <div style="display:flex;gap:8px; margin-bottom:8px">
                         <input type="text" class="input-form p-desc" value="${d.descricao}" style="margin:0; width:100%;" placeholder="Ex: Moto 0km">
@@ -1942,34 +1988,44 @@
             }
 
             addCupomRow(d = {codigo: '', valor: 10, tipo: 'pct'}) {
-                const div = document.createElement('div'); div.className = 'admin-item'; div.style.padding = '12px'; div.style.backgroundColor = 'var(--gray-400)';
-                div.innerHTML = `
-                    <input type="text" class="input-form c-cod" value="${d.codigo}" style="margin-bottom:8px; text-transform: uppercase;" placeholder="Código Ex: VIP10">
-                    <div style="display:flex;gap:8px; margin-bottom:8px">
-                        <input type="number" class="input-form c-val" value="${d.valor}" style="margin:0; width:50%;" placeholder="Desconto">
-                        <select class="input-form c-tipo" style="margin:0; width:50%;">
-                            <option value="pct" ${d.tipo==='pct'?'selected':''}>% OFF</option>
-                            <option value="fixo" ${d.tipo==='fixo'?'selected':''}>R$ Fixo</option>
-                        </select>
-                    </div>
-                    <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.parentElement.remove()">Remover Cupom</button>`;
-                document.getElementById('cupons-config-list').appendChild(div);
+                const details = document.createElement('details'); 
+                details.className = 'admin-item'; 
+                details.style.padding = '12px'; 
+                details.style.backgroundColor = 'var(--background-color)';
+                
+                details.innerHTML = `
+                    <summary style="font-weight: bold; cursor: pointer; outline: none; margin-bottom: 4px;">
+                        Cupom: <span class="cupom-title">${d.codigo || 'Novo'}</span>
+                    </summary>
+                    <div style="margin-top: 12px;">
+                        <input type="text" class="input-form c-cod" value="${d.codigo}" style="margin-bottom:8px; text-transform: uppercase;" placeholder="Código Ex: VIP10" oninput="this.parentElement.previousElementSibling.querySelector('.cupom-title').innerText = this.value || 'Novo'">
+                        <div style="display:flex;gap:8px; margin-bottom:8px">
+                            <input type="number" class="input-form c-val" value="${d.valor}" style="margin:0; width:50%;" placeholder="Desconto">
+                            <select class="input-form c-tipo" style="margin:0; width:50%;">
+                                <option value="pct" ${d.tipo==='pct'?'selected':''}>% OFF</option>
+                                <option value="fixo" ${d.tipo==='fixo'?'selected':''}>R$ Fixo</option>
+                            </select>
+                        </div>
+                        <button class="btn-admin bg-red" style="width:100%; padding: 10px;" onclick="this.closest('.admin-item').remove()">Remover Cupom</button>
+                    </div>`;
+                    
+                document.getElementById('cupons-config-list').appendChild(details);
             }
 
             save() {
                 const pr = [];
                 document.querySelectorAll('#promos-list .admin-item').forEach(row => { 
-                    pr.push({ min: parseInt(row.querySelector('.p-min').value), val: parseFloat(row.querySelector('.p-val').value), type: row.querySelector('.p-type').value }); 
+                    pr.push({ min: parseInt(row.querySelector('.p-min').value) || 0, val: parseFloat(row.querySelector('.p-val').value) || 0, type: row.querySelector('.p-type').value }); 
                 });
 
                 const qSelects = [];
                 document.querySelectorAll('#quick-select-config-list .admin-item').forEach(row => { 
-                    qSelects.push({ qty: parseInt(row.querySelector('.qs-qty').value), popular: row.querySelector('.qs-pop').checked }); 
+                    qSelects.push({ qty: parseInt(row.querySelector('.qs-qty').value) || 0, popular: row.querySelector('.qs-pop').checked }); 
                 });
 
                 const dItens = [];
                 document.querySelectorAll('#doacoes-config-list .admin-item').forEach(row => { 
-                    dItens.push({ nome: row.querySelector('.d-nome').value.trim(), valor: parseFloat(row.querySelector('.d-valor').value) }); 
+                    dItens.push({ nome: row.querySelector('.d-nome').value.trim(), valor: parseFloat(row.querySelector('.d-valor').value) || 0 }); 
                 });
 
                 const premios = [];
@@ -1979,19 +2035,20 @@
 
                 const cupons = [];
                 document.querySelectorAll('#cupons-config-list .admin-item').forEach(row => { 
-                    cupons.push({ codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), valor: parseFloat(row.querySelector('.c-val').value), tipo: row.querySelector('.c-tipo').value }); 
+                    cupons.push({ codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), valor: parseFloat(row.querySelector('.c-val').value) || 0, tipo: row.querySelector('.c-tipo').value }); 
                 });
                 
                 const up = { 
-                    premio: document.getElementById('cfg-premio').value, 
-                    valor: parseFloat(document.getElementById('cfg-valor').value), 
-                    total: parseInt(document.getElementById('cfg-total').value), 
+                    premio: document.getElementById('cfg-premio').value || "", 
+                    valor: parseFloat(document.getElementById('cfg-valor').value) || 0, 
+                    total: parseInt(document.getElementById('cfg-total').value) || 0, 
                     gateway: document.getElementById('cfg-gateway').value,
                     handle: document.getElementById('cfg-handle').value, 
                     mpToken: document.getElementById('cfg-mptoken').value,
                     pin: document.getElementById('cfg-pin').value, 
                     pixel: document.getElementById('cfg-pixel').value, 
                     promosActive: this.app.config.promosActive, 
+                    ocultarNumeros: this.app.config.ocultarNumeros,
                     quickSelects: qSelects,
                     doacoes: dItens,
                     promos: pr,
