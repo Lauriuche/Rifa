@@ -919,24 +919,51 @@
                     <button onclick="window.rifaApp.switchTab('rifa')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer; border: none; font-size: 14px;">
                         <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
                     </button>
-                    <h2 style="color: var(--title-color); margin-bottom: 20px; font-size: 22px; display: flex; align-items: center; gap: 8px;">
-                        <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
-                    </h2>
-
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 24px; text-align: center;">
-                        <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Receita (R$)</span>
-                            <b style="display: block; color: var(--paid); font-size: 16px; margin-top: 4px;" id="admin-receita">R$ 0</b>
-                        </div>
-                        <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Doações</span>
-                            <b style="display: block; color: var(--donated); font-size: 16px; margin-top: 4px;" id="admin-doacoes">0</b>
-                        </div>
-                        <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Cotas</span>
-                            <b style="display: block; color: var(--title-color); font-size: 16px; margin-top: 4px;" id="admin-vendas">0</b>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px;">
+                        <h2 style="color: var(--title-color); font-size: 22px; display: flex; align-items: center; gap: 8px; margin: 0;">
+                            <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
+                        </h2>
+                        <div style="position: relative;">
+                            <button type="button" id="btn-admin-menu" onclick="window.adminPanel.toggleAdminMenu(event)" title="Configurações" style="width: 40px; height: 40px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+                            </button>
+                            <div id="admin-gear-menu" style="display: none; position: absolute; right: 0; top: 46px; min-width: 180px; background: var(--gray-500); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 50; overflow: hidden;">
+                                <button type="button" onclick="window.adminPanel.openConfig(); window.adminPanel.closeAdminMenu();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--title-color); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px;">
+                                    <i data-lucide="sliders" style="width:15px;"></i> Ajustes
+                                </button>
+                                <button type="button" onclick="window.adminPanel.exportCSV(); window.adminPanel.closeAdminMenu();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--title-color); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; border-top:1px solid var(--border-color);">
+                                    <i data-lucide="download" style="width:15px;"></i> Exportar CSV
+                                </button>
+                                <button type="button" onclick="window.adminPanel.closeAdminMenu(); window.adminPanel.resetRifa();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--danger); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; border-top:1px solid var(--border-color);">
+                                    <i data-lucide="trash-2" style="width:15px;"></i> Resetar Rifa
+                                </button>
+                            </div>
                         </div>
                     </div>
+
+
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
+                        <div id="admin-stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; flex: 1; visibility: hidden; opacity: 0; transition: opacity 0.2s;">
+
+                            <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Receita (R$)</span>
+                                <b style="display: block; color: var(--paid); font-size: 16px; margin-top: 4px;" id="admin-receita">R$ 0</b>
+                            </div>
+                            <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Doações</span>
+                                <b style="display: block; color: var(--donated); font-size: 16px; margin-top: 4px;" id="admin-doacoes">0</b>
+                            </div>
+                            <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Cotas</span>
+                                <b style="display: block; color: var(--title-color); font-size: 16px; margin-top: 4px;" id="admin-vendas">0</b>
+                            </div>
+                        </div>
+                        <button type="button" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" title="Mostrar/Ocultar valores" style="width: 42px; height: 42px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+                            <i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>
+                        </button>
+
+                    </div>
+
 
                     <button class="btn-participar" style="background-color: var(--reserved); color: #000; margin-bottom: 24px;" onclick="window.adminPanel.abrirModalSorteio()">
                         <i data-lucide="gift"></i> Sortear Ganhador
@@ -950,19 +977,12 @@
                         <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
-                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('donated')">Doações</button>
                     </div>
+
 
                     <div id="admin-list" style="max-height: 500px; overflow-y: auto; padding-right: 4px;"></div>
 
-                    <div style="display: flex; gap: 12px; margin-top: 24px; border-top: 1px solid var(--border-color); padding-top: 24px;">
-                        <button class="btn-participar" style="background-color: var(--gray-400); color: var(--title-color); flex: 1; font-size: 14px; padding: 14px;" onclick="window.adminPanel.openConfig()">
-                            Ajustes
-                        </button>
-                        <button class="btn-participar" style="background-color: transparent; border: 1px solid var(--danger); color: var(--danger); flex: 1; font-size: 14px; padding: 14px;" onclick="window.adminPanel.resetRifa()">
-                            Resetar Rifa
-                        </button>
-                    </div>
+
                 </div>
             </div>
 
@@ -1126,11 +1146,13 @@
 
             <div class="config-tabs-container">
                 <button class="filter-tab config-tab active" onclick="window.adminPanel.switchConfigTab('geral', this)">Ajustes</button>
+                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('tema', this)">Tema</button>
                 <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('botoes', this)">Sel. Rápida</button>
                 <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('doacoes', this)">Doações</button>
                 <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('premios', this)">Prêmios</button>
                 <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('ofertas', this)">Ofertas</button>
             </div>
+
 
             <div id="cfg-tab-geral" class="cfg-content" style="display: block;">
                 <div class="cfg-section">
@@ -1190,6 +1212,22 @@
                 </div>
 
                 <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="clock" style="width:16px;"></i> Tempos de Expiração</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                        <div>
+                            <label class="cfg-label">Reserva (min)</label>
+                            <input type="number" id="cfg-reserva-min" class="input-form" min="1" max="120" placeholder="15" style="margin-bottom: 0;">
+                            <p style="font-size: 10px; color: var(--text-color); margin-top: 6px;">Expira cotas em "Meus bilhetes".</p>
+                        </div>
+                        <div>
+                            <label class="cfg-label">PIX / QR Code (min)</label>
+                            <input type="number" id="cfg-pix-min" class="input-form" min="1" max="60" placeholder="15" style="margin-bottom: 0;">
+                            <p style="font-size: 10px; color: var(--text-color); margin-top: 6px;">Timer da tela de pagamento.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cfg-section">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <label style="font-size: 13px; font-weight: 700; color: var(--title-color); display: block;">Ocultar Grelha de Números</label>
@@ -1203,6 +1241,51 @@
                 </div>
             </div>
 
+
+            <div id="cfg-tab-tema" class="cfg-content" style="display: none;">
+                <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="sun-moon" style="width:16px;"></i> Modo</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <button type="button" class="cfg-add-btn" id="btn-theme-dark" onclick="window.adminPanel.setThemeMode('dark')" style="margin:0;">
+                            <i data-lucide="moon" style="width:16px;"></i> Noite
+                        </button>
+                        <button type="button" class="cfg-add-btn" id="btn-theme-light" onclick="window.adminPanel.setThemeMode('light')" style="margin:0;">
+                            <i data-lucide="sun" style="width:16px;"></i> Dia
+                        </button>
+                    </div>
+                </div>
+
+                <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="palette" style="width:16px;"></i> Combos de Cores</div>
+                    <div id="theme-presets-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div>
+                </div>
+
+                <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="pipette" style="width:16px;"></i> Cores Independentes</div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div>
+                            <label class="cfg-label">Primária</label>
+                            <input type="color" id="cfg-theme-primary" class="input-form" style="margin-bottom:0; height:42px; padding:4px;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Pago</label>
+                            <input type="color" id="cfg-theme-paid" class="input-form" style="margin-bottom:0; height:42px; padding:4px;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Reservado</label>
+                            <input type="color" id="cfg-theme-reserved" class="input-form" style="margin-bottom:0; height:42px; padding:4px;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Doação</label>
+                            <input type="color" id="cfg-theme-donated" class="input-form" style="margin-bottom:0; height:42px; padding:4px;">
+                        </div>
+                    </div>
+                    <button type="button" class="cfg-add-btn" style="margin-top:12px;" onclick="window.adminPanel.previewThemeFromInputs()">
+                        <i data-lucide="eye" style="width:16px;"></i> Pré-visualizar
+                    </button>
+                </div>
+            </div>
+
             <div id="cfg-tab-botoes" class="cfg-content" style="display: none;">
                 <div class="cfg-section-title" style="color: var(--primary-color); margin-bottom: 12px;"><i data-lucide="zap" style="width:16px;"></i> Seleção Rápida de Cotas</div>
                 <p style="font-size: 12px; color: var(--text-color); margin-bottom: 14px;">Defina os botões de quantidade rápida. Marque um como popular.</p>
@@ -1211,6 +1294,7 @@
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Botão Rápido
                 </button>
             </div>
+
 
             <div id="cfg-tab-doacoes" class="cfg-content" style="display: none;">
                 <div class="cfg-section-title" style="color: var(--donated); margin-bottom: 8px;"><i data-lucide="gift" style="width:16px;"></i> Itens de Doação</div>
@@ -1377,8 +1461,11 @@
                     pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", 
                     promosActive: false, promos: [], pixel: "", premios: [], 
                     cupons: [], quickSelects: [], doacoes: [], ocultarNumeros: false,
-                    capa: ""
+                    capa: "", reservaMinutos: 15, pixMinutos: 15,
+                    theme: { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' }
                 };
+
+
                 this.dbNumbers = {};
                 this.ganhadores = {}; 
                 this.selected = new Set();
@@ -1387,23 +1474,30 @@
                 this.doacaoAtiva = null; 
 
                 lucide.createIcons();
+                this.applyTheme(this.config.theme);
                 this.listenFirebase();
             }
+
 
             listenFirebase() {
                 onValue(cfgRef, (s) => { 
                     if(s.exists()){ 
                         this.config = { ...this.config, ...s.val() }; 
                         if(!this.config.gateway) this.config.gateway = "mercadopago";
+                        if(!this.config.theme) this.config.theme = { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' };
+                        this.applyTheme(this.config.theme);
                         this.renderUI();
                         this.injectPixel(this.config.pixel);
                     } 
                 });
+
                 onValue(numRef, (s) => { 
                     this.dbNumbers = s.exists() ? s.val() : {}; 
+                    this.liberateExpiredReservas();
                     this.renderGrid(); 
                     if(window.adminPanel && window.adminPanel.isAdmin) window.adminPanel.render(true); 
                 });
+
                 onValue(ganhadoresRef, (s) => {
                     this.ganhadores = s.exists() ? s.val() : {};
                     this.renderUI();
@@ -1423,6 +1517,147 @@
                 fbq('track', 'PageView');
             }
 
+            hexToRgb(hex) {
+                const h = (hex || '').replace('#','');
+                if (h.length !== 6) return { r: 0, g: 139, b: 119 };
+                return {
+                    r: parseInt(h.slice(0,2), 16),
+                    g: parseInt(h.slice(2,4), 16),
+                    b: parseInt(h.slice(4,6), 16)
+                };
+            }
+
+            applyTheme(theme) {
+                const t = theme || this.config.theme || {};
+                const mode = t.mode === 'light' ? 'light' : 'dark';
+                const primary = t.primary || '#008b77';
+                const paid = t.paid || '#00db87';
+                const reserved = t.reserved || '#ffaa00';
+                const donated = t.donated || '#d63384';
+                const rgb = this.hexToRgb(primary);
+                const root = document.documentElement;
+
+                if (mode === 'light') {
+                    root.style.setProperty('--background-color', '#f4f5f7');
+                    root.style.setProperty('--header-color', '#ffffff');
+                    root.style.setProperty('--header-border-color', '#e2e4e9');
+                    root.style.setProperty('--border-color', '#d8dbe2');
+                    root.style.setProperty('--gray-50', '#ffffff');
+                    root.style.setProperty('--gray-100', '#eef0f4');
+                    root.style.setProperty('--gray-200', '#e8eaef');
+                    root.style.setProperty('--gray-300', '#e2e5eb');
+                    root.style.setProperty('--gray-400', '#eceef2');
+                    root.style.setProperty('--gray-500', '#ffffff');
+                    root.style.setProperty('--button-color', '#eef0f4');
+                    root.style.setProperty('--button-border', '#d0d4dc');
+                    root.style.setProperty('--title-color', '#1a1c20');
+                    root.style.setProperty('--text-color', '#5c6370');
+                } else {
+                    root.style.setProperty('--background-color', '#1c1d1f');
+                    root.style.setProperty('--header-color', '#151617');
+                    root.style.setProperty('--header-border-color', '#302f2f');
+                    root.style.setProperty('--border-color', '#36383e');
+                    root.style.setProperty('--gray-50', '#2f3238');
+                    root.style.setProperty('--gray-100', '#444444');
+                    root.style.setProperty('--gray-200', '#383c43');
+                    root.style.setProperty('--gray-300', '#34343a');
+                    root.style.setProperty('--gray-400', '#292b31');
+                    root.style.setProperty('--gray-500', '#26282c');
+                    root.style.setProperty('--button-color', '#303238');
+                    root.style.setProperty('--button-border', '#3e4145');
+                    root.style.setProperty('--title-color', '#eaeaef');
+                    root.style.setProperty('--text-color', '#aaaaaa');
+                }
+
+                root.style.setProperty('--primary-color', primary);
+                root.style.setProperty('--primary-text-color', '#ffffff');
+                root.style.setProperty('--primary-color-15', `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.15)`);
+                root.style.setProperty('--paid', paid);
+                root.style.setProperty('--reserved', reserved);
+                root.style.setProperty('--selected', primary);
+                root.style.setProperty('--donated', donated);
+                root.style.setProperty('--danger', '#ff4d4d');
+
+                const metaTheme = document.querySelector('meta[name="theme-color"]');
+                if (metaTheme) metaTheme.setAttribute('content', mode === 'light' ? '#ffffff' : '#1c1d1f');
+            }
+
+
+            getReservaTimeoutMs() {
+                const min = parseInt(this.config.reservaMinutos) || 15;
+                return Math.max(1, min) * 60 * 1000;
+            }
+
+            getPixTimeoutMin() {
+                return Math.max(1, parseInt(this.config.pixMinutos) || 15);
+            }
+
+            /** Formata ms restantes em min/horas/dias conforme a magnitude */
+            formatRemainingTime(ms) {
+                if (ms <= 0) return 'Expirado';
+                const totalSec = Math.floor(ms / 1000);
+                const days = Math.floor(totalSec / 86400);
+                const hours = Math.floor((totalSec % 86400) / 3600);
+                const mins = Math.floor((totalSec % 3600) / 60);
+                const secs = totalSec % 60;
+
+                if (days >= 1) {
+                    return `${days}d ${String(hours).padStart(2,'0')}h ${String(mins).padStart(2,'0')}m`;
+                }
+                if (hours >= 1) {
+                    return `${hours}h ${String(mins).padStart(2,'0')}m ${String(secs).padStart(2,'0')}s`;
+                }
+                return `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+            }
+
+            startConsultaReservaTimer(expiresAt) {
+                if (this._consultaTimerInterval) {
+                    clearInterval(this._consultaTimerInterval);
+                    this._consultaTimerInterval = null;
+                }
+                const tick = () => {
+                    const el = document.getElementById('reserva-timer-live');
+                    if (!el) {
+                        clearInterval(this._consultaTimerInterval);
+                        this._consultaTimerInterval = null;
+                        return;
+                    }
+                    const remaining = Math.max(0, expiresAt - Date.now());
+                    if (remaining <= 0) {
+                        el.innerText = 'Tempo restante: Expirado';
+                        clearInterval(this._consultaTimerInterval);
+                        this._consultaTimerInterval = null;
+                        this.liberateExpiredReservas();
+                        return;
+                    }
+                    el.innerText = `Tempo restante: ${this.formatRemainingTime(remaining)}`;
+                };
+                tick();
+                this._consultaTimerInterval = setInterval(tick, 1000);
+            }
+
+
+            liberateExpiredReservas() {
+                // Libera reservas expiradas conforme config.reservaMinutos
+                if (this._liberatingReservas) return;
+                const TIMEOUT_MS = this.getReservaTimeoutMs();
+                const now = Date.now();
+                const up = {};
+                let hasExpired = false;
+
+                Object.entries(this.dbNumbers || {}).forEach(([n, d]) => {
+                    if (d && d.status === 'reserved' && d.reservedAt && (now - d.reservedAt > TIMEOUT_MS)) {
+                        up[n] = null;
+                        hasExpired = true;
+                    }
+                });
+
+                if (!hasExpired) return;
+                this._liberatingReservas = true;
+                update(numRef, up).finally(() => { this._liberatingReservas = false; });
+            }
+
+
             renderUI() {
                 const tituloStr = this.config.premio.toUpperCase();
                 const valorStr = (this.config.valor || 0).toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
@@ -1431,12 +1666,25 @@
                 document.getElementById('display-descricao').innerText = this.config.descricao || '';
                 document.getElementById('display-valor').innerText = valorStr;
 
+                // Meta tags dinâmicas (compartilhamento)
+                try {
+                    const capaUrl = (this.config.capa && this.config.capa.trim()) ? this.config.capa.trim() : '';
+                    document.title = `${tituloStr} | RIFA MASTER`;
+                    const ogTitle = document.querySelector('meta[property="og:title"]');
+                    const ogDesc = document.querySelector('meta[property="og:description"]');
+                    const ogImage = document.querySelector('meta[property="og:image"]');
+                    if (ogTitle) ogTitle.setAttribute('content', tituloStr);
+                    if (ogDesc) ogDesc.setAttribute('content', this.config.descricao || `Participe a partir de ${valorStr}`);
+                    if (ogImage && capaUrl) ogImage.setAttribute('content', capaUrl);
+                } catch (_) {}
+
                 // Capa (mesma URL nos 2 locais: principal + blur)
                 const capaUrl = (this.config.capa && this.config.capa.trim()) ? this.config.capa.trim() : 'img/capa.jpg';
                 const imgMain = document.getElementById('img-main');
                 const imgBlur = document.getElementById('img-blur');
                 if (imgMain) imgMain.src = capaUrl;
                 if (imgBlur) imgBlur.src = capaUrl;
+
 
 
                 const premiosList = document.getElementById('premios-list');
@@ -1656,9 +1904,15 @@
 
                 document.getElementById('fixed-checkout').style.display = t === 'rifa' ? 'flex' : 'none';
 
+                if (t !== 'consulta' && this._consultaTimerInterval) {
+                    clearInterval(this._consultaTimerInterval);
+                    this._consultaTimerInterval = null;
+                }
+
                 if(t==='admin') window.adminPanel.render(true); 
                 window.scrollTo(0,0);
             }
+
 
             toggleDoacaoExpand(e, index) {
                 // ignora cliques nos botões internos
@@ -1812,6 +2066,11 @@
                 const area = document.getElementById('results-area'); 
                 if(!tel || tel.length < 10) return;
 
+                if (this._consultaTimerInterval) {
+                    clearInterval(this._consultaTimerInterval);
+                    this._consultaTimerInterval = null;
+                }
+
                 const s = await get(numRef); area.innerHTML = '';
                 if(s.exists()){
                     const all = s.val();
@@ -1828,15 +2087,25 @@
                         if(pendentes.length > 0) {
                             const totalPendente = pendentes.reduce((acc, n) => acc + (parseFloat(all[n].valor_fixado_unidade) || parseFloat(this.config.valor)), 0);
                             const listaStr = pendentes.join(',');
-                            const nomeSafe = nome.replace(/'/g, "\\'"); 
+                            const nomeSafe = nome.replace(/'/g, "\\'");
+                            const reservedAts = pendentes.map(n => all[n].reservedAt || 0).filter(Boolean);
+                            const oldest = reservedAts.length ? Math.min(...reservedAts) : 0;
+                            const expiresAt = oldest ? (oldest + this.getReservaTimeoutMs()) : 0;
+                            const hasTimer = expiresAt > 0;
+
                             area.innerHTML += `
                                 <div class="admin-item" style="border-color:var(--reserved); text-align:center;">
                                     <b style="color:var(--reserved); font-size:13px; text-transform: uppercase;">Aguardando Pagamento</b>
+                                    ${hasTimer ? `<p id="reserva-timer-live" style="font-size:13px; color:var(--danger); font-weight:700; margin-top:8px;">Tempo restante: --</p>` : ''}
                                     <p style="font-weight:700; margin:12px 0; font-size:16px; color: var(--title-color);">${pendentes.join(', ')}</p>
                                     <p style="font-size:20px; font-weight:800; color:var(--primary-color); margin-bottom:16px">R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
                                     <button class="btn-participar" id="btn-pay-existing" style="padding: 14px; font-size: 14px;" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
                                 </div>`;
+
+                            if (hasTimer) this.startConsultaReservaTimer(expiresAt);
                         }
+
+
 
                         if(doadosPendentes.length > 0) {
                             const itemNome = filtered.find(([n, d]) => d.status === 'donated_pending')[1].item_doacao;
@@ -1927,12 +2196,16 @@
                     this.app.config.promos.forEach(p => {
                         if(count >= p.min) {
                             let price = original;
-                            if(p.type === 'pct') price = original * (1 - (p.val / 100));
-                            else if(p.type === 'free') price = original - (p.val * this.app.config.valor);
+                            const tipo = (p.type === 'percent' || p.type === 'pct') ? 'pct'
+                                        : (p.type === 'free_tickets' || p.type === 'free') ? 'free'
+                                        : p.type;
+                            if(tipo === 'pct') price = original * (1 - (p.val / 100));
+                            else if(tipo === 'free') price = original - (p.val * this.app.config.valor);
                             if(price < final) final = price;
                         }
                     });
                 }
+
                 promoDiscount = original - final;
 
                 let cupomDiscount = 0;
@@ -2003,8 +2276,9 @@
                 this.atualizarValoresCheckout();
 
                 document.getElementById('modal-checkout').style.display = 'flex';
-                this.startTimer(15); 
+                this.startTimer(this.app.getPixTimeoutMin()); 
             }
+
 
             startTimer(minutes) {
                 let time = minutes * 60;
@@ -2052,14 +2326,22 @@
                             const status = await PaymentService.checkMercadoPagoStatus(pixData.id, this.app.config.mpToken);
                             if (status === 'approved') {
                                 clearInterval(this.pixInterval);
-                                document.getElementById('pix-status-container').innerHTML = '<span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>';
+
+                                const cotasPagas = isExisting
+                                    ? listaStr.split(',').filter(Boolean)
+                                    : Array.from(this.app.selected);
+                                const cotasTxt = cotasPagas.slice().sort().join(', ');
+                                const shareMsg = encodeURIComponent(`Acabei de garantir minhas cotas na rifa ${this.app.config.premio}! Números: ${cotasTxt}`);
+                                const shareUrl = `https://wa.me/?text=${shareMsg}`;
+
+                                document.getElementById('pix-status-container').innerHTML = `
+                                    <div style="display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;">
+                                        <span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>
+                                        <a href="${shareUrl}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; background:#25d366; color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none;">Compartilhar bilhetes</a>
+                                    </div>`;
 
                                 const up = {};
-                                if (isExisting) {
-                                    listaStr.split(',').forEach(n => up[`${n}/status`] = 'paid');
-                                } else {
-                                    this.app.selected.forEach(num => up[`${num}/status`] = 'paid');
-                                }
+                                cotasPagas.forEach(n => up[`${n}/status`] = 'paid');
                                 await update(numRef, up);
 
                                 this.app.showToast("Pagamento Confirmado!");
@@ -2074,8 +2356,9 @@
                                     } else {
                                         this.app.consultarMeusNumeros();
                                     }
-                                }, 3000);
+                                }, 5000);
                             }
+
                         }, 5000);
 
                     } catch(e) {
@@ -2121,10 +2404,12 @@
 
                 try { 
                     const up = {}; 
+                    const reservedAt = Date.now();
                     this.app.selected.forEach(num => {
-                        up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado };
+                        up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado, reservedAt };
                     }); 
-                    await update(numRef, up); 
+                    await update(numRef, up);
+ 
 
                     if(window.fbq) window.fbq('track', 'InitiateCheckout');
 
@@ -2177,7 +2462,9 @@
                 this.app = app;
                 this.isAdmin = false;
                 this.filter = 'all';
+                this.statsVisible = false;
             }
+
 
             validate() {
                 const typedPin = document.getElementById('admin-pin').value.trim();
@@ -2187,10 +2474,12 @@
                     this.app.closeModal('modal-pin'); 
                     this.render(true); 
                     this.app.switchTab('admin'); 
+                    this.applyStatsVisibility();
                 } else {
                     this.app.showToast("PIN Incorreto");
                 }
             }
+
 
             setFilter(f) {
                 this.filter = f;
@@ -2232,140 +2521,239 @@
                 lucide.createIcons();
             }
 
+            statusColor(status) {
+                if (status === 'paid') return 'var(--paid)';
+                if (status === 'reserved') return 'var(--reserved)';
+                if (status === 'donated') return 'var(--donated)';
+                if (status === 'donated_pending') return '#9b59b6';
+                return 'var(--text-color)';
+            }
+
+            applyStatsVisibility() {
+                const grid = document.getElementById('admin-stats-grid');
+                const btn = document.getElementById('btn-toggle-stats');
+                if (!grid || !btn) return;
+
+                if (this.statsVisible) {
+                    grid.style.visibility = 'visible';
+                    grid.style.opacity = '1';
+                    btn.innerHTML = '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
+                } else {
+                    grid.style.visibility = 'hidden';
+                    grid.style.opacity = '0';
+                    btn.innerHTML = '<i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>';
+                }
+                lucide.createIcons();
+            }
+
+            toggleStats() {
+                this.statsVisible = !this.statsVisible;
+                this.applyStatsVisibility();
+            }
+
+            toggleAdminMenu(e) {
+                if (e) e.stopPropagation();
+                const menu = document.getElementById('admin-gear-menu');
+                if (!menu) return;
+                const open = menu.style.display === 'block';
+                menu.style.display = open ? 'none' : 'block';
+                if (!open) {
+                    const closer = (ev) => {
+                        if (!menu.contains(ev.target) && ev.target.id !== 'btn-admin-menu') {
+                            menu.style.display = 'none';
+                            document.removeEventListener('click', closer);
+                        }
+                    };
+                    setTimeout(() => document.addEventListener('click', closer), 0);
+                }
+                lucide.createIcons();
+            }
+
+            closeAdminMenu() {
+                const menu = document.getElementById('admin-gear-menu');
+                if (menu) menu.style.display = 'none';
+            }
+
+            getThemePresets() {
+                return [
+                    { id: 'teal', name: 'Verde Teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' },
+                    { id: 'blue', name: 'Azul Oceano', primary: '#2563eb', paid: '#22c55e', reserved: '#f59e0b', donated: '#ec4899' },
+                    { id: 'purple', name: 'Roxo', primary: '#7c3aed', paid: '#10b981', reserved: '#f59e0b', donated: '#db2777' },
+                    { id: 'orange', name: 'Laranja', primary: '#ea580c', paid: '#16a34a', reserved: '#eab308', donated: '#db2777' },
+                    { id: 'red', name: 'Vermelho', primary: '#dc2626', paid: '#16a34a', reserved: '#f59e0b', donated: '#a855f7' },
+                    { id: 'cyan', name: 'Ciano', primary: '#0891b2', paid: '#22c55e', reserved: '#f59e0b', donated: '#e11d48' }
+                ];
+            }
+
+            setThemeMode(mode) {
+                if (!this.app.config.theme) this.app.config.theme = {};
+                this.app.config.theme.mode = mode;
+                this.app.applyTheme(this.app.config.theme);
+                this._highlightThemeMode();
+            }
+
+            applyThemePreset(presetId) {
+                const preset = this.getThemePresets().find(p => p.id === presetId);
+                if (!preset) return;
+                if (!this.app.config.theme) this.app.config.theme = {};
+                this.app.config.theme.preset = presetId;
+                this.app.config.theme.primary = preset.primary;
+                this.app.config.theme.paid = preset.paid;
+                this.app.config.theme.reserved = preset.reserved;
+                this.app.config.theme.donated = preset.donated;
+                this._fillThemeInputs();
+                this.app.applyTheme(this.app.config.theme);
+                this._renderThemePresets();
+            }
+
+            previewThemeFromInputs() {
+                if (!this.app.config.theme) this.app.config.theme = {};
+                this.app.config.theme.preset = 'custom';
+                this.app.config.theme.primary = document.getElementById('cfg-theme-primary').value;
+                this.app.config.theme.paid = document.getElementById('cfg-theme-paid').value;
+                this.app.config.theme.reserved = document.getElementById('cfg-theme-reserved').value;
+                this.app.config.theme.donated = document.getElementById('cfg-theme-donated').value;
+                this.app.applyTheme(this.app.config.theme);
+                this._renderThemePresets();
+            }
+
+            _fillThemeInputs() {
+                const t = this.app.config.theme || {};
+                const el = (id, val) => { const n = document.getElementById(id); if (n) n.value = val; };
+                el('cfg-theme-primary', t.primary || '#008b77');
+                el('cfg-theme-paid', t.paid || '#00db87');
+                el('cfg-theme-reserved', t.reserved || '#ffaa00');
+                el('cfg-theme-donated', t.donated || '#d63384');
+            }
+
+            _highlightThemeMode() {
+                const mode = (this.app.config.theme && this.app.config.theme.mode) || 'dark';
+                const darkBtn = document.getElementById('btn-theme-dark');
+                const lightBtn = document.getElementById('btn-theme-light');
+                if (darkBtn) {
+                    darkBtn.style.borderColor = mode === 'dark' ? 'var(--primary-color)' : 'var(--border-color)';
+                    darkBtn.style.color = mode === 'dark' ? 'var(--primary-color)' : 'var(--title-color)';
+                }
+                if (lightBtn) {
+                    lightBtn.style.borderColor = mode === 'light' ? 'var(--primary-color)' : 'var(--border-color)';
+                    lightBtn.style.color = mode === 'light' ? 'var(--primary-color)' : 'var(--title-color)';
+                }
+            }
+
+            _renderThemePresets() {
+                const grid = document.getElementById('theme-presets-grid');
+                if (!grid) return;
+                const current = (this.app.config.theme && this.app.config.theme.preset) || 'teal';
+                grid.innerHTML = '';
+                this.getThemePresets().forEach(p => {
+                    const active = current === p.id;
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'cfg-add-btn';
+                    btn.style.cssText = `margin:0; border-color:${active ? p.primary : 'var(--border-color)'}; color:var(--title-color); flex-direction:column; gap:6px; padding:12px 8px;`;
+                    btn.onclick = () => this.applyThemePreset(p.id);
+                    btn.innerHTML = `
+                        <span style="display:flex; gap:4px;">
+                            <span style="width:14px;height:14px;border-radius:4px;background:${p.primary};"></span>
+                            <span style="width:14px;height:14px;border-radius:4px;background:${p.paid};"></span>
+                            <span style="width:14px;height:14px;border-radius:4px;background:${p.reserved};"></span>
+                            <span style="width:14px;height:14px;border-radius:4px;background:${p.donated};"></span>
+                        </span>
+                        <span style="font-size:12px;">${p.name}</span>`;
+                    grid.appendChild(btn);
+                });
+            }
+
+
+
+
             render(forceRebuild = true) {
                 const list = document.getElementById('admin-list'); if(!list) return;
 
                 if (forceRebuild) {
                     list.innerHTML = '';
                     let tPaid = 0; let tDoacoes = 0; 
-                    const compras = {};
-                    const doacoes = {};
+                    const participantes = {};
 
                     Object.entries(this.app.dbNumbers).forEach(([n, d]) => {
                         const val = (d.valor_fixado_unidade !== undefined) ? parseFloat(d.valor_fixado_unidade) : parseFloat(this.app.config.valor || 0);
                         if(d.status === 'paid') tPaid += val;
-                        if(d.status === 'donated') tDoacoes += 1;
+                        if(d.status === 'donated' || d.status === 'donated_pending') tDoacoes += 1;
 
                         const phKey = (d.telefone || "0").replace(/\D/g,'');
-                        const isDoacao = !!d.item_doacao;
-
-                        if (isDoacao) {
-                            const item = d.item_doacao.toUpperCase();
-                            if (!doacoes[item]) doacoes[item] = {};
-                            if (!doacoes[item][phKey]) doacoes[item][phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
-                            doacoes[item][phKey].cotas.push({n, status: d.status});
-                        } else {
-                            if(!compras[phKey]) compras[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [] };
-                            compras[phKey].cotas.push({n, status: d.status});
+                        if(!participantes[phKey]) {
+                            participantes[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [], hasDoacao: false, hasCompra: false };
                         }
+                        const isDoacao = !!d.item_doacao;
+                        if (isDoacao) participantes[phKey].hasDoacao = true;
+                        else participantes[phKey].hasCompra = true;
+                        participantes[phKey].cotas.push({n, status: d.status, isDoacao});
                     });
 
                     document.getElementById('admin-receita').innerText = `R$ ${tPaid.toFixed(2).replace('.',',')}`;
                     document.getElementById('admin-doacoes').innerText = tDoacoes;
                     document.getElementById('admin-vendas').innerText = Object.keys(this.app.dbNumbers).length;
 
-                    // 1º - GERAR DOAÇÕES NO TOPO
-                    Object.entries(doacoes).forEach(([itemName, donorsObj]) => {
-                        const card = document.createElement('div'); card.className = 'admin-item';
-                        card.dataset.isDoacao = 'true';
 
-                        let totalCotas = 0;
-                        let nomes = [];
-                        let telefones = [];
-                        let cotasStrs = [];
-                        let temPendente = false;
-                        let temConfirmado = false;
-                        let donorsHTML = '';
-
-                        Object.values(donorsObj).forEach(p => {
-                            totalCotas += p.cotas.length;
-                            nomes.push(p.nome.toLowerCase());
-                            telefones.push(p.telefone);
-                            cotasStrs.push(p.cotas.map(c => c.n).join(','));
-
-                            const allDonated = p.cotas.every(c => c.status === 'donated');
-                            const allDonatedPending = p.cotas.every(c => c.status === 'donated_pending');
-                            if(!allDonated) temPendente = true;
-                            if(allDonated) temConfirmado = true;
-
-                            donorsHTML += `
-                            <details style="cursor: pointer; background: var(--background-color); padding: 12px; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border-color);">
-                                <summary style="display:flex; justify-content:space-between; align-items: center;">
-                                    <div><b style="color:var(--title-color); font-size: 13px;">${p.nome.toUpperCase()}</b></div>
-                                    <div style="display:flex; align-items:center; gap:8px;">
-                                        <span style="font-size: 11px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.cotas.length} cota(s)</span>
-                                        <i data-lucide="chevron-down" style="width: 16px; color:var(--text-color);"></i>
-                                    </div>
-                                </summary>
-                                <div style="padding-top:12px; margin-top:12px; border-top:1px dashed var(--border-color);">
-                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                                        <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px; color:var(--text-color);">Tel: ${p.telefone}</span>
-                                        <a href="https://wa.me/55${p.telefone.replace(/\D/g,'')}?text=Olá ${p.nome.split(' ')[0]}" target="_blank" style="font-size: 11px; background: #25d366; color: #fff; padding: 4px 8px; border-radius: 6px; text-decoration: none;"><i data-lucide="message-circle" style="width:12px; display:inline-block; vertical-align:middle;"></i> WhatsApp</a>
-                                    </div>
-                                    <div style="background:var(--gray-400); padding:10px; border-radius:8px; margin-bottom:12px; font-size:12px; color: var(--text-color); border: 1px solid var(--border-color);">
-                                        ${p.cotas.map(c => `<span style="color:${c.status.includes('donated')?'var(--donated)':(c.status==='paid'?'var(--paid)':'var(--reserved)')}; font-weight: 600;">${c.n}</span>`).join(', ')}
-                                    </div>
-                                    <div style="display:flex; gap:8px;">
-                                        <button class="btn-admin bg-pink" style="flex:1" ${allDonated?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar entrega da Doação?', () => window.adminPanel.updateStatus('${p.telefone}', 'donated', true))">${allDonated ? 'RECEBIDA' : 'CONFIRMAR'}</button>
-                                        <button class="btn-admin bg-orange" style="flex:1" ${allDonatedPending?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar doação pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'donated_pending', true))">PENDENTE</button>
-                                        <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Doação?', () => window.adminPanel.deleteParticipant('${p.telefone}', true))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
-                                    </div>
-                                </div>
-                            </details>
-                            `;
-                        });
-
-                        card.dataset.nome = nomes.join(' ');
-                        card.dataset.telefone = telefones.join(' ');
-                        card.dataset.cotas = cotasStrs.join(',');
-
-                        if (temConfirmado && !temPendente) card.dataset.statusGroup = 'donated';
-                        else if (!temConfirmado && temPendente) card.dataset.statusGroup = 'donated_pending';
-                        else card.dataset.statusGroup = 'mixed_donated';
-
-                        card.innerHTML = `
-                        <div style="display:flex; justify-content:space-between; align-items: center; padding-bottom: 12px; margin-bottom: 8px;">
-                            <div><b style="color:var(--donated); font-size: 15px; text-transform: uppercase;"><i data-lucide="gift" style="width:18px; display:inline-block; vertical-align:middle; margin-right:4px;"></i> ${itemName}</b></div>
-                            <span style="font-size: 12px; background: rgba(214, 51, 132, 0.1); color: var(--donated); padding: 4px 8px; border-radius: 6px; font-weight: 700;">${totalCotas} cota(s)</span>
-                        </div>
-                        <div>
-                            ${donorsHTML}
-                        </div>`;
-
-                        list.appendChild(card);
-                    });
-
-                    // 2º - GERAR COMPRAS (Abaixo das Doações)
-                    Object.values(compras).forEach(p => {
+                    Object.values(participantes).forEach(p => {
                         const card = document.createElement('div'); card.className = 'admin-item'; 
-                        const phClean = p.telefone.replace(/\D/g,'');
+                        const phClean = (p.telefone || '').replace(/\D/g,'');
 
-                        card.dataset.nome = p.nome.toLowerCase();
+                        card.dataset.nome = (p.nome || '').toLowerCase();
                         card.dataset.telefone = phClean;
                         card.dataset.cotas = p.cotas.map(c => c.n).join(',');
-                        card.dataset.isDoacao = 'false';
+                        card.dataset.isDoacao = p.hasDoacao ? 'true' : 'false';
 
-                        const allPaid = p.cotas.every(c => c.status === 'paid');
-                        const allRes = p.cotas.every(c => c.status === 'reserved');
+                        const allPaid = p.cotas.every(c => c.status === 'paid' || c.status === 'donated');
+                        const allRes = p.cotas.every(c => c.status === 'reserved' || c.status === 'donated_pending');
 
                         if (allPaid) card.dataset.statusGroup = 'paid';
                         else if (allRes) card.dataset.statusGroup = 'reserved';
                         else card.dataset.statusGroup = 'mixed';
 
+                        // Botões unificados: confirma/pendente respeitam se é doação ou compra
                         let buttonsHTML = `
                             <div style="display:flex; gap:8px;">
-                                <button class="btn-admin bg-green" style="flex:1" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar Pagamento?', () => window.adminPanel.updateStatus('${p.telefone}', 'paid', false))">PAGO</button>
-                                <button class="btn-admin bg-orange" style="flex:1" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'reserved', false))">PENDENTE</button>
-                                <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}', false))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
+                                <button class="btn-admin bg-green" style="flex:1" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar?', () => window.adminPanel.updateStatus('${p.telefone}', 'confirmado'))">CONFIRMADO</button>
+                                <button class="btn-admin bg-orange" style="flex:1" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'pendente'))">PENDENTE</button>
+                                <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
                             </div>
                         `;
 
-                        let titleHTML = `<b style="color:var(--title-color); font-size: 15px;">${p.nome.toUpperCase()}</b>`;
+                        const titleColor = p.hasDoacao && !p.hasCompra ? 'var(--donated)' : 'var(--title-color)';
+                        const giftIcon = p.hasDoacao ? `<i data-lucide="gift" style="width:14px; display:inline-block; vertical-align:middle; margin-right:4px; color:var(--donated);"></i>` : '';
+
+                        const cotasCompra = p.cotas.filter(c => !c.isDoacao && c.status === 'paid');
+                        const cotasDoacao = p.cotas.filter(c => c.isDoacao && c.status === 'donated');
+                        const cotasPendentes = p.cotas.filter(c => c.status === 'reserved' || c.status === 'donated_pending');
+                        let cotasBlocks = '';
+                        if (cotasCompra.length > 0) {
+                            cotasBlocks += `
+                                <div style="background:var(--gray-400); padding:12px; border-radius:8px; margin-bottom:10px; font-size:13px; border: 1px solid var(--border-color);">
+                                    <div style="font-size:11px; font-weight:700; color:var(--paid); margin-bottom:6px; text-transform:uppercase;">Compra (${cotasCompra.length})</div>
+                                    ${cotasCompra.map(c => `<span style="color:${this.statusColor(c.status)}; font-weight: 600;">${c.n}</span>`).join(', ')}
+                                </div>`;
+                        }
+                        if (cotasDoacao.length > 0) {
+                            cotasBlocks += `
+                                <div style="background:rgba(214,51,132,0.08); padding:12px; border-radius:8px; margin-bottom:10px; font-size:13px; border: 1px solid rgba(214,51,132,0.35);">
+                                    <div style="font-size:11px; font-weight:700; color:var(--donated); margin-bottom:6px; text-transform:uppercase;">🎁 Doação (${cotasDoacao.length})</div>
+                                    ${cotasDoacao.map(c => `<span style="color:${this.statusColor(c.status)}; font-weight: 600;">${c.n}</span>`).join(', ')}
+                                </div>`;
+                        }
+                        if (cotasPendentes.length > 0) {
+                            cotasBlocks += `
+                                <div style="background:rgba(255,170,0,0.08); padding:12px; border-radius:8px; margin-bottom:10px; font-size:13px; border: 1px solid rgba(255,170,0,0.35);">
+                                    <div style="font-size:11px; font-weight:700; color:var(--reserved); margin-bottom:6px; text-transform:uppercase;">⏳ Pendentes (${cotasPendentes.length})</div>
+                                    ${cotasPendentes.map(c => `<span style="color:${this.statusColor(c.status)}; font-weight: 600;">${c.n}${c.isDoacao ? ' 🎁' : ''}</span>`).join(', ')}
+                                </div>`;
+                        }
+
 
                         card.innerHTML = `
                         <details style="cursor: pointer;">
                             <summary style="display:flex; justify-content:space-between; align-items: center;">
-                                <div>${titleHTML}</div>
+                                <div><b style="color:${titleColor}; font-size: 15px;">${giftIcon}${(p.nome || '').toUpperCase()}</b></div>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.cotas.length} cota(s)</span>
                                     <i data-lucide="chevron-down" style="width: 18px; color:var(--text-color);"></i>
@@ -2374,11 +2762,9 @@
                             <div style="padding-top:16px; margin-top:12px; border-top:1px solid var(--border-color);">
                                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                                     <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px; color:var(--text-color);">Tel: ${p.telefone}</span>
-                                    <a href="https://wa.me/55${p.telefone.replace(/\D/g,'')}?text=Olá ${p.nome.split(' ')[0]}" target="_blank" style="font-size: 12px; background: #25d366; color: #fff; padding: 6px 10px; border-radius: 6px; text-decoration: none;"><i data-lucide="message-circle" style="width:14px; display:inline-block; vertical-align:middle;"></i> WhatsApp</a>
+                                    <a href="https://wa.me/55${phClean}?text=Olá ${(p.nome || '').split(' ')[0]}" target="_blank" style="font-size: 12px; background: #25d366; color: #fff; padding: 6px 10px; border-radius: 6px; text-decoration: none;"><i data-lucide="message-circle" style="width:14px; display:inline-block; vertical-align:middle;"></i> WhatsApp</a>
                                 </div>
-                                <div style="background:var(--gray-400); padding:12px; border-radius:8px; margin-bottom:16px; font-size:13px; color: var(--text-color); border: 1px solid var(--border-color);">
-                                    ${p.cotas.map(c => `<span style="color:${c.status==='paid'?'var(--paid)':'var(--reserved)'}; font-weight: 600;">${c.n}</span>`).join(', ')}
-                                </div>
+                                ${cotasBlocks}
                                 ${buttonsHTML}
                             </div>
                         </details>`;
@@ -2405,6 +2791,7 @@
                     card.style.display = (matchSearch && matchTab) ? 'block' : 'none';
                 });
             }
+
 
             abrirModalSorteio() {
                 const lista = document.getElementById('lista-premios-sorteio');
@@ -2516,26 +2903,53 @@
                 }
             }
 
-            async updateStatus(ph, s, isDoacao) { 
+            async updateStatus(ph, action) { 
                 const up = {}; 
                 Object.entries(this.app.dbNumbers).forEach(([n, d]) => { 
                     if(d.telefone === ph) {
-                        if (isDoacao && d.item_doacao) up[`${n}/status`] = s;
-                        if (!isDoacao && !d.item_doacao) up[`${n}/status`] = s;
+                        const isDoacao = !!d.item_doacao;
+                        if (action === 'confirmado') {
+                            up[`${n}/status`] = isDoacao ? 'donated' : 'paid';
+                        } else if (action === 'pendente') {
+                            up[`${n}/status`] = isDoacao ? 'donated_pending' : 'reserved';
+                        }
                     } 
                 }); 
                 await update(numRef, up); this.app.showToast("Atualizado"); 
             }
 
-            async deleteParticipant(ph, isDoacao) { 
+            async deleteParticipant(ph) { 
                 const up = {}; 
                 Object.entries(this.app.dbNumbers).forEach(([n, d]) => { 
-                    if(d.telefone === ph) {
-                        if (isDoacao && d.item_doacao) up[n] = null;
-                        if (!isDoacao && !d.item_doacao) up[n] = null;
-                    } 
+                    if(d.telefone === ph) up[n] = null;
                 }); 
                 await update(numRef, up); this.app.showToast("Excluído"); 
+            }
+
+
+            exportCSV() {
+                const rows = [['Cota', 'Nome', 'Telefone', 'Status', 'Item Doacao', 'NSU', 'Valor Unidade', 'Reservado Em']];
+                Object.entries(this.app.dbNumbers || {}).forEach(([n, d]) => {
+                    rows.push([
+                        n,
+                        d.nome || '',
+                        d.telefone || '',
+                        d.status || '',
+                        d.item_doacao || '',
+                        d.order_nsu || '',
+                        d.valor_fixado_unidade !== undefined ? d.valor_fixado_unidade : '',
+                        d.reservedAt ? new Date(d.reservedAt).toISOString() : ''
+                    ]);
+                });
+                const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+                const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `rifa_${Date.now()}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.app.showToast('CSV exportado!');
             }
 
             resetRifa() { 
@@ -2547,6 +2961,7 @@
             }
 
             toggleGateway() {
+
                 const gateway = document.getElementById('cfg-gateway').value;
                 if(gateway === 'infinitepay') {
                     document.getElementById('wrap-infinitepay').style.display = 'block';
@@ -2589,11 +3004,22 @@
                 document.getElementById('cfg-total').value = this.app.config.total || 0;
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
                 document.getElementById('cfg-pixel').value = this.app.config.pixel || "";
+                document.getElementById('cfg-reserva-min').value = this.app.config.reservaMinutos || 15;
+                document.getElementById('cfg-pix-min').value = this.app.config.pixMinutos || 15;
 
                 document.getElementById('cfg-gateway').value = this.app.config.gateway || "mercadopago";
                 document.getElementById('cfg-handle').value = this.app.config.handle || "";
                 document.getElementById('cfg-mptoken').value = this.app.config.mpToken || "";
                 this.toggleGateway();
+
+                if (!this.app.config.theme) {
+                    this.app.config.theme = { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' };
+                }
+                this._fillThemeInputs();
+                this._highlightThemeMode();
+                this._renderThemePresets();
+
+
 
 
                 this._updateToggleUI(document.getElementById('btn-toggle-promos'), !!this.app.config.promosActive);
@@ -2666,24 +3092,27 @@
                 lucide.createIcons();
             }
 
-            addPromoRow(d = {qty: 10, type: 'percent', value: 10}) {
+            addPromoRow(d = {min: 10, type: 'pct', val: 10}) {
                 const details = document.createElement('details');
                 details.className = 'cfg-list-item';
                 details.style.marginBottom = '10px';
+                const minVal = d.min !== undefined ? d.min : (d.qty || 10);
+                const typeVal = d.type || 'pct';
+                const desconto = d.val !== undefined ? d.val : (d.value !== undefined ? d.value : 10);
 
                 details.innerHTML = `
                     <summary style="font-weight: 700; cursor: pointer; outline: none; color: var(--title-color); display:flex; justify-content:space-between; align-items:center;">
-                        <span>Regra: <span class="promo-title" style="color:var(--reserved);">Comprando ${d.qty || '0'}</span></span>
+                        <span>Regra: <span class="promo-title" style="color:var(--reserved);">Comprando ${minVal || '0'}</span></span>
                         <i data-lucide="chevron-down" style="width:16px; color:var(--text-color);"></i>
                     </summary>
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
                         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; width: 100%;">
-                            <input type="number" class="input-form p-min" value="${d.qty}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Qtd" oninput="this.closest('details').querySelector('.promo-title').innerText = 'Comprando ' + (this.value || '0')">
+                            <input type="number" class="input-form p-min" value="${minVal}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Qtd" oninput="this.closest('details').querySelector('.promo-title').innerText = 'Comprando ' + (this.value || '0')">
                             <select class="input-form p-type" style="flex: 1; margin: 0; padding: 10px;">
-                                <option value="percent" ${d.type === 'percent' ? 'selected' : ''}>% OFF</option>
-                                <option value="free_tickets" ${d.type === 'free_tickets' ? 'selected' : ''}>Bilhetes Grátis</option>
+                                <option value="pct" ${(typeVal === 'pct' || typeVal === 'percent') ? 'selected' : ''}>% OFF</option>
+                                <option value="free" ${(typeVal === 'free' || typeVal === 'free_tickets') ? 'selected' : ''}>Bilhetes Grátis</option>
                             </select>
-                            <input type="number" class="input-form p-val" value="${d.value}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Valor/Qtd">
+                            <input type="number" class="input-form p-val" value="${desconto}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Valor/Qtd">
                         </div>
                         <button class="remove-btn" style="width:100%; justify-content:center;" onclick="this.closest('.cfg-list-item').remove()">
                             <i data-lucide="trash-2" style="width:14px;"></i> Remover Regra
@@ -2694,6 +3123,7 @@
                 document.getElementById('promos-list').appendChild(details);
                 lucide.createIcons();
             }
+
 
             addPremioRow(d = {descricao: '', foto: ''}) {
                 const div = document.createElement('div');
@@ -2744,7 +3174,10 @@
 
                 const pr = [];
                 document.querySelectorAll('#promos-list .cfg-list-item').forEach(row => { 
-                    pr.push({ min: parseInt(row.querySelector('.p-min').value) || 0, val: parseFloat(row.querySelector('.p-val').value) || 0, type: row.querySelector('.p-type').value }); 
+                    let tipo = row.querySelector('.p-type').value;
+                    if (tipo === 'percent') tipo = 'pct';
+                    if (tipo === 'free_tickets') tipo = 'free';
+                    pr.push({ min: parseInt(row.querySelector('.p-min').value) || 0, val: parseFloat(row.querySelector('.p-val').value) || 0, type: tipo }); 
                 });
 
                 const qSelects = [];
@@ -2770,6 +3203,17 @@
                     cupons.push({ codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), valor: parseFloat(row.querySelector('.c-val').value) || 0, tipo: row.querySelector('.c-tipo').value }); 
                 });
 
+                const theme = {
+                    mode: (this.app.config.theme && this.app.config.theme.mode) || 'dark',
+                    preset: (this.app.config.theme && this.app.config.theme.preset) || 'custom',
+                    primary: document.getElementById('cfg-theme-primary')?.value || '#008b77',
+                    paid: document.getElementById('cfg-theme-paid')?.value || '#00db87',
+                    reserved: document.getElementById('cfg-theme-reserved')?.value || '#ffaa00',
+                    donated: document.getElementById('cfg-theme-donated')?.value || '#d63384'
+                };
+                this.app.config.theme = theme;
+                this.app.applyTheme(theme);
+
                 const up = { 
                     premio: document.getElementById('cfg-premio').value || "", 
                     capa: document.getElementById('cfg-capa').value.trim() || "",
@@ -2780,14 +3224,19 @@
                     mpToken: document.getElementById('cfg-mptoken').value,
                     pin: document.getElementById('cfg-pin').value, 
                     pixel: document.getElementById('cfg-pixel').value, 
+                    reservaMinutos: parseInt(document.getElementById('cfg-reserva-min').value) || 15,
+                    pixMinutos: parseInt(document.getElementById('cfg-pix-min').value) || 15,
                     promosActive: this.app.config.promosActive, 
                     ocultarNumeros: this.app.config.ocultarNumeros,
+                    theme: theme,
                     quickSelects: qSelects,
                     doacoes: dItens,
                     promos: pr,
                     premios: premios,
                     cupons: cupons
                 };
+
+
 
 
                 set(cfgRef, up).then(() => { 
