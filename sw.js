@@ -1,5 +1,5 @@
 // Mude este número da versão sempre que quiser forçar uma atualização no celular dos clientes!
-const CACHE_VERSION = 'v1.0.0'; 
+const CACHE_VERSION = 'v1.0.1'; 
 
 self.addEventListener('install', (event) => {
     console.log('Service Worker instalado: ', CACHE_VERSION);
