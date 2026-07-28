@@ -5,6 +5,11 @@
     <link rel="icon" href="img/favicon.png" type="image/x-icon">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>SORTEIO PREMIADO | RIFA MASTER</title>
+
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>RIFANDO</title>
 
     <!-- Conecta o Manifest -->
@@ -17,6 +22,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="apple-touch-icon" href="img/icone-192.png">
+      
       
 
     <meta property="og:site_name" content="RIFA MASTER" />
@@ -796,6 +802,8 @@
 
 </head>
 <body>
+
+    <h1>Meu App Instalável!</h1>
 
     <div id="toast" class="toast">Mensagem</div>
 
@@ -3261,15 +3269,20 @@
 
 
 
-                set(cfgRef, up).then(() => { 
+                                set(cfgRef, up).then(() => { 
                     this.app.closeModal('modal-config'); 
-                    this.app.showToast("Salvo com sucesso!"); 
+                    this.app.showToast("Salvo com sucesso!");
                 });
-            }
-        }
-    <h1>Meu App Instalável!</h1>
+            } // Fim do método save()
+        } // Fim da classe AdminPanel
 
-    <!-- Script para registrar o Service Worker -->
+        window.rifaApp = new RifaApp();
+        window.cartManager = new CartManager(window.rifaApp);
+        window.adminPanel = new AdminPanel(window.rifaApp);
+
+    </script>
+
+    <!-- Script do PWA: Deve ficar de fora do <script type="module"> principal -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -3277,11 +3290,7 @@
                     .then(reg => console.log('Service Worker registrado!'))
                     .catch(err => console.log('Erro ao registrar Service Worker:', err));
             });
-    }
-        window.rifaApp = new RifaApp();
-        window.cartManager = new CartManager(window.rifaApp);
-        window.adminPanel = new AdminPanel(window.rifaApp);
-
+        }
     </script>
 </body>
 </html>
