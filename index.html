@@ -311,6 +311,7 @@
         .legend-bar {
             display: flex;
             flex-wrap: wrap;
+            justify-content: center;
             gap: 10px;
             margin-bottom: 12px;
             padding: 10px 12px;
@@ -679,7 +680,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 2px;
             width: 100%;
         }
         .btn-doacao .doacao-qty-row {
@@ -876,9 +877,9 @@
                     </div>
 
                     <div class="legend-bar">
-                        <div class="legend-item"><span class="legend-dot" style="background:#444;"></span> Disponível</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#008b77;"></span> Selecionado</div>
-                        <div class="legend-item"><span class="legend-dot" style="background:#ffaa00;"></span> Reservado</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#444;"></span> Disp.</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#008b77;"></span> Selec.</div>
+                        <div class="legend-item"><span class="legend-dot" style="background:#ffaa00;"></span> Reser.</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#00db87;"></span> Pago</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#9b59b6;"></span> Doação Pend.</div>
                         <div class="legend-item"><span class="legend-dot" style="background:#d63384;"></span> Doação OK</div>
@@ -923,9 +924,12 @@
                         <h2 style="color: var(--title-color); font-size: 22px; display: flex; align-items: center; gap: 8px; margin: 0;">
                             <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
                         </h2>
-                        <div style="position: relative;">
+                        <div style="display: flex; gap: 12px; align-items: center;">
                             <button type="button" id="btn-admin-menu" onclick="window.adminPanel.toggleAdminMenu(event)" title="Configurações" style="width: 40px; height: 40px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer;">
                                 <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
+                            </button>
+                            <button type="button" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" title="Mostrar/Ocultar valores" style="width: 42px; height: 42px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
+                                <i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>
                             </button>
                             <div id="admin-gear-menu" style="display: none; position: absolute; right: 0; top: 46px; min-width: 180px; background: var(--gray-500); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 50; overflow: hidden;">
                                 <button type="button" onclick="window.adminPanel.openConfig(); window.adminPanel.closeAdminMenu();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--title-color); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px;">
@@ -958,9 +962,7 @@
                                 <b style="display: block; color: var(--title-color); font-size: 16px; margin-top: 4px;" id="admin-vendas">0</b>
                             </div>
                         </div>
-                        <button type="button" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" title="Mostrar/Ocultar valores" style="width: 42px; height: 42px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
-                            <i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>
-                        </button>
+                       
 
                     </div>
 
@@ -1765,7 +1767,7 @@
                                     <div class="doacao-icon">
                                         <i data-lucide="gift" style="width: 18px; height: 18px;"></i>
                                     </div>
-                                    <span class="doacao-nome">${d.nome}</span>
+                                    <span class="doacao-nome" style="font-size: 14px;">${d.nome}</span>
                                     <div class="doacao-badge">
                                         <span>+</span>
                                         <span class="val doacao-bilhetes-val">${bilhetesUnidade}</span>
