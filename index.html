@@ -3282,15 +3282,73 @@
 
     </script>
 
-    <!-- Script do PWA: Deve ficar de fora do <script type="module"> principal -->
+    <!-- ========================================== -->
+    <!-- BANNER DISCRETO DE INSTALAÇÃO DO APP       -->
+    <!-- ========================================== -->
+    <div id="pwa-install-banner" style="display: none; position: fixed; top: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background-color: var(--gray-500); border: 1px solid var(--primary-color); padding: 12px 16px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 9999; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: var(--primary-color-15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="download" style="color: var(--primary-color);"></i>
+            </div>
+            <div>
+                <b style="color: var(--title-color); font-size: 14px; display: block;">Instalar Aplicativo</b>
+                <span style="color: var(--text-color); font-size: 11px;">Acesso rápido. Não ocupa espaço.</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button id="btn-instalar-sim" style="background-color: var(--primary-color); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer;">Baixar</button>
+            <button id="btn-instalar-nao" style="background-color: transparent; color: var(--text-color); border: none; padding: 8px; font-size: 13px; cursor: pointer;">
+                <i data-lucide="x" style="width: 16px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Script do PWA e Lógica do Popup -->
     <script>
+        // 1. Registra o Service Worker (necessário)
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js')
                     .then(reg => console.log('Service Worker registrado!'))
-                    .catch(err => console.log('Erro ao registrar Service Worker:', err));
+                    .catch(err => console.log('Erro ao registrar SW:', err));
             });
         }
+
+        // 2. Lógica do Popup de Instalação
+        let deferredPrompt;
+        const installBanner = document.getElementById('pwa-install-banner');
+        const btnSim = document.getElementById('btn-instalar-sim');
+        const btnNao = document.getElementById('btn-instalar-nao');
+
+        // Captura o momento em que o Chrome permite a instalação
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); // Impede o aviso padrão do Chrome
+            deferredPrompt = e; // Guarda o evento
+            installBanner.style.display = 'flex'; // Mostra nosso banner
+            if(window.lucide) window.lucide.createIcons(); // Carrega os ícones
+        });
+
+        // Quando clica em "Baixar"
+        btnSim.addEventListener('click', async () => {
+            installBanner.style.display = 'none';
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') console.log('Usuário aceitou a instalação');
+                deferredPrompt = null;
+            }
+        });
+
+        // Quando clica no "X" para fechar
+        btnNao.addEventListener('click', () => {
+            installBanner.style.display = 'none';
+        });
+
+        // Esconde banner se já instalou
+        window.addEventListener('appinstalled', () => {
+            installBanner.style.display = 'none';
+            deferredPrompt = null;
+        });
     </script>
 </body>
 </html>
