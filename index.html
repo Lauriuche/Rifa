@@ -3272,19 +3272,62 @@
                                 set(cfgRef, up).then(() => { 
                     this.app.closeModal('modal-config'); 
                     this.app.showToast("Salvo com sucesso!");
-                });
-            } // Fim do método save()
-        } // Fim da classe AdminPanel
+              }); // fecha o then
+            } // fecha o método save()
+        } // fecha a classe AdminPanel
 
+        // ==========================================
+        // INICIALIZAÇÃO DO SEU SISTEMA (NÃO APAGUE)
+        // ==========================================
         window.rifaApp = new RifaApp();
         window.cartManager = new CartManager(window.rifaApp);
         window.adminPanel = new AdminPanel(window.rifaApp);
 
-              <!-- Script do PWA e Lógica dos Popups -->
+    </script>
+    <!-- AQUI TERMINA O SEU SCRIPT GIGANTE -->
+
+
+    <!-- ========================================== -->
+    <!-- BANNER DISCRETO DE INSTALAÇÃO DO APP       -->
+    <!-- ========================================== -->
+    <div id="pwa-install-banner" style="display: none; position: fixed; top: 80px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background-color: var(--gray-500); border: 1px solid var(--primary-color); padding: 12px 16px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 9999; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: var(--primary-color-15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="download" style="color: var(--primary-color);"></i>
+            </div>
+            <div>
+                <b style="color: var(--title-color); font-size: 14px; display: block;">Instalar Aplicativo</b>
+                <span style="color: var(--text-color); font-size: 11px;">Acesso rápido. Não ocupa espaço.</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <button id="btn-instalar-sim" style="background-color: var(--primary-color); color: #fff; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer;">Baixar</button>
+            <button id="btn-instalar-nao" style="background-color: transparent; color: var(--text-color); border: none; padding: 8px; font-size: 13px; cursor: pointer;">
+                <i data-lucide="x" style="width: 16px;"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- BANNER DE ATUALIZAÇÃO DO APP               -->
+    <!-- ========================================== -->
+    <div id="pwa-update-banner" style="display: none; position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 400px; background-color: var(--gray-500); border: 1px solid #ffaa00; padding: 12px 16px; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.5); z-index: 9999; justify-content: space-between; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: rgba(255, 170, 0, 0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <i data-lucide="refresh-cw" style="color: #ffaa00;"></i>
+            </div>
+            <div>
+                <b style="color: var(--title-color); font-size: 14px; display: block;">Nova versão!</b>
+                <span style="color: var(--text-color); font-size: 11px;">Atualize para ver as melhorias.</span>
+            </div>
+        </div>
+        <button id="btn-atualizar-app" style="background-color: #ffaa00; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer;">Atualizar</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- SCRIPT DO PWA E LÓGICA DOS BANNERS         -->
+    <!-- ========================================== -->
     <script>
-        // ==========================================
-        // VARIÁVEIS DOS BANNERS
-        // ==========================================
         let deferredPrompt;
         const installBanner = document.getElementById('pwa-install-banner');
         const btnSim = document.getElementById('btn-instalar-sim');
@@ -3294,14 +3337,9 @@
         const updateBanner = document.getElementById('pwa-update-banner');
         const btnAtualizar = document.getElementById('btn-atualizar-app');
 
-        // ==========================================
-        // 1. REGISTRO DO SW E SISTEMA DE ATUALIZAÇÃO
-        // ==========================================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/sw.js').then(reg => {
-                    
-                    // Detecção de atualizações
                     reg.addEventListener('updatefound', () => {
                         newWorker = reg.installing;
                         newWorker.addEventListener('statechange', () => {
@@ -3311,18 +3349,13 @@
                             }
                         });
                     });
-
-                }).catch(err => console.log('Erro ao registrar SW:', err));
+                }).catch(err => console.log('Erro SW:', err));
             });
 
-            // Clique no botão "Atualizar"
             btnAtualizar.addEventListener('click', () => {
-                if (newWorker) {
-                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                }
+                if (newWorker) newWorker.postMessage({ type: 'SKIP_WAITING' });
             });
 
-            // Recarrega a página automaticamente ao atualizar
             let refreshing;
             navigator.serviceWorker.addEventListener('controllerchange', () => {
                 if (refreshing) return;
@@ -3331,15 +3364,33 @@
             });
         }
 
-        // ==========================================
-        // 2. SISTEMA DE INSTALAÇÃO DO APP
-        // ==========================================
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); 
             deferredPrompt = e; 
             installBanner.style.display = 'flex'; 
             if(window.lucide) window.lucide.createIcons(); 
         });
+
+        btnSim.addEventListener('click', async () => {
+            installBanner.style.display = 'none';
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            }
+        });
+
+        btnNao.addEventListener('click', () => {
+            installBanner.style.display = 'none';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installBanner.style.display = 'none';
+            deferredPrompt = null;
+        });
+    </script>
+</body>
+</html>
 
         // Clique em "Baixar"
         btnSim.addEventListener('click', async () => {
