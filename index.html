@@ -13,7 +13,7 @@
     <title>RIFANDO</title>
 
     <!-- Conecta o Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Cor da barra de status no Android -->
     <meta name="theme-color" content="#000000">
@@ -3440,7 +3440,7 @@ setGridPage(page) {
 
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js').then(reg => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
                     reg.addEventListener('updatefound', () => {
                         newWorker = reg.installing;
                         newWorker.addEventListener('statechange', () => {
@@ -3470,24 +3470,6 @@ setGridPage(page) {
             deferredPrompt = e; 
             installBanner.style.display = 'flex'; 
             if(window.lucide) window.lucide.createIcons(); 
-        });
-
-        btnSim.addEventListener('click', async () => {
-            installBanner.style.display = 'none';
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
-            }
-        });
-
-        btnNao.addEventListener('click', () => {
-            installBanner.style.display = 'none';
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installBanner.style.display = 'none';
-            deferredPrompt = null;
         });
 
         // Clique em "Baixar"
