@@ -281,6 +281,49 @@
             display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px;
             max-height: auto; overflow-y: auto; padding-right: 4px;
         }
+        .grid-pagination {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+        .grid-pagination .page-btn {
+            min-width: 96px;
+            height: 40px;
+            border-radius: 999px;
+            background: var(--gray-400);
+            border: 1px solid var(--border-color);
+            color: var(--title-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+            padding: 0 18px;
+        }
+        .grid-pagination .page-btn:hover:not(:disabled) {
+            filter: brightness(1.15);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .grid-pagination .page-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            color: var(--text-color);
+        }
+        .grid-pagination .page-info {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-align: center;
+            white-space: nowrap;
+            padding: 0 4px;
+        }
+        
         .numbers-grid::-webkit-scrollbar { width: 0px; }
         .numbers-grid::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 0px; }
 
@@ -914,6 +957,7 @@
                     </div>
 
                     <div class="numbers-grid" id="grid"></div>
+                    <div class="grid-pagination" id="grid-pagination" style="display:none;"></div>
                 </div>
 
 
@@ -1500,6 +1544,8 @@
                 this.ganhadores = {}; 
                 this.selected = new Set();
                 this.gridFilter = 'all';
+                this.gridPage = 0;
+                this.pageSize = 100;
                 this.pendingAction = null;
                 this.doacaoAtiva = null; 
 
@@ -1830,13 +1876,14 @@
             }
 
             renderGrid() {
-                const grid = document.getElementById('grid'); if(!grid) return;
+                const grid = document.getElementById('grid');
+                if (!grid) return;
 
                 const total = parseInt(this.config.total) || 100;
                 const padLen = Math.max(3, (total - 1).toString().length);
-                let html = '';
+                const matching = [];
 
-                for(let i = 0; i < total; i++) {
+                for (let i = 0; i < total; i++) {
                     const n = i.toString().padStart(padLen, '0');
                     const info = this.dbNumbers[n];
                     const isSel = this.selected.has(n);
@@ -1846,14 +1893,30 @@
                         if (this.gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
                         if (this.gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
                         if (this.gridFilter === 'selected' && !isSel) continue;
-                        if (this.gridFilter === 'donated' && (!info || !info.status.includes('donated'))) continue;
+                        if (this.gridFilter === 'donated' && (!info || !String(info.status).includes('donated'))) continue;
                     }
+                    matching.push(n);
+                }
 
+                const totalPages = Math.max(1, Math.ceil(matching.length / this.pageSize));
+                if (this.gridPage >= totalPages) this.gridPage = totalPages - 1;
+                if (this.gridPage < 0) this.gridPage = 0;
+
+                const start = this.gridPage * this.pageSize;
+                const pageItems = matching.slice(start, start + this.pageSize);
+
+                let html = '';
+                pageItems.forEach(n => {
+                    const info = this.dbNumbers[n];
+                    const isSel = this.selected.has(n);
                     let classes = 'num-cell';
                     if (info) classes += ` ${info.status}`;
                     else if (isSel) classes += ' selected';
-
                     html += `<div class="${classes}" data-n="${n}">${n}</div>`;
+                });
+
+                if (pageItems.length === 0) {
+                    html = `<div style="grid-column:1/-1;text-align:center;padding:24px;color:var(--text-color);font-size:13px;">Nenhuma cota neste filtro.</div>`;
                 }
 
                 grid.innerHTML = html;
@@ -1864,14 +1927,19 @@
                         const info = this.dbNumbers[n];
                         if (info) {
                             const nomeComprador = info.nome ? info.nome.toUpperCase() : 'ALGUÉM';
-                            const statusStr = info.status === 'paid' ? 'Pago' : (info.status === 'donated' ? 'Doação Recebida' : (info.status === 'donated_pending' ? 'Doação Pendente' : 'Reservado'));
+                            const statusStr = info.status === 'paid' ? 'Pago'
+                                : (info.status === 'donated' ? 'Doação Recebida'
+                                : (info.status === 'donated_pending' ? 'Doação Pendente' : 'Reservado'));
                             this.showToast(`Cota de ${nomeComprador} (${statusStr})`);
                         } else {
                             this.selected.has(n) ? this.selected.delete(n) : this.selected.add(n);
-                            this.renderGrid(); window.cartManager.updateCartUI();
+                            this.renderGrid();
+                            window.cartManager.updateCartUI();
                         }
                     }
                 };
+
+                this.renderGridPagination(matching.length, totalPages);
 
                 const cotasVendidas = Object.keys(this.dbNumbers).length;
                 let porcentagem = total > 0 ? (cotasVendidas / total) * 100 : 0;
@@ -1884,9 +1952,41 @@
                     progressText.innerText = Math.round(porcentagem) + '%';
                 }
             }
+            renderGridPagination(totalItems, totalPages) {
+                const pag = document.getElementById('grid-pagination');
+                if (!pag) return;
+
+                if (totalItems <= this.pageSize) {
+                    pag.style.display = 'none';
+                    pag.innerHTML = '';
+                    return;
+                }
+
+                pag.style.display = 'flex';
+                const current = this.gridPage;
+
+                pag.innerHTML = `
+                    <button type="button" class="page-btn" onclick="window.rifaApp.setGridPage(${current - 1})" ${current === 0 ? 'disabled' : ''}>
+                        Anterior
+                    </button>
+                    <span class="page-info">Página ${current + 1} / ${totalPages} (${totalItems} cotas)</span>
+                    <button type="button" class="page-btn" onclick="window.rifaApp.setGridPage(${current + 1})" ${current >= totalPages - 1 ? 'disabled' : ''}>
+                        Próxima
+                    </button>
+                `;
+            }
+
+setGridPage(page) {
+    this.gridPage = Math.max(0, parseInt(page) || 0);
+    this.renderGrid();
+    const cardGrid = document.getElementById('card-grid');
+    if (cardGrid) cardGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 
             setGridFilter(f) {
                 this.gridFilter = f;
+                this.gridPage = 0;  // ← esta linha
+    // ... resto igual
                 document.querySelectorAll('.filter-tabs .filter-tab').forEach(c => {
                     if(!c.classList.contains('admin-tab') && !c.classList.contains('config-tab')) {
                         c.classList.toggle('active', c.dataset.filter === f);
