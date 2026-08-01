@@ -131,7 +131,7 @@
         }
 
         .card-header { border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px; }
-        .card-title { font-size: 20px; font-weight: 700; color: var(--title-color); margin-bottom: 8px; line-height: 1.2; }
+        .card-title { font-size: 30px; font-weight: 700; color: var(--title-color); margin-bottom: 8px; line-height: 1.2;}
         .price-badge {
             display: inline-flex; align-items: center; gap: 6px;
             background-color: var(--gray-200); color: var(--title-color);
@@ -413,9 +413,10 @@
             z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
         }
         .modal-card {
-            background-color: var(--gray-500); width: 100%; max-width: 400px;
-            border-radius: 16px; padding: 24px; border: 1px solid var(--border-color);
+            background-color: transparent; width: 100%; max-width: 400px;
+            border-radius: 16px; padding: 24px; border: 0px solid var(--border-color);
             max-height: 90vh; overflow-y: auto;
+            scrollbar-width: none;
         }
 
         .toast {
@@ -887,7 +888,7 @@
                     </div>
 
                     <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--title-color);">Prêmios:</h3>
-                    <div id="premios-list" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;"></div>
+                    <div id="premios-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;"></div>
                 </div>
 
                 <div class="progress-container">
@@ -1432,8 +1433,8 @@
     </div>
 
     <div class="modal-overlay" id="modal-confirm">
-        <div class="modal-card" style="text-align: center; max-width: 320px;">
-            <div style="width: 56px; height: 56px; background-color: rgba(255, 77, 77, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid var(--danger);">
+        <div class="modal-card" style="text-align: center; max-width: 520px;">
+            <div style="width: 100px; height: 100px; background-color: rgba(255, 77, 77, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto; border: 1px solid var(--danger);">
                 <i data-lucide="alert-triangle" style="color: var(--danger);"></i>
             </div>
             <h3 style="color: var(--title-color); margin-bottom:12px; font-size: 18px;">Atenção</h3>
@@ -1456,8 +1457,8 @@
     <div class="modal-overlay" id="modal-premio-foto">
         <div class="modal-card" style="text-align: center; max-width: 420px;">
             <h3 id="premio-foto-titulo" style="color:var(--title-color); margin-bottom:16px; font-size: 18px;"></h3>
-            <div style="background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 16px;">
-                <img id="premio-foto-img" src="" alt="Foto do Prêmio" style="width: 100%; max-height: 360px; object-fit: contain; display: block;">
+            <div style="background: #00000; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); margin-bottom: 16px;">
+                <img id="premio-foto-img" src="" alt="Foto do Prêmio" style="width: 100%; max-height: 560px; object-fit: contain; display: block;">
             </div>
             <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color);" onclick="window.rifaApp.closeModal('modal-premio-foto')">Fechar</button>
         </div>
