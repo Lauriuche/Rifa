@@ -97,8 +97,12 @@
         .header-btn:hover { color: var(--primary-color); }
         .header-btn span { font-size: 10px; font-weight: 500; }
 
-        .main-container { margin-top: 50px; position: center; min-height: calc(100vh - 66px); padding-bottom: 90px; }
-
+        .main-container {
+            margin-top:35px; /* igual à altura do header */
+            position: top;
+            min-height: calc(100vh - 66px);
+            padding-bottom: 90px;
+        }
         .hero-blur {
             position: absolute; top: 0; left: 0; right: 0; width: 100%; height: 350px;
             opacity: 0.4; filter: blur(20px); pointer-events: none;
@@ -109,8 +113,14 @@
         .hero-blur img { width: 100%; height: 100%; object-fit: cover; }
 
         .hero-image-container {
-            position: center; width: 100%; max-width: 800px; margin: 0 auto;
-            height: auto; aspect-ratio: 20/9; z-index: 15; padding: 20px;
+            position: relative;
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+            height: auto;
+            aspect-ratio: 20/9;
+            z-index: 15;
+            padding: 4px 16px 16px; /* topo quase colado; laterais e baixo ok */
         }
         .hero-image-container img {
             width: 100%; height: 100%; object-fit: justify; border-radius: 12px;
@@ -420,9 +430,22 @@
         }
 
         .toast {
-            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-            background: #fff; color: #000; padding: 12px 24px; border-radius: 8px;
-            font-weight: 700; z-index: 2000; display: none; font-size: 14px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            color: #000;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            z-index: 2000;
+            display: none;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            text-align: center;
+            max-width: 90%;
+            line-height: 1.4;
         }
 
         .admin-item {
@@ -2215,22 +2238,46 @@ setGridPage(page) {
 
                         const nome = filtered[0][1].nome;
 
-                        if(pendentes.length > 0) {
-                            const totalPendente = pendentes.reduce((acc, n) => acc + (parseFloat(all[n].valor_fixado_unidade) || parseFloat(this.config.valor)), 0);
-                            const listaStr = pendentes.join(',');
-                            const nomeSafe = nome.replace(/'/g, "\\'");
-                            const reservedAts = pendentes.map(n => all[n].reservedAt || 0).filter(Boolean);
+                       if (pendentes.length > 0) {
+                            this._pendentesConsulta = pendentes.map(n => ({
+                                n,
+                                valor: parseFloat(all[n].valor_fixado_unidade) || parseFloat(this.config.valor) || 0,
+                                reservedAt: all[n].reservedAt || 0
+                            }));
+                            this._pendenteNome = nome;
+                            this._pendenteTel = tel;
+
+                            const totalPendente = this._pendentesConsulta.reduce((acc, p) => acc + p.valor, 0);
+                            const reservedAts = this._pendentesConsulta.map(p => p.reservedAt).filter(Boolean);
                             const oldest = reservedAts.length ? Math.min(...reservedAts) : 0;
                             const expiresAt = oldest ? (oldest + this.getReservaTimeoutMs()) : 0;
                             const hasTimer = expiresAt > 0;
+
+                            const checksHtml = this._pendentesConsulta.map((p, i) => `
+                                <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--gray-400);border-radius:8px;margin-bottom:6px;cursor:pointer;border:1px solid var(--border-color);">
+                                    <input type="checkbox" class="pendente-check" value="${p.n}" data-valor="${p.valor}" checked
+                                        onchange="window.rifaApp.atualizarTotalPendentes()"
+                                        style="width:18px;height:18px;accent-color:var(--primary-color);">
+                                    <span style="flex:1;color:var(--title-color);font-weight:600;font-size:13px;">Cota pendente #${i + 1}</span>
+                                    <span style="color:var(--primary-color);font-weight:700;font-size:13px;">R$ ${p.valor.toFixed(2).replace('.', ',')}</span>
+                                </label>
+                            `).join('');
 
                             area.innerHTML += `
                                 <div class="admin-item" style="border-color:var(--reserved); text-align:center;">
                                     <b style="color:var(--reserved); font-size:13px; text-transform: uppercase;">Aguardando Pagamento</b>
                                     ${hasTimer ? `<p id="reserva-timer-live" style="font-size:13px; color:var(--danger); font-weight:700; margin-top:8px;">Tempo restante: --</p>` : ''}
-                                    <p style="font-weight:700; margin:12px 0; font-size:16px; color: var(--title-color);">${pendentes.join(', ')}</p>
-                                    <p style="font-size:20px; font-weight:800; color:var(--primary-color); margin-bottom:16px">R$ ${totalPendente.toFixed(2).replace('.',',')}</p>
-                                    <button class="btn-participar" id="btn-pay-existing" style="padding: 14px; font-size: 14px;" onclick="window.cartManager.pagarExistente('${tel}', '${nomeSafe}', '${listaStr}', ${totalPendente})">PAGAR AGORA (PIX)</button>
+                                    <p style="font-size:13px; color:var(--text-color); margin:12px 0 8px;">
+                                        ${pendentes.length} cota(s) pendente(s) — selecione quais deseja pagar:
+                                    </p>
+                                    <div style="text-align:left; margin-bottom:12px;">${checksHtml}</div>
+                                    <p id="pendente-total-display" style="font-size:20px; font-weight:800; color:var(--primary-color); margin-bottom:16px">
+                                        R$ ${totalPendente.toFixed(2).replace('.', ',')}
+                                    </p>
+                                    <button class="btn-participar" id="btn-pay-existing" style="padding: 14px; font-size: 14px;"
+                                        onclick="window.cartManager.abrirCheckoutExistente()">
+                                        PAGAR AGORA (PIX)
+                                    </button>
                                 </div>`;
 
                             if (hasTimer) this.startConsultaReservaTimer(expiresAt);
@@ -2263,12 +2310,26 @@ setGridPage(page) {
                     }
                 }
             }
+            
+            atualizarTotalPendentes() {
+                let total = 0;
+                document.querySelectorAll('.pendente-check:checked').forEach(el => {
+                    total += parseFloat(el.dataset.valor) || 0;
+                });
+                const el = document.getElementById('pendente-total-display');
+                if (el) el.innerText = 'R$ ' + total.toFixed(2).replace('.', ',');
+            }
 
             askAdmin() { if(window.adminPanel.isAdmin) this.switchTab('admin'); else document.getElementById('modal-pin').style.display = 'flex'; }
 
             closeModal(id) { 
                 document.getElementById(id).style.display = 'none'; 
                 if (id === 'modal-checkout') {
+                    if (window.cartManager) {
+                        window.cartManager._pagamentoExistente = null;
+                        const btnLater = document.getElementById('btn-pay-later');
+                        if (btnLater) btnLater.style.display = '';
+                    }
                     if (window.cartManager && window.cartManager.pixInterval) {
                         clearInterval(window.cartManager.pixInterval);
                     }
@@ -2356,15 +2417,19 @@ setGridPage(page) {
             aplicarCupom() {
                 const cod = document.getElementById('checkout-cupom').value.trim().toUpperCase();
                 if (!cod) return;
-
+            
                 const cupom = (this.app.config.cupons || []).find(c => c.codigo.toUpperCase() === cod);
                 if (cupom) {
                     this.cupomAplicado = cupom;
-                    this.app.showToast("Cupom aplicado com sucesso!");
-                    this.atualizarValoresCheckout();
+                    this.app.showToast('Cupom aplicado com sucesso!');
                 } else {
-                    this.app.showToast("Cupom inválido ou inativo.");
+                    this.app.showToast('Cupom inválido ou inativo.');
                     this.cupomAplicado = null;
+                }
+            
+                if (this._pagamentoExistente) {
+                    this.atualizarValoresCheckoutExistente();
+                } else {
                     this.atualizarValoresCheckout();
                 }
             }
@@ -2518,6 +2583,39 @@ setGridPage(page) {
             }
 
             async confirmarReserva(action = 'agora') {
+                // Pagar cotas já reservadas (Meus bilhetes)
+                if (this._pagamentoExistente) {
+                    if (action === 'depois') {
+                        this.app.closeModal('modal-checkout');
+                        this._pagamentoExistente = null;
+                        return;
+                    }
+                    const pe = this._pagamentoExistente;
+                    const total = pe.totalFinal != null ? pe.totalFinal : pe.totalBase;
+                    const priceCents = Math.round(Number(total).toFixed(2) * 100);
+                    const oid = 'RP' + Date.now();
+                    const listaStr = pe.lista.join(',');
+                    const btnNow = document.getElementById('btn-pay-now');
+                    if (btnNow) btnNow.disabled = true;
+                    try {
+                        const up = {};
+                        pe.lista.forEach(n => { up[`${n}/order_nsu`] = oid; });
+                        await update(numRef, up);
+                        const payData = {
+                            nsu: oid,
+                            nome: pe.nome,
+                            telefone: pe.tel,
+                            priceCents,
+                            description: 'Pagar Bilhetes'
+                        };
+                        await this.processarPagamentoPix(payData, true, listaStr);
+                    } catch (e) {
+                        if (btnNow) btnNow.disabled = false;
+                        this.app.showToast('Erro ao iniciar pagamento');
+                    }
+                    return;
+                }
+                
                 const n = document.getElementById('cust-name').value.trim();
                 const t = document.getElementById('cust-phone').value.trim(); 
 
@@ -2567,24 +2665,68 @@ setGridPage(page) {
                 } 
             }
 
-            async pagarExistente(tel, nome, listaStr, totalCusto) {
-                const btnPayEx = document.getElementById('btn-pay-existing');
-                if(btnPayEx) { btnPayEx.disabled = true; btnPayEx.innerText = 'Processando...'; }
-                this.app.showToast("Gerando PIX...");
-
-                const priceCents = Math.round(parseFloat(totalCusto).toFixed(2) * 100);
-                const oid = "RP" + Date.now();
-
-                try {
-                    const up = {}; listaStr.split(',').forEach(n => up[`${n}/order_nsu`] = oid);
-                    await update(numRef, up);
-
-                    const payData = { nsu: oid, nome: nome, telefone: tel, priceCents: priceCents, description: `Pagar Bilhetes` };
-                    await this.processarPagamentoPix(payData, true, listaStr);
-                } catch(e) { 
-                    if(btnPayEx) { btnPayEx.disabled = false; btnPayEx.innerText = 'PAGAR AGORA (PIX)'; }
-                    this.app.showToast("Erro ao iniciar pagamento"); 
+            abrirCheckoutExistente() {
+                const checks = [...document.querySelectorAll('.pendente-check:checked')];
+                if (checks.length === 0) {
+                    return this.app.showToast('Selecione ao menos uma cota para pagar.');
                 }
+            
+                const lista = checks.map(c => c.value);
+                const total = checks.reduce((acc, c) => acc + (parseFloat(c.dataset.valor) || 0), 0);
+            
+                this._pagamentoExistente = {
+                    tel: this.app._pendenteTel,
+                    nome: this.app._pendenteNome,
+                    lista,
+                    totalBase: total
+                };
+            
+                this.cupomAplicado = null;
+                const inputCupom = document.getElementById('checkout-cupom');
+                if (inputCupom) inputCupom.value = '';
+            
+                const nameEl = document.getElementById('cust-name');
+                const phoneEl = document.getElementById('cust-phone');
+                if (nameEl) nameEl.value = this.app._pendenteNome || '';
+                if (phoneEl) phoneEl.value = this.app._pendenteTel || '';
+            
+                this.atualizarValoresCheckoutExistente();
+            
+                document.getElementById('checkout-step-1').style.display = 'block';
+                document.getElementById('checkout-step-2').style.display = 'none';
+                document.getElementById('modal-checkout').style.display = 'flex';
+                this.startTimer(this.app.getPixTimeoutMin());
+            
+                const btnLater = document.getElementById('btn-pay-later');
+                if (btnLater) btnLater.style.display = 'none';
+            }
+            
+            atualizarValoresCheckoutExistente() {
+                if (!this._pagamentoExistente) return;
+            
+                let final = this._pagamentoExistente.totalBase;
+                let cupomDiscount = 0;
+            
+                if (this.cupomAplicado) {
+                    if (this.cupomAplicado.tipo === 'pct') {
+                        cupomDiscount = final * (this.cupomAplicado.valor / 100);
+                    } else {
+                        cupomDiscount = this.cupomAplicado.valor;
+                    }
+                    final = Math.max(0, final - cupomDiscount);
+                }
+            
+                this._pagamentoExistente.totalFinal = final;
+            
+                document.getElementById('checkout-final-val').innerText =
+                    final.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            
+                const desc = document.getElementById('checkout-discount-info');
+                let info = `${this._pagamentoExistente.lista.length} cota(s) selecionada(s)`;
+                if (cupomDiscount > 0) {
+                    info += `<br><span style="color:var(--primary-color)">Cupom: - R$ ${cupomDiscount.toFixed(2).replace('.', ',')}</span>`;
+                }
+                desc.innerHTML = info;
             }
         }
 
