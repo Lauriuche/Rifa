@@ -263,7 +263,7 @@
         }
 
         .btn-participar {
-            width: 100%; max-width: 600px; background-color: var(--primary-color); color: #fff;
+            width: 100%; max-width: 800px; background-color: var(--primary-color); color: #fff;
             font-size: 16px; font-weight: 700; padding: 16px; border-radius: 12px;
             cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
             text-transform: uppercase;
@@ -745,7 +745,7 @@
         .btn-doacao .doacao-badge .val {
             font-size: 15px;
             font-weight: 800;
-            color: #fff;
+            color: var(--donated);
         }
 
         /* Estado expandido com +/- laterais */
@@ -3006,7 +3006,7 @@ setGridPage(page) {
                         if (cotasDoacao.length > 0) {
                             cotasBlocks += `
                                 <div style="background:rgba(214,51,132,0.08); padding:12px; border-radius:8px; margin-bottom:10px; font-size:13px; border: 1px solid rgba(214,51,132,0.35);">
-                                    <div style="font-size:11px; font-weight:700; color:var(--donated); margin-bottom:6px; text-transform:uppercase;">🎁 Doação (${cotasDoacao.length})</div>
+                                    <div style="font-size:11px; font-weight:700; color:var(--donated); margin-bottom:6px; text-transform:uppercase;"> Doação (${cotasDoacao.length})</div>
                                     ${cotasDoacao.map(c => `<span style="color:${this.statusColor(c.status)}; font-weight: 600;">${c.n}</span>`).join(', ')}
                                 </div>`;
                         }
@@ -3014,7 +3014,7 @@ setGridPage(page) {
                             cotasBlocks += `
                                 <div style="background:rgba(255,170,0,0.08); padding:12px; border-radius:8px; margin-bottom:10px; font-size:13px; border: 1px solid rgba(255,170,0,0.35);">
                                     <div style="font-size:11px; font-weight:700; color:var(--reserved); margin-bottom:6px; text-transform:uppercase;">⏳ Pendentes (${cotasPendentes.length})</div>
-                                    ${cotasPendentes.map(c => `<span style="color:${this.statusColor(c.status)}; font-weight: 600;">${c.n}${c.isDoacao ? ' 🎁' : ''}</span>`).join(', ')}
+                                    ${cotasPendentes.map(c => `<span style="color:${this.statusColor(c.status)}; font-weight: 600;">${c.n}${c.isDoacao ? '' : ''}</span>`).join(', ')}
                                 </div>`;
                         }
 
