@@ -1170,7 +1170,7 @@
                 <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo">
                 <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
 
-                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <div id="checkout-cupom-wrap" style="display: none; gap: 8px; margin-bottom: 16px;">
                     <input type="text" id="checkout-cupom" class="input-form" placeholder="Tem cupom de desconto?" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
                     <button class="btn-participar" style="width: auto; padding: 0 20px; font-size: 14px; margin-bottom: 0;" onclick="window.cartManager.aplicarCupom()">Aplicar</button>
                 </div>
@@ -1391,6 +1391,18 @@
 
 
             <div id="cfg-tab-doacoes" class="cfg-content" style="display: none;">
+                <div class="cfg-section" style="margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <label style="font-size: 13px; font-weight: 700; color: var(--title-color); display: block;">Mostrar Lista de Presentes</label>
+                            <p style="font-size: 11px; color: var(--text-color); margin-top: 4px;">Quando desativado, a seção de doações some da página principal.</p>
+                        </div>
+                        <div class="toggle-switch" id="btn-toggle-doacoes" onclick="window.adminPanel.toggleDoacoes()">
+                            <span class="toggle-label">OFF</span>
+                            <div class="toggle-track"></div>
+                        </div>
+                    </div>
+                </div>
                 <div class="cfg-section-title" style="color: var(--donated); margin-bottom: 8px;"><i data-lucide="gift" style="width:16px;"></i> Itens de Doação</div>
                 <p style="font-size: 12px; color: var(--text-color); margin-bottom: 14px;">Defina os itens e valores. O sistema calcula os bilhetes automaticamente (arredondando para cima).</p>
                 <div id="doacoes-config-list"></div>
@@ -1428,6 +1440,24 @@
                     <button class="cfg-add-btn" onclick="window.adminPanel.addCupomRow()">
                         <i data-lucide="plus" style="width: 16px;"></i> Adicionar Cupom
                     </button>
+                </div>
+
+                <div class="cfg-section">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; gap:8px; flex-wrap:wrap;">
+                        <div class="cfg-section-title" style="color: var(--primary-color); margin-bottom: 0;"><i data-lucide="history" style="width:16px;"></i> Histórico de Uso</div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" class="btn-admin bg-orange" style="padding:6px 10px;" onclick="window.adminPanel.carregarHistoricoCupons()">
+                                Atualizar
+                            </button>
+                            <button type="button" class="btn-admin bg-red" style="padding:6px 10px;" onclick="window.rifaApp.requestConfirmAction('Limpar todo o histórico de cupons?', () => window.adminPanel.limparHistoricoCupons())">
+                                Limpar
+                            </button>
+                        </div>
+                    </div>
+                    <input type="text" id="hist-cupom-filtro" class="input-form" placeholder="Filtrar por código, nome ou telefone..." style="margin-bottom:10px;" oninput="window.adminPanel.filtrarHistoricoCupons()">
+                    <div id="cupons-historico-list" style="max-height:280px; overflow-y:auto;">
+                        <p style="font-size:12px; color:var(--text-color); text-align:center; padding:12px;">Carregando...</p>
+                    </div>
                 </div>
             </div>
 
@@ -1486,7 +1516,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set, get, update, onValue, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, set, get, update, onValue, remove, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
@@ -1509,6 +1539,7 @@
         const cfgRef = ref(db, `${dbPath}/config`);
         const numRef = ref(db, `${dbPath}/numeros`);
         const ganhadoresRef = ref(db, `${dbPath}/ganhadores`);
+        const cuponsHistRef = ref(db, `${dbPath}/cupons_historico`);
 
         const BACKEND_URL = "https://rifa-1-m8tv.onrender.com";
 
@@ -1554,7 +1585,7 @@
                     premio: "Carregando...", descricao: "", valor: 5, total: 1000, 
                     pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", 
                     promosActive: false, promos: [], pixel: "", premios: [], 
-                    cupons: [], quickSelects: [], doacoes: [], ocultarNumeros: false,
+                    cupons: [], quickSelects: [], doacoes: [], doacoesActive: true, ocultarNumeros: false,
                     capa: "", reservaMinutos: 15, pixMinutos: 15,
                     theme: { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' }
                 };
@@ -1846,8 +1877,9 @@
                 const doacoesGrid = document.getElementById('doacoes-grid');
                 const cardDoacoes = document.getElementById('card-doacoes');
                 const tabDoacaoGrid = document.getElementById('tab-doacoes-grid');
+                const showDoacoes = this.config.doacoesActive !== false && this.config.doacoes && this.config.doacoes.length > 0;
 
-                if (this.config.doacoes && this.config.doacoes.length > 0) {
+                if (showDoacoes) {
                     cardDoacoes.style.display = 'block';
                     tabDoacaoGrid.style.display = 'inline-block';
                     doacoesGrid.innerHTML = '';
@@ -2414,13 +2446,21 @@ setGridPage(page) {
                 const cod = document.getElementById('checkout-cupom').value.trim().toUpperCase();
                 if (!cod) return;
             
-                const cupom = (this.app.config.cupons || []).find(c => c.codigo.toUpperCase() === cod);
-                if (cupom) {
-                    this.cupomAplicado = cupom;
-                    this.app.showToast('Cupom aplicado com sucesso!');
-                } else {
+                const cupom = (this.app.config.cupons || []).find(c => c.codigo && c.codigo.toUpperCase() === cod);
+                if (!cupom) {
                     this.app.showToast('Cupom inválido ou inativo.');
                     this.cupomAplicado = null;
+                } else {
+                    const limite = parseInt(cupom.limite) || 0;
+                    const usados = parseInt(cupom.usados) || 0;
+                    if (limite > 0 && usados >= limite) {
+                        this.app.showToast('Cupom esgotado (limite de usos atingido).');
+                        this.cupomAplicado = null;
+                    } else {
+                        this.cupomAplicado = cupom;
+                        const rest = limite > 0 ? ` (${limite - usados} restante${limite - usados !== 1 ? 's' : ''})` : '';
+                        this.app.showToast('Cupom aplicado com sucesso!' + rest);
+                    }
                 }
             
                 if (this._pagamentoExistente) {
@@ -2430,9 +2470,42 @@ setGridPage(page) {
                 }
             }
 
+            /** Incrementa o contador de usos + grava histórico após pagamento aprovado */
+            async registrarUsoCupom(ctx = {}) {
+                if (!this.cupomAplicado || !this.cupomAplicado.codigo) return;
+                const cupom = this.cupomAplicado;
+                const cod = cupom.codigo.toUpperCase();
+                const cupons = (this.app.config.cupons || []).map(c => {
+                    if (c.codigo && c.codigo.toUpperCase() === cod) {
+                        return { ...c, usados: (parseInt(c.usados) || 0) + 1 };
+                    }
+                    return c;
+                });
+                try {
+                    await update(cfgRef, { cupons });
+
+                    const historico = {
+                        codigo: cod,
+                        tipo: cupom.tipo || 'pct',
+                        valorCupom: parseFloat(cupom.valor) || 0,
+                        descontoAplicado: ctx.descontoAplicado != null ? ctx.descontoAplicado : null,
+                        valorPago: ctx.valorPago != null ? ctx.valorPago : null,
+                        nome: ctx.nome || '',
+                        telefone: ctx.telefone || '',
+                        order_nsu: ctx.nsu || '',
+                        cotas: ctx.cotas || '',
+                        data: Date.now()
+                    };
+                    await push(cuponsHistRef, historico);
+                } catch (e) {
+                    console.warn('Falha ao registrar uso do cupom', e);
+                }
+            }
+
             atualizarValoresCheckout() {
                 const res = this.calculateBestPrice(this.app.selected.size); 
                 document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
+                this._ultimoDescontoCupom = res.cupomDiscount || 0;
 
                 const desc = document.getElementById('checkout-discount-info');
                 let infoText = "";
@@ -2464,6 +2537,10 @@ setGridPage(page) {
                 this.cupomAplicado = null;
                 const inputCupom = document.getElementById('checkout-cupom');
                 if(inputCupom) inputCupom.value = "";
+
+                const wrap = document.getElementById('checkout-cupom-wrap');
+                const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
+                if (wrap) wrap.style.display = temCupons ? 'flex' : 'none';
 
                 this.atualizarValoresCheckout();
 
@@ -2535,6 +2612,15 @@ setGridPage(page) {
                                 const up = {};
                                 cotasPagas.forEach(n => up[`${n}/status`] = 'paid');
                                 await update(numRef, up);
+
+                                await this.registrarUsoCupom({
+                                    nome: payData.nome || '',
+                                    telefone: payData.telefone || '',
+                                    nsu: payData.nsu || '',
+                                    valorPago: (payData.priceCents || 0) / 100,
+                                    descontoAplicado: this._ultimoDescontoCupom || 0,
+                                    cotas: cotasTxt
+                                });
 
                                 this.app.showToast("Pagamento Confirmado!");
                                 if(window.fbq && !isExisting) window.fbq('track', 'Purchase', {value: payData.priceCents / 100, currency: 'BRL'});
@@ -2680,6 +2766,10 @@ setGridPage(page) {
                 this.cupomAplicado = null;
                 const inputCupom = document.getElementById('checkout-cupom');
                 if (inputCupom) inputCupom.value = '';
+
+                const wrap = document.getElementById('checkout-cupom-wrap');
+                const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
+                if (wrap) wrap.style.display = temCupons ? 'flex' : 'none';
             
                 const nameEl = document.getElementById('cust-name');
                 const phoneEl = document.getElementById('cust-phone');
@@ -2713,6 +2803,7 @@ setGridPage(page) {
                 }
             
                 this._pagamentoExistente.totalFinal = final;
+                this._ultimoDescontoCupom = cupomDiscount || 0;
             
                 document.getElementById('checkout-final-val').innerText =
                     final.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -3222,9 +3313,13 @@ setGridPage(page) {
             }
 
             resetRifa() { 
-                this.app.requestConfirmAction('Certeza que deseja deletar TODAS as cotas, doações e ganhadores?', async () => { 
+                this.app.requestConfirmAction('Certeza que deseja deletar TODAS as cotas, doações, ganhadores e histórico de cupons?', async () => { 
                     await remove(numRef); 
                     await remove(ganhadoresRef);
+                    await remove(cuponsHistRef);
+                    // zera contador de usos dos cupons
+                    const cupons = (this.app.config.cupons || []).map(c => ({ ...c, usados: 0 }));
+                    if (cupons.length) await update(cfgRef, { cupons });
                     this.app.showToast("Rifa Resetada"); 
                 }); 
             }
@@ -3251,6 +3346,7 @@ setGridPage(page) {
                 }
                 document.querySelectorAll('.config-tab').forEach(el => el.classList.remove('active'));
                 if(btn) btn.classList.add('active');
+                if (tabId === 'ofertas') this.carregarHistoricoCupons();
                 lucide.createIcons();
             }
 
@@ -3292,6 +3388,7 @@ setGridPage(page) {
 
 
                 this._updateToggleUI(document.getElementById('btn-toggle-promos'), !!this.app.config.promosActive);
+                this._updateToggleUI(document.getElementById('btn-toggle-doacoes'), this.app.config.doacoesActive !== false);
                 this._updateToggleUI(document.getElementById('btn-toggle-ocultar'), !!this.app.config.ocultarNumeros);
 
                 const pList = document.getElementById('promos-list'); pList.innerHTML = '';
@@ -3319,6 +3416,89 @@ setGridPage(page) {
             togglePromos() { 
                 this.app.config.promosActive = !this.app.config.promosActive; 
                 this._updateToggleUI(document.getElementById('btn-toggle-promos'), this.app.config.promosActive);
+            }
+
+            toggleDoacoes() {
+                this.app.config.doacoesActive = !(this.app.config.doacoesActive !== false);
+                this._updateToggleUI(document.getElementById('btn-toggle-doacoes'), this.app.config.doacoesActive !== false);
+            }
+
+            async carregarHistoricoCupons() {
+                const box = document.getElementById('cupons-historico-list');
+                if (!box) return;
+                box.innerHTML = '<p style="font-size:12px; color:var(--text-color); text-align:center; padding:12px;">Carregando...</p>';
+                try {
+                    const snap = await get(cuponsHistRef);
+                    this._cuponsHistorico = [];
+                    if (snap.exists()) {
+                        Object.entries(snap.val()).forEach(([id, h]) => {
+                            this._cuponsHistorico.push({ id, ...h });
+                        });
+                        this._cuponsHistorico.sort((a, b) => (b.data || 0) - (a.data || 0));
+                    }
+                    this.renderHistoricoCupons(this._cuponsHistorico);
+                } catch (e) {
+                    box.innerHTML = '<p style="font-size:12px; color:var(--danger); text-align:center; padding:12px;">Erro ao carregar histórico.</p>';
+                }
+            }
+
+            filtrarHistoricoCupons() {
+                const q = (document.getElementById('hist-cupom-filtro')?.value || '').toLowerCase().trim();
+                const list = this._cuponsHistorico || [];
+                if (!q) return this.renderHistoricoCupons(list);
+                const filtered = list.filter(h =>
+                    (h.codigo || '').toLowerCase().includes(q) ||
+                    (h.nome || '').toLowerCase().includes(q) ||
+                    (h.telefone || '').replace(/\D/g, '').includes(q.replace(/\D/g, ''))
+                );
+                this.renderHistoricoCupons(filtered);
+            }
+
+            renderHistoricoCupons(lista) {
+                const box = document.getElementById('cupons-historico-list');
+                if (!box) return;
+                if (!lista || lista.length === 0) {
+                    box.innerHTML = '<p style="font-size:12px; color:var(--text-color); text-align:center; padding:12px;">Nenhum uso registrado.</p>';
+                    return;
+                }
+                box.innerHTML = lista.map(h => {
+                    const dt = h.data ? new Date(h.data) : null;
+                    const dataStr = dt ? dt.toLocaleString('pt-BR') : '—';
+                    const tipoLabel = h.tipo === 'pct' ? `${h.valorCupom || 0}%` : `R$ ${Number(h.valorCupom || 0).toFixed(2).replace('.', ',')}`;
+                    const desc = h.descontoAplicado != null
+                        ? `R$ ${Number(h.descontoAplicado).toFixed(2).replace('.', ',')}`
+                        : '—';
+                    const pago = h.valorPago != null
+                        ? `R$ ${Number(h.valorPago).toFixed(2).replace('.', ',')}`
+                        : '—';
+                    const tel = (h.telefone || '').replace(/\D/g, '');
+                    return `
+                        <div class="cfg-list-item" style="padding:10px 12px;">
+                            <div style="display:flex; justify-content:space-between; gap:8px; align-items:flex-start; margin-bottom:6px;">
+                                <b style="color:var(--primary-color); font-size:13px;">${h.codigo || '—'}</b>
+                                <span style="font-size:11px; color:var(--text-color); white-space:nowrap;">${dataStr}</span>
+                            </div>
+                            <div style="font-size:12px; color:var(--title-color); font-weight:600; margin-bottom:4px;">${(h.nome || '—').toUpperCase()}</div>
+                            <div style="font-size:11px; color:var(--text-color); line-height:1.5;">
+                                Tel: ${h.telefone || '—'}
+                                ${tel ? ` · <a href="https://wa.me/55${tel}" target="_blank" style="color:#25d366;font-weight:700;">WhatsApp</a>` : ''}<br>
+                                Cupom: ${tipoLabel} · Desconto: <span style="color:var(--paid);font-weight:700;">${desc}</span> · Pago: ${pago}<br>
+                                ${h.cotas ? `Cotas: ${h.cotas}<br>` : ''}
+                                ${h.order_nsu ? `NSU: ${h.order_nsu}` : ''}
+                            </div>
+                        </div>`;
+                }).join('');
+            }
+
+            async limparHistoricoCupons() {
+                try {
+                    await remove(cuponsHistRef);
+                    this._cuponsHistorico = [];
+                    this.renderHistoricoCupons([]);
+                    this.app.showToast('Histórico limpo.');
+                } catch (e) {
+                    this.app.showToast('Erro ao limpar histórico.');
+                }
             }
 
             toggleOcultarNumeros() { 
@@ -3412,9 +3592,11 @@ setGridPage(page) {
             }
 
 
-            addCupomRow(d = {codigo: '', valor: 10, tipo: 'pct'}) {
+            addCupomRow(d = {codigo: '', valor: 10, tipo: 'pct', limite: 0, usados: 0}) {
                 const details = document.createElement('details'); 
                 details.className = 'cfg-list-item';
+                const limite = d.limite !== undefined ? d.limite : 0;
+                const usados = d.usados !== undefined ? d.usados : 0;
 
                 details.innerHTML = `
                     <summary style="font-weight: 700; cursor: pointer; outline: none; color: var(--title-color); display:flex; justify-content:space-between; align-items:center;">
@@ -3422,13 +3604,24 @@ setGridPage(page) {
                         <i data-lucide="chevron-down" style="width:16px; color:var(--text-color);"></i>
                     </summary>
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
-                        <input type="text" class="input-form c-cod" value="${d.codigo}" style="margin-bottom:8px; text-transform: uppercase;" placeholder="Código Ex: VIP10" oninput="this.closest('details').querySelector('.cupom-title').innerText = this.value || 'Novo'">
-                        <div style="display:flex; gap:8px; margin-bottom:12px;">
+                        <input type="text" class="input-form c-cod" value="${d.codigo || ''}" style="margin-bottom:8px; text-transform: uppercase;" placeholder="Código Ex: VIP10" oninput="this.closest('details').querySelector('.cupom-title').innerText = this.value || 'Novo'">
+                        <div style="display:flex; gap:8px; margin-bottom:8px;">
                             <input type="number" class="input-form c-val" value="${d.valor}" style="margin:0; flex:1;" placeholder="Desconto">
                             <select class="input-form c-tipo" style="margin:0; flex:1;">
                                 <option value="pct" ${d.tipo==='pct'?'selected':''}>% OFF</option>
                                 <option value="fixo" ${d.tipo==='fixo'?'selected':''}>R$ Fixo</option>
                             </select>
+                        </div>
+                        <div style="display:flex; gap:8px; margin-bottom:8px; align-items:center;">
+                            <div style="flex:1;">
+                                <label class="cfg-label" style="margin-bottom:4px;">Limite de usos (0 = ilimitado)</label>
+                                <input type="number" class="input-form c-limite" value="${limite}" min="0" style="margin:0;" placeholder="0">
+                            </div>
+                            <div style="flex:0 0 auto; text-align:center; padding-top:18px;">
+                                <span style="font-size:11px; color:var(--text-color); font-weight:600;">Usados</span>
+                                <div style="font-size:16px; font-weight:800; color:var(--primary-color);">${usados}</div>
+                                <input type="hidden" class="c-usados" value="${usados}">
+                            </div>
                         </div>
                         <button class="remove-btn" style="width:100%; justify-content:center;" onclick="this.closest('.cfg-list-item').remove()">
                             <i data-lucide="trash-2" style="width:14px;"></i> Remover Cupom
@@ -3469,7 +3662,13 @@ setGridPage(page) {
 
                 const cupons = [];
                 document.querySelectorAll('#cupons-config-list .cfg-list-item').forEach(row => { 
-                    cupons.push({ codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), valor: parseFloat(row.querySelector('.c-val').value) || 0, tipo: row.querySelector('.c-tipo').value }); 
+                    cupons.push({ 
+                        codigo: row.querySelector('.c-cod').value.trim().toUpperCase(), 
+                        valor: parseFloat(row.querySelector('.c-val').value) || 0, 
+                        tipo: row.querySelector('.c-tipo').value,
+                        limite: parseInt(row.querySelector('.c-limite')?.value) || 0,
+                        usados: parseInt(row.querySelector('.c-usados')?.value) || 0
+                    }); 
                 });
 
                 const theme = {
@@ -3496,6 +3695,7 @@ setGridPage(page) {
                     reservaMinutos: parseInt(document.getElementById('cfg-reserva-min').value) || 15,
                     pixMinutos: parseInt(document.getElementById('cfg-pix-min').value) || 15,
                     promosActive: this.app.config.promosActive, 
+                    doacoesActive: this.app.config.doacoesActive !== false,
                     ocultarNumeros: this.app.config.ocultarNumeros,
                     theme: theme,
                     quickSelects: qSelects,
