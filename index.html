@@ -907,7 +907,7 @@
                     </div>
 
                     <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--title-color);">Prêmios:</h3>
-                    <div id="premios-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;"></div>
+                    <div id="premios-list" style="display: grid; grid-template-columns: 1fr; gap: 12px;"></div>
                 </div>
 
                 <div class="progress-container">
@@ -949,6 +949,9 @@
                         <button class="btn-qty" onclick="window.rifaApp.addSelection(-1)"><i data-lucide="minus"></i></button>
                         <input type="number" class="input-qty" id="qty-input" value="0" readonly>
                         <button class="btn-qty" onclick="window.rifaApp.addSelection(1)"><i data-lucide="plus"></i></button>
+                    </div>
+                    <div style="text-align:center; margin-top:6px; margin-bottom:2px;">
+                        <button type="button" onclick="window.rifaApp.setSelectionCount(0)" style="background:none; border:none; color:var(--text-color); font-size:12px; font-weight:600; cursor:pointer; padding:4px 10px; text-decoration:underline; opacity:0.75;" onmouseover="this.style.opacity='1'; this.style.color='var(--danger)'" onmouseout="this.style.opacity='0.75'; this.style.color='var(--text-color)'">Limpar</button>
                     </div>
                 </div>
 
@@ -1181,6 +1184,22 @@
                     <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px; line-height: 1.6;"></p>
                 </div>
 
+                <div id="checkout-pay-methods" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
+                    <p style="font-size:12px; color:var(--text-color); font-weight:600; text-align:center; margin-bottom:4px;">Escolha a forma de pagamento</p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                        <button type="button" id="btn-method-pix" class="pay-method-btn active" onclick="window.cartManager.setPayMethod('pix')" style="padding:14px 10px; border-radius:12px; border:2px solid var(--primary-color); background:var(--primary-color-15); color:var(--title-color); cursor:pointer; font-weight:700; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                            <span style="font-size:22px;">💠</span>
+                            PIX
+                            <span style="font-size:10px; font-weight:500; color:var(--text-color);">Mercado Pago</span>
+                        </button>
+                        <button type="button" id="btn-method-card" class="pay-method-btn" onclick="window.cartManager.setPayMethod('card')" style="padding:14px 10px; border-radius:12px; border:2px solid var(--border-color); background:var(--gray-400); color:var(--title-color); cursor:pointer; font-weight:700; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:6px;">
+                            <span style="font-size:22px;">💳</span>
+                            Cartão
+                            <span style="font-size:10px; font-weight:500; color:var(--text-color);">InfinitePay</span>
+                        </button>
+                    </div>
+                </div>
+
                 <div style="display:flex; flex-direction:column; gap:10px;">
                     <button class="btn-participar" onclick="window.cartManager.confirmarReserva('agora')" id="btn-pay-now">
                         PAGAR AGORA
@@ -1275,21 +1294,21 @@
 
 
                 <div class="cfg-section">
-                    <div class="cfg-section-title"><i data-lucide="credit-card" style="width:16px;"></i> Gateway de Pagamento</div>
-                    <select id="cfg-gateway" class="input-form" onchange="window.adminPanel.toggleGateway()" style="margin-bottom: 12px; background-color: var(--gray-400);">
-                        <option value="mercadopago">Mercado Pago (PIX na Tela)</option>
-                        <option value="infinitepay">InfinitePay</option>
-                    </select>
+                    <div class="cfg-section-title"><i data-lucide="credit-card" style="width:16px;"></i> Gateways de Pagamento</div>
+                    <p style="font-size:11px; color:var(--text-color); margin-bottom:12px;">Configure os dois. O cliente escolhe no checkout: <b>PIX</b> (Mercado Pago) ou <b>Cartão</b> (InfinitePay).</p>
 
-                    <div id="wrap-mercadopago">
-                        <label class="cfg-label">Access Token (Mercado Pago)</label>
+                    <div id="wrap-mercadopago" style="margin-bottom:14px;">
+                        <label class="cfg-label">PIX — Access Token Mercado Pago</label>
                         <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;">
+                        <p style="font-size:10px; color:var(--text-color); margin-top:6px;">Se vazio, a opção PIX some no checkout.</p>
                     </div>
 
-                    <div id="wrap-infinitepay" style="display: none;">
-                        <label class="cfg-label">InfinitePay Handle (Ex: @vagner)</label>
-                        <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario" style="margin-bottom: 0;">
+                    <div id="wrap-infinitepay">
+                        <label class="cfg-label">Cartão — InfinitePay Handle</label>
+                        <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario ou handle" style="margin-bottom: 0;">
+                        <p style="font-size:10px; color:var(--text-color); margin-top:6px;">Se vazio, a opção Cartão some no checkout.</p>
                     </div>
+                    <input type="hidden" id="cfg-gateway" value="ambos">
                 </div>
 
                 <div class="cfg-section">
@@ -1552,14 +1571,17 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    if (!res.ok) throw new Error("Erro na API Backend");
+                    if (!res.ok) {
+                        const errTxt = await res.text().catch(() => '');
+                        throw new Error(errTxt || "Erro ao gerar PIX no backend");
+                    }
                     return await res.json();
                 } catch(e) { throw e; }
             }
 
             static async checkMercadoPagoStatus(paymentId, token) {
                 try {
-                    const res = await fetch(`${BACKEND_URL}/api/check-status/${paymentId}?token=${token}`);
+                    const res = await fetch(`${BACKEND_URL}/api/check-status/${paymentId}?token=${encodeURIComponent(token)}`);
                     const data = await res.json();
                     return data.status;
                 } catch(e) { return null; }
@@ -1567,15 +1589,40 @@
 
             static async generateInfinitePayLink(payData, handle) {
                 try {
+                    const redirectUrl = `${window.location.origin}${window.location.pathname}?pay_return=1&nsu=${encodeURIComponent(payData.nsu)}&tenant=${encodeURIComponent(tenantId)}&rifa=${encodeURIComponent(rifaId)}`;
                     const res = await fetch(`${BACKEND_URL}/api/create-infinitepay`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ payData, handle })
+                        body: JSON.stringify({
+                            payData,
+                            handle,
+                            redirect_url: redirectUrl,
+                            webhook_url: `${BACKEND_URL}/api/webhook-infinitepay`
+                        })
                     });
                     const data = await res.json();
-                    if(data.url) return data.url;
-                    throw new Error("Link não gerado");
+                    if (data.url) return { url: data.url, slug: data.slug || data.invoice_slug || null };
+                    throw new Error(data.error || "Link InfinitePay não gerado");
                 } catch(e) { throw e; }
+            }
+
+            static async checkInfinitePayStatus(handle, orderNsu, extra = {}) {
+                try {
+                    const res = await fetch(`${BACKEND_URL}/api/check-infinitepay`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            handle,
+                            order_nsu: orderNsu,
+                            transaction_nsu: extra.transaction_nsu || null,
+                            slug: extra.slug || null
+                        })
+                    });
+                    if (!res.ok) return { paid: false };
+                    return await res.json();
+                } catch(e) {
+                    return { paid: false };
+                }
             }
         }
 
@@ -2406,23 +2453,95 @@ setGridPage(page) {
                 this.timerInterval = null;
                 this.pixInterval = null;
                 this.cupomAplicado = null;
+                this.payMethod = 'pix'; // 'pix' | 'card'
+                this._pendingInfinite = null;
+            }
+
+            hasPixEnabled() {
+                return !!(this.app.config.mpToken && String(this.app.config.mpToken).trim());
+            }
+
+            hasCardEnabled() {
+                return !!(this.app.config.handle && String(this.app.config.handle).trim());
+            }
+
+            setPayMethod(method) {
+                if (method === 'pix' && !this.hasPixEnabled()) return;
+                if (method === 'card' && !this.hasCardEnabled()) return;
+                this.payMethod = method;
+                this.updatePayMethodsUI();
+                const btn = document.getElementById('btn-pay-now');
+                if (btn) {
+                    btn.innerHTML = method === 'card'
+                        ? '<i data-lucide="credit-card" style="width:18px;"></i> PAGAR COM CARTÃO'
+                        : '<i data-lucide="qr-code" style="width:18px;"></i> PAGAR COM PIX';
+                    if (window.lucide) lucide.createIcons();
+                }
+            }
+
+            updatePayMethodsUI() {
+                const wrap = document.getElementById('checkout-pay-methods');
+                const btnPix = document.getElementById('btn-method-pix');
+                const btnCard = document.getElementById('btn-method-card');
+                if (!wrap || !btnPix || !btnCard) return;
+
+                const pixOk = this.hasPixEnabled();
+                const cardOk = this.hasCardEnabled();
+
+                if (!pixOk && !cardOk) {
+                    wrap.style.display = 'none';
+                    return;
+                }
+                wrap.style.display = 'flex';
+
+                btnPix.style.display = pixOk ? 'flex' : 'none';
+                btnCard.style.display = cardOk ? 'flex' : 'none';
+
+                if (pixOk && !cardOk) this.payMethod = 'pix';
+                if (!pixOk && cardOk) this.payMethod = 'card';
+
+                const activeStyle = '2px solid var(--primary-color)';
+                const idleStyle = '2px solid var(--border-color)';
+                const activeBg = 'var(--primary-color-15)';
+                const idleBg = 'var(--gray-400)';
+
+                btnPix.style.border = this.payMethod === 'pix' ? activeStyle : idleStyle;
+                btnPix.style.background = this.payMethod === 'pix' ? activeBg : idleBg;
+                btnCard.style.border = this.payMethod === 'card' ? activeStyle : idleStyle;
+                btnCard.style.background = this.payMethod === 'card' ? activeBg : idleBg;
             }
 
             calculateBestPrice(count) {
                 let original = count * this.app.config.valor;
                 let final = original;
                 let promoDiscount = 0;
-                if(this.app.config.promosActive && this.app.config.promos) {
+                let freeTickets = 0;
+                if (this.app.config.promosActive && this.app.config.promos) {
                     this.app.config.promos.forEach(p => {
-                        if(count >= p.min) {
-                            let price = original;
-                            const tipo = (p.type === 'percent' || p.type === 'pct') ? 'pct'
-                                        : (p.type === 'free_tickets' || p.type === 'free') ? 'free'
-                                        : p.type;
-                            if(tipo === 'pct') price = original * (1 - (p.val / 100));
-                            else if(tipo === 'free') price = original - (p.val * this.app.config.valor);
-                            if(price < final) final = price;
+                        const min = parseInt(p.min) || 0;
+                        if (min <= 0 || count < min) return;
+
+                        let price = original;
+                        const tipo = (p.type === 'percent' || p.type === 'pct') ? 'pct'
+                                    : (p.type === 'free_tickets' || p.type === 'free') ? 'free'
+                                    : p.type;
+                        const val = parseFloat(p.val) || 0;
+
+                        if (tipo === 'pct') {
+                            price = original * (1 - (val / 100));
+                        } else if (tipo === 'free') {
+                            // Padrão proporcional: a cada "min" bilhetes → "val" grátis
+                            // Ex: min=5, val=1 → 5→1 grátis, 10→2 grátis, 15→3 grátis
+                            const blocos = Math.floor(count / min);
+                            const gratis = blocos * val;
+                            // não pode dar mais grátis do que a quantidade comprada
+                            const gratisEfetivo = Math.min(gratis, count);
+                            price = original - (gratisEfetivo * this.app.config.valor);
+                            if (price < 0) price = 0;
+                            if (price < final) freeTickets = gratisEfetivo;
                         }
+
+                        if (price < final) final = price;
                     });
                 }
 
@@ -2439,7 +2558,7 @@ setGridPage(page) {
                     if (final < 0) final = 0;
                 }
 
-                return { final, original, promoDiscount, cupomDiscount };
+                return { final, original, promoDiscount, cupomDiscount, freeTickets };
             }
 
             aplicarCupom() {
@@ -2509,7 +2628,13 @@ setGridPage(page) {
 
                 const desc = document.getElementById('checkout-discount-info');
                 let infoText = "";
-                if(res.promoDiscount > 0) infoText += `Desconto cascata: - R$ ${res.promoDiscount.toFixed(2).replace('.',',')}<br>`;
+                if (res.promoDiscount > 0) {
+                    if (res.freeTickets > 0) {
+                        infoText += `🎁 ${res.freeTickets} bilhete${res.freeTickets > 1 ? 's' : ''} grátis (− R$ ${res.promoDiscount.toFixed(2).replace('.',',')})<br>`;
+                    } else {
+                        infoText += `Desconto cascata: - R$ ${res.promoDiscount.toFixed(2).replace('.',',')}<br>`;
+                    }
+                }
                 if(res.cupomDiscount > 0) infoText += `<span style="color:var(--primary-color)">Cupom aplicado: - R$ ${res.cupomDiscount.toFixed(2).replace('.',',')}</span>`;
                 desc.innerHTML = infoText;
             }
@@ -2528,7 +2653,11 @@ setGridPage(page) {
                 const textDesc = document.getElementById('promo-discount-text');
                 if(p.promoDiscount > 0 || p.cupomDiscount > 0) {
                     let totalDesc = p.promoDiscount + (p.cupomDiscount || 0);
-                    textDesc.innerText = `🎁 Desconto: - ${totalDesc.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+                    if (p.freeTickets > 0) {
+                        textDesc.innerText = `🎁 ${p.freeTickets} grátis · Desconto: - ${totalDesc.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+                    } else {
+                        textDesc.innerText = `🎁 Desconto: - ${totalDesc.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
+                    }
                     textDesc.style.display = 'block';
                 } else { textDesc.style.display = 'none'; }
             }
@@ -2542,8 +2671,16 @@ setGridPage(page) {
                 const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
                 if (wrap) wrap.style.display = temCupons ? 'flex' : 'none';
 
+                // método padrão: PIX se disponível, senão cartão
+                if (this.hasPixEnabled()) this.payMethod = 'pix';
+                else if (this.hasCardEnabled()) this.payMethod = 'card';
+                this.updatePayMethodsUI();
+                this.setPayMethod(this.payMethod);
+
                 this.atualizarValoresCheckout();
 
+                document.getElementById('checkout-step-1').style.display = 'block';
+                document.getElementById('checkout-step-2').style.display = 'none';
                 document.getElementById('modal-checkout').style.display = 'flex';
                 this.startTimer(this.app.getPixTimeoutMin()); 
             }
@@ -2573,95 +2710,207 @@ setGridPage(page) {
                 this.app.showToast("Código PIX Copiado!");
             }
 
-            async processarPagamentoPix(payData, isExisting = false, listaStr = '') {
+            async confirmarPagamentoAprovado(payData, isExisting, listaStr) {
+                const cotasPagas = isExisting
+                    ? listaStr.split(',').filter(Boolean)
+                    : Array.from(this.app.selected);
+                const cotasTxt = cotasPagas.slice().sort().join(', ');
+                const shareMsg = encodeURIComponent(`Acabei de garantir minhas cotas na rifa ${this.app.config.premio}! Números: ${cotasTxt}`);
+                const shareUrl = `https://wa.me/?text=${shareMsg}`;
+
+                const statusEl = document.getElementById('pix-status-container');
+                if (statusEl) {
+                    statusEl.innerHTML = `
+                        <div style="display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;">
+                            <span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>
+                            <a href="${shareUrl}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; background:#25d366; color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none;">Compartilhar bilhetes</a>
+                        </div>`;
+                }
+
+                const up = {};
+                cotasPagas.forEach(n => up[`${n}/status`] = 'paid');
+                await update(numRef, up);
+
+                await this.registrarUsoCupom({
+                    nome: payData.nome || '',
+                    telefone: payData.telefone || '',
+                    nsu: payData.nsu || '',
+                    valorPago: (payData.priceCents || 0) / 100,
+                    descontoAplicado: this._ultimoDescontoCupom || 0,
+                    cotas: cotasTxt
+                });
+
+                this.app.showToast("Pagamento Confirmado!");
+                if (window.fbq && !isExisting) window.fbq('track', 'Purchase', { value: payData.priceCents / 100, currency: 'BRL' });
+
+                setTimeout(() => {
+                    this.app.closeModal('modal-checkout');
+                    if (!isExisting) {
+                        this.app.selected.clear();
+                        this.app.renderGrid();
+                        this.updateCartUI();
+                    } else {
+                        this.app.consultarMeusNumeros();
+                    }
+                }, 4000);
+            }
+
+            _reenablePayButtons(isExisting) {
                 const btnNow = document.getElementById('btn-pay-now');
                 const btnLater = document.getElementById('btn-pay-later');
                 const btnPayEx = document.getElementById('btn-pay-existing');
-
-                if (this.app.config.gateway === 'mercadopago') {
-                    try {
-                        const pixData = await PaymentService.createMercadoPagoPix(payData, this.app.config.mpToken);
-
-                        document.getElementById('modal-checkout').style.display = 'flex';
-                        document.getElementById('checkout-step-1').style.display = 'none';
-                        document.getElementById('checkout-step-2').style.display = 'block';
-
-                        document.getElementById('pix-qr-img').src = 'data:image/jpeg;base64,' + pixData.qr_code_base64;
-                        document.getElementById('pix-copia-cola').value = pixData.qr_code;
-                        document.getElementById('pix-status-container').innerHTML = '<div class="spinner" style="width: 18px; height: 18px; border: 2px solid var(--reserved); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div> Aguardando pagamento...';
-
-                        clearInterval(this.pixInterval);
-                        this.pixInterval = setInterval(async () => {
-                            const status = await PaymentService.checkMercadoPagoStatus(pixData.id, this.app.config.mpToken);
-                            if (status === 'approved') {
-                                clearInterval(this.pixInterval);
-
-                                const cotasPagas = isExisting
-                                    ? listaStr.split(',').filter(Boolean)
-                                    : Array.from(this.app.selected);
-                                const cotasTxt = cotasPagas.slice().sort().join(', ');
-                                const shareMsg = encodeURIComponent(`Acabei de garantir minhas cotas na rifa ${this.app.config.premio}! Números: ${cotasTxt}`);
-                                const shareUrl = `https://wa.me/?text=${shareMsg}`;
-
-                                document.getElementById('pix-status-container').innerHTML = `
-                                    <div style="display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;">
-                                        <span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>
-                                        <a href="${shareUrl}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; background:#25d366; color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none;">Compartilhar bilhetes</a>
-                                    </div>`;
-
-                                const up = {};
-                                cotasPagas.forEach(n => up[`${n}/status`] = 'paid');
-                                await update(numRef, up);
-
-                                await this.registrarUsoCupom({
-                                    nome: payData.nome || '',
-                                    telefone: payData.telefone || '',
-                                    nsu: payData.nsu || '',
-                                    valorPago: (payData.priceCents || 0) / 100,
-                                    descontoAplicado: this._ultimoDescontoCupom || 0,
-                                    cotas: cotasTxt
-                                });
-
-                                this.app.showToast("Pagamento Confirmado!");
-                                if(window.fbq && !isExisting) window.fbq('track', 'Purchase', {value: payData.priceCents / 100, currency: 'BRL'});
-
-                                setTimeout(() => {
-                                    this.app.closeModal('modal-checkout');
-                                    if (!isExisting) {
-                                        this.app.selected.clear();
-                                        this.app.renderGrid();
-                                        this.updateCartUI();
-                                    } else {
-                                        this.app.consultarMeusNumeros();
-                                    }
-                                }, 5000);
-                            }
-
-                        }, 5000);
-
-                    } catch(e) {
-                        if(isExisting) {
-                            if(btnPayEx) { btnPayEx.disabled = false; btnPayEx.innerText = 'PAGAR AGORA (PIX)'; }
-                        } else {
-                            if(btnNow) btnNow.disabled = false;
-                            if(btnLater) btnLater.disabled = false;
-                        }
-                        this.app.showToast(e.message || "Erro ao gerar PIX MP.");
-                    }
+                if (isExisting) {
+                    if (btnPayEx) { btnPayEx.disabled = false; btnPayEx.innerText = 'PAGAR AGORA'; }
                 } else {
-                    try {
-                        const link = await PaymentService.generateInfinitePayLink(payData, this.app.config.handle);
-                        window.location.href = link;
-                    } catch(e) {
-                        if(isExisting) {
-                            if(btnPayEx) { btnPayEx.disabled = false; btnPayEx.innerText = 'PAGAR AGORA (PIX)'; }
-                        } else {
-                            if(btnNow) btnNow.disabled = false;
-                            if(btnLater) btnLater.disabled = false;
-                        }
-                        this.app.showToast(e.message || "Erro no Gateway.");
-                    }
+                    if (btnNow) btnNow.disabled = false;
+                    if (btnLater) btnLater.disabled = false;
                 }
+            }
+
+            async processarPagamentoPix(payData, isExisting = false, listaStr = '') {
+                const method = this.payMethod || 'pix';
+
+                // ---- CARTÃO via InfinitePay ----
+                if (method === 'card') {
+                    if (!this.hasCardEnabled()) {
+                        this._reenablePayButtons(isExisting);
+                        return this.app.showToast('Cartão não configurado (InfinitePay handle).');
+                    }
+                    try {
+                        this.app.showToast('Gerando link de pagamento...');
+                        const result = await PaymentService.generateInfinitePayLink(payData, this.app.config.handle);
+
+                        // Guarda pendência para verificação automática ao voltar
+                        const pending = {
+                            nsu: payData.nsu,
+                            nome: payData.nome,
+                            telefone: payData.telefone,
+                            priceCents: payData.priceCents,
+                            isExisting,
+                            listaStr: isExisting ? listaStr : Array.from(this.app.selected).join(','),
+                            slug: result.slug || null,
+                            createdAt: Date.now()
+                        };
+                        try { localStorage.setItem('rifa_pending_ipay', JSON.stringify(pending)); } catch (_) {}
+                        this._pendingInfinite = pending;
+
+                        // Abre checkout InfinitePay (cartão / pix deles)
+                        window.location.href = result.url;
+                    } catch (e) {
+                        this._reenablePayButtons(isExisting);
+                        this.app.showToast(e.message || 'Erro ao gerar link InfinitePay.');
+                    }
+                    return;
+                }
+
+                // ---- PIX via Mercado Pago ----
+                if (!this.hasPixEnabled()) {
+                    this._reenablePayButtons(isExisting);
+                    return this.app.showToast('PIX não configurado (token Mercado Pago).');
+                }
+
+                try {
+                    this.app.showToast('Gerando PIX...');
+                    const pixData = await PaymentService.createMercadoPagoPix(payData, this.app.config.mpToken);
+
+                    document.getElementById('modal-checkout').style.display = 'flex';
+                    document.getElementById('checkout-step-1').style.display = 'none';
+                    document.getElementById('checkout-step-2').style.display = 'block';
+
+                    document.getElementById('pix-qr-img').src = 'data:image/jpeg;base64,' + pixData.qr_code_base64;
+                    document.getElementById('pix-copia-cola').value = pixData.qr_code;
+                    document.getElementById('pix-status-container').innerHTML = '<div class="spinner" style="width: 18px; height: 18px; border: 2px solid var(--reserved); border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div> Aguardando pagamento...';
+
+                    clearInterval(this.pixInterval);
+                    this.pixInterval = setInterval(async () => {
+                        const status = await PaymentService.checkMercadoPagoStatus(pixData.id, this.app.config.mpToken);
+                        if (status === 'approved') {
+                            clearInterval(this.pixInterval);
+                            await this.confirmarPagamentoAprovado(payData, isExisting, listaStr);
+                        }
+                    }, 3000); // polling a cada 3s (mais responsivo)
+
+                } catch (e) {
+                    this._reenablePayButtons(isExisting);
+                    this.app.showToast(e.message || 'Erro ao gerar PIX (Mercado Pago).');
+                }
+            }
+
+            /** Verifica retorno do InfinitePay (URL ou localStorage) e confirma cotas */
+            async verificarRetornoInfinitePay() {
+                const params = new URLSearchParams(window.location.search);
+                const isReturn = params.get('pay_return') === '1';
+                let pending = null;
+                try { pending = JSON.parse(localStorage.getItem('rifa_pending_ipay') || 'null'); } catch (_) {}
+
+                const nsu = params.get('nsu') || (pending && pending.nsu);
+                if (!nsu || !this.hasCardEnabled()) return;
+
+                // Se não é retorno e não há pendência recente, ignora
+                if (!isReturn && !pending) return;
+                if (pending && pending.createdAt && (Date.now() - pending.createdAt > 2 * 60 * 60 * 1000)) {
+                    try { localStorage.removeItem('rifa_pending_ipay'); } catch (_) {}
+                    return;
+                }
+
+                this.app.showToast('Verificando pagamento do cartão...');
+
+                // Polling automático por até ~2 minutos
+                let tentativas = 0;
+                const maxTentativas = 24;
+                const tick = async () => {
+                    tentativas++;
+                    const status = await PaymentService.checkInfinitePayStatus(
+                        this.app.config.handle,
+                        nsu,
+                        { slug: pending && pending.slug, transaction_nsu: params.get('transaction_nsu') }
+                    );
+                    if (status && status.paid) {
+                        const payData = {
+                            nsu,
+                            nome: (pending && pending.nome) || '',
+                            telefone: (pending && pending.telefone) || '',
+                            priceCents: (pending && pending.priceCents) || (status.paid_amount || status.amount || 0)
+                        };
+                        // marca cotas pelo order_nsu no Firebase
+                        try {
+                            const snap = await get(numRef);
+                            if (snap.exists()) {
+                                const all = snap.val();
+                                const up = {};
+                                Object.entries(all).forEach(([n, d]) => {
+                                    if (d && d.order_nsu === nsu && (d.status === 'reserved' || d.status === 'donated_pending')) {
+                                        up[`${n}/status`] = 'paid';
+                                    }
+                                });
+                                if (Object.keys(up).length) await update(numRef, up);
+                            }
+                        } catch (_) {}
+
+                        try { localStorage.removeItem('rifa_pending_ipay'); } catch (_) {}
+                        // limpa query da URL
+                        try {
+                            const clean = window.location.pathname + (window.location.search
+                                .replace(/[?&]pay_return=1/, '')
+                                .replace(/[?&]nsu=[^&]*/, '')
+                                .replace(/[?&]tenant=[^&]*/, '')
+                                .replace(/[?&]rifa=[^&]*/, '')
+                                .replace(/^&/, '?') || '');
+                            window.history.replaceState({}, '', clean);
+                        } catch (_) {}
+
+                        this.app.showToast('Pagamento no cartão confirmado!');
+                        if (window.fbq) window.fbq('track', 'Purchase', { value: (payData.priceCents || 0) / 100, currency: 'BRL' });
+                        return true;
+                    }
+                    if (tentativas < maxTentativas) {
+                        setTimeout(tick, 5000);
+                    } else {
+                        this.app.showToast('Ainda não confirmamos o cartão. Se já pagou, aguarde ou fale no WhatsApp.');
+                    }
+                    return false;
+                };
+                await tick();
             }
 
             async confirmarReserva(action = 'agora') {
@@ -2770,6 +3019,11 @@ setGridPage(page) {
                 const wrap = document.getElementById('checkout-cupom-wrap');
                 const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
                 if (wrap) wrap.style.display = temCupons ? 'flex' : 'none';
+
+                if (this.hasPixEnabled()) this.payMethod = 'pix';
+                else if (this.hasCardEnabled()) this.payMethod = 'card';
+                this.updatePayMethodsUI();
+                this.setPayMethod(this.payMethod);
             
                 const nameEl = document.getElementById('cust-name');
                 const phoneEl = document.getElementById('cust-phone');
@@ -3325,15 +3579,11 @@ setGridPage(page) {
             }
 
             toggleGateway() {
-
-                const gateway = document.getElementById('cfg-gateway').value;
-                if(gateway === 'infinitepay') {
-                    document.getElementById('wrap-infinitepay').style.display = 'block';
-                    document.getElementById('wrap-mercadopago').style.display = 'none';
-                } else {
-                    document.getElementById('wrap-infinitepay').style.display = 'none';
-                    document.getElementById('wrap-mercadopago').style.display = 'block';
-                }
+                // Ambos os gateways ficam sempre visíveis (PIX + Cartão)
+                const wrapMp = document.getElementById('wrap-mercadopago');
+                const wrapIp = document.getElementById('wrap-infinitepay');
+                if (wrapMp) wrapMp.style.display = 'block';
+                if (wrapIp) wrapIp.style.display = 'block';
             }
 
             switchConfigTab(tabId, btn) {
@@ -3548,20 +3798,29 @@ setGridPage(page) {
                 const minVal = d.min !== undefined ? d.min : (d.qty || 10);
                 const typeVal = d.type || 'pct';
                 const desconto = d.val !== undefined ? d.val : (d.value !== undefined ? d.value : 10);
+                const isFree = (typeVal === 'free' || typeVal === 'free_tickets');
+                const titleTxt = isFree
+                    ? `A cada ${minVal || '0'} → ${desconto || 0} grátis`
+                    : `Comprando ${minVal || '0'}`;
 
                 details.innerHTML = `
                     <summary style="font-weight: 700; cursor: pointer; outline: none; color: var(--title-color); display:flex; justify-content:space-between; align-items:center;">
-                        <span>Regra: <span class="promo-title" style="color:var(--reserved);">Comprando ${minVal || '0'}</span></span>
+                        <span>Regra: <span class="promo-title" style="color:var(--reserved);">${titleTxt}</span></span>
                         <i data-lucide="chevron-down" style="width:16px; color:var(--text-color);"></i>
                     </summary>
                     <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-color);">
+                        <p style="font-size:11px; color:var(--text-color); margin-bottom:10px; line-height:1.4;">
+                            <b>Bilhetes grátis:</b> funciona em blocos. Ex: Qtd=5 e Grátis=1 → 5=1 grátis, 10=2 grátis, 15=3 grátis.
+                        </p>
                         <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px; width: 100%;">
-                            <input type="number" class="input-form p-min" value="${minVal}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Qtd" oninput="this.closest('details').querySelector('.promo-title').innerText = 'Comprando ' + (this.value || '0')">
-                            <select class="input-form p-type" style="flex: 1; margin: 0; padding: 10px;">
+                            <input type="number" class="input-form p-min" value="${minVal}" style="flex: 1; margin: 0; padding: 10px;" placeholder="A cada" title="Quantidade base (bloco)"
+                                oninput="window.adminPanel._refreshPromoTitle(this.closest('details'))">
+                            <select class="input-form p-type" style="flex: 1; margin: 0; padding: 10px;" onchange="window.adminPanel._refreshPromoTitle(this.closest('details'))">
                                 <option value="pct" ${(typeVal === 'pct' || typeVal === 'percent') ? 'selected' : ''}>% OFF</option>
-                                <option value="free" ${(typeVal === 'free' || typeVal === 'free_tickets') ? 'selected' : ''}>Bilhetes Grátis</option>
+                                <option value="free" ${isFree ? 'selected' : ''}>Bilhetes Grátis</option>
                             </select>
-                            <input type="number" class="input-form p-val" value="${desconto}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Valor/Qtd">
+                            <input type="number" class="input-form p-val" value="${desconto}" style="flex: 1; margin: 0; padding: 10px;" placeholder="Grátis / %"
+                                oninput="window.adminPanel._refreshPromoTitle(this.closest('details'))">
                         </div>
                         <button class="remove-btn" style="width:100%; justify-content:center;" onclick="this.closest('.cfg-list-item').remove()">
                             <i data-lucide="trash-2" style="width:14px;"></i> Remover Regra
@@ -3571,6 +3830,17 @@ setGridPage(page) {
 
                 document.getElementById('promos-list').appendChild(details);
                 lucide.createIcons();
+            }
+
+            _refreshPromoTitle(detailsEl) {
+                if (!detailsEl) return;
+                const min = detailsEl.querySelector('.p-min')?.value || '0';
+                const tipo = detailsEl.querySelector('.p-type')?.value || 'pct';
+                const val = detailsEl.querySelector('.p-val')?.value || '0';
+                const title = detailsEl.querySelector('.promo-title');
+                if (!title) return;
+                if (tipo === 'free') title.innerText = `A cada ${min} → ${val} grátis`;
+                else title.innerText = `Comprando ${min}`;
             }
 
 
@@ -3687,7 +3957,7 @@ setGridPage(page) {
                     capa: document.getElementById('cfg-capa').value.trim() || "",
                     valor: parseFloat(document.getElementById('cfg-valor').value) || 0, 
                     total: parseInt(document.getElementById('cfg-total').value) || 0, 
-                    gateway: document.getElementById('cfg-gateway').value,
+                    gateway: 'ambos',
                     handle: document.getElementById('cfg-handle').value, 
                     mpToken: document.getElementById('cfg-mptoken').value,
                     pin: document.getElementById('cfg-pin').value, 
@@ -3717,6 +3987,11 @@ setGridPage(page) {
         window.rifaApp = new RifaApp();
         window.cartManager = new CartManager(window.rifaApp);
         window.adminPanel = new AdminPanel(window.rifaApp);
+
+        // Retorno do InfinitePay (cartão) → verificação automática
+        setTimeout(() => {
+            try { window.cartManager.verificarRetornoInfinitePay(); } catch (_) {}
+        }, 1500);
 
     </script>
     <!-- AQUI TERMINA O SEU SCRIPT GIGANTE -->
