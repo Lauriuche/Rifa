@@ -887,8 +887,11 @@
         <div class="hero-blur">
             <img src="img/capa.jpg" id="img-blur" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Rifa+Master'">
         </div>
-        <div class="hero-image-container">
-            <img src="img/capa.jpg" alt="Campanha" id="img-main" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Imagem+da+Rifa'">
+        <div class="hero-image-container" id="hero-carousel" style="position:relative; overflow:hidden;">
+            <img src="img/capa.jpg" alt="Campanha" id="img-main" style="width:100%; display:block; transition:opacity 0.5s ease;" onerror="this.src='https://placehold.co/1000x500/1c1d1f/aaaaaa?text=Imagem+da+Rifa'">
+            <div id="carousel-dots" style="position:absolute; bottom:12px; left:0; right:0; display:flex; justify-content:center; gap:6px; z-index:2;"></div>
+            <button type="button" id="carousel-prev" onclick="window.rifaApp.carouselPrev()" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.45); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; z-index:2; font-size:16px;">‹</button>
+            <button type="button" id="carousel-next" onclick="window.rifaApp.carouselNext()" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.45); border:none; color:#fff; width:32px; height:32px; border-radius:50%; cursor:pointer; z-index:2; font-size:16px;">›</button>
         </div>
 
         <div class="content-wrapper">
@@ -918,6 +921,34 @@
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                     </div>
+                    <div id="cotas-restantes-info" style="text-align:center; margin-top:8px; font-size:12px; font-weight:700; color:var(--reserved);"></div>
+                </div>
+
+                <div id="countdown-sorteio" class="card" style="display:none; margin-bottom:16px; text-align:center; padding:16px;">
+                    <p style="font-size:12px; color:var(--text-color); font-weight:600; margin-bottom:8px;">⏰ SORTEIO EM</p>
+                    <div id="countdown-timer" style="font-size:22px; font-weight:800; color:var(--primary-color); letter-spacing:1px;">--</div>
+                </div>
+
+                <div id="card-ganhadores-publicos" class="card" style="display:none; margin-bottom:24px;">
+                    <div class="section-title">
+                        <div class="icon-box"><i data-lucide="trophy" style="width:20px;"></i></div>
+                        <div>
+                            <h2 style="font-size:20px;">Ganhadores</h2>
+                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Confira quem já faturou</p>
+                        </div>
+                    </div>
+                    <div id="ganhadores-publicos-list"></div>
+                </div>
+
+                <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                    <button type="button" class="btn-participar" style="flex:1; min-width:140px; padding:12px; font-size:13px; background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.compartilharRifa()">
+                        <i data-lucide="share-2" style="width:16px;"></i> Compartilhar
+                    </button>
+                </div>
+
+                <div id="feed-compras" class="card" style="display:none; margin-bottom:16px; padding:12px 14px;">
+                    <div style="font-size:11px; font-weight:700; color:var(--text-color); margin-bottom:8px; text-transform:uppercase; letter-spacing:0.5px;">🔥 Compras recentes</div>
+                    <div id="feed-compras-list" style="display:flex; flex-direction:column; gap:6px; max-height:140px; overflow-y:auto;"></div>
                 </div>
 
                 <div class="card" id="card-doacoes" style="display: none; margin-bottom: 24px;">
@@ -939,7 +970,7 @@
                         <div class="icon-box"><i data-lucide="ticket" style="width: 20px;"></i></div>
                         <div>
                             <h2 style="font-size: 20px;">Bilhetes</h2>
-                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Selecione a quantidade desejada</p>
+                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Selecione a quantidade — os números são escolhidos automaticamente</p>
                         </div>
                     </div>
 
@@ -983,6 +1014,11 @@
                     <div class="grid-pagination" id="grid-pagination" style="display:none;"></div>
                 </div>
 
+                <div style="text-align:center; margin:24px 0 8px;">
+                    <button type="button" onclick="window.rifaApp.openFaq()" style="background:var(--gray-400); border:1px solid var(--border-color); color:var(--title-color); padding:12px 20px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
+                        <i data-lucide="help-circle" style="width:16px;"></i> Dúvidas? Como funciona
+                    </button>
+                </div>
 
                 <div class="footer-copyright">
                    <br>Lauriuche Company - Todos os direitos reservados<br> Desenvolvido por Vagner Lauriuche.<br> 2026
@@ -1056,26 +1092,53 @@
                                 <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Cotas</span>
                                 <b style="display: block; color: var(--title-color); font-size: 16px; margin-top: 4px;" id="admin-vendas">0</b>
                             </div>
+                            <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Pendentes</span>
+                                <b style="display: block; color: var(--reserved); font-size: 16px; margin-top: 4px;" id="admin-pendentes">0</b>
+                            </div>
+                            <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Ticket médio</span>
+                                <b style="display: block; color: var(--primary-color); font-size: 16px; margin-top: 4px;" id="admin-ticket-medio">R$ 0</b>
+                            </div>
+                            <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
+                                <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Conv. %</span>
+                                <b style="display: block; color: var(--title-color); font-size: 16px; margin-top: 4px;" id="admin-conversao">0%</b>
+                            </div>
                         </div>
                        
 
                     </div>
 
 
-                    <button class="btn-participar" style="background-color: var(--reserved); color: #000; margin-bottom: 24px;" onclick="window.adminPanel.abrirModalSorteio()">
-                        <i data-lucide="gift"></i> Sortear Ganhador
-                    </button>
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:24px;">
+                        <button class="btn-participar" style="background-color: var(--reserved); color: #000;" onclick="window.adminPanel.abrirModalSorteio()">
+                            <i data-lucide="gift"></i> Sortear Ganhador
+                        </button>
+                        <button class="btn-participar" style="background-color: var(--gray-400); color: var(--title-color); padding:12px; font-size:13px;" onclick="window.adminPanel.abrirReservaManual()">
+                            <i data-lucide="user-plus" style="width:16px;"></i> Reserva Manual
+                        </button>
+                    </div>
 
                     <div id="admin-ganhadores-list"></div>
 
-                    <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante ou cota..." oninput="window.adminPanel.render(false)">
+                    <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante, cota ou NSU..." oninput="window.adminPanel.render(false)">
+
+                    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                        <select id="admin-sort" class="input-form" style="flex:1; min-width:140px; margin:0;" onchange="window.adminPanel.setSort(this.value)">
+                            <option value="recent">Mais recentes</option>
+                            <option value="name">Nome A-Z</option>
+                            <option value="cotas">Mais cotas</option>
+                            <option value="value">Maior valor</option>
+                        </select>
+                        <button type="button" class="btn-participar" style="width:auto; padding:10px 14px; font-size:12px; margin:0;" onclick="window.adminPanel.marcarSelecionadosPagos()">Marcar pagos</button>
+                    </div>
 
                     <div class="filter-tabs" style="margin-bottom: 0px;">
                         <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
+                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('donated')">Doações</button>
                     </div>
-
 
                     <div id="admin-list" style="max-height: 500px; overflow-y: auto; padding-right: 4px;"></div>
 
@@ -1164,24 +1227,40 @@
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
             <div id="checkout-step-1">
-                <h2 style="color:var(--title-color); margin-bottom:16px; font-size: 20px;">Finalizar Reserva</h2>
-
-                <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                    <i data-lucide="clock" style="width: 16px;"></i> Pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
+                <h2 style="color:var(--title-color); margin-bottom:8px; font-size: 20px;">Finalizar Reserva</h2>
+                <div style="display:flex; gap:6px; margin-bottom:16px; justify-content:center;">
+                    <span style="width:28px;height:4px;border-radius:4px;background:var(--primary-color);"></span>
+                    <span style="width:28px;height:4px;border-radius:4px;background:var(--border-color);"></span>
                 </div>
 
-                <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo">
-                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD)" oninput="window.rifaApp.maskPhone(this)">
+                <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                    <i data-lucide="clock" style="width: 16px;"></i> Reserve e pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
+                </div>
+
+                <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo" autocomplete="name">
+                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD + número)" oninput="window.rifaApp.maskPhone(this)" autocomplete="tel">
+                <p id="checkout-phone-hint" style="font-size:11px; color:var(--text-color); margin:-8px 0 12px; display:none;"></p>
+
+                <div id="checkout-resumo-cotas" style="background:var(--background-color); border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-bottom:16px;">
+                    <div style="font-size:11px; color:var(--text-color); font-weight:600; margin-bottom:6px;">SUAS COTAS</div>
+                    <p id="checkout-cotas-lista" style="font-size:13px; font-weight:700; color:var(--primary-color); word-break:break-word; line-height:1.5; margin:0;">—</p>
+                    <p id="checkout-cotas-qtd" style="font-size:11px; color:var(--text-color); margin-top:6px;"></p>
+                </div>
 
                 <div id="checkout-cupom-wrap" style="display: none; gap: 8px; margin-bottom: 16px;">
                     <input type="text" id="checkout-cupom" class="input-form" placeholder="Tem cupom de desconto?" style="margin-bottom: 0; flex: 1; text-transform: uppercase;">
                     <button class="btn-participar" style="width: auto; padding: 0 20px; font-size: 14px; margin-bottom: 0;" onclick="window.cartManager.aplicarCupom()">Aplicar</button>
                 </div>
 
-                <div style="background: var(--background-color); padding: 20px; border-radius: 12px; margin-bottom: 24px; border: 1px solid var(--border-color); text-align: center;">
+                <div style="background: var(--background-color); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border-color); text-align: center;">
                     <span style="font-size: 12px; color: var(--text-color); font-weight: 500;">Total a pagar:</span>
                     <p id="checkout-final-val" style="font-size: 28px; font-weight: 800; color: var(--primary-color); margin-top: 4px;">R$ 0,00</p>
                     <p id="checkout-discount-info" style="font-size: 12px; color: var(--reserved); font-weight: 600; margin-top: 8px; line-height: 1.6;"></p>
+                </div>
+
+                <div id="checkout-upsell" style="display:none; background:rgba(0,139,119,0.1); border:1px dashed var(--primary-color); border-radius:12px; padding:12px; margin-bottom:16px; text-align:center;">
+                    <p id="checkout-upsell-text" style="font-size:13px; color:var(--title-color); font-weight:600; margin-bottom:10px;"></p>
+                    <button type="button" class="btn-participar" style="padding:10px; font-size:13px;" onclick="window.cartManager.aplicarUpsell()">Quero mais bilhetes</button>
                 </div>
 
                 <div id="checkout-pay-methods" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
@@ -1245,8 +1324,9 @@
                 <i data-lucide="lock" style="color: var(--title-color);"></i>
             </div>
             <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 18px;">Acesso Restrito</h3>
-            <input type="password" id="admin-pin" class="input-form" placeholder="****" maxlength="8" inputmode="numeric" style="text-align: center; letter-spacing: 12px; font-size: 24px; font-weight: 700;">
-            <button class="btn-participar" onclick="window.adminPanel.validate()">Entrar no Painel</button>
+            <input type="password" id="admin-pin" class="input-form" placeholder="****" maxlength="8" inputmode="numeric" style="text-align: center; letter-spacing: 12px; font-size: 24px; font-weight: 700;" oninput="window.adminPanel.onPinInput(this)">
+            <p style="font-size:11px; color:var(--text-color); text-align:center; margin-top:-4px; margin-bottom:12px;">Digite o PIN — entrada automática</p>
+            <button class="btn-participar" onclick="window.adminPanel.validate()" style="opacity:0.7;">Entrar no Painel</button>
             <button onclick="window.rifaApp.closeModal('modal-pin')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600;">Cancelar</button>
         </div>
     </div>
@@ -1274,9 +1354,33 @@
                 </div>
 
                 <div class="cfg-section">
-                    <label class="cfg-label">Imagem de Capa (URL)</label>
-                    <input type="url" id="cfg-capa" class="input-form" placeholder="https://... ou img/capa.jpg" style="margin-bottom: 0; font-size: 12px;">
-                    <p style="font-size: 11px; color: var(--text-color); margin-top: 8px;">A mesma URL é usada na capa principal e no fundo desfocada.</p>
+                    <div class="cfg-section-title"><i data-lucide="images" style="width:16px;"></i> Carrossel de Capa</div>
+                    <p style="font-size:12px; color:var(--title-color); font-weight:600; margin-bottom:6px;">Cole <b>1 link por linha</b> (Enter entre cada imagem):</p>
+                    <p style="font-size:11px; color:var(--text-color); margin-bottom:10px; line-height:1.5;">
+                        Exemplo:<br>
+                        <code style="font-size:10px; color:var(--primary-color);">https://site.com/foto1.jpg</code><br>
+                        <code style="font-size:10px; color:var(--primary-color);">https://site.com/foto2.jpg</code><br>
+                        <code style="font-size:10px; color:var(--primary-color);">https://site.com/foto3.jpg</code>
+                    </p>
+                    <textarea id="cfg-capas" class="input-form" rows="5" placeholder="https://img1.jpg
+https://img2.jpg
+https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monospace,monospace; resize:vertical; min-height:120px; line-height:1.8; white-space:pre;" onblur="window.adminPanel.formatarCapas()"></textarea>
+                    <p style="font-size:10px; color:var(--text-color); margin-bottom:12px;">A 1ª imagem vira o fundo desfocado. Ao sair do campo, os links são organizados (1 por linha).</p>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+                        <div>
+                            <label class="cfg-label">Tempo (segundos)</label>
+                            <input type="number" id="cfg-carousel-tempo" class="input-form" min="2" max="60" value="5" style="margin-bottom:0;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Modo</label>
+                            <select id="cfg-carousel-modo" class="input-form" style="margin-bottom:0;">
+                                <option value="auto">Automático (sequência)</option>
+                                <option value="random">Aleatório</option>
+                                <option value="manual">Só manual (setas)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" id="cfg-capa" value="">
                 </div>
 
                 <div class="cfg-section">
@@ -1292,6 +1396,23 @@
                     </div>
                 </div>
 
+
+                <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="calendar-clock" style="width:16px;"></i> Sorteio e Conversão</div>
+                    <label class="cfg-label">Data/Hora do Sorteio</label>
+                    <input type="datetime-local" id="cfg-data-sorteio" class="input-form" style="margin-bottom:12px;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                        <div>
+                            <label class="cfg-label">Upsell (+ bilhetes)</label>
+                            <input type="number" id="cfg-upsell-qtd" class="input-form" min="0" placeholder="Ex: 5" style="margin-bottom:0;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Cupom 1ª compra</label>
+                            <input type="text" id="cfg-cupom-primeira" class="input-form" placeholder="Ex: BEMVINDO" style="margin-bottom:0; text-transform:uppercase;">
+                        </div>
+                    </div>
+                    <p style="font-size:10px; color:var(--text-color); margin-top:8px;">Upsell sugere adicionar N bilhetes no checkout. Cupom 1ª compra é sugerido para telefone novo.</p>
+                </div>
 
                 <div class="cfg-section">
                     <div class="cfg-section-title"><i data-lucide="credit-card" style="width:16px;"></i> Gateways de Pagamento</div>
@@ -1370,7 +1491,7 @@
 
                 <div class="cfg-section">
                     <div class="cfg-section-title"><i data-lucide="palette" style="width:16px;"></i> Combos de Cores</div>
-                    <div id="theme-presets-grid" style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div>
+                    <div id="theme-presets-grid" style="display:grid; grid-template-columns:repeat(3,1fr); gap:8px;"></div>
                 </div>
 
                 <div class="cfg-section">
@@ -1401,8 +1522,8 @@
 
             <div id="cfg-tab-botoes" class="cfg-content" style="display: none;">
                 <div class="cfg-section-title" style="color: var(--primary-color); margin-bottom: 12px;"><i data-lucide="zap" style="width:16px;"></i> Seleção Rápida de Cotas</div>
-                <p style="font-size: 12px; color: var(--text-color); margin-bottom: 14px;">Defina os botões de quantidade rápida. Marque um como popular.</p>
-                <div id="quick-select-config-list"></div>
+                <p style="font-size: 12px; color: var(--text-color); margin-bottom: 14px;">Defina os botões de quantidade rápida. Marque um como popular. Layout em colunas.</p>
+                <div id="quick-select-config-list" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
                 <button class="cfg-add-btn" onclick="window.adminPanel.addQuickSelectRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Botão Rápido
                 </button>
@@ -1423,8 +1544,8 @@
                     </div>
                 </div>
                 <div class="cfg-section-title" style="color: var(--donated); margin-bottom: 8px;"><i data-lucide="gift" style="width:16px;"></i> Itens de Doação</div>
-                <p style="font-size: 12px; color: var(--text-color); margin-bottom: 14px;">Defina os itens e valores. O sistema calcula os bilhetes automaticamente (arredondando para cima).</p>
-                <div id="doacoes-config-list"></div>
+                <p style="font-size: 12px; color: var(--text-color); margin-bottom: 14px;">Defina os itens e valores. Layout em colunas (como seleção rápida).</p>
+                <div id="doacoes-config-list" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
                 <button class="cfg-add-btn" onclick="window.adminPanel.addDoacaoRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Item de Doação
                 </button>
@@ -1432,6 +1553,14 @@
 
             <div id="cfg-tab-premios" class="cfg-content" style="display: none;">
                 <div class="cfg-section-title" style="color: var(--primary-color); margin-bottom: 12px;"><i data-lucide="award" style="width:16px;"></i> Prêmios do Sorteio</div>
+                <div class="cfg-section" style="margin-bottom:16px;">
+                    <label class="cfg-label">Link da pasta das imagens (raiz)</label>
+                    <input type="url" id="cfg-premios-base" class="input-form" placeholder="https://lauriuche.github.io/Rifa/img/" value="https://lauriuche.github.io/Rifa/img/" style="margin-bottom:0; font-size:12px;" oninput="window.adminPanel.onPremiosBaseChange()">
+                    <p style="font-size:11px; color:var(--text-color); margin-top:8px; line-height:1.4;">
+                        Edite <b>só este link</b>. As fotos ficam automáticas:<br>
+                        <code style="font-size:10px; color:var(--primary-color);">…/premio1.jpg</code> · <code style="font-size:10px; color:var(--primary-color);">…/premio2.jpg</code> · <code style="font-size:10px; color:var(--primary-color);">…/premio3.jpg</code>
+                    </p>
+                </div>
                 <div id="premios-config-list"></div>
                 <button class="cfg-add-btn" onclick="window.adminPanel.addPremioRow()">
                     <i data-lucide="plus" style="width: 16px;"></i> Adicionar Prêmio
@@ -1529,6 +1658,72 @@
                 <img id="premio-foto-img" src="" alt="Foto do Prêmio" style="width: 100%; max-height: 560px; object-fit: contain; display: block;">
             </div>
             <button class="btn-participar" style="background: var(--gray-400); color: var(--title-color);" onclick="window.rifaApp.closeModal('modal-premio-foto')">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-sucesso">
+        <div class="modal-card" style="text-align:center; max-width:420px;">
+            <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,219,135,0.15);border:2px solid var(--paid);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <i data-lucide="check-circle" style="color:var(--paid);width:36px;height:36px;"></i>
+            </div>
+            <h2 style="color:var(--title-color);font-size:22px;margin-bottom:8px;">Pagamento confirmado!</h2>
+            <p style="font-size:13px;color:var(--text-color);margin-bottom:16px;">Seus bilhetes estão garantidos.</p>
+            <div style="background:var(--background-color);border:1px solid var(--border-color);border-radius:12px;padding:14px;text-align:left;margin-bottom:16px;">
+                <div style="font-size:11px;color:var(--text-color);font-weight:600;margin-bottom:6px;">NÚMEROS</div>
+                <p id="sucesso-numeros" style="font-size:15px;font-weight:800;color:var(--primary-color);word-break:break-word;line-height:1.5;"></p>
+                <div style="margin-top:10px;font-size:12px;color:var(--text-color);">Valor: <b id="sucesso-valor" style="color:var(--paid);"></b></div>
+            </div>
+            <button type="button" class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:10px;" onclick="window.rifaApp.copiarNumerosSucesso()">Copiar números</button>
+            <a id="sucesso-whatsapp" href="#" target="_blank" class="btn-participar" style="background:#25d366;margin-bottom:10px;text-decoration:none;">Compartilhar no WhatsApp</a>
+            <button class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:8px;" onclick="window.rifaApp.closeModal('modal-sucesso'); window.rifaApp.switchTab('consulta');">Ver meus bilhetes</button>
+            <button onclick="window.rifaApp.closeModal('modal-sucesso')" style="width:100%;background:transparent;color:var(--text-color);border:none;padding:12px;font-weight:600;cursor:pointer;">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-faq">
+        <div class="modal-card" style="max-width:440px; max-height:85vh; overflow-y:auto;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 style="color:var(--title-color); font-size:18px; margin:0;">Como funciona</h3>
+                <button type="button" onclick="window.rifaApp.closeModal('modal-faq')" style="background:var(--gray-400); border:none; color:var(--title-color); width:32px; height:32px; border-radius:8px; cursor:pointer; font-size:18px;">×</button>
+            </div>
+            <details open style="border-bottom:1px solid var(--border-color); padding:12px 0;">
+                <summary style="cursor:pointer; font-weight:700; font-size:14px; color:var(--title-color);">Como participo?</summary>
+                <p style="font-size:13px; color:var(--text-color); margin-top:8px; line-height:1.5;">Escolha a quantidade de bilhetes, informe nome e WhatsApp, pague via PIX ou cartão. Seus números são reservados na hora.</p>
+            </details>
+            <details style="border-bottom:1px solid var(--border-color); padding:12px 0;">
+                <summary style="cursor:pointer; font-weight:700; font-size:14px; color:var(--title-color);">Quando é o sorteio?</summary>
+                <p style="font-size:13px; color:var(--text-color); margin-top:8px; line-height:1.5;">A data aparece no contador no topo da página (quando configurada). O sorteio é feito pelo organizador no painel.</p>
+            </details>
+            <details style="border-bottom:1px solid var(--border-color); padding:12px 0;">
+                <summary style="cursor:pointer; font-weight:700; font-size:14px; color:var(--title-color);">Como recebo se ganhar?</summary>
+                <p style="font-size:13px; color:var(--text-color); margin-top:8px; line-height:1.5;">O organizador entra em contato pelo WhatsApp cadastrado. Mantenha o número ativo.</p>
+            </details>
+            <details style="border-bottom:1px solid var(--border-color); padding:12px 0;">
+                <summary style="cursor:pointer; font-weight:700; font-size:14px; color:var(--title-color);">Posso pagar depois?</summary>
+                <p style="font-size:13px; color:var(--text-color); margin-top:8px; line-height:1.5;">Sim. Use “Pagar depois”, depois acesse “Meus Bilhetes” com o mesmo WhatsApp antes da reserva expirar.</p>
+            </details>
+            <details style="padding:12px 0;">
+                <summary style="cursor:pointer; font-weight:700; font-size:14px; color:var(--title-color);">PIX ou cartão?</summary>
+                <p style="font-size:13px; color:var(--text-color); margin-top:8px; line-height:1.5;">Você escolhe no checkout: PIX (Mercado Pago) ou Cartão (InfinitePay), conforme o que o organizador configurou.</p>
+            </details>
+            <button class="btn-participar" style="margin-top:12px;" onclick="window.rifaApp.closeModal('modal-faq')">Entendi</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-reserva-manual">
+        <div class="modal-card" style="max-width:400px;">
+            <h3 style="color:var(--title-color);margin-bottom:16px;font-size:18px;">Reserva Manual</h3>
+            <input type="text" id="manual-nome" class="input-form" placeholder="Nome completo">
+            <input type="tel" id="manual-tel" class="input-form" placeholder="WhatsApp" oninput="window.rifaApp.maskPhone(this)">
+            <input type="number" id="manual-qtd" class="input-form" placeholder="Quantidade de cotas" min="1" value="1">
+            <select id="manual-status" class="input-form">
+                <option value="paid">Pago / Confirmado</option>
+                <option value="reserved">Pendente</option>
+                <option value="donated">Doação OK</option>
+                <option value="donated_pending">Doação Pendente</option>
+            </select>
+            <button class="btn-participar" onclick="window.adminPanel.salvarReservaManual()">Salvar Reserva</button>
+            <button onclick="window.rifaApp.closeModal('modal-reserva-manual')" style="width:100%;margin-top:12px;background:transparent;color:var(--text-color);border:none;padding:12px;font-weight:600;cursor:pointer;">Cancelar</button>
         </div>
     </div>
 
@@ -1631,11 +1826,20 @@
                 this.config = { 
                     premio: "Carregando...", descricao: "", valor: 5, total: 1000, 
                     pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", 
-                    promosActive: false, promos: [], pixel: "", premios: [], 
+                    promosActive: false, promos: [], pixel: "", premios: [],
+                    premiosBaseUrl: "https://lauriuche.github.io/Rifa/img/", 
                     cupons: [], quickSelects: [], doacoes: [], doacoesActive: true, ocultarNumeros: false,
-                    capa: "", reservaMinutos: 15, pixMinutos: 15,
+                    capa: "", capas: [], carouselTempo: 5, carouselModo: 'auto',
+                    reservaMinutos: 15, pixMinutos: 15,
+                    dataSorteio: "", upsellQtd: 0, cupomPrimeiraCompra: "",
                     theme: { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' }
                 };
+                this._countdownInterval = null;
+                this._carouselInterval = null;
+                this._carouselIndex = 0;
+                this._carouselImages = [];
+                this._pinFails = parseInt(localStorage.getItem('rifa_pin_fails') || '0') || 0;
+                this._pinLockUntil = parseInt(localStorage.getItem('rifa_pin_lock') || '0') || 0;
 
 
                 this.dbNumbers = {};
@@ -1842,7 +2046,8 @@
 
                 // Meta tags dinâmicas (compartilhamento)
                 try {
-                    const capaUrl = (this.config.capa && this.config.capa.trim()) ? this.config.capa.trim() : '';
+                    const capasMeta = this.getCapaList();
+                    const capaUrl = capasMeta[0] || '';
                     document.title = `${tituloStr} | RIFA MASTER`;
                     const ogTitle = document.querySelector('meta[property="og:title"]');
                     const ogDesc = document.querySelector('meta[property="og:description"]');
@@ -1852,12 +2057,7 @@
                     if (ogImage && capaUrl) ogImage.setAttribute('content', capaUrl);
                 } catch (_) {}
 
-                // Capa (mesma URL nos 2 locais: principal + blur)
-                const capaUrl = (this.config.capa && this.config.capa.trim()) ? this.config.capa.trim() : 'img/capa.jpg';
-                const imgMain = document.getElementById('img-main');
-                const imgBlur = document.getElementById('img-blur');
-                if (imgMain) imgMain.src = capaUrl;
-                if (imgBlur) imgBlur.src = capaUrl;
+                this.setupCarousel();
 
 
 
@@ -1866,13 +2066,18 @@
                     premiosList.innerHTML = '';
                     if (this.config.premios && this.config.premios.length > 0) {
                         this.config.premios.forEach((p, index) => {
-                            const medalhas = ['🥇', '🥈', '🥉', '🎖️', '🏅'];
-                            const medalha = medalhas[index] || '🎁';
+                            const medalhas = ['🥇', '🥈', '🥉', '🎖️', '🏅', '🏆', '🎁', '⭐'];
+                            const medalha = medalhas[index] || `${index + 1}º`;
                             const ganhador = Object.values(this.ganhadores || {}).find(g => g.premioIndex === index);
                             const hasWinner = !!ganhador;
-                            const hasFoto = p.foto && p.foto.trim() !== '';
-                            const fotoAttr = hasFoto ? p.foto.replace(/"/g, '&quot;') : '';
+                            let base = (this.config.premiosBaseUrl || 'https://lauriuche.github.io/Rifa/img/').trim();
+                            if (base && !base.endsWith('/')) base += '/';
+                            const fotoAuto = base + 'premio' + (index + 1) + '.jpg';
+                            const fotoFinal = (p.foto && p.foto.trim()) ? p.foto.trim() : fotoAuto;
+                            const hasFoto = !!fotoFinal;
+                            const fotoAttr = hasFoto ? fotoFinal.replace(/"/g, '&quot;') : '';
                             const descAttr = (p.descricao || '').replace(/"/g, '&quot;');
+                            const classif = p.classificacao || ((index + 1) + 'º');
 
                             let winnerHtml = '';
                             if (hasWinner) {
@@ -1891,7 +2096,7 @@
                                      data-desc="${descAttr}"
                                      onclick="window.rifaApp.abrirFotoPremio(this)">
                                     ${hasFoto ? '<div class="prize-photo-hint"><i data-lucide="image" style="width:12px;height:12px;"></i></div>' : ''}
-                                    <b>${medalha} ${index + 1}º Prêmio:</b>
+                                    <b>${medalha} ${classif} Prêmio:</b>
                                     <p>${p.descricao || ''}</p>
                                     ${winnerHtml}
                                 </div>
@@ -1970,6 +2175,9 @@
                     cardGrid.style.display = this.config.ocultarNumeros ? 'none' : 'block';
                 }
 
+                this.startCountdownSorteio();
+                this.renderGanhadoresPublicos();
+                this.renderFeedCompras();
                 window.cartManager.updateCartUI();
                 lucide.createIcons();
             }
@@ -2041,6 +2249,7 @@
                 this.renderGridPagination(matching.length, totalPages);
 
                 const cotasVendidas = Object.keys(this.dbNumbers).length;
+                const restantes = Math.max(0, total - cotasVendidas);
                 let porcentagem = total > 0 ? (cotasVendidas / total) * 100 : 0;
                 if (porcentagem > 100) porcentagem = 100;
 
@@ -2049,6 +2258,12 @@
                 if (progressFill && progressText) {
                     progressFill.style.width = porcentagem + '%';
                     progressText.innerText = Math.round(porcentagem) + '%';
+                }
+                const restEl = document.getElementById('cotas-restantes-info');
+                if (restEl) {
+                    restEl.innerText = restantes > 0
+                        ? `🔥 Restam ${restantes} cota${restantes !== 1 ? 's' : ''} disponível${restantes !== 1 ? 'is' : ''}`
+                        : '✅ Esgotado';
                 }
             }
             renderGridPagination(totalItems, totalPages) {
@@ -2445,6 +2660,231 @@ setGridPage(page) {
             }
 
             async executeConfirmedAction() { if(this.pendingAction) await this.pendingAction(); this.closeModal('modal-confirm'); }
+
+            openFaq() {
+                document.getElementById('modal-faq').style.display = 'flex';
+                lucide.createIcons();
+            }
+
+            getCapaList() {
+                let list = [];
+                if (Array.isArray(this.config.capas) && this.config.capas.length) {
+                    list = this.config.capas.map(u => String(u || '').trim()).filter(Boolean);
+                }
+                if (!list.length && this.config.capa) {
+                    list = [String(this.config.capa).trim()].filter(Boolean);
+                }
+                if (!list.length) list = ['img/capa.jpg'];
+                return list;
+            }
+
+            setupCarousel() {
+                this._carouselImages = this.getCapaList();
+                this._carouselIndex = 0;
+                this.showCarouselImage(0);
+                if (this._carouselInterval) clearInterval(this._carouselInterval);
+                const modo = this.config.carouselModo || 'auto';
+                const tempo = Math.max(2, parseInt(this.config.carouselTempo) || 5) * 1000;
+                const multi = this._carouselImages.length > 1;
+                const prev = document.getElementById('carousel-prev');
+                const next = document.getElementById('carousel-next');
+                if (prev) prev.style.display = multi ? 'block' : 'none';
+                if (next) next.style.display = multi ? 'block' : 'none';
+                if (multi && modo !== 'manual') {
+                    this._carouselInterval = setInterval(() => {
+                        if (modo === 'random') {
+                            let n = this._carouselIndex;
+                            if (this._carouselImages.length > 1) {
+                                while (n === this._carouselIndex) n = Math.floor(Math.random() * this._carouselImages.length);
+                            }
+                            this.showCarouselImage(n);
+                        } else {
+                            this.carouselNext();
+                        }
+                    }, tempo);
+                }
+            }
+
+            showCarouselImage(idx) {
+                const imgs = this._carouselImages || [];
+                if (!imgs.length) return;
+                this._carouselIndex = ((idx % imgs.length) + imgs.length) % imgs.length;
+                const url = imgs[this._carouselIndex];
+                const imgMain = document.getElementById('img-main');
+                const imgBlur = document.getElementById('img-blur');
+                if (imgMain) {
+                    imgMain.style.opacity = '0.4';
+                    setTimeout(() => {
+                        imgMain.src = url;
+                        imgMain.style.opacity = '1';
+                    }, 200);
+                }
+                if (imgBlur) imgBlur.src = url;
+                const dots = document.getElementById('carousel-dots');
+                if (dots) {
+                    dots.innerHTML = imgs.length > 1
+                        ? imgs.map((_, i) => `<span onclick="window.rifaApp.showCarouselImage(${i})" style="width:8px;height:8px;border-radius:50%;cursor:pointer;background:${i === this._carouselIndex ? 'var(--primary-color)' : 'rgba(255,255,255,0.5)'};display:inline-block;"></span>`).join('')
+                        : '';
+                }
+            }
+
+            carouselNext() {
+                this.showCarouselImage(this._carouselIndex + 1);
+            }
+
+            carouselPrev() {
+                this.showCarouselImage(this._carouselIndex - 1);
+            }
+
+            compartilharRifa() {
+                const titulo = this.config.premio || 'Rifa';
+                const valor = (this.config.valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const url = window.location.href.split('?')[0] + window.location.search;
+                const msg = encodeURIComponent(`🎁 Participe da rifa *${titulo}* a partir de ${valor}!\n\n${url}`);
+                window.open(`https://wa.me/?text=${msg}`, '_blank');
+            }
+
+            startCountdownSorteio() {
+                if (this._countdownInterval) clearInterval(this._countdownInterval);
+                const box = document.getElementById('countdown-sorteio');
+                const timer = document.getElementById('countdown-timer');
+                if (!box || !timer) return;
+                const raw = this.config.dataSorteio;
+                if (!raw) { box.style.display = 'none'; return; }
+                const target = new Date(raw).getTime();
+                if (isNaN(target)) { box.style.display = 'none'; return; }
+                box.style.display = 'block';
+                const tick = () => {
+                    const diff = target - Date.now();
+                    if (diff <= 0) {
+                        timer.innerText = 'Sorteio iniciado!';
+                        clearInterval(this._countdownInterval);
+                        return;
+                    }
+                    const d = Math.floor(diff / 86400000);
+                    const h = Math.floor((diff % 86400000) / 3600000);
+                    const m = Math.floor((diff % 3600000) / 60000);
+                    const s = Math.floor((diff % 60000) / 1000);
+                    timer.innerText = d > 0
+                        ? `${d}d ${String(h).padStart(2,'0')}h ${String(m).padStart(2,'0')}m ${String(s).padStart(2,'0')}s`
+                        : `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+                };
+                tick();
+                this._countdownInterval = setInterval(tick, 1000);
+            }
+
+            renderGanhadoresPublicos() {
+                const card = document.getElementById('card-ganhadores-publicos');
+                const list = document.getElementById('ganhadores-publicos-list');
+                if (!card || !list) return;
+                const ganhadores = Object.values(this.ganhadores || {});
+                if (!ganhadores.length) { card.style.display = 'none'; return; }
+                card.style.display = 'block';
+                list.innerHTML = ganhadores.map(g => {
+                    const nome = (g.nome || 'Ganhador').split(' ')[0];
+                    const sobrenome = (g.nome || '').split(' ').slice(1, 2).join(' ');
+                    const nomePublico = sobrenome ? `${nome} ${sobrenome.charAt(0)}.` : nome;
+                    return `<div class="prize-item has-winner" style="margin-bottom:8px;">
+                        <b>🏆 ${g.premioDesc || 'Prêmio'}</b>
+                        <p class="winner-name" style="margin-top:4px;">${nomePublico}</p>
+                        <span class="winner-cota">Cota ${g.cota || '—'}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            mostrarSucessoPagamento({ numeros, valor, nome }) {
+                const nums = Array.isArray(numeros) ? numeros.slice().sort().join(', ') : String(numeros || '');
+                document.getElementById('sucesso-numeros').innerText = nums;
+                document.getElementById('sucesso-valor').innerText = (valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const msg = encodeURIComponent(`Acabei de garantir minhas cotas na rifa ${this.config.premio}!\nNúmeros: ${nums}`);
+                document.getElementById('sucesso-whatsapp').href = `https://wa.me/?text=${msg}`;
+                document.getElementById('modal-sucesso').style.display = 'flex';
+                lucide.createIcons();
+            }
+
+            copiarNumerosSucesso() {
+                const nums = document.getElementById('sucesso-numeros')?.innerText || '';
+                if (!nums) return this.showToast('Nenhum número para copiar.');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(nums).then(() => this.showToast('Números copiados!')).catch(() => this._copyFallback(nums));
+                } else this._copyFallback(nums);
+            }
+
+            _copyFallback(text) {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                ta.remove();
+                this.showToast('Números copiados!');
+            }
+
+            loadCustomerDraft() {
+                try {
+                    const raw = localStorage.getItem('rifa_customer_draft');
+                    if (!raw) return;
+                    const data = JSON.parse(raw);
+                    const nameEl = document.getElementById('cust-name');
+                    const phoneEl = document.getElementById('cust-phone');
+                    if (nameEl && data.nome && !nameEl.value) nameEl.value = data.nome;
+                    if (phoneEl && data.telefone && !phoneEl.value) phoneEl.value = data.telefone;
+                } catch (_) {}
+            }
+
+            saveCustomerDraft(nome, telefone) {
+                try {
+                    localStorage.setItem('rifa_customer_draft', JSON.stringify({ nome: nome || '', telefone: telefone || '' }));
+                } catch (_) {}
+            }
+
+            renderFeedCompras() {
+                const box = document.getElementById('feed-compras');
+                const list = document.getElementById('feed-compras-list');
+                if (!box || !list) return;
+
+                // agrupa por telefone+nsu recente, status paid/donated
+                const grupos = {};
+                Object.entries(this.dbNumbers || {}).forEach(([n, d]) => {
+                    if (!d || !['paid', 'donated'].includes(d.status)) return;
+                    const key = `${(d.telefone || '').replace(/\D/g,'')}_${d.order_nsu || n}`;
+                    if (!grupos[key]) {
+                        grupos[key] = {
+                            nome: d.nome || 'Participante',
+                            qtd: 0,
+                            when: d.reservedAt || 0,
+                            status: d.status
+                        };
+                    }
+                    grupos[key].qtd += 1;
+                    if (d.reservedAt && d.reservedAt > grupos[key].when) grupos[key].when = d.reservedAt;
+                });
+
+                const itens = Object.values(grupos)
+                    .sort((a, b) => (b.when || 0) - (a.when || 0))
+                    .slice(0, 8);
+
+                if (!itens.length) {
+                    box.style.display = 'none';
+                    return;
+                }
+                box.style.display = 'block';
+                list.innerHTML = itens.map(it => {
+                    const nome = (it.nome || '').split(' ')[0] || 'Alguém';
+                    const rotulo = it.status === 'donated' ? 'doou' : 'garantiu';
+                    return `<div style="font-size:12px; color:var(--title-color); display:flex; justify-content:space-between; gap:8px;">
+                        <span><b>${nome}</b> ${rotulo} <b style="color:var(--paid)">${it.qtd}</b> cota${it.qtd > 1 ? 's' : ''}</span>
+                        <span style="color:var(--text-color); font-size:11px; white-space:nowrap;">agora</span>
+                    </div>`;
+                }).join('');
+            }
+
+            async logAdmin(acao, detalhe = '') {
+                try {
+                    const logsRef = ref(db, `${dbPath}/admin_logs`);
+                    await push(logsRef, { acao, detalhe, data: Date.now() });
+                } catch (_) {}
+            }
         }
 
         class CartManager {
@@ -2558,10 +2998,14 @@ setGridPage(page) {
                     if (final < 0) final = 0;
                 }
 
+                final = Math.round(Math.max(0, final) * 100) / 100;
+                promoDiscount = Math.round(Math.max(0, original - (final + (cupomDiscount || 0))) * 100) / 100;
+                cupomDiscount = Math.round((cupomDiscount || 0) * 100) / 100;
+
                 return { final, original, promoDiscount, cupomDiscount, freeTickets };
             }
 
-            aplicarCupom() {
+            async aplicarCupom() {
                 const cod = document.getElementById('checkout-cupom').value.trim().toUpperCase();
                 if (!cod) return;
             
@@ -2576,6 +3020,24 @@ setGridPage(page) {
                         this.app.showToast('Cupom esgotado (limite de usos atingido).');
                         this.cupomAplicado = null;
                     } else {
+                        const tel = (document.getElementById('cust-phone')?.value || '').replace(/\D/g, '');
+                        if (tel.length >= 10) {
+                            try {
+                                const snap = await get(cuponsHistRef);
+                                if (snap.exists()) {
+                                    const jaUsou = Object.values(snap.val()).some(h =>
+                                        h.codigo === cod && (h.telefone || '').replace(/\D/g, '') === tel
+                                    );
+                                    if (jaUsou) {
+                                        this.app.showToast('Este cupom já foi usado neste WhatsApp.');
+                                        this.cupomAplicado = null;
+                                        if (this._pagamentoExistente) this.atualizarValoresCheckoutExistente();
+                                        else this.atualizarValoresCheckout();
+                                        return;
+                                    }
+                                }
+                            } catch (_) {}
+                        }
                         this.cupomAplicado = cupom;
                         const rest = limite > 0 ? ` (${limite - usados} restante${limite - usados !== 1 ? 's' : ''})` : '';
                         this.app.showToast('Cupom aplicado com sucesso!' + rest);
@@ -2587,6 +3049,30 @@ setGridPage(page) {
                 } else {
                     this.atualizarValoresCheckout();
                 }
+            }
+
+            aplicarUpsell() {
+                const qtd = parseInt(this.app.config.upsellQtd) || 0;
+                if (qtd <= 0) return;
+                this.app.addSelection(qtd);
+                this.atualizarValoresCheckout();
+                this.renderUpsell();
+                this.app.showToast(`+${qtd} bilhetes adicionados!`);
+            }
+
+            renderUpsell() {
+                const box = document.getElementById('checkout-upsell');
+                const txt = document.getElementById('checkout-upsell-text');
+                if (!box || !txt) return;
+                const qtd = parseInt(this.app.config.upsellQtd) || 0;
+                if (qtd <= 0 || this._pagamentoExistente) {
+                    box.style.display = 'none';
+                    return;
+                }
+                const unit = this.app.config.valor || 0;
+                const extra = (qtd * unit).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                txt.innerText = `🔥 Leve +${qtd} bilhetes por só ${extra}?`;
+                box.style.display = 'block';
             }
 
             /** Incrementa o contador de usos + grava histórico após pagamento aprovado */
@@ -2671,6 +3157,8 @@ setGridPage(page) {
                 const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
                 if (wrap) wrap.style.display = temCupons ? 'flex' : 'none';
 
+                this.app.loadCustomerDraft();
+
                 // método padrão: PIX se disponível, senão cartão
                 if (this.hasPixEnabled()) this.payMethod = 'pix';
                 else if (this.hasCardEnabled()) this.payMethod = 'card';
@@ -2678,6 +3166,16 @@ setGridPage(page) {
                 this.setPayMethod(this.payMethod);
 
                 this.atualizarValoresCheckout();
+                this.renderUpsell();
+                this.atualizarResumoCotas();
+
+                // sugestão cupom 1ª compra
+                const cupom1 = (this.app.config.cupomPrimeiraCompra || '').trim().toUpperCase();
+                if (cupom1 && inputCupom && !inputCupom.value) {
+                    inputCupom.placeholder = `Cupom? Ex: ${cupom1}`;
+                }
+
+                if (window.fbq) window.fbq('track', 'InitiateCheckout', { value: this.calculateBestPrice(this.app.selected.size).final, currency: 'BRL' });
 
                 document.getElementById('checkout-step-1').style.display = 'block';
                 document.getElementById('checkout-step-2').style.display = 'none';
@@ -2685,15 +3183,37 @@ setGridPage(page) {
                 this.startTimer(this.app.getPixTimeoutMin()); 
             }
 
+            atualizarResumoCotas(listaOverride = null) {
+                const listaEl = document.getElementById('checkout-cotas-lista');
+                const qtdEl = document.getElementById('checkout-cotas-qtd');
+                if (!listaEl) return;
+                let nums;
+                if (listaOverride) nums = listaOverride.slice();
+                else if (this._pagamentoExistente) nums = this._pagamentoExistente.lista.slice();
+                else nums = Array.from(this.app.selected);
+                nums = nums.map(String).sort();
+                listaEl.innerText = nums.length ? nums.join(', ') : '—';
+                if (qtdEl) qtdEl.innerText = nums.length ? `${nums.length} cota${nums.length > 1 ? 's' : ''} selecionada${nums.length > 1 ? 's' : ''}` : '';
+            }
+
 
             startTimer(minutes) {
                 let time = minutes * 60;
+                let warned = false;
                 clearInterval(this.timerInterval);
                 this.timerInterval = setInterval(() => {
                     time--;
                     const m = Math.floor(time / 60).toString().padStart(2, '0');
                     const s = (time % 60).toString().padStart(2, '0');
-                    document.getElementById('checkout-timer-display').innerText = `${m}:${s}`;
+                    const el = document.getElementById('checkout-timer-display');
+                    if (el) {
+                        el.innerText = `${m}:${s}`;
+                        if (time <= 120) el.style.color = 'var(--danger)';
+                    }
+                    if (!warned && time <= 120 && time > 0) {
+                        warned = true;
+                        this.app.showToast('⚠️ Sua reserva expira em menos de 2 minutos!');
+                    }
                     if(time <= 0) {
                         clearInterval(this.timerInterval);
                         this.app.closeModal('modal-checkout');
@@ -2715,17 +3235,7 @@ setGridPage(page) {
                     ? listaStr.split(',').filter(Boolean)
                     : Array.from(this.app.selected);
                 const cotasTxt = cotasPagas.slice().sort().join(', ');
-                const shareMsg = encodeURIComponent(`Acabei de garantir minhas cotas na rifa ${this.app.config.premio}! Números: ${cotasTxt}`);
-                const shareUrl = `https://wa.me/?text=${shareMsg}`;
-
-                const statusEl = document.getElementById('pix-status-container');
-                if (statusEl) {
-                    statusEl.innerHTML = `
-                        <div style="display:flex; flex-direction:column; align-items:center; gap:10px; width:100%;">
-                            <span style="color:var(--paid); font-weight:800;">✅ PAGAMENTO APROVADO!</span>
-                            <a href="${shareUrl}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; background:#25d366; color:#fff; padding:10px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none;">Compartilhar bilhetes</a>
-                        </div>`;
-                }
+                const valorPago = (payData.priceCents || 0) / 100;
 
                 const up = {};
                 cotasPagas.forEach(n => up[`${n}/status`] = 'paid');
@@ -2735,24 +3245,37 @@ setGridPage(page) {
                     nome: payData.nome || '',
                     telefone: payData.telefone || '',
                     nsu: payData.nsu || '',
-                    valorPago: (payData.priceCents || 0) / 100,
+                    valorPago,
                     descontoAplicado: this._ultimoDescontoCupom || 0,
                     cotas: cotasTxt
                 });
 
-                this.app.showToast("Pagamento Confirmado!");
-                if (window.fbq && !isExisting) window.fbq('track', 'Purchase', { value: payData.priceCents / 100, currency: 'BRL' });
+                if (window.fbq && !isExisting) {
+                    window.fbq('track', 'Purchase', { value: valorPago, currency: 'BRL', contents: [{ id: 'rifa', quantity: cotasPagas.length }] });
+                }
 
-                setTimeout(() => {
-                    this.app.closeModal('modal-checkout');
-                    if (!isExisting) {
-                        this.app.selected.clear();
-                        this.app.renderGrid();
-                        this.updateCartUI();
-                    } else {
-                        this.app.consultarMeusNumeros();
-                    }
-                }, 4000);
+                this.app.closeModal('modal-checkout');
+                if (!isExisting) {
+                    this.app.selected.clear();
+                    this.app.renderGrid();
+                    this.updateCartUI();
+                } else {
+                    this.app.consultarMeusNumeros();
+                }
+
+                this.app.mostrarSucessoPagamento({
+                    numeros: cotasPagas,
+                    valor: valorPago,
+                    nome: payData.nome || ''
+                });
+
+                // WhatsApp automático para o organizador (abre link)
+                try {
+                    const orgWa = '5599991026112';
+                    const autoMsg = encodeURIComponent(`✅ Pagamento confirmado\nNome: ${payData.nome || ''}\nTel: ${payData.telefone || ''}\nCotas: ${cotasTxt}\nValor: R$ ${valorPago.toFixed(2)}`);
+                    // não abre automático para não atrapalhar o cliente; salva para admin
+                    console.log('Pagamento OK', payData.nsu);
+                } catch (_) {}
             }
 
             _reenablePayButtons(isExisting) {
@@ -2948,9 +3471,13 @@ setGridPage(page) {
                 }
                 
                 const n = document.getElementById('cust-name').value.trim();
-                const t = document.getElementById('cust-phone').value.trim(); 
+                const t = document.getElementById('cust-phone').value.trim();
+                const digits = t.replace(/\D/g, '');
 
-                if(!n || t.length < 10) return this.app.showToast("DADOS INVÁLIDOS"); 
+                if (!n || n.length < 3) return this.app.showToast('Informe seu nome completo.');
+                if (digits.length < 10 || digits.length > 13) return this.app.showToast('WhatsApp inválido. Use DDD + número.');
+
+                this.app.saveCustomerDraft(n, t);
 
                 const res = this.calculateBestPrice(this.app.selected.size); 
                 const valorUnidadeFixado = res.final / this.app.selected.size;
@@ -3031,6 +3558,7 @@ setGridPage(page) {
                 if (phoneEl) phoneEl.value = this.app._pendenteTel || '';
             
                 this.atualizarValoresCheckoutExistente();
+                this.atualizarResumoCotas(lista);
             
                 document.getElementById('checkout-step-1').style.display = 'block';
                 document.getElementById('checkout-step-2').style.display = 'none';
@@ -3076,21 +3604,87 @@ setGridPage(page) {
                 this.app = app;
                 this.isAdmin = false;
                 this.filter = 'all';
+                this.sortBy = 'recent';
                 this.statsVisible = false;
             }
 
+            setSort(v) {
+                this.sortBy = v || 'recent';
+                this.render(true);
+            }
+
+            parseCapasText(raw) {
+                return String(raw || '')
+                    .split(/[\n\r,;]+/)
+                    .map(s => s.trim())
+                    .filter(Boolean)
+                    .filter(s => /^https?:\/\//i.test(s) || s.startsWith('img/') || s.startsWith('/'));
+            }
+
+            formatarCapas() {
+                const ta = document.getElementById('cfg-capas');
+                if (!ta) return;
+                const list = this.parseCapasText(ta.value);
+                ta.value = list.join('\n');
+            }
+
+            async marcarSelecionadosPagos() {
+                const checks = [...document.querySelectorAll('.admin-bulk-check:checked')];
+                if (!checks.length) return this.app.showToast('Selecione ao menos um participante.');
+                const tels = checks.map(c => c.dataset.tel).filter(Boolean);
+                this.app.requestConfirmAction(`Marcar ${tels.length} como pago(s)?`, async () => {
+                    for (const tel of tels) {
+                        await this.updateStatus(tel, 'confirmado');
+                    }
+                    this.app.logAdmin('bulk_pago', `${tels.length} participantes`);
+                    this.app.showToast('Selecionados marcados como pagos.');
+                    this.render(true);
+                });
+            }
+
+
+            onPinInput(el) {
+                const val = (el.value || '').trim();
+                const correct = (this.app.config.pin || '').toString().trim();
+                if (!correct) return;
+                if (val.length >= correct.length) {
+                    this.validate();
+                }
+            }
 
             validate() {
+                const now = Date.now();
+                const lockUntil = this.app._pinLockUntil || 0;
+                if (now < lockUntil) {
+                    const min = Math.ceil((lockUntil - now) / 60000);
+                    return this.app.showToast(`PIN bloqueado. Tente em ${min} min.`);
+                }
                 const typedPin = document.getElementById('admin-pin').value.trim();
                 const correctPin = this.app.config.pin.toString().trim();
-                if(typedPin === correctPin) { 
-                    this.isAdmin = true; 
-                    this.app.closeModal('modal-pin'); 
-                    this.render(true); 
-                    this.app.switchTab('admin'); 
+                if (!typedPin) return;
+                if (typedPin === correctPin) {
+                    this.isAdmin = true;
+                    this.app._pinFails = 0;
+                    this.app._pinLockUntil = 0;
+                    localStorage.setItem('rifa_pin_fails', '0');
+                    localStorage.setItem('rifa_pin_lock', '0');
+                    this.app.closeModal('modal-pin');
+                    this.render(true);
+                    this.app.switchTab('admin');
                     this.applyStatsVisibility();
+                    this.app.logAdmin('login_admin', 'Acesso ao painel');
                 } else {
-                    this.app.showToast("PIN Incorreto");
+                    this.app._pinFails = (this.app._pinFails || 0) + 1;
+                    localStorage.setItem('rifa_pin_fails', String(this.app._pinFails));
+                    if (this.app._pinFails >= 5) {
+                        this.app._pinLockUntil = now + 15 * 60 * 1000;
+                        localStorage.setItem('rifa_pin_lock', String(this.app._pinLockUntil));
+                        this.app._pinFails = 0;
+                        localStorage.setItem('rifa_pin_fails', '0');
+                        this.app.showToast('5 tentativas falhas. PIN bloqueado por 15 min.');
+                    } else {
+                        this.app.showToast(`PIN Incorreto (${this.app._pinFails}/5)`);
+                    }
                 }
             }
 
@@ -3192,10 +3786,16 @@ setGridPage(page) {
                 return [
                     { id: 'teal', name: 'Verde Teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' },
                     { id: 'blue', name: 'Azul Oceano', primary: '#2563eb', paid: '#22c55e', reserved: '#f59e0b', donated: '#ec4899' },
-                    { id: 'purple', name: 'Roxo', primary: '#7c3aed', paid: '#10b981', reserved: '#f59e0b', donated: '#db2777' },
-                    { id: 'orange', name: 'Laranja', primary: '#ea580c', paid: '#16a34a', reserved: '#eab308', donated: '#db2777' },
+                    { id: 'purple', name: 'Roxo Neon', primary: '#7c3aed', paid: '#10b981', reserved: '#f59e0b', donated: '#db2777' },
+                    { id: 'orange', name: 'Laranja Fogo', primary: '#ea580c', paid: '#16a34a', reserved: '#eab308', donated: '#db2777' },
                     { id: 'red', name: 'Vermelho', primary: '#dc2626', paid: '#16a34a', reserved: '#f59e0b', donated: '#a855f7' },
-                    { id: 'cyan', name: 'Ciano', primary: '#0891b2', paid: '#22c55e', reserved: '#f59e0b', donated: '#e11d48' }
+                    { id: 'cyan', name: 'Ciano', primary: '#0891b2', paid: '#22c55e', reserved: '#f59e0b', donated: '#e11d48' },
+                    { id: 'gold', name: 'Dourado', primary: '#ca8a04', paid: '#16a34a', reserved: '#f97316', donated: '#db2777' },
+                    { id: 'pink', name: 'Rosa', primary: '#db2777', paid: '#10b981', reserved: '#f59e0b', donated: '#8b5cf6' },
+                    { id: 'indigo', name: 'Índigo', primary: '#4f46e5', paid: '#22c55e', reserved: '#f59e0b', donated: '#e11d48' },
+                    { id: 'forest', name: 'Floresta', primary: '#166534', paid: '#4ade80', reserved: '#eab308', donated: '#c026d3' },
+                    { id: 'midnight', name: 'Meia-noite', primary: '#1e3a8a', paid: '#34d399', reserved: '#fbbf24', donated: '#f472b6' },
+                    { id: 'coral', name: 'Coral', primary: '#f43f5e', paid: '#14b8a6', reserved: '#f59e0b', donated: '#8b5cf6' }
                 ];
             }
 
@@ -3286,36 +3886,57 @@ setGridPage(page) {
 
                 if (forceRebuild) {
                     list.innerHTML = '';
-                    let tPaid = 0; let tDoacoes = 0; 
+                    let tPaid = 0; let tDoacoes = 0; let tPend = 0; let nPaid = 0;
                     const participantes = {};
 
                     Object.entries(this.app.dbNumbers).forEach(([n, d]) => {
                         const val = (d.valor_fixado_unidade !== undefined) ? parseFloat(d.valor_fixado_unidade) : parseFloat(this.app.config.valor || 0);
-                        if(d.status === 'paid') tPaid += val;
+                        if(d.status === 'paid') { tPaid += val; nPaid += 1; }
+                        if(d.status === 'reserved') tPend += 1;
                         if(d.status === 'donated' || d.status === 'donated_pending') tDoacoes += 1;
 
                         const phKey = (d.telefone || "0").replace(/\D/g,'');
                         if(!participantes[phKey]) {
-                            participantes[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [], hasDoacao: false, hasCompra: false };
+                            participantes[phKey] = { nome: d.nome, telefone: d.telefone, cotas: [], hasDoacao: false, hasCompra: false, recent: 0, valor: 0, nsus: [] };
                         }
                         const isDoacao = !!d.item_doacao;
                         if (isDoacao) participantes[phKey].hasDoacao = true;
                         else participantes[phKey].hasCompra = true;
                         participantes[phKey].cotas.push({n, status: d.status, isDoacao});
+                        if (d.reservedAt && d.reservedAt > participantes[phKey].recent) participantes[phKey].recent = d.reservedAt;
+                        if (d.status === 'paid' || d.status === 'reserved') participantes[phKey].valor += val;
+                        if (d.order_nsu) participantes[phKey].nsus.push(d.order_nsu);
                     });
 
+                    const totalCotas = Object.keys(this.app.dbNumbers).length;
                     document.getElementById('admin-receita').innerText = `R$ ${tPaid.toFixed(2).replace('.',',')}`;
                     document.getElementById('admin-doacoes').innerText = tDoacoes;
-                    document.getElementById('admin-vendas').innerText = Object.keys(this.app.dbNumbers).length;
+                    document.getElementById('admin-vendas').innerText = totalCotas;
+                    const elPend = document.getElementById('admin-pendentes');
+                    if (elPend) elPend.innerText = tPend;
+                    const elTicket = document.getElementById('admin-ticket-medio');
+                    if (elTicket) elTicket.innerText = nPaid > 0 ? `R$ ${(tPaid / nPaid).toFixed(2).replace('.',',')}` : 'R$ 0';
+                    const elConv = document.getElementById('admin-conversao');
+                    if (elConv) {
+                        const conv = totalCotas > 0 ? Math.round((nPaid / totalCotas) * 100) : 0;
+                        elConv.innerText = conv + '%';
+                    }
 
 
-                    Object.values(participantes).forEach(p => {
+                    let listaP = Object.values(participantes);
+                    if (this.sortBy === 'name') listaP.sort((a, b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
+                    else if (this.sortBy === 'cotas') listaP.sort((a, b) => b.cotas.length - a.cotas.length);
+                    else if (this.sortBy === 'value') listaP.sort((a, b) => (b.valor || 0) - (a.valor || 0));
+                    else listaP.sort((a, b) => (b.recent || 0) - (a.recent || 0));
+
+                    listaP.forEach(p => {
                         const card = document.createElement('div'); card.className = 'admin-item'; 
                         const phClean = (p.telefone || '').replace(/\D/g,'');
 
                         card.dataset.nome = (p.nome || '').toLowerCase();
                         card.dataset.telefone = phClean;
                         card.dataset.cotas = p.cotas.map(c => c.n).join(',');
+                        card.dataset.nsu = (p.nsus || []).join(',');
                         card.dataset.isDoacao = p.hasDoacao ? 'true' : 'false';
 
                         const allPaid = p.cotas.every(c => c.status === 'paid' || c.status === 'donated');
@@ -3330,7 +3951,8 @@ setGridPage(page) {
                             <div style="display:flex; gap:8px;">
                                 <button class="btn-admin bg-green" style="flex:1" ${allPaid?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Confirmar?', () => window.adminPanel.updateStatus('${p.telefone}', 'confirmado'))">CONFIRMADO</button>
                                 <button class="btn-admin bg-orange" style="flex:1" ${allRes?'disabled':''} onclick="window.rifaApp.requestConfirmAction('Tornar Pendente?', () => window.adminPanel.updateStatus('${p.telefone}', 'pendente'))">PENDENTE</button>
-                                <button class="btn-admin bg-red" style="padding: 8px;" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
+                                <button class="btn-admin bg-red" style="padding: 8px;" title="Excluir" onclick="window.rifaApp.requestConfirmAction('Excluir Cotas?', () => window.adminPanel.deleteParticipant('${p.telefone}'))"><i data-lucide="trash-2" style="width: 14px;"></i></button>
+                                <button class="btn-admin" style="padding: 8px; background:#6366f1;" title="Reembolsar / Liberar" onclick="window.rifaApp.requestConfirmAction('Reembolsar e liberar cotas?', () => window.adminPanel.reembolsarParticipante('${p.telefone}'))"><i data-lucide="undo-2" style="width: 14px;"></i></button>
                             </div>
                         `;
 
@@ -3367,7 +3989,10 @@ setGridPage(page) {
                         card.innerHTML = `
                         <details style="cursor: pointer;">
                             <summary style="display:flex; justify-content:space-between; align-items: center;">
-                                <div><b style="color:${titleColor}; font-size: 15px;">${giftIcon}${(p.nome || '').toUpperCase()}</b></div>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <input type="checkbox" class="admin-bulk-check" data-tel="${p.telefone}" onclick="event.stopPropagation()" style="width:16px;height:16px;accent-color:var(--primary-color);">
+                                    <b style="color:${titleColor}; font-size: 15px;">${giftIcon}${(p.nome || '').toUpperCase()}</b>
+                                </div>
                                 <div style="display:flex; align-items:center; gap:8px;">
                                     <span style="font-size: 12px; background: var(--gray-400); padding: 4px 8px; border-radius: 6px;">${p.cotas.length} cota(s)</span>
                                     <i data-lucide="chevron-down" style="width: 18px; color:var(--text-color);"></i>
@@ -3395,8 +4020,9 @@ setGridPage(page) {
                     const dNome = card.dataset.nome || '';
                     const dCotas = card.dataset.cotas || '';
                     const dTel = card.dataset.telefone || '';
+                    const dNsu = (card.dataset.nsu || '').toLowerCase();
 
-                    const matchSearch = dNome.includes(searchTxt) || dCotas.includes(searchTxt) || dTel.includes(searchTxt);
+                    const matchSearch = !searchTxt || dNome.includes(searchTxt) || dCotas.includes(searchTxt) || dTel.includes(searchTxt) || dNsu.includes(searchTxt);
                     let matchTab = true;
                     if (this.filter === 'paid' && card.dataset.statusGroup !== 'paid') matchTab = false;
                     if (this.filter === 'reserved' && !['reserved', 'mixed'].includes(card.dataset.statusGroup)) matchTab = false;
@@ -3537,9 +4163,61 @@ setGridPage(page) {
                 Object.entries(this.app.dbNumbers).forEach(([n, d]) => { 
                     if(d.telefone === ph) up[n] = null;
                 }); 
-                await update(numRef, up); this.app.showToast("Excluído"); 
+                await update(numRef, up);
+                this.app.logAdmin('excluir_participante', ph);
+                this.app.showToast("Excluído"); 
             }
 
+            abrirReservaManual() {
+                document.getElementById('manual-nome').value = '';
+                document.getElementById('manual-tel').value = '';
+                document.getElementById('manual-qtd').value = '1';
+                document.getElementById('manual-status').value = 'paid';
+                document.getElementById('modal-reserva-manual').style.display = 'flex';
+            }
+
+            async salvarReservaManual() {
+                const nome = document.getElementById('manual-nome').value.trim();
+                const tel = document.getElementById('manual-tel').value.trim();
+                const qtd = parseInt(document.getElementById('manual-qtd').value) || 0;
+                const status = document.getElementById('manual-status').value || 'paid';
+                if (!nome || tel.length < 10 || qtd < 1) return this.app.showToast('Preencha nome, WhatsApp e quantidade.');
+
+                const padLen = Math.max(3, (this.app.config.total - 1).toString().length);
+                const available = [];
+                for (let i = 0; i < this.app.config.total; i++) {
+                    const n = i.toString().padStart(padLen, '0');
+                    if (!this.app.dbNumbers[n]) available.push(n);
+                }
+                if (available.length < qtd) return this.app.showToast('Cotas insuficientes disponíveis.');
+
+                const chosen = available.sort(() => Math.random() - 0.5).slice(0, qtd);
+                const oid = 'ADM' + Date.now();
+                const up = {};
+                chosen.forEach(n => {
+                    up[n] = {
+                        nome, telefone: tel, status, order_nsu: oid,
+                        valor_fixado_unidade: status === 'paid' ? (this.app.config.valor || 0) : 0,
+                        reservedAt: Date.now()
+                    };
+                });
+                await update(numRef, up);
+                this.app.logAdmin('reserva_manual', `${nome} ${qtd} cotas (${status})`);
+                this.app.closeModal('modal-reserva-manual');
+                this.app.showToast(`Reservadas: ${chosen.join(', ')}`);
+                this.render(true);
+            }
+
+            async reembolsarParticipante(ph) {
+                const up = {};
+                Object.entries(this.app.dbNumbers).forEach(([n, d]) => {
+                    if (d.telefone === ph) up[n] = null;
+                });
+                await update(numRef, up);
+                this.app.logAdmin('reembolso', ph);
+                this.app.showToast('Cotas liberadas (reembolso).');
+                this.render(true);
+            }
 
             exportCSV() {
                 const rows = [['Cota', 'Nome', 'Telefone', 'Status', 'Item Doacao', 'NSU', 'Valor Unidade', 'Reservado Em']];
@@ -3614,13 +4292,28 @@ setGridPage(page) {
 
             openConfig() {
                 document.getElementById('cfg-premio').value = this.app.config.premio || "";
-                document.getElementById('cfg-capa').value = this.app.config.capa || "";
+                const capasArr = (Array.isArray(this.app.config.capas) && this.app.config.capas.length)
+                    ? this.app.config.capas
+                    : (this.app.config.capa ? [this.app.config.capa] : []);
+                const ta = document.getElementById('cfg-capas');
+                if (ta) ta.value = capasArr.join('\n');
+                document.getElementById('cfg-capa').value = capasArr[0] || '';
+                const ct = document.getElementById('cfg-carousel-tempo');
+                if (ct) ct.value = this.app.config.carouselTempo || 5;
+                const cm = document.getElementById('cfg-carousel-modo');
+                if (cm) cm.value = this.app.config.carouselModo || 'auto';
                 document.getElementById('cfg-valor').value = this.app.config.valor || 0;
                 document.getElementById('cfg-total').value = this.app.config.total || 0;
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
                 document.getElementById('cfg-pixel').value = this.app.config.pixel || "";
                 document.getElementById('cfg-reserva-min').value = this.app.config.reservaMinutos || 15;
                 document.getElementById('cfg-pix-min').value = this.app.config.pixMinutos || 15;
+                const ds = document.getElementById('cfg-data-sorteio');
+                if (ds) ds.value = this.app.config.dataSorteio || '';
+                const uq = document.getElementById('cfg-upsell-qtd');
+                if (uq) uq.value = this.app.config.upsellQtd || 0;
+                const cp = document.getElementById('cfg-cupom-primeira');
+                if (cp) cp.value = this.app.config.cupomPrimeiraCompra || '';
 
                 document.getElementById('cfg-gateway').value = this.app.config.gateway || "mercadopago";
                 document.getElementById('cfg-handle').value = this.app.config.handle || "";
@@ -3651,8 +4344,13 @@ setGridPage(page) {
                 const doacoesList = document.getElementById('doacoes-config-list'); doacoesList.innerHTML = '';
                 if(this.app.config.doacoes) this.app.config.doacoes.forEach(d => this.addDoacaoRow(d));
 
+                const baseEl = document.getElementById('cfg-premios-base');
+                if (baseEl) baseEl.value = this.app.config.premiosBaseUrl || 'https://lauriuche.github.io/Rifa/img/';
                 const preList = document.getElementById('premios-config-list'); preList.innerHTML = '';
-                if(this.app.config.premios) this.app.config.premios.forEach(p => this.addPremioRow(p));
+                if (this.app.config.premios && this.app.config.premios.length) {
+                    this.app.config.premios.forEach(p => this.addPremioRow(p));
+                }
+                this.renumerarPremios();
 
                 const cList = document.getElementById('cupons-config-list'); cList.innerHTML = '';
                 if(this.app.config.cupons) this.app.config.cupons.forEach(c => this.addCupomRow(c));
@@ -3777,12 +4475,13 @@ setGridPage(page) {
             addDoacaoRow(d = {nome: '', valor: 10}) {
                 const div = document.createElement('div');
                 div.className = 'cfg-list-item';
+                div.style.marginBottom = '0';
                 div.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <input type="text" class="input-form d-nome" value="${d.nome}" style="margin:0;" placeholder="Nome do Item (Ex: Fralda G)">
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <input type="number" class="input-form d-valor" value="${d.valor}" style="margin:0; flex:1;" placeholder="Valor (R$)">
-                            <button class="remove-btn" onclick="this.closest('.cfg-list-item').remove()">
+                        <input type="text" class="input-form d-nome" value="${d.nome || ''}" style="margin:0; font-size:12px;" placeholder="Item (ex: Fralda)">
+                        <div style="display:flex; gap:8px; align-items:center;">
+                            <input type="number" class="input-form d-valor" value="${d.valor}" style="margin:0; flex:1; font-size:12px;" placeholder="R$">
+                            <button class="remove-btn" onclick="this.closest('.cfg-list-item').remove()" style="padding:8px;">
                                 <i data-lucide="trash-2" style="width:14px;"></i>
                             </button>
                         </div>
@@ -3844,20 +4543,63 @@ setGridPage(page) {
             }
 
 
+            getPremiosBaseUrl() {
+                let base = (document.getElementById('cfg-premios-base')?.value || this.app.config.premiosBaseUrl || 'https://lauriuche.github.io/Rifa/img/').trim();
+                if (base && !base.endsWith('/')) base += '/';
+                return base || 'https://lauriuche.github.io/Rifa/img/';
+            }
+
+            premioFotoUrl(pos) {
+                return this.getPremiosBaseUrl() + 'premio' + pos + '.jpg';
+            }
+
+            ordinalPremio(n) {
+                return n + 'º';
+            }
+
+            renumerarPremios() {
+                const rows = [...document.querySelectorAll('#premios-config-list .cfg-list-item')];
+                rows.forEach((row, i) => {
+                    const pos = i + 1;
+                    const badge = row.querySelector('.p-pos');
+                    if (badge) badge.innerText = this.ordinalPremio(pos);
+                    const foto = row.querySelector('.p-foto');
+                    if (foto) {
+                        foto.value = this.premioFotoUrl(pos);
+                        foto.readOnly = true;
+                    }
+                    const hint = row.querySelector('.p-foto-hint');
+                    if (hint) hint.innerText = 'premio' + pos + '.jpg';
+                });
+            }
+
+            onPremiosBaseChange() {
+                this.renumerarPremios();
+            }
+
             addPremioRow(d = {descricao: '', foto: ''}) {
+                const list = document.getElementById('premios-config-list');
+                const pos = list.querySelectorAll('.cfg-list-item').length + 1;
+                const fotoAuto = this.premioFotoUrl(pos);
                 const div = document.createElement('div');
                 div.className = 'cfg-list-item';
                 div.innerHTML = `
                     <div style="display:flex; flex-direction:column; gap:8px;">
-                        <input type="text" class="input-form p-desc" value="${d.descricao || ''}" style="margin:0;" placeholder="Ex: Moto 0km">
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <input type="url" class="input-form p-foto" value="${d.foto || ''}" style="margin:0; flex:1; font-size:12px;" placeholder="URL da foto (opcional)">
-                            <button class="remove-btn" onclick="this.closest('.cfg-list-item').remove()">
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span class="p-pos" style="flex-shrink:0; min-width:42px; height:42px; border-radius:10px; background:var(--primary-color); color:#fff; font-weight:800; font-size:15px; display:flex; align-items:center; justify-content:center;">${this.ordinalPremio(pos)}</span>
+                            <input type="text" class="input-form p-desc" value="${(d.descricao || '').replace(/"/g, '&quot;')}" style="margin:0; flex:1;" placeholder="Descrição do ${this.ordinalPremio(pos)} prêmio">
+                            <button class="remove-btn" onclick="this.closest('.cfg-list-item').remove(); window.adminPanel.renumerarPremios();" style="padding:10px;">
                                 <i data-lucide="trash-2" style="width:14px;"></i>
                             </button>
                         </div>
+                        <div style="display:flex; align-items:center; gap:8px; padding-left:52px;">
+                            <i data-lucide="image" style="width:14px; color:var(--text-color); flex-shrink:0;"></i>
+                            <input type="text" class="input-form p-foto" value="${fotoAuto}" readonly style="margin:0; flex:1; font-size:11px; opacity:0.85; cursor:default;">
+                            <span class="p-foto-hint" style="font-size:10px; color:var(--primary-color); font-weight:600; white-space:nowrap;">premio${pos}.jpg</span>
+                        </div>
                     </div>`;
-                document.getElementById('premios-config-list').appendChild(div);
+                list.appendChild(div);
+                this.renumerarPremios();
                 lucide.createIcons();
             }
 
@@ -3922,12 +4664,16 @@ setGridPage(page) {
                     dItens.push({ nome: row.querySelector('.d-nome').value.trim(), valor: parseFloat(row.querySelector('.d-valor').value) || 0 }); 
                 });
 
+                const premiosBaseUrl = this.getPremiosBaseUrl();
                 const premios = [];
-                document.querySelectorAll('#premios-config-list .cfg-list-item').forEach(row => { 
-                    premios.push({ 
+                document.querySelectorAll('#premios-config-list .cfg-list-item').forEach((row, i) => {
+                    const pos = i + 1;
+                    premios.push({
+                        posicao: pos,
+                        classificacao: this.ordinalPremio(pos),
                         descricao: row.querySelector('.p-desc').value,
-                        foto: (row.querySelector('.p-foto') && row.querySelector('.p-foto').value.trim()) || ''
-                    }); 
+                        foto: this.premioFotoUrl(pos)
+                    });
                 });
 
                 const cupons = [];
@@ -3952,9 +4698,18 @@ setGridPage(page) {
                 this.app.config.theme = theme;
                 this.app.applyTheme(theme);
 
+                const capasTxt = this.parseCapasText(document.getElementById('cfg-capas')?.value || '');
+                const capaPrincipal = capasTxt[0] || (document.getElementById('cfg-capa')?.value || '').trim() || '';
+                if (document.getElementById('cfg-capa')) document.getElementById('cfg-capa').value = capaPrincipal;
+                const taCapas = document.getElementById('cfg-capas');
+                if (taCapas) taCapas.value = capasTxt.join('\n');
+
                 const up = { 
                     premio: document.getElementById('cfg-premio').value || "", 
-                    capa: document.getElementById('cfg-capa').value.trim() || "",
+                    capa: capaPrincipal,
+                    capas: capasTxt,
+                    carouselTempo: parseInt(document.getElementById('cfg-carousel-tempo')?.value) || 5,
+                    carouselModo: document.getElementById('cfg-carousel-modo')?.value || 'auto',
                     valor: parseFloat(document.getElementById('cfg-valor').value) || 0, 
                     total: parseInt(document.getElementById('cfg-total').value) || 0, 
                     gateway: 'ambos',
@@ -3964,6 +4719,9 @@ setGridPage(page) {
                     pixel: document.getElementById('cfg-pixel').value, 
                     reservaMinutos: parseInt(document.getElementById('cfg-reserva-min').value) || 15,
                     pixMinutos: parseInt(document.getElementById('cfg-pix-min').value) || 15,
+                    dataSorteio: document.getElementById('cfg-data-sorteio')?.value || '',
+                    upsellQtd: parseInt(document.getElementById('cfg-upsell-qtd')?.value) || 0,
+                    cupomPrimeiraCompra: (document.getElementById('cfg-cupom-primeira')?.value || '').trim().toUpperCase(),
                     promosActive: this.app.config.promosActive, 
                     doacoesActive: this.app.config.doacoesActive !== false,
                     ocultarNumeros: this.app.config.ocultarNumeros,
@@ -3972,6 +4730,7 @@ setGridPage(page) {
                     doacoes: dItens,
                     promos: pr,
                     premios: premios,
+                    premiosBaseUrl: premiosBaseUrl,
                     cupons: cupons
                 };
                                 set(cfgRef, up).then(() => { 
