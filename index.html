@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<!---icones do fontawesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <!-- Código do Favicon .ico -->
     <link rel="icon" href="img/favicon.png" type="image/x-icon">
     <meta charset="utf-8" />
@@ -17,7 +19,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="apple-touch-icon" href="img/icone-192.png">
 
-    <title>RIFA DO ANTHONY RAVI | RIFA MASTER</title>
+    <title>*${titulo}* | RIFA MASTER</title>
     <meta name="description" content="Participe a partir de R$ 5,00. Sorteios semanais!">
 
     <!-- Open Graph / WhatsApp / Facebook -->
@@ -948,12 +950,6 @@
                     <div id="ganhadores-publicos-list"></div>
                 </div>
 
-                <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
-                    <button type="button" class="btn-participar" style="flex:1; min-width:140px; padding:12px; font-size:13px; background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.compartilharRifa()">
-                        <i data-lucide="share-2" style="width:16px;"></i> Compartilhar
-                    </button>
-                </div>
-
                 <div id="feed-compras" class="card" style="display:none; margin-bottom:16px; padding:14px;">
                     <div id="feed-compras-titulo" style="font-size:12px; font-weight:800; color:var(--title-color); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Maiores compradores</div>
                     <div id="feed-compras-list" style="display:flex; flex-direction:column; gap:8px;"></div>
@@ -1021,13 +1017,20 @@
                     <div class="numbers-grid" id="grid"></div>
                     <div class="grid-pagination" id="grid-pagination" style="display:none;"></div>
                 </div>
-
+                
+                <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                    <button type="button" class="btn-participar" style="flex:1; min-width:140px; padding:12px; font-size:13px; background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.compartilharRifa()">
+                        <i class="fa-solid fa-share-nodes"></i> Compartilhar
+                    </button>
+                </div>
+                
                 <div style="text-align:center; margin:24px 0 8px;">
                     <button type="button" onclick="window.rifaApp.openFaq()" style="background:var(--gray-400); border:1px solid var(--border-color); color:var(--title-color); padding:12px 20px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
                         <i data-lucide="help-circle" style="width:16px;"></i> Dúvidas? Como funciona
                     </button>
                 </div>
 
+                
                 <div class="footer-copyright">
                    <br>Vagner Sorteios - Todos os direitos reservados<br> Desenvolvido por Vagner Lauriuche.<br> 2026
                 </div>
@@ -1275,11 +1278,15 @@
                     <p style="font-size:12px; color:var(--text-color); font-weight:600; text-align:center; margin-bottom:4px;">Escolha a forma de pagamento</p>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                         <button type="button" id="btn-method-pix" class="pay-method-btn active" onclick="window.cartManager.setPayMethod('pix')" style="padding:14px 10px; border-radius:12px; border:2px solid var(--primary-color); background:var(--primary-color-15); color:var(--title-color); cursor:pointer; font-weight:700; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                            <span style="font-size:42px;">💠</span>
+                            <span style="font-size:42px;">
+                                <i class="fa-brands fa-pix"></i>
+                                </span>
                             PIX
                         </button>
                         <button type="button" id="btn-method-card" class="pay-method-btn" onclick="window.cartManager.setPayMethod('card')" style="padding:14px 10px; border-radius:12px; border:2px solid var(--border-color); background:var(--gray-400); color:var(--title-color); cursor:pointer; font-weight:700; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:6px;">
-                            <span style="font-size:42px;">💳</span>
+                            <span style="font-size:42px;">
+                                <i class="fa-solid fa-credit-card"></i>
+                            </span>
                             CARTÃO
                         </button>
                     </div>
