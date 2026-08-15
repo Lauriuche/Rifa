@@ -469,10 +469,15 @@
             z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
         }
         .modal-card {
-            background-color: transparent; width: 100%; max-width: 400px;
-            border-radius: 16px; padding: 24px; border: 0px solid var(--border-color);
+            background-color: var(--gray-500); width: 100%; max-width: 400px;
+            border-radius: 16px; padding: 24px; border: 1px solid var(--border-color);
             max-height: 90vh; overflow-y: auto;
             scrollbar-width: none;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+        }
+        #modal-checkout .modal-card {
+            background-color: var(--gray-500);
+            border: 1px solid var(--border-color);
         }
 
         .toast {
@@ -1046,6 +1051,17 @@
                     <div id="ganhadores-publicos-list"></div>
                 </div>
 
+                <div id="card-roleta-ganhadores" class="card" style="display:none; margin-bottom:14px;">
+                    <div class="section-title">
+                        <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:20px;"></i></div>
+                        <div>
+                            <h2 style="font-size:18px;">Ganhadores da Roleta</h2>
+                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Prêmios válidos da roleta premiada</p>
+                        </div>
+                    </div>
+                    <div id="roleta-ganhadores-publicos"></div>
+                </div>
+
                 <div class="card" id="card-doacoes" style="display: none; margin-bottom: 14px;">
                     <div class="section-title">
                         <div class="icon-box" style="background-color: rgba(214, 51, 132, 0.1); border-color: var(--donated); color: var(--donated);">
@@ -1127,34 +1143,30 @@
                     <button onclick="window.rifaApp.switchTab('rifa')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer; border: none; font-size: 14px;">
                         <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
                     </button>
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px;">
-                        <h2 style="color: var(--title-color); font-size: 22px; display: flex; align-items: center; gap: 8px; margin: 0;">
-                            <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
-                        </h2>
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <button type="button" id="btn-admin-menu" onclick="window.adminPanel.toggleAdminMenu(event)" title="Configurações" style="width: 40px; height: 40px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer;">
-                                <i data-lucide="settings" style="width: 18px; height: 18px;"></i>
-                            </button>
-                            <button type="button" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" title="Mostrar/Ocultar valores" style="width: 42px; height: 42px; border-radius: 10px; background: var(--gray-400); border: 1px solid var(--border-color); color: var(--title-color); display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0;">
-                                <i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>
-                            </button>
-                            <div id="admin-gear-menu" style="display: none; position: absolute; right: 0; top: 46px; min-width: 180px; background: var(--gray-500); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 50; overflow: hidden;">
-                                <button type="button" onclick="window.adminPanel.openConfig(); window.adminPanel.closeAdminMenu();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--title-color); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px;">
-                                    <i data-lucide="sliders" style="width:15px;"></i> Ajustes
-                                </button>
-                                <button type="button" onclick="window.adminPanel.exportCSV(); window.adminPanel.closeAdminMenu();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--title-color); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; border-top:1px solid var(--border-color);">
-                                    <i data-lucide="download" style="width:15px;"></i> Exportar CSV
-                                </button>
-                                <button type="button" onclick="window.adminPanel.closeAdminMenu(); window.adminPanel.resetRifa();" style="width:100%; text-align:left; padding:12px 14px; background:transparent; border:none; color:var(--danger); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:8px; border-top:1px solid var(--border-color);">
-                                    <i data-lucide="trash-2" style="width:15px;"></i> Resetar Rifa
-                                </button>
-                            </div>
-                        </div>
+                    <h2 style="color: var(--title-color); font-size: 22px; display: flex; align-items: center; gap: 8px; margin: 0 0 14px 0;">
+                        <i data-lucide="shield-check" style="color: var(--primary-color);"></i> Painel Admin
+                    </h2>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:20px;">
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.openConfig()" style="background:var(--primary-color); color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="sliders" style="width:15px;"></i> Configurações
+                        </button>
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.openRoletaHistoricoAdmin()" style="background:#7c3aed; color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="gift" style="width:15px;"></i> Ganhadores Roleta
+                        </button>
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.exportCSV()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="download" style="width:15px;"></i> Exportar CSV
+                        </button>
+                        <button type="button" class="btn-admin" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="eye-off" style="width:15px;"></i> Valores
+                        </button>
+                        <button type="button" class="btn-admin bg-red" onclick="window.adminPanel.resetRifa()" style="grid-column:1 / -1; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="trash-2" style="width:15px;"></i> Resetar Rifa
+                        </button>
                     </div>
 
 
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 24px;">
-                        <div id="admin-stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; flex: 1; visibility: hidden; opacity: 0; transition: opacity 0.2s;">
+                        <div id="admin-stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; flex: 1;">
 
                             <div style="background: var(--background-color); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border-color);">
                                 <span style="font-size: 11px; color: var(--text-color); font-weight: 500;">Receita (R$)</span>
@@ -1409,9 +1421,9 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-config">
-        <div class="modal-card" style="max-width: 450px; padding-bottom: 90px; position: relative;">
-            <h3 style="color:var(--title-color); margin-bottom:10px; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+    <div class="modal-overlay" id="modal-config" style="padding:0; align-items:stretch; justify-content:stretch;">
+        <div class="modal-card" id="modal-config-card" style="max-width:100%; width:100%; height:100%; max-height:100vh; border-radius:0; margin:0; padding:16px 16px 100px; position:relative; overflow-y:auto; -webkit-overflow-scrolling:touch;">
+            <h3 style="color:var(--title-color); margin-bottom:10px; font-size: 20px; display: flex; align-items: center; gap: 8px; position:sticky; top:0; background:var(--gray-500); z-index:5; padding-bottom:8px;">
                 <i data-lucide="settings"></i> Configurações
                 <span id="cfg-unsaved" style="display:none; margin-left:auto; font-size:11px; font-weight:800; color:var(--reserved); background:rgba(255,170,0,.12); border:1px solid var(--reserved); padding:4px 8px; border-radius:999px;">Não salvo</span>
             </h3>
@@ -1777,7 +1789,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         Vale para compras normais, <b>cascata</b> e <b>upsell</b>. O cliente gira depois do pagamento (na tela de sucesso ou em Meus Bilhetes). Cada pagamento libera os giros uma vez.
                     </p>
                     <div class="cfg-section-title" style="color:var(--primary-color); margin-bottom:8px;"><i data-lucide="gift" style="width:16px;"></i> Prêmios da Roleta</div>
-                    <p style="font-size:11px; color:var(--text-color); margin-bottom:10px;">Chance % = probabilidade real. Fatias = quantas vezes aparece na roda. Soma das chances = 100%.</p>
+                    <p style="font-size:11px; color:var(--text-color); margin-bottom:10px; line-height:1.45;">Chance % = probabilidade real. Fatias normais em <b>par</b> (2,4,6…). Em <b>item único</b> pode ser 1 fatia — depois de ganho, ninguém mais leva (mas continua na roda). <b>Limite</b> define quantas pessoas podem ganhar. Soma das chances = 100%.</p>
                     <div id="roleta-premios-list"></div>
                     <button class="cfg-add-btn" onclick="window.adminPanel.addRoletaPremioRow()">
                         <i data-lucide="plus" style="width:16px;"></i> Adicionar Prêmio
@@ -1785,6 +1797,19 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     <div id="roleta-chance-sum" style="margin-top:10px; font-size:12px; font-weight:700; color:var(--text-color);">Soma: 0%</div>
                     <div style="height:10px; background:var(--gray-300); border-radius:999px; overflow:hidden; margin-top:8px;">
                         <div id="roleta-chance-bar" style="height:100%; width:0%; background:var(--danger); transition:width .25s ease;"></div>
+                    </div>
+                </div>
+
+                <div class="cfg-section" style="margin-top:18px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+                        <div class="cfg-section-title" style="color:#a78bfa; margin-bottom:0;"><i data-lucide="trophy" style="width:16px;"></i> Ganhadores da Roleta</div>
+                        <div style="display:flex; gap:8px;">
+                            <button type="button" class="btn-admin bg-orange" style="padding:6px 10px;" onclick="window.adminPanel.carregarHistoricoRoleta()">Atualizar</button>
+                        </div>
+                    </div>
+                    <input type="text" id="hist-roleta-filtro" class="input-form" placeholder="Filtrar por nome, telefone ou prêmio..." style="margin-bottom:10px;" oninput="window.adminPanel.filtrarHistoricoRoleta()">
+                    <div id="roleta-historico-list" style="max-height:320px; overflow-y:auto;">
+                        <p style="font-size:12px; color:var(--text-color); text-align:center; padding:12px;">Clique em Atualizar para carregar.</p>
                     </div>
                 </div>
             </div>
@@ -1807,12 +1832,12 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 </div>
             </div>
 
-            <!-- Salvar fixo -->
-            <div id="cfg-sticky-save" style="position:sticky; bottom:0; left:0; right:0; padding:12px 0 0; margin-top:16px; background:linear-gradient(180deg, transparent, var(--gray-500) 30%);">
-                <button class="btn-participar" style="margin-top:0;" onclick="window.adminPanel.save()">
-                    <i data-lucide="save" style="width:18px;"></i> Salvar Tudo
-                </button>
-                <button onclick="window.rifaApp.closeModal('modal-config')" style="width: 100%; margin-top: 8px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600; padding: 10px;">Fechar</button>
+        </div>
+        <!-- Barra fixa de salvar (fora do scroll) -->
+        <div id="cfg-sticky-save" style="position:fixed; left:0; right:0; bottom:0; z-index:1001; padding:8px 12px calc(8px + env(safe-area-inset-bottom)); background:var(--header-color); border-top:1px solid var(--border-color); display:none;">
+            <div style="display:flex; gap:8px; max-width:520px; margin:0 auto;">
+                <button type="button" onclick="window.rifaApp.closeModal('modal-config')" style="flex:0 0 auto; background:var(--gray-400); color:var(--title-color); border:none; border-radius:10px; padding:10px 14px; font-weight:700; font-size:13px; cursor:pointer;">Fechar</button>
+                <button type="button" onclick="window.adminPanel.save()" style="flex:1; background:var(--primary-color); color:#fff; border:none; border-radius:10px; padding:10px 14px; font-weight:800; font-size:13px; cursor:pointer;">Salvar</button>
             </div>
         </div>
     </div>
@@ -2071,10 +2096,10 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         minQtd: 10,
                         chances: 1,
                         prizes: [
-                            { name: 'Tente de novo', chance: 40, slices: 4, color: '#64748b' },
-                            { name: 'Brinde surpresa', chance: 30, slices: 3, color: '#06b6d4' },
-                            { name: '5% extra', chance: 20, slices: 2, color: '#22c55e' },
-                            { name: 'Prêmio especial', chance: 10, slices: 1, color: '#ef4444' }
+                            { name: 'Não foi dessa vez', chance: 40, slices: 4, color: '#64748b', perde: true },
+                            { name: 'Brinde surpresa', chance: 30, slices: 4, color: '#06b6d4', perde: false },
+                            { name: '5% extra', chance: 20, slices: 2, color: '#22c55e', perde: false },
+                            { name: 'Prêmio especial', chance: 10, slices: 2, color: '#ef4444', perde: false }
                         ]
                     },
                     theme: { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' }
@@ -2405,6 +2430,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     }
                 } catch (_) {}
 
+                try { this.renderRoletaGanhadoresPublicos(); } catch (_) {}
 
                 const qsGrid = document.getElementById('quick-select-grid');
                 if (qsGrid) {
@@ -2929,6 +2955,10 @@ setGridPage(page) {
 
             closeModal(id) { 
                 document.getElementById(id).style.display = 'none'; 
+                if (id === 'modal-config') {
+                    const bar = document.getElementById('cfg-sticky-save');
+                    if (bar) bar.style.display = 'none';
+                }
                 if (id === 'modal-checkout') {
                     if (window.cartManager) {
                         window.cartManager._pagamentoExistente = null;
@@ -3188,13 +3218,38 @@ setGridPage(page) {
 
             buildRoletaSegments() {
                 const prizes = this.roletaCfg().prizes || [];
-                this._roletaSegments = [];
-                prizes.forEach((p, prizeIndex) => {
-                    const n = Math.max(1, parseInt(p.slices) || 1);
-                    for (let i = 0; i < n; i++) {
-                        this._roletaSegments.push({ prizeIndex, name: p.name, color: p.color || '#64748b', chance: p.chance });
+                // Item único pode ter 1 fatia; demais preferem par (2,4,6...)
+                const bags = prizes.map((p, prizeIndex) => {
+                    const unico = !!(p.unico || parseInt(p.limite) === 1);
+                    let n = parseInt(p.slices) || (unico ? 1 : 2);
+                    if (unico) n = Math.max(1, n);
+                    else {
+                        n = Math.max(2, n);
+                        if (n % 2 !== 0) n += 1;
                     }
+                    return Array.from({ length: n }, () => ({
+                        prizeIndex,
+                        name: p.name,
+                        color: p.color || '#64748b',
+                        chance: p.chance,
+                        unico,
+                        limite: parseInt(p.limite) || 0
+                    }));
                 });
+
+                // Alterna na sequência da roleta (round-robin): P1, P2, P3, P4, P1, P2...
+                // Assim as repetições não ficam juntas e ficam distribuídas (incluindo opostas).
+                this._roletaSegments = [];
+                let added = true;
+                while (added) {
+                    added = false;
+                    for (const bag of bags) {
+                        if (bag.length) {
+                            this._roletaSegments.push(bag.shift());
+                            added = true;
+                        }
+                    }
+                }
                 if (!this._roletaSegments.length) {
                     this._roletaSegments = [{ prizeIndex: 0, name: 'Vazio', color: '#334155', chance: 100 }];
                 }
@@ -3265,15 +3320,46 @@ setGridPage(page) {
                 if (this._roletaNsuSucesso) this.abrirRoleta(this._roletaNsuSucesso);
             }
 
-            pickRoletaPrizeIndex() {
+            async contarPremiosRoletaEntregues() {
+                const counts = {};
+                try {
+                    const snap = await get(ref(db, `${dbPath}/roleta_giros`));
+                    if (!snap.exists()) return counts;
+                    Object.values(snap.val() || {}).forEach(g => {
+                        (Array.isArray(g.resultados) ? g.resultados : []).forEach(r => {
+                            if (!r || !r.name || r.perde) return;
+                            const k = String(r.name).trim().toLowerCase();
+                            counts[k] = (counts[k] || 0) + 1;
+                        });
+                    });
+                } catch (_) {}
+                return counts;
+            }
+
+            pickRoletaPrizeIndex(counts = {}) {
                 const prizes = this.roletaCfg().prizes || [];
-                const sum = prizes.reduce((a, p) => a + (parseFloat(p.chance) || 0), 0) || 1;
-                let r = Math.random() * sum;
-                for (let i = 0; i < prizes.length; i++) {
-                    r -= (parseFloat(prizes[i].chance) || 0);
-                    if (r <= 0) return i;
+                // remove da roleta de sorteio os que já bateram o limite (continuam visuais na roda)
+                const elegiveis = prizes.map((p, i) => {
+                    const limite = parseInt(p.limite) || 0;
+                    const unico = !!p.unico || limite === 1;
+                    const lim = unico ? 1 : limite;
+                    const key = String(p.name || '').trim().toLowerCase();
+                    const usados = counts[key] || 0;
+                    const esgotado = lim > 0 && usados >= lim;
+                    return { i, p, chance: esgotado ? 0 : (parseFloat(p.chance) || 0), esgotado };
+                });
+                const sum = elegiveis.reduce((a, x) => a + x.chance, 0);
+                if (sum <= 0) {
+                    // se todos esgotados, cai em item "perde" se existir
+                    const lose = prizes.findIndex(p => p.perde);
+                    return lose >= 0 ? lose : Math.max(0, prizes.length - 1);
                 }
-                return Math.max(0, prizes.length - 1);
+                let r = Math.random() * sum;
+                for (const x of elegiveis) {
+                    r -= x.chance;
+                    if (r <= 0) return x.i;
+                }
+                return elegiveis[elegiveis.length - 1].i;
             }
 
             async girarRoleta() {
@@ -3282,7 +3368,8 @@ setGridPage(page) {
                 const rest = (data.chances || 0) - (data.usados || 0);
                 if (rest <= 0) return this.showToast('Sem giros restantes.');
 
-                const prizeIndex = this.pickRoletaPrizeIndex();
+                const counts = await this.contarPremiosRoletaEntregues();
+                const prizeIndex = this.pickRoletaPrizeIndex(counts);
                 const prizes = this.roletaCfg().prizes || [];
                 const prize = prizes[prizeIndex] || { name: 'Prêmio' };
 
@@ -3324,24 +3411,96 @@ setGridPage(page) {
                 this._roletaSpinning = false;
                 const data = this._roletaAtual;
                 if (!data) return;
+                const isLose = !!(prize && prize.perde);
                 const resultados = Array.isArray(data.resultados) ? data.resultados.slice() : [];
-                resultados.push({ name: prize.name, at: Date.now() });
+                resultados.push({ name: prize.name, at: Date.now(), perde: isLose });
                 const usados = (parseInt(data.usados) || 0) + 1;
                 const patch = { usados, resultados };
                 await update(ref(db, `${dbPath}/roleta_giros/${data.nsu}`), patch);
                 this._roletaAtual = { ...data, ...patch };
 
-                document.getElementById('roleta-resultado').innerText = '🎉 ' + prize.name;
                 const rest = (data.chances || 0) - usados;
+                document.getElementById('btn-roleta-girar').disabled = rest <= 0;
                 document.getElementById('roleta-status').innerText = rest > 0
                     ? `Restam ${rest} giro${rest > 1 ? 's' : ''}.`
                     : 'Todos os giros deste pagamento foram usados.';
-                document.getElementById('btn-roleta-girar').disabled = rest <= 0;
-                this.showToast('Você ganhou: ' + prize.name);
 
-                // atualiza box do sucesso se aberta
+                const resEl = document.getElementById('roleta-resultado');
+                if (isLose) {
+                    if (resEl) resEl.innerHTML = `<div style="color:var(--text-color);">😅 ${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:6px; color:var(--text-color);">Tente na próxima!</div>`;
+                    this.showToast(prize.name || 'Não foi dessa vez');
+                } else {
+                    if (resEl) resEl.innerHTML = `<div style="font-size:20px; color:var(--paid);">🎉 PARABÉNS!</div><div style="margin-top:6px; color:var(--title-color);">${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:8px; color:var(--text-color);">Prêmio válido da roleta</div>`;
+                    this.showToast('Você ganhou: ' + prize.name);
+                    try {
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
+                            setTimeout(() => confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } }), 180);
+                            setTimeout(() => confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } }), 320);
+                        }
+                    } catch (_) {}
+                    // atualiza lista pública
+                    try { this.renderRoletaGanhadoresPublicos(); } catch (_) {}
+                }
+
                 const premiosEl = document.getElementById('sucesso-roleta-premios');
-                if (premiosEl) premiosEl.innerText = 'Prêmios: ' + resultados.map(r => r.name).join(', ');
+                if (premiosEl) {
+                    const validos = resultados.filter(r => !r.perde).map(r => r.name);
+                    premiosEl.innerText = validos.length ? ('Prêmios: ' + validos.join(', ')) : '';
+                }
+            }
+
+            isRoletaPremioValido(name) {
+                const prizes = (this.roletaCfg().prizes || []);
+                const p = prizes.find(x => String(x.name || '').trim().toLowerCase() === String(name || '').trim().toLowerCase());
+                if (p) return !p.perde;
+                // fallback: nomes típicos de perda
+                const n = String(name || '').toLowerCase();
+                if (!n) return false;
+                if (n.includes('não foi') || n.includes('nao foi') || n.includes('tente de novo') || n.includes('tente outra')) return false;
+                return true;
+            }
+
+            async renderRoletaGanhadoresPublicos() {
+                const card = document.getElementById('card-roleta-ganhadores');
+                const box = document.getElementById('roleta-ganhadores-publicos');
+                if (!card || !box) return;
+                try {
+                    const snap = await get(ref(db, `${dbPath}/roleta_giros`));
+                    if (!snap.exists()) { card.style.display = 'none'; return; }
+                    const all = snap.val() || {};
+                    const groups = {};
+                    Object.values(all).forEach(g => {
+                        const resultados = Array.isArray(g.resultados) ? g.resultados : [];
+                        resultados.forEach(r => {
+                            if (!r || !r.name) return;
+                            if (r.perde === true) return;
+                            if (!this.isRoletaPremioValido(r.name)) return;
+                            const key = r.name;
+                            if (!groups[key]) groups[key] = [];
+                            const nome = g.nome || 'Participante';
+                            // mascara parcial do nome
+                            const parts = String(nome).trim().split(/\s+/);
+                            const pub = parts.length > 1 ? (parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.') : parts[0];
+                            groups[key].push({ nome: pub, at: r.at || g.createdAt || 0 });
+                        });
+                    });
+                    const keys = Object.keys(groups);
+                    if (!keys.length) { card.style.display = 'none'; box.innerHTML = ''; return; }
+                    // ordena por qtd e recentes
+                    keys.sort((a, b) => groups[b].length - groups[a].length);
+                    box.innerHTML = keys.map(premio => {
+                        const people = groups[premio].sort((a, b) => (b.at || 0) - (a.at || 0)).slice(0, 8);
+                        return `<div style="margin-bottom:12px;">
+                            <div style="font-size:13px; font-weight:800; color:var(--paid); margin-bottom:6px;">🎁 ${premio} <span style="color:var(--text-color); font-weight:600; font-size:11px;">(${groups[premio].length})</span></div>
+                            ${people.map(p => `<div style="padding:8px 10px; background:var(--gray-400); border-radius:8px; margin-bottom:4px; font-size:12px; color:var(--title-color); font-weight:600;">${p.nome}</div>`).join('')}
+                        </div>`;
+                    }).join('');
+                    card.style.display = 'block';
+                    lucide.createIcons();
+                } catch (_) {
+                    card.style.display = 'none';
+                }
             }
 
             async buscarRoletaPendentesPorTel(tel) {
@@ -4469,16 +4628,42 @@ setGridPage(page) {
                 const btn = document.getElementById('btn-toggle-stats');
                 if (!grid || !btn) return;
 
+                // sempre visível; quando oculto, mostra traços
+                grid.style.visibility = 'visible';
+                grid.style.opacity = '1';
+
                 if (this.statsVisible) {
-                    grid.style.visibility = 'visible';
-                    grid.style.opacity = '1';
-                    btn.innerHTML = '<i data-lucide="eye" style="width: 18px; height: 18px;"></i>';
+                    btn.innerHTML = '<i data-lucide="eye" style="width:15px;"></i> Valores';
+                    this.refreshAdminStatsText(false);
                 } else {
-                    grid.style.visibility = 'hidden';
-                    grid.style.opacity = '0';
-                    btn.innerHTML = '<i data-lucide="eye-off" style="width: 18px; height: 18px;"></i>';
+                    btn.innerHTML = '<i data-lucide="eye-off" style="width:15px;"></i> Valores';
+                    this.refreshAdminStatsText(true);
                 }
                 lucide.createIcons();
+            }
+
+            refreshAdminStatsText(masked) {
+                if (masked) {
+                    const set = (id, txt) => { const el = document.getElementById(id); if (el) el.innerText = txt; };
+                    set('admin-receita', 'R$ --,--');
+                    set('admin-doacoes', '--');
+                    set('admin-vendas', '--');
+                    set('admin-pendentes', '--');
+                    set('admin-ticket-medio', 'R$ --,--');
+                    set('admin-conversao', '--%');
+                    return;
+                }
+                // se já temos últimos valores em cache, reaplica
+                if (this._lastStats) {
+                    const s = this._lastStats;
+                    const set = (id, txt) => { const el = document.getElementById(id); if (el) el.innerText = txt; };
+                    set('admin-receita', s.receita);
+                    set('admin-doacoes', s.doacoes);
+                    set('admin-vendas', s.vendas);
+                    set('admin-pendentes', s.pendentes);
+                    set('admin-ticket-medio', s.ticket);
+                    set('admin-conversao', s.conv);
+                }
             }
 
             toggleStats() {
@@ -4636,18 +4821,16 @@ setGridPage(page) {
                     });
 
                     const totalCotas = Object.keys(this.app.dbNumbers).length;
-                    document.getElementById('admin-receita').innerText = `R$ ${tPaid.toFixed(2).replace('.',',')}`;
-                    document.getElementById('admin-doacoes').innerText = tDoacoes;
-                    document.getElementById('admin-vendas').innerText = totalCotas;
-                    const elPend = document.getElementById('admin-pendentes');
-                    if (elPend) elPend.innerText = tPend;
-                    const elTicket = document.getElementById('admin-ticket-medio');
-                    if (elTicket) elTicket.innerText = nPaid > 0 ? `R$ ${(tPaid / nPaid).toFixed(2).replace('.',',')}` : 'R$ 0';
-                    const elConv = document.getElementById('admin-conversao');
-                    if (elConv) {
-                        const conv = totalCotas > 0 ? Math.round((nPaid / totalCotas) * 100) : 0;
-                        elConv.innerText = conv + '%';
-                    }
+                    const conv = totalCotas > 0 ? Math.round((nPaid / totalCotas) * 100) : 0;
+                    this._lastStats = {
+                        receita: `R$ ${tPaid.toFixed(2).replace('.',',')}`,
+                        doacoes: String(tDoacoes),
+                        vendas: String(totalCotas),
+                        pendentes: String(tPend),
+                        ticket: nPaid > 0 ? `R$ ${(tPaid / nPaid).toFixed(2).replace('.',',')}` : 'R$ 0,00',
+                        conv: conv + '%'
+                    };
+                    this.refreshAdminStatsText(!this.statsVisible);
 
 
                     let listaP = Object.values(participantes);
@@ -5002,6 +5185,7 @@ setGridPage(page) {
                 document.querySelectorAll('.config-tab').forEach(el => el.classList.remove('active'));
                 if(btn) btn.classList.add('active');
                 if (tabId === 'ofertas') this.carregarHistoricoCupons();
+                if (tabId === 'roleta') this.carregarHistoricoRoleta();
                 lucide.createIcons();
             }
 
@@ -5123,6 +5307,8 @@ setGridPage(page) {
                 this.switchConfigTab('geral', document.querySelector('.config-tab[data-cfg-tab="geral"]') || document.querySelector('.config-tab'));
 
                 document.getElementById('modal-config').style.display = 'flex';
+                const bar = document.getElementById('cfg-sticky-save');
+                if (bar) bar.style.display = 'block';
                 lucide.createIcons();
             }
 
@@ -5142,14 +5328,28 @@ setGridPage(page) {
                 this._updateToggleUI(document.getElementById('btn-toggle-roleta'), !!this.app.config.roleta.active);
             }
 
-            addRoletaPremioRow(d = { name: '', chance: 0, slices: 1, color: '#7c3aed' }) {
+            addRoletaPremioRow(d = { name: '', chance: 0, slices: 2, color: '#7c3aed', perde: false, unico: false, limite: 0 }) {
                 const list = document.getElementById('roleta-premios-list');
                 if (!list) return;
+                const unico = !!(d.unico || parseInt(d.limite) === 1);
+                let slices = parseInt(d.slices) || (unico ? 1 : 2);
+                if (!unico) {
+                    slices = Math.max(2, slices);
+                    if (slices % 2 !== 0) slices += 1;
+                } else {
+                    slices = Math.max(1, slices);
+                }
+                if (slices > 20) slices = 20;
+                const sliceOpts = (unico ? [1, 2, 3, 4, 5, 6, 8, 10, 12] : [2, 4, 6, 8, 10, 12, 14, 16, 18, 20])
+                    .map(n => `<option value="${n}" ${n === slices ? 'selected' : ''}>${n}</option>`)
+                    .join('');
+                const perde = !!d.perde;
+                const limite = unico ? Math.max(1, parseInt(d.limite) || 1) : (parseInt(d.limite) || 0);
                 const div = document.createElement('div');
                 div.className = 'cfg-list-item roleta-premio-row';
                 div.style.marginBottom = '10px';
                 div.innerHTML = `
-                    <div style="display:grid; grid-template-columns:1.4fr 0.7fr 0.7fr 0.7fr 40px; gap:8px; align-items:end;">
+                    <div style="display:grid; grid-template-columns:1.3fr 0.65fr 0.65fr 36px 36px; gap:8px; align-items:end;">
                         <div>
                             <label class="cfg-label">Nome</label>
                             <input type="text" class="input-form r-name" value="${(d.name || '').replace(/"/g, '&quot;')}" placeholder="Ex: Brinde" style="margin:0;">
@@ -5160,19 +5360,56 @@ setGridPage(page) {
                         </div>
                         <div>
                             <label class="cfg-label">Fatias</label>
-                            <input type="number" class="input-form r-slices" min="1" max="20" value="${d.slices || 1}" style="margin:0;">
+                            <select class="input-form r-slices" style="margin:0;">${sliceOpts}</select>
                         </div>
                         <div>
-                            <label class="cfg-label">Cor</label>
-                            <input type="color" class="input-form r-color" value="${d.color || '#7c3aed'}" style="margin:0; height:42px; padding:4px;">
+                            <label class="cfg-label" style="text-align:center;">Cor</label>
+                            <input type="color" class="input-form r-color" value="${d.color || '#7c3aed'}" title="Cor"
+                                style="margin:0; width:32px; height:32px; padding:0; border:none; border-radius:50%; overflow:hidden; cursor:pointer; background:transparent;">
                         </div>
-                        <button type="button" class="remove-btn" style="height:42px;" onclick="this.closest('.roleta-premio-row').remove(); window.adminPanel.updateRoletaChanceSum();">
+                        <button type="button" class="remove-btn" style="height:32px; width:32px; border-radius:50%;" onclick="this.closest('.roleta-premio-row').remove(); window.adminPanel.updateRoletaChanceSum();">
                             <i data-lucide="trash-2" style="width:14px;"></i>
                         </button>
-                    </div>`;
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+                        <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text-color); cursor:pointer;">
+                            <input type="checkbox" class="r-unico" ${unico ? 'checked' : ''} style="width:16px; height:16px; accent-color:#7c3aed;" onchange="window.adminPanel.onRoletaUnicoToggle(this)">
+                            <span><b style="color:#a78bfa;">Item único</b> (só 1 pessoa pode ganhar; fatia 1 ok)</span>
+                        </label>
+                        <div>
+                            <label class="cfg-label">Limite de ganhadores (0 = ∞)</label>
+                            <input type="number" class="input-form r-limite" min="0" max="999" value="${limite}" style="margin:0;" ${unico ? 'readonly' : ''} title="Quantas pessoas podem ganhar este prêmio">
+                        </div>
+                    </div>
+                    <label style="display:flex; align-items:center; gap:8px; margin-top:8px; font-size:12px; color:var(--text-color); cursor:pointer;">
+                        <input type="checkbox" class="r-perde" ${perde ? 'checked' : ''} style="width:16px; height:16px; accent-color:var(--danger);">
+                        <span><b style="color:var(--danger);">Não foi dessa vez</b> (não conta como prêmio válido)</span>
+                    </label>`;
                 list.appendChild(div);
                 this.updateRoletaChanceSum();
                 lucide.createIcons();
+            }
+
+            onRoletaUnicoToggle(cb) {
+                const row = cb.closest('.roleta-premio-row');
+                if (!row) return;
+                const lim = row.querySelector('.r-limite');
+                const sel = row.querySelector('.r-slices');
+                if (cb.checked) {
+                    if (lim) { lim.value = 1; lim.readOnly = true; }
+                    if (sel) {
+                        const cur = parseInt(sel.value) || 1;
+                        sel.innerHTML = [1,2,3,4,5,6,8,10,12].map(n => `<option value="${n}" ${n===cur|| (n===1 && cur%2)? 'selected':''}>${n}</option>`).join('');
+                        if (![1,2,3,4,5,6,8,10,12].includes(cur)) sel.value = '1';
+                    }
+                } else {
+                    if (lim) { lim.readOnly = false; if (parseInt(lim.value) === 1) lim.value = 0; }
+                    if (sel) {
+                        let cur = parseInt(sel.value) || 2;
+                        if (cur % 2 !== 0) cur += 1;
+                        sel.innerHTML = [2,4,6,8,10,12,14,16,18,20].map(n => `<option value="${n}" ${n===cur?'selected':''}>${n}</option>`).join('');
+                    }
+                }
             }
 
             updateRoletaChanceSum() {
@@ -5352,8 +5589,20 @@ setGridPage(page) {
                     prizes.push({
                         name: row.querySelector('.r-name')?.value?.trim() || '',
                         chance: parseFloat(row.querySelector('.r-chance')?.value) || 0,
-                        slices: Math.max(1, parseInt(row.querySelector('.r-slices')?.value) || 1),
-                        color: row.querySelector('.r-color')?.value || '#7c3aed'
+                        slices: (() => {
+                            let s = Math.max(2, parseInt(row.querySelector('.r-slices')?.value) || 2);
+                            if (s % 2 !== 0) s += 1;
+                            return s;
+                        })(),
+                        color: row.querySelector('.r-color')?.value || '#7c3aed',
+                        perde: !!(row.querySelector('.r-perde')?.checked),
+                        unico: !!(row.querySelector('.r-unico')?.checked),
+                        limite: (() => {
+                            const unico = !!(row.querySelector('.r-unico')?.checked);
+                            let lim = parseInt(row.querySelector('.r-limite')?.value) || 0;
+                            if (unico) lim = 1;
+                            return Math.max(0, lim);
+                        })()
                     });
                 });
                 return {
@@ -5362,6 +5611,120 @@ setGridPage(page) {
                     chances: Math.max(1, parseInt(document.getElementById('cfg-roleta-chances')?.value) || 1),
                     prizes
                 };
+            }
+
+            openRoletaHistoricoAdmin() {
+                // abre config já na aba roleta com histórico
+                this.openConfig();
+                setTimeout(() => {
+                    const btn = document.querySelector('.config-tab[data-cfg-tab="roleta"]');
+                    this.switchConfigTab('roleta', btn || null);
+                    this.carregarHistoricoRoleta();
+                }, 120);
+            }
+
+            async carregarHistoricoRoleta() {
+                const box = document.getElementById('roleta-historico-list');
+                if (!box) return;
+                box.innerHTML = '<p style="font-size:12px; color:var(--text-color); text-align:center; padding:12px;">Carregando...</p>';
+                try {
+                    const snap = await get(ref(db, `${dbPath}/roleta_giros`));
+                    const all = snap.exists() ? (snap.val() || {}) : {};
+                    // lista plana: cada giro/resultado
+                    const rows = [];
+                    Object.entries(all).forEach(([nsu, g]) => {
+                        const resultados = Array.isArray(g.resultados) ? g.resultados : [];
+                        const base = {
+                            nsu,
+                            nome: g.nome || '—',
+                            telefone: g.telefone || '',
+                            qtd: g.qtd || 0,
+                            chances: g.chances || 0,
+                            usados: g.usados || 0,
+                            createdAt: g.createdAt || 0
+                        };
+                        // só quem já girou e tem prêmio registrado
+                        resultados.forEach((r, i) => {
+                            if (!r || !r.name) return;
+                            rows.push({
+                                ...base,
+                                premio: r.name,
+                                perde: !!r.perde,
+                                at: r.at || base.createdAt,
+                                idx: i + 1
+                            });
+                        });
+                    });
+                    rows.sort((a, b) => (b.at || 0) - (a.at || 0));
+                    this._roletaHistRows = rows;
+                    this.filtrarHistoricoRoleta();
+                } catch (e) {
+                    console.warn(e);
+                    box.innerHTML = '<p style="font-size:12px; color:var(--danger); text-align:center; padding:12px;">Erro ao carregar.</p>';
+                }
+            }
+
+            filtrarHistoricoRoleta() {
+                const box = document.getElementById('roleta-historico-list');
+                if (!box) return;
+                const q = (document.getElementById('hist-roleta-filtro')?.value || '').trim().toLowerCase();
+                // Só prêmios válidos (não marcados como "não foi dessa vez")
+                let rows = (this._roletaHistRows || []).filter(r => {
+                    if (!r.premio || r.pendente) return false;
+                    if (r.perde === true) return false;
+                    return this.app.isRoletaPremioValido(r.premio);
+                });
+                if (q) {
+                    rows = rows.filter(r =>
+                        String(r.nome || '').toLowerCase().includes(q) ||
+                        String(r.telefone || '').includes(q) ||
+                        String(r.premio || '').toLowerCase().includes(q) ||
+                        String(r.nsu || '').toLowerCase().includes(q)
+                    );
+                }
+                if (!rows.length) {
+                    box.innerHTML = '<p style="font-size:12px; color:var(--text-color); text-align:center; padding:12px;">Nenhum ganhador ainda.</p>';
+                    return;
+                }
+
+                // Agrupa por prêmio
+                const groups = {};
+                rows.forEach(r => {
+                    const key = r.premio || 'Outro';
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(r);
+                });
+
+                box.innerHTML = Object.keys(groups).map(premio => {
+                    const people = groups[premio];
+                    const list = people.map(r => {
+                        const when = r.at ? new Date(r.at).toLocaleString('pt-BR') : '—';
+                        const telDigits = String(r.telefone || '').replace(/\D/g, '');
+                        let wa = telDigits;
+                        if (wa && !wa.startsWith('55') && wa.length <= 11) wa = '55' + wa;
+                        const msg = encodeURIComponent(`Olá ${r.nome || ''}! Você ganhou na roleta: ${premio}. Vamos combinar a entrega?`);
+                        const waHref = wa ? `https://wa.me/${wa}?text=${msg}` : '#';
+                        return `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; background:var(--background-color); border:1px solid var(--border-color); border-radius:10px; margin-bottom:6px;">
+                            <div style="min-width:0;">
+                                <div style="font-size:13px; font-weight:800; color:var(--title-color);">${this._esc(r.nome)}</div>
+                                <div style="font-size:11px; color:var(--text-color); margin-top:2px;">📱 ${this._esc(r.telefone || '—')} · ${when}</div>
+                            </div>
+                            ${wa ? `<a href="${waHref}" target="_blank" rel="noopener" style="flex-shrink:0; background:#25d366; color:#fff; border-radius:8px; padding:8px 10px; font-size:11px; font-weight:800; text-decoration:none;">WhatsApp</a>` : ''}
+                        </div>`;
+                    }).join('');
+                    return `<div style="margin-bottom:16px;">
+                        <div style="font-size:14px; font-weight:800; color:var(--paid); margin-bottom:8px; display:flex; align-items:center; gap:6px;">🎁 ${this._esc(premio)} <span style="font-size:11px; color:var(--text-color); font-weight:600;">(${people.length})</span></div>
+                        ${list}
+                    </div>`;
+                }).join('');
+            }
+
+            _esc(s) {
+                return String(s ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
             }
 
             async carregarHistoricoCupons() {
