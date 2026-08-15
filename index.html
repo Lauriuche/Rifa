@@ -156,16 +156,56 @@
 
         .prize-item {
             background-color: var(--gray-50); border: 1px solid var(--border-color);
-            padding: 12px; border-radius: 10px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 4px;
+            padding: 12px 14px; border-radius: 12px; margin-bottom: 8px;
+            display: flex; flex-direction: row; align-items: center; gap: 10px;
             cursor: pointer; transition: all 0.25s ease; position: relative;
         }
         .prize-item:hover {
             border-color: var(--primary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         }
-        .prize-item b { color: var(--title-color); font-size: 13px; }
-        .prize-item p { font-size: 12px; color: var(--text-color); }
+        .prize-item b { color: var(--title-color); font-size: 13px; font-weight: 700; }
+        .prize-item p { font-size: 12px; color: var(--text-color); margin: 0; }
+        .prize-item .prize-body { flex: 1; min-width: 0; }
+        .social-row {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px;
+        }
+        .social-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+            padding: 10px 14px; border-radius: 10px; font-size: 12px; font-weight: 700;
+            color: #fff; border: none; cursor: pointer; text-decoration: none;
+        }
+        .social-btn.ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+        .social-btn.fb { background: #1877f2; }
+        .social-btn.wa { background: #25d366; }
+        .social-btn.tg { background: #229ed9; }
+        .promo-combo-card {
+            border-radius: 14px; padding: 14px 16px; margin-bottom: 10px;
+            border: 1px solid var(--border-color); background: var(--gray-400);
+            display: flex; justify-content: space-between; align-items: center; gap: 12px;
+        }
+        .promo-combo-card .left { min-width: 0; }
+        .promo-combo-card .title { font-size: 14px; font-weight: 800; color: var(--title-color); }
+        .promo-combo-card .sub { font-size: 12px; color: var(--text-color); margin-top: 4px; }
+        .promo-combo-card .badge {
+            flex-shrink: 0; font-size: 12px; font-weight: 800; color: #fff;
+            background: var(--primary-color); padding: 8px 12px; border-radius: 10px;
+            text-align: center; line-height: 1.25;
+        }
+        .promo-combo-card.roleta {
+            background: linear-gradient(135deg, rgba(124,58,237,0.25), rgba(0,139,119,0.12));
+            border-color: #7c3aed;
+        }
+        .promo-combo-card.roleta .badge { background: #7c3aed; }
+        .bilhetes-head {
+            display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px;
+        }
+        .btn-meus-bilhetes {
+            flex-shrink: 0; background: var(--primary-color); color: #fff; border: none;
+            border-radius: 10px; padding: 10px 14px; font-size: 12px; font-weight: 800;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+        }
         .prize-item.has-winner {
             background: linear-gradient(135deg, rgba(0, 219, 135, 0.12), rgba(0, 139, 119, 0.08));
             border-color: var(--paid);
@@ -908,25 +948,37 @@
 
             <div id="view-rifa" class="view-content active">
 
-                <div class="card" style="margin-bottom: 24px;">
-                    <div class="card-header">
-                        <h1 class="card-title" id="display-premio">Carregando...</h1>
-                        <p style="font-size: 13px; color: var(--text-color); margin-bottom: 16px; line-height: 1.5;" id="display-descricao">...</p>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <span style="font-size: 13px; font-weight: 500;">Por apenas</span>
-                            <div class="price-badge" id="display-valor">R$ 0,00</div>
-                            <span style="font-size: 13px; font-weight: 500;"></span>
-                        </div>
+                <!-- Card principal: título + preço + prêmios -->
+                <div class="card" style="margin-bottom: 14px; padding: 18px;">
+                    <h1 class="card-title" id="display-premio" style="font-size:22px; margin-bottom:10px;">Carregando...</h1>
+                    <div style="display:flex; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap;">
+                        <span style="font-size:13px; font-weight:600; color:var(--text-color);">Por apenas</span>
+                        <div class="price-badge" id="display-valor" style="background:var(--gray-200);">R$ 0,00</div>
                     </div>
 
-                    <h3 style="font-size: 14px; margin-bottom: 10px; color: var(--title-color);">Prêmios:</h3>
-                    <div id="premios-list" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;"></div>
+                    <div style="border-top:1px solid var(--border-color); padding-top:14px; margin-bottom:12px;">
+                        <h3 style="font-size:13px; margin-bottom:10px; color:var(--text-color); font-weight:700;">Prêmios:</h3>
+                        <div id="premios-list" style="display:flex; flex-direction:column; gap:0;"></div>
+                    </div>
+
+                    <div id="desc-block" style="border-top:1px solid var(--border-color); padding-top:14px;">
+                        <h3 style="font-size:13px; margin-bottom:8px; color:var(--text-color); font-weight:700;">Descrição:</h3>
+                        <p style="font-size:13px; color:var(--text-color); line-height:1.55; margin:0;" id="display-descricao"></p>
+                    </div>
                 </div>
 
-                <div class="progress-container">
+                <!-- Redes sociais -->
+                <div class="card" id="card-redes" style="margin-bottom:14px; padding:16px; display:none;">
+                    <h3 style="font-size:13px; margin-bottom:12px; color:var(--text-color); font-weight:700;">Redes sociais:</h3>
+                    <div class="social-row" id="social-row"></div>
+                </div>
+
+                <div id="roleta-hint" style="display:none; margin-bottom:12px; padding:12px 14px; border-radius:12px; border:1px solid #7c3aed; background:rgba(124,58,237,0.12); font-size:12px; color:var(--title-color); font-weight:700; text-align:center;"></div>
+
+                <div class="progress-container" style="margin: 8px 0 14px;">
                     <div class="progress-info">
                         <span>Progresso da Campanha</span>
-                        <span id="progress-text">50%</span>
+                        <span id="progress-text">0%</span>
                     </div>
                     <div class="progress-bar-bg">
                         <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
@@ -934,48 +986,24 @@
                     <div id="cotas-restantes-info" style="text-align:center; margin-top:8px; font-size:12px; font-weight:700; color:var(--reserved);"></div>
                 </div>
 
-                <div id="countdown-sorteio" class="card" style="display:none; margin-bottom:16px; text-align:center; padding:16px;">
+                <div id="countdown-sorteio" class="card" style="display:none; margin-bottom:14px; text-align:center; padding:16px;">
                     <p style="font-size:12px; color:var(--text-color); font-weight:600; margin-bottom:8px;">⏰ SORTEIO EM</p>
                     <div id="countdown-timer" style="font-size:22px; font-weight:800; color:var(--primary-color); letter-spacing:1px;">--</div>
                 </div>
 
-                <div id="card-ganhadores-publicos" class="card" style="display:none; margin-bottom:24px;">
-                    <div class="section-title">
-                        <div class="icon-box"><i data-lucide="trophy" style="width:20px;"></i></div>
-                        <div>
-                            <h2 style="font-size:20px;">Ganhadores</h2>
-                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Confira quem já faturou</p>
+                <!-- Bilhetes (estilo app) -->
+                <div class="card" style="margin-bottom: 14px;">
+                    <div class="bilhetes-head">
+                        <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <div class="icon-box"><i data-lucide="ticket" style="width:20px;"></i></div>
+                            <div>
+                                <h2 style="font-size:18px; color:var(--title-color); font-weight:800;">Bilhetes</h2>
+                                <p style="font-size:12px; color:var(--text-color); font-weight:400; margin-top:2px;">Selecione a quantidade que deseja comprar</p>
+                            </div>
                         </div>
-                    </div>
-                    <div id="ganhadores-publicos-list"></div>
-                </div>
-
-                <div id="feed-compras" class="card" style="display:none; margin-bottom:16px; padding:14px;">
-                    <div id="feed-compras-titulo" style="font-size:12px; font-weight:800; color:var(--title-color); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Maiores compradores</div>
-                    <div id="feed-compras-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-                </div>
-
-                <div class="card" id="card-doacoes" style="display: none; margin-bottom: 24px;">
-                    <div class="section-title">
-                        <div class="icon-box" style="background-color: rgba(214, 51, 132, 0.1); border-color: var(--donated); color: var(--donated);">
-                            <i data-lucide="gift" style="width: 20px;"></i>
-                        </div>
-                        <div>
-                            <h2 style="font-size: 20px;">Lista de Presentes</h2>
-                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Doe um item e ganhe bilhetes da sorte!</p>
-                        </div>
-                    </div>
-                    <div class="doacoes-grid-improved" id="doacoes-grid"></div>
-                </div>
-
-
-                <div class="card" style="margin-bottom: 24px;">
-                    <div class="section-title">
-                        <div class="icon-box"><i data-lucide="ticket" style="width: 20px;"></i></div>
-                        <div>
-                            <h2 style="font-size: 20px;">Bilhetes</h2>
-                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Selecione a quantidade - os números são escolhidos aleatoriamente</p>
-                        </div>
+                        <button type="button" class="btn-meus-bilhetes" onclick="window.rifaApp.switchTab('consulta')">
+                            <i data-lucide="shopping-cart" style="width:14px;"></i> Ver meus bilhetes
+                        </button>
                     </div>
 
                     <div class="quick-select-grid" id="quick-select-grid"></div>
@@ -985,15 +1013,56 @@
                         <input type="number" class="input-qty" id="qty-input" value="0" readonly>
                         <button class="btn-qty" onclick="window.rifaApp.addSelection(1)"><i data-lucide="plus"></i></button>
                     </div>
-                    <div style="text-align:center; margin-top:6px; margin-bottom:2px;">
-                        <button type="button" onclick="window.rifaApp.setSelectionCount(0)" style="background:none; border:none; color:var(--text-color); font-size:12px; font-weight:600; cursor:pointer; padding:4px 10px; text-decoration:underline; opacity:0.75;" onmouseover="this.style.opacity='1'; this.style.color='var(--danger)'" onmouseout="this.style.opacity='0.75'; this.style.color='var(--text-color)'">Limpar</button>
+                    <div style="text-align:center; margin-top:6px;">
+                        <button type="button" onclick="window.rifaApp.setSelectionCount(0)" style="background:none; border:none; color:var(--text-color); font-size:12px; font-weight:600; cursor:pointer; padding:4px 10px; text-decoration:underline; opacity:0.75;">Limpar</button>
                     </div>
+                </div>
+
+                <!-- Combos / promoções estilo app (Roleta + info) -->
+                <div class="card" id="card-promos-estilo" style="margin-bottom:14px; display:none;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                        <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:18px;"></i></div>
+                        <div>
+                            <h2 style="font-size:16px; color:var(--title-color); font-weight:800;">Promoções</h2>
+                            <p style="font-size:12px; color:var(--text-color);">Combos e brindes extras</p>
+                        </div>
+                    </div>
+                    <div id="promos-estilo-list"></div>
+                </div>
+
+                <div id="feed-compras" class="card" style="display:none; margin-bottom:14px; padding:14px;">
+                    <div id="feed-compras-titulo" style="font-size:12px; font-weight:800; color:var(--title-color); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Maiores compradores</div>
+                    <div id="feed-compras-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
+
+                <div id="card-ganhadores-publicos" class="card" style="display:none; margin-bottom:14px;">
+                    <div class="section-title">
+                        <div class="icon-box"><i data-lucide="trophy" style="width:20px;"></i></div>
+                        <div>
+                            <h2 style="font-size:18px;">Ganhadores</h2>
+                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Confira quem já faturou</p>
+                        </div>
+                    </div>
+                    <div id="ganhadores-publicos-list"></div>
+                </div>
+
+                <div class="card" id="card-doacoes" style="display: none; margin-bottom: 14px;">
+                    <div class="section-title">
+                        <div class="icon-box" style="background-color: rgba(214, 51, 132, 0.1); border-color: var(--donated); color: var(--donated);">
+                            <i data-lucide="gift" style="width: 20px;"></i>
+                        </div>
+                        <div>
+                            <h2 style="font-size: 18px;">Lista de Presentes</h2>
+                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Doe um item e ganhe bilhetes da sorte!</p>
+                        </div>
+                    </div>
+                    <div class="doacoes-grid-improved" id="doacoes-grid"></div>
                 </div>
 
                 <div class="card" id="card-grid">
                     <div class="section-title">
                         <div class="icon-box"><i data-lucide="grid" style="width: 20px;"></i></div>
-                        <h2 style="font-size: 20px;">Visualizar Cotas</h2>
+                        <h2 style="font-size: 18px;">Visualizar Cotas</h2>
                     </div>
 
                     <div class="filter-tabs">
@@ -1018,21 +1087,17 @@
                     <div class="grid-pagination" id="grid-pagination" style="display:none;"></div>
                 </div>
                 
-                <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                <div style="display:flex; gap:8px; margin:14px 0; flex-wrap:wrap;">
                     <button type="button" class="btn-participar" style="flex:1; min-width:140px; padding:12px; font-size:13px; background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.compartilharRifa()">
                         <i class="fa-solid fa-share-nodes"></i> Compartilhar
                     </button>
-                </div>
-                
-                <div style="text-align:center; margin:24px 0 8px;">
-                    <button type="button" onclick="window.rifaApp.openFaq()" style="background:var(--gray-400); border:1px solid var(--border-color); color:var(--title-color); padding:12px 20px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:8px;">
-                        <i data-lucide="help-circle" style="width:16px;"></i> Dúvidas? Como funciona
+                    <button type="button" class="btn-participar" style="flex:1; min-width:140px; padding:12px; font-size:13px; background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.openFaq()">
+                        <i data-lucide="help-circle" style="width:16px;"></i> Como funciona
                     </button>
                 </div>
 
-                
                 <div class="footer-copyright">
-                   <br>Vagner Sorteios - Todos os direitos reservados<br> Desenvolvido por Vagner Lauriuche.<br> 2026
+                   © 2026 Vagner Sorteios · Desenvolvido por Vagner Lauriuche
                 </div>
             </div>
 
@@ -1345,18 +1410,47 @@
     </div>
 
     <div class="modal-overlay" id="modal-config">
-        <div class="modal-card" style="max-width: 450px;">
-            <h3 style="color:var(--title-color); margin-bottom:16px; font-size: 20px; display: flex; align-items: center; gap: 8px;">
+        <div class="modal-card" style="max-width: 450px; padding-bottom: 90px; position: relative;">
+            <h3 style="color:var(--title-color); margin-bottom:10px; font-size: 20px; display: flex; align-items: center; gap: 8px;">
                 <i data-lucide="settings"></i> Configurações
+                <span id="cfg-unsaved" style="display:none; margin-left:auto; font-size:11px; font-weight:800; color:var(--reserved); background:rgba(255,170,0,.12); border:1px solid var(--reserved); padding:4px 8px; border-radius:999px;">Não salvo</span>
             </h3>
 
+            <!-- Resumo + modo -->
+            <div id="cfg-resumo" style="background:var(--background-color); border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-bottom:12px;">
+                <div style="font-size:12px; color:var(--text-color); font-weight:600; margin-bottom:4px;">Rifa ativa</div>
+                <div id="cfg-resumo-txt" style="font-size:13px; color:var(--title-color); font-weight:800; line-height:1.4;">—</div>
+                <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                    <button type="button" id="btn-mode-simple" class="btn-admin bg-green" style="padding:6px 10px; color:#000;" onclick="window.adminPanel.setConfigMode('simple')">Modo simples</button>
+                    <button type="button" id="btn-mode-advanced" class="btn-admin" style="padding:6px 10px; background:var(--gray-400); color:var(--title-color);" onclick="window.adminPanel.setConfigMode('advanced')">Avançado</button>
+                    <button type="button" class="btn-admin bg-orange" style="padding:6px 10px;" onclick="window.adminPanel.openChecklist()">Checklist</button>
+                </div>
+            </div>
+
+            <!-- Preview ao vivo -->
+            <div id="cfg-preview" style="background:linear-gradient(180deg, var(--gray-400), var(--gray-500)); border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-bottom:12px;">
+                <div style="font-size:11px; color:var(--text-color); font-weight:700; margin-bottom:8px; text-transform:uppercase;">Preview</div>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <img id="cfg-preview-img" src="" alt="" style="width:64px; height:40px; object-fit:cover; border-radius:8px; background:#000; display:none;">
+                    <div style="min-width:0; flex:1;">
+                        <div id="cfg-preview-title" style="font-size:13px; font-weight:800; color:var(--title-color); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">—</div>
+                        <div id="cfg-preview-price" style="font-size:12px; color:var(--primary-color); font-weight:700; margin-top:2px;">R$ 0,00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Busca de abas/campos -->
+            <input type="search" id="cfg-search" class="input-form" placeholder="Buscar nas configs (capa, cupom, pix, roleta...)" style="margin-bottom:10px;" oninput="window.adminPanel.filterConfigSearch(this.value)">
+
             <div class="config-tabs-container">
-                <button class="filter-tab config-tab active" onclick="window.adminPanel.switchConfigTab('geral', this)">Ajustes</button>
-                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('tema', this)">Tema</button>
-                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('botoes', this)">Sel. Rápida</button>
-                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('doacoes', this)">Doações</button>
-                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('premios', this)">Prêmios</button>
-                <button class="filter-tab config-tab" onclick="window.adminPanel.switchConfigTab('ofertas', this)">Ofertas</button>
+                <button class="filter-tab config-tab active" data-cfg-tab="geral" onclick="window.adminPanel.switchConfigTab('geral', this)">Ajustes</button>
+                <button class="filter-tab config-tab" data-cfg-tab="tema" data-advanced="1" onclick="window.adminPanel.switchConfigTab('tema', this)">Tema</button>
+                <button class="filter-tab config-tab" data-cfg-tab="botoes" onclick="window.adminPanel.switchConfigTab('botoes', this)">Sel. Rápida</button>
+                <button class="filter-tab config-tab" data-cfg-tab="doacoes" data-advanced="1" onclick="window.adminPanel.switchConfigTab('doacoes', this)">Doações</button>
+                <button class="filter-tab config-tab" data-cfg-tab="premios" onclick="window.adminPanel.switchConfigTab('premios', this)">Prêmios</button>
+                <button class="filter-tab config-tab" data-cfg-tab="ofertas" data-advanced="1" onclick="window.adminPanel.switchConfigTab('ofertas', this)">Ofertas</button>
+                <button class="filter-tab config-tab" data-cfg-tab="roleta" data-advanced="1" onclick="window.adminPanel.switchConfigTab('roleta', this)">Roleta</button>
+                <button class="filter-tab config-tab" data-cfg-tab="redes" onclick="window.adminPanel.switchConfigTab('redes', this)">Redes</button>
             </div>
 
 
@@ -1364,6 +1458,12 @@
                 <div class="cfg-section">
                     <label class="cfg-label">Título do Prêmio</label>
                     <input type="text" id="cfg-premio" class="input-form" placeholder="Ex: iPhone 15 Pro" style="margin-bottom: 0;">
+                </div>
+
+                <div class="cfg-section">
+                    <label class="cfg-label">Descrição (texto abaixo dos prêmios)</label>
+                    <textarea id="cfg-descricao" class="input-form" rows="4" placeholder="Ex: Participe e concorra a prêmios incríveis! Sorteio ao vivo." style="margin-bottom:0; resize:vertical; min-height:90px; line-height:1.5;"></textarea>
+                    <p style="font-size:10px; color:var(--text-color); margin-top:6px;">Aparece na tela principal e no compartilhamento (WhatsApp/Facebook).</p>
                 </div>
 
                 <div class="cfg-section">
@@ -1451,14 +1551,14 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
 
                     <div id="wrap-mercadopago" style="margin-bottom:14px;">
                         <label class="cfg-label">PIX — Access Token Mercado Pago</label>
-                        <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;">
-                        <p style="font-size:10px; color:var(--text-color); margin-top:6px;">Se vazio, a opção PIX some no checkout.</p>
+                        <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-..." style="margin-bottom: 0; font-size: 12px;" oninput="window.adminPanel.updateGatewayStatus()">
+                        <p id="status-mp" style="font-size:11px; font-weight:700; margin-top:6px; color:var(--text-color);">Status: —</p>
                     </div>
 
                     <div id="wrap-infinitepay">
                         <label class="cfg-label">Cartão — InfinitePay Handle</label>
-                        <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario ou handle" style="margin-bottom: 0;">
-                        <p style="font-size:10px; color:var(--text-color); margin-top:6px;">Se vazio, a opção Cartão some no checkout.</p>
+                        <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario ou handle" style="margin-bottom: 0;" oninput="window.adminPanel.updateGatewayStatus()">
+                        <p id="status-ip" style="font-size:11px; font-weight:700; margin-top:6px; color:var(--text-color);">Status: —</p>
                     </div>
                     <input type="hidden" id="cfg-gateway" value="ambos">
                 </div>
@@ -1508,6 +1608,15 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
 
 
             <div id="cfg-tab-tema" class="cfg-content" style="display: none;">
+                <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="eye" style="width:16px;"></i> Mini preview</div>
+                    <div id="theme-mini-preview" style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:12px; border-radius:12px; background:var(--background-color); border:1px solid var(--border-color);">
+                        <span style="padding:8px 12px; border-radius:8px; background:var(--primary-color); color:#fff; font-size:12px; font-weight:800;">Botão</span>
+                        <span style="width:28px; height:28px; border-radius:8px; background:var(--paid);" title="Pago"></span>
+                        <span style="width:28px; height:28px; border-radius:8px; background:var(--reserved);" title="Reservado"></span>
+                        <span style="width:28px; height:28px; border-radius:8px; background:var(--donated);" title="Doação"></span>
+                    </div>
+                </div>
                 <div class="cfg-section">
                     <div class="cfg-section-title"><i data-lucide="sun-moon" style="width:16px;"></i> Modo</div>
                     <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -1640,10 +1749,80 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 </div>
             </div>
 
-            <button class="btn-participar" style="margin-top:24px;" onclick="window.adminPanel.save()">
-                <i data-lucide="save" style="width:18px;"></i> Salvar Tudo
-            </button>
-            <button onclick="window.rifaApp.closeModal('modal-config')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600; padding: 12px;">Fechar</button>
+            <div id="cfg-tab-roleta" class="cfg-content" style="display:none;">
+                <div class="cfg-section" style="margin-bottom:16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <label style="font-size:13px; font-weight:700; color:var(--title-color); display:block;">Ativar Roleta Premiada</label>
+                            <p style="font-size:11px; color:var(--text-color); margin-top:4px;">Após pagamento confirmado, libera giros se a quantidade mínima for atingida.</p>
+                        </div>
+                        <div class="toggle-switch" id="btn-toggle-roleta" onclick="window.adminPanel.toggleRoleta()">
+                            <span class="toggle-label">OFF</span>
+                            <div class="toggle-track"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cfg-section">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px;">
+                        <div>
+                            <label class="cfg-label">Qtd mínima de bilhetes</label>
+                            <input type="number" id="cfg-roleta-min" class="input-form" min="1" value="10" style="margin-bottom:0;" placeholder="Ex: 10">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Chances (giros) por pagamento</label>
+                            <input type="number" id="cfg-roleta-chances" class="input-form" min="1" max="10" value="1" style="margin-bottom:0;" placeholder="Ex: 1">
+                        </div>
+                    </div>
+                    <p style="font-size:11px; color:var(--text-color); margin-bottom:14px; line-height:1.4;">
+                        Vale para compras normais, <b>cascata</b> e <b>upsell</b>. O cliente gira depois do pagamento (na tela de sucesso ou em Meus Bilhetes). Cada pagamento libera os giros uma vez.
+                    </p>
+                    <div class="cfg-section-title" style="color:var(--primary-color); margin-bottom:8px;"><i data-lucide="gift" style="width:16px;"></i> Prêmios da Roleta</div>
+                    <p style="font-size:11px; color:var(--text-color); margin-bottom:10px;">Chance % = probabilidade real. Fatias = quantas vezes aparece na roda. Soma das chances = 100%.</p>
+                    <div id="roleta-premios-list"></div>
+                    <button class="cfg-add-btn" onclick="window.adminPanel.addRoletaPremioRow()">
+                        <i data-lucide="plus" style="width:16px;"></i> Adicionar Prêmio
+                    </button>
+                    <div id="roleta-chance-sum" style="margin-top:10px; font-size:12px; font-weight:700; color:var(--text-color);">Soma: 0%</div>
+                    <div style="height:10px; background:var(--gray-300); border-radius:999px; overflow:hidden; margin-top:8px;">
+                        <div id="roleta-chance-bar" style="height:100%; width:0%; background:var(--danger); transition:width .25s ease;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Redes sociais -->
+            <div id="cfg-tab-redes" class="cfg-content" style="display:none;">
+                <div class="cfg-section">
+                    <div class="cfg-section-title"><i data-lucide="share-2" style="width:16px;"></i> Links das redes</div>
+                    <p style="font-size:11px; color:var(--text-color); margin-bottom:12px;">Aparecem na tela principal. Deixe em branco para ocultar o botão.</p>
+                    <label class="cfg-label">Instagram</label>
+                    <input type="url" id="cfg-social-ig" class="input-form" placeholder="https://instagram.com/seu_perfil">
+                    <label class="cfg-label">Facebook</label>
+                    <input type="url" id="cfg-social-fb" class="input-form" placeholder="https://facebook.com/sua_pagina">
+                    <label class="cfg-label">WhatsApp Grupo</label>
+                    <input type="url" id="cfg-social-wa-grupo" class="input-form" placeholder="https://chat.whatsapp.com/...">
+                    <label class="cfg-label">WhatsApp Comunidade / suporte</label>
+                    <input type="url" id="cfg-social-wa" class="input-form" placeholder="https://wa.me/55...">
+                    <label class="cfg-label">Telegram</label>
+                    <input type="url" id="cfg-social-tg" class="input-form" placeholder="https://t.me/seu_canal" style="margin-bottom:0;">
+                </div>
+            </div>
+
+            <!-- Salvar fixo -->
+            <div id="cfg-sticky-save" style="position:sticky; bottom:0; left:0; right:0; padding:12px 0 0; margin-top:16px; background:linear-gradient(180deg, transparent, var(--gray-500) 30%);">
+                <button class="btn-participar" style="margin-top:0;" onclick="window.adminPanel.save()">
+                    <i data-lucide="save" style="width:18px;"></i> Salvar Tudo
+                </button>
+                <button onclick="window.rifaApp.closeModal('modal-config')" style="width: 100%; margin-top: 8px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600; padding: 10px;">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Checklist publicar -->
+    <div class="modal-overlay" id="modal-checklist">
+        <div class="modal-card" style="max-width:400px;">
+            <h3 style="color:var(--title-color); margin-bottom:12px; font-size:18px;">Checklist antes de publicar</h3>
+            <div id="checklist-list" style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;"></div>
+            <button class="btn-participar" onclick="window.rifaApp.closeModal('modal-checklist')">Entendi</button>
         </div>
     </div>
 
@@ -1693,7 +1872,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
     </div>
 
     <div class="modal-overlay" id="modal-sucesso">
-        <div class="modal-card" style="text-align:center; max-width:420px;">
+        <div class="modal-card" style="text-align:center; max-width:420px; max-height:92vh; overflow-y:auto;">
             <div style="width:72px;height:72px;border-radius:50%;background:rgba(0,219,135,0.15);border:2px solid var(--paid);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
                 <i data-lucide="check-circle" style="color:var(--paid);width:36px;height:36px;"></i>
             </div>
@@ -1704,10 +1883,33 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 <p id="sucesso-numeros" style="font-size:15px;font-weight:800;color:var(--primary-color);word-break:break-word;line-height:1.5;"></p>
                 <div style="margin-top:10px;font-size:12px;color:var(--text-color);">Valor: <b id="sucesso-valor" style="color:var(--paid);"></b></div>
             </div>
+
+            <div id="sucesso-roleta-box" style="display:none; background:rgba(124,58,237,0.12); border:1px solid #7c3aed; border-radius:12px; padding:14px; margin-bottom:16px; text-align:center;">
+                <div style="font-size:14px; font-weight:800; color:var(--title-color); margin-bottom:6px;">🎯 Roleta premiada liberada!</div>
+                <p id="sucesso-roleta-txt" style="font-size:12px; color:var(--text-color); margin-bottom:12px; line-height:1.4;"></p>
+                <div id="sucesso-roleta-premios" style="font-size:12px; color:var(--paid); font-weight:700; margin-bottom:10px;"></div>
+                <button type="button" class="btn-participar" style="background:#7c3aed; margin-bottom:0;" onclick="window.rifaApp.abrirRoletaDoSucesso()">Girar a roleta agora</button>
+                <p style="font-size:10px; color:var(--text-color); margin-top:8px;">Se preferir, gire depois em Meus Bilhetes.</p>
+            </div>
+
             <button type="button" class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:10px;" onclick="window.rifaApp.copiarNumerosSucesso()">Copiar números</button>
             <a id="sucesso-whatsapp" href="#" target="_blank" class="btn-participar" style="background:#25d366;margin-bottom:10px;text-decoration:none;">Compartilhar no WhatsApp</a>
             <button class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:8px;" onclick="window.rifaApp.closeModal('modal-sucesso'); window.rifaApp.switchTab('consulta');">Ver meus bilhetes</button>
             <button onclick="window.rifaApp.closeModal('modal-sucesso')" style="width:100%;background:transparent;color:var(--text-color);border:none;padding:12px;font-weight:600;cursor:pointer;">Fechar</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-roleta">
+        <div class="modal-card" style="text-align:center; max-width:440px; max-height:94vh; overflow-y:auto;">
+            <h2 style="color:var(--title-color); font-size:20px; margin-bottom:6px;">🎯 Roleta Premiada</h2>
+            <p id="roleta-status" style="font-size:12px; color:var(--text-color); margin-bottom:12px;">Gire e ganhe um brinde extra!</p>
+            <div style="position:relative; width:min(86vw,320px); height:min(86vw,320px); margin:0 auto 14px;">
+                <div style="position:absolute; top:-4px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:12px solid transparent; border-right:12px solid transparent; border-top:24px solid #fff; z-index:5; filter:drop-shadow(0 3px 6px rgba(0,0,0,.4));"></div>
+                <canvas id="roleta-canvas" width="640" height="640" style="width:100%; height:100%; border-radius:50%; box-shadow:0 0 0 6px #111, 0 12px 28px rgba(0,0,0,.45);"></canvas>
+            </div>
+            <div id="roleta-resultado" style="min-height:40px; font-size:16px; font-weight:800; color:var(--title-color); margin-bottom:12px;"></div>
+            <button type="button" class="btn-participar" id="btn-roleta-girar" style="background:#7c3aed; margin-bottom:10px;" onclick="window.rifaApp.girarRoleta()">Girar</button>
+            <button type="button" class="btn-participar" style="background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.closeModal('modal-roleta')">Fechar</button>
         </div>
     </div>
 
@@ -1863,8 +2065,25 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     capa: "", capas: [], carouselTempo: 5, carouselModo: 'auto',
                     reservaMinutos: 15, pixMinutos: 15,
                     dataSorteio: "", upsellQtd: 0, upsellTipo: "pct", upsellValor: 0, cupomPrimeiraCompra: "", feedModo: "top",
+                    social: { instagram: '', facebook: '', waGrupo: '', whatsapp: '', telegram: '' },
+                    roleta: {
+                        active: false,
+                        minQtd: 10,
+                        chances: 1,
+                        prizes: [
+                            { name: 'Tente de novo', chance: 40, slices: 4, color: '#64748b' },
+                            { name: 'Brinde surpresa', chance: 30, slices: 3, color: '#06b6d4' },
+                            { name: '5% extra', chance: 20, slices: 2, color: '#22c55e' },
+                            { name: 'Prêmio especial', chance: 10, slices: 1, color: '#ef4444' }
+                        ]
+                    },
                     theme: { mode: 'dark', preset: 'teal', primary: '#008b77', paid: '#00db87', reserved: '#ffaa00', donated: '#d63384' }
                 };
+                this._roletaAtual = null;
+                this._roletaSpinning = false;
+                this._roletaRotation = 0;
+                this._roletaSegments = [];
+                this._roletaNsuSucesso = null;
                 this._countdownInterval = null;
                 this._carouselInterval = null;
                 this._carouselIndex = 0;
@@ -2115,16 +2334,76 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                                      data-foto="${fotoAttr}"
                                      data-desc="${descAttr}"
                                      onclick="window.rifaApp.abrirFotoPremio(this)">
+                                    <span style="font-size:18px; flex-shrink:0;">${medalha}</span>
+                                    <div class="prize-body">
+                                        <b>${classif} ganhador(a):</b>
+                                        <p>${p.descricao || ''}</p>
+                                    </div>
                                     ${hasFoto ? '<div class="prize-photo-hint"><i data-lucide="image" style="width:12px;height:12px;"></i></div>' : ''}
-                                    <b>${medalha} ${classif} Prêmio:</b>
-                                    <p>${p.descricao || ''}</p>
                                 </div>
                             `;
                         });
                     } else {
-                        premiosList.innerHTML = `<div class="prize-item"><b>🥇 1º Prêmio:</b><p>Prêmio Principal da Rifa</p></div>`;
+                        premiosList.innerHTML = `<div class="prize-item"><span style="font-size:18px;">🥇</span><div class="prize-body"><b>1º ganhador(a):</b><p>Prêmio Principal da Rifa</p></div></div>`;
                     }
                 }
+
+                // Redes sociais (configuráveis)
+                try {
+                    const soc = this.config.social || {};
+                    const row = document.getElementById('social-row');
+                    const card = document.getElementById('card-redes');
+                    if (row && card) {
+                        const parts = [];
+                        if (soc.instagram) parts.push(`<a class="social-btn ig" href="${soc.instagram}" target="_blank" rel="noopener"><i class="fa-brands fa-instagram"></i></a>`);
+                        if (soc.facebook) parts.push(`<a class="social-btn fb" href="${soc.facebook}" target="_blank" rel="noopener"><i class="fa-brands fa-facebook-f"></i></a>`);
+                        if (soc.waGrupo) parts.push(`<a class="social-btn wa" href="${soc.waGrupo}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Grupo</a>`);
+                        if (soc.whatsapp) parts.push(`<a class="social-btn wa" href="${soc.whatsapp}" target="_blank" rel="noopener"><i class="fa-brands fa-whatsapp"></i> Comunidade</a>`);
+                        if (soc.telegram) parts.push(`<a class="social-btn tg" href="${soc.telegram}" target="_blank" rel="noopener"><i class="fa-brands fa-telegram"></i></a>`);
+                        row.innerHTML = parts.join('');
+                        card.style.display = parts.length ? 'block' : 'none';
+                    }
+                } catch (_) {}
+
+                // Cards de promoção estilo app (Roleta)
+                try {
+                    const promoBox = document.getElementById('card-promos-estilo');
+                    const promoList = document.getElementById('promos-estilo-list');
+                    if (promoBox && promoList) {
+                        let html = '';
+                        const roleta = this.config.roleta || {};
+                        if (roleta.active) {
+                            const minQ = parseInt(roleta.minQtd) || 10;
+                            const ch = parseInt(roleta.chances) || 1;
+                            html += `<div class="promo-combo-card roleta" role="button" tabindex="0" style="cursor:pointer;" onclick="window.rifaApp.setSelectionCount(${minQ})" title="Selecionar ${minQ} bilhetes">
+                                <div class="left">
+                                    <div class="title">${minQ} bilhetes</div>
+                                    <div class="sub">${ch} chance(s) na roleta premiada · toque para selecionar</div>
+                                </div>
+                                <div class="badge">Recebe ${ch} giro${ch > 1 ? 's' : ''} 🎯</div>
+                            </div>`;
+                        }
+                        if (this.config.promosActive && Array.isArray(this.config.promos)) {
+                            this.config.promos.slice(0, 4).forEach(pr => {
+                                const min = parseInt(pr.min) || 0;
+                                const val = pr.val || 0;
+                                const isFree = pr.type === 'free' || pr.type === 'free_tickets';
+                                const label = isFree
+                                    ? `A cada ${min} → ${val} grátis`
+                                    : `Comprando ${min}+ ganha ${val}% OFF`;
+                                html += `<div class="promo-combo-card" role="button" tabindex="0" style="cursor:pointer;" onclick="window.rifaApp.setSelectionCount(${min})" title="Selecionar ${min} bilhetes">
+                                    <div class="left">
+                                        <div class="title">${min} bilhetes</div>
+                                        <div class="sub">${label} · toque para selecionar</div>
+                                    </div>
+                                    <div class="badge">${isFree ? val + ' grátis 🎟️' : val + '% OFF'}</div>
+                                </div>`;
+                            });
+                        }
+                        promoList.innerHTML = html;
+                        promoBox.style.display = html ? 'block' : 'none';
+                    }
+                } catch (_) {}
 
 
                 const qsGrid = document.getElementById('quick-select-grid');
@@ -2614,6 +2893,23 @@ setGridPage(page) {
                         if(doadosConfirmados.length > 0) {
                             area.innerHTML += `<div class="admin-item" style="border-color:var(--donated);"><b style="color:var(--donated); font-size:12px; text-transform: uppercase;">🎁 Doações Confirmadas:</b><p style="font-weight:600; margin-top:8px; color:var(--title-color); font-size: 15px;">${doadosConfirmados.join(', ')}</p></div>`;
                         }
+
+                        // Roleta pendente (giros não usados após pagamento)
+                        try {
+                            const pendRoleta = await this.buscarRoletaPendentesPorTel(tel);
+                            if (pendRoleta.length) {
+                                const cards = pendRoleta.map(g => {
+                                    const rest = (g.chances || 0) - (g.usados || 0);
+                                    const ganhos = (g.resultados || []).map(r => r.name).filter(Boolean);
+                                    return `<div style="background:var(--gray-400); border:1px solid #7c3aed; border-radius:10px; padding:12px; margin-top:8px; text-align:center;">
+                                        <div style="font-size:12px; font-weight:700; color:var(--title-color); margin-bottom:4px;">🎯 ${rest} giro${rest > 1 ? 's' : ''} disponível${rest > 1 ? 'eis' : ''}</div>
+                                        ${ganhos.length ? `<div style="font-size:11px; color:var(--paid); margin-bottom:8px;">Já ganhou: ${ganhos.join(', ')}</div>` : ''}
+                                        <button type="button" class="btn-participar" style="padding:10px; font-size:13px; background:#7c3aed;" onclick="window.rifaApp.abrirRoleta('${g.nsu}')">Girar roleta</button>
+                                    </div>`;
+                                }).join('');
+                                area.innerHTML += `<div class="admin-item" style="border-color:#7c3aed;"><b style="color:#a78bfa; font-size:12px; text-transform:uppercase;">Roleta Premiada</b>${cards}</div>`;
+                            }
+                        } catch (_) {}
                     } else {
                         area.innerHTML = '<p style="text-align:center; font-size: 14px; padding: 20px; background: var(--gray-400); border-radius: 10px;">Nenhum bilhete encontrado.</p>';
                     }
@@ -2811,14 +3107,258 @@ setGridPage(page) {
                 }).join('');
             }
 
-            mostrarSucessoPagamento({ numeros, valor, nome }) {
+            mostrarSucessoPagamento({ numeros, valor, nome, nsu = '', telefone = '', roletaGiro = null }) {
                 const nums = Array.isArray(numeros) ? numeros.slice().sort().join(', ') : String(numeros || '');
                 document.getElementById('sucesso-numeros').innerText = nums;
                 document.getElementById('sucesso-valor').innerText = (valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                const msg = encodeURIComponent(`Acabei de garantir minhas cotas na rifa ${this.config.premio}!\nNúmeros: ${nums}`);
+                let msgTxt = `Acabei de garantir minhas cotas na rifa ${this.config.premio}!\nNúmeros: ${nums}`;
+                if (roletaGiro && (roletaGiro.resultados || []).length) {
+                    msgTxt += `\nRoleta: ${(roletaGiro.resultados || []).map(r => r.name).join(', ')}`;
+                } else if (roletaGiro && roletaGiro.chances > (roletaGiro.usados || 0)) {
+                    msgTxt += `\n🎯 Roleta liberada com ${(roletaGiro.chances || 0) - (roletaGiro.usados || 0)} giro(s)!`;
+                }
+                const msg = encodeURIComponent(msgTxt);
                 document.getElementById('sucesso-whatsapp').href = `https://wa.me/?text=${msg}`;
+
+                const box = document.getElementById('sucesso-roleta-box');
+                const txt = document.getElementById('sucesso-roleta-txt');
+                const premiosEl = document.getElementById('sucesso-roleta-premios');
+                this._roletaNsuSucesso = null;
+                if (box) {
+                    const btnRoleta = box.querySelector('button');
+                    if (roletaGiro && roletaGiro.chances > (roletaGiro.usados || 0)) {
+                        const rest = roletaGiro.chances - (roletaGiro.usados || 0);
+                        this._roletaNsuSucesso = roletaGiro.nsu || nsu;
+                        box.style.display = 'block';
+                        if (btnRoleta) btnRoleta.style.display = 'block';
+                        if (txt) txt.innerText = `Você ganhou ${rest} giro${rest > 1 ? 's' : ''} na roleta de brindes extras!`;
+                        if (premiosEl) {
+                            const ganhos = (roletaGiro.resultados || []).map(r => r.name).filter(Boolean);
+                            premiosEl.innerText = ganhos.length ? ('Já ganhou: ' + ganhos.join(', ')) : '';
+                        }
+                    } else if (roletaGiro && (roletaGiro.resultados || []).length) {
+                        box.style.display = 'block';
+                        if (txt) txt.innerText = 'Você já usou seus giros desta compra.';
+                        if (premiosEl) premiosEl.innerText = 'Prêmios: ' + roletaGiro.resultados.map(r => r.name).join(', ');
+                        if (btnRoleta) btnRoleta.style.display = 'none';
+                    } else {
+                        box.style.display = 'none';
+                    }
+                }
+
                 document.getElementById('modal-sucesso').style.display = 'flex';
                 lucide.createIcons();
+                try {
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 90, spread: 55, origin: { y: 0.65 } });
+                        setTimeout(() => confetti({ particleCount: 50, angle: 60, spread: 50, origin: { x: 0 } }), 200);
+                        setTimeout(() => confetti({ particleCount: 50, angle: 120, spread: 50, origin: { x: 1 } }), 350);
+                    }
+                } catch (_) {}
+            }
+
+            roletaCfg() {
+                return this.config.roleta || { active: false, minQtd: 10, chances: 1, prizes: [] };
+            }
+
+            async garantirRoletaAposPagamento({ nsu, telefone, nome, qtd }) {
+                const cfg = this.roletaCfg();
+                if (!cfg.active) return null;
+                const minQtd = parseInt(cfg.minQtd) || 1;
+                const chances = Math.max(1, parseInt(cfg.chances) || 1);
+                if (!nsu || (parseInt(qtd) || 0) < minQtd) return null;
+
+                const giroRef = ref(db, `${dbPath}/roleta_giros/${nsu}`);
+                const snap = await get(giroRef);
+                if (snap.exists()) return { nsu, ...snap.val() };
+
+                const data = {
+                    nsu,
+                    telefone: (telefone || '').replace(/\D/g, ''),
+                    nome: nome || '',
+                    qtd: parseInt(qtd) || 0,
+                    chances,
+                    usados: 0,
+                    resultados: [],
+                    createdAt: Date.now()
+                };
+                await set(giroRef, data);
+                return data;
+            }
+
+            buildRoletaSegments() {
+                const prizes = this.roletaCfg().prizes || [];
+                this._roletaSegments = [];
+                prizes.forEach((p, prizeIndex) => {
+                    const n = Math.max(1, parseInt(p.slices) || 1);
+                    for (let i = 0; i < n; i++) {
+                        this._roletaSegments.push({ prizeIndex, name: p.name, color: p.color || '#64748b', chance: p.chance });
+                    }
+                });
+                if (!this._roletaSegments.length) {
+                    this._roletaSegments = [{ prizeIndex: 0, name: 'Vazio', color: '#334155', chance: 100 }];
+                }
+            }
+
+            drawRoletaWheel() {
+                const canvas = document.getElementById('roleta-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const size = canvas.width;
+                const cx = size / 2, cy = size / 2, radius = size / 2 - 6;
+                const segs = this._roletaSegments;
+                const total = segs.length;
+                const arc = (Math.PI * 2) / total;
+                ctx.clearRect(0, 0, size, size);
+                for (let i = 0; i < total; i++) {
+                    const start = i * arc - Math.PI / 2;
+                    const end = start + arc;
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, radius, start, end);
+                    ctx.closePath();
+                    ctx.fillStyle = segs[i].color || '#64748b';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(0,0,0,.35)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    ctx.rotate(start + arc / 2);
+                    ctx.textAlign = 'right';
+                    ctx.fillStyle = '#fff';
+                    ctx.font = `bold ${Math.max(14, Math.min(22, Math.floor(420 / total)))}px Inter, sans-serif`;
+                    ctx.shadowColor = 'rgba(0,0,0,.5)';
+                    ctx.shadowBlur = 3;
+                    ctx.fillText(String(segs[i].name || '').slice(0, 14), radius - 14, 5);
+                    ctx.restore();
+                }
+            }
+
+            async abrirRoleta(nsu) {
+                if (!nsu) return this.showToast('Giro não encontrado.');
+                const snap = await get(ref(db, `${dbPath}/roleta_giros/${nsu}`));
+                if (!snap.exists()) return this.showToast('Nenhum giro disponível para este pagamento.');
+                const data = { nsu, ...snap.val() };
+                const rest = (data.chances || 0) - (data.usados || 0);
+                if (rest <= 0) {
+                    this._roletaAtual = data;
+                    this.buildRoletaSegments();
+                    this.drawRoletaWheel();
+                    document.getElementById('roleta-status').innerText = 'Você já usou todos os giros deste pagamento.';
+                    document.getElementById('roleta-resultado').innerText = (data.resultados || []).map(r => '🎁 ' + r.name).join(' · ') || '';
+                    document.getElementById('btn-roleta-girar').disabled = true;
+                    document.getElementById('modal-roleta').style.display = 'flex';
+                    return;
+                }
+                this._roletaAtual = data;
+                this._roletaSpinning = false;
+                this.buildRoletaSegments();
+                this.drawRoletaWheel();
+                document.getElementById('roleta-status').innerText = `Você tem ${rest} giro${rest > 1 ? 's' : ''} restante${rest > 1 ? 's' : ''}.`;
+                document.getElementById('roleta-resultado').innerText = '';
+                document.getElementById('btn-roleta-girar').disabled = false;
+                document.getElementById('modal-roleta').style.display = 'flex';
+            }
+
+            abrirRoletaDoSucesso() {
+                if (this._roletaNsuSucesso) this.abrirRoleta(this._roletaNsuSucesso);
+            }
+
+            pickRoletaPrizeIndex() {
+                const prizes = this.roletaCfg().prizes || [];
+                const sum = prizes.reduce((a, p) => a + (parseFloat(p.chance) || 0), 0) || 1;
+                let r = Math.random() * sum;
+                for (let i = 0; i < prizes.length; i++) {
+                    r -= (parseFloat(prizes[i].chance) || 0);
+                    if (r <= 0) return i;
+                }
+                return Math.max(0, prizes.length - 1);
+            }
+
+            async girarRoleta() {
+                if (this._roletaSpinning || !this._roletaAtual) return;
+                const data = this._roletaAtual;
+                const rest = (data.chances || 0) - (data.usados || 0);
+                if (rest <= 0) return this.showToast('Sem giros restantes.');
+
+                const prizeIndex = this.pickRoletaPrizeIndex();
+                const prizes = this.roletaCfg().prizes || [];
+                const prize = prizes[prizeIndex] || { name: 'Prêmio' };
+
+                // fatia visual desse prêmio
+                const idxs = [];
+                this._roletaSegments.forEach((s, i) => { if (s.prizeIndex === prizeIndex) idxs.push(i); });
+                const segmentIndex = idxs.length ? idxs[Math.floor(Math.random() * idxs.length)] : 0;
+                const total = this._roletaSegments.length || 1;
+                const arcDeg = 360 / total;
+                const targetCenter = (segmentIndex + 0.5) * arcDeg;
+                const extraTurns = 5 + Math.floor(Math.random() * 3);
+                const finalRotation = this._roletaRotation + extraTurns * 360 + (360 - (targetCenter + (this._roletaRotation % 360)) % 360);
+
+                this._roletaSpinning = true;
+                document.getElementById('btn-roleta-girar').disabled = true;
+                document.getElementById('roleta-resultado').innerText = 'Girando...';
+
+                const canvas = document.getElementById('roleta-canvas');
+                const start = performance.now();
+                const duration = 4200;
+                const startRot = this._roletaRotation;
+                const delta = finalRotation - startRot;
+                const ease = t => 1 - Math.pow(1 - t, 3);
+
+                const frame = (now) => {
+                    const t = Math.min(1, (now - start) / duration);
+                    const rot = startRot + delta * ease(t);
+                    canvas.style.transform = `rotate(${rot}deg)`;
+                    if (t < 1) requestAnimationFrame(frame);
+                    else {
+                        this._roletaRotation = finalRotation;
+                        this.finalizarGiroRoleta(prize);
+                    }
+                };
+                requestAnimationFrame(frame);
+            }
+
+            async finalizarGiroRoleta(prize) {
+                this._roletaSpinning = false;
+                const data = this._roletaAtual;
+                if (!data) return;
+                const resultados = Array.isArray(data.resultados) ? data.resultados.slice() : [];
+                resultados.push({ name: prize.name, at: Date.now() });
+                const usados = (parseInt(data.usados) || 0) + 1;
+                const patch = { usados, resultados };
+                await update(ref(db, `${dbPath}/roleta_giros/${data.nsu}`), patch);
+                this._roletaAtual = { ...data, ...patch };
+
+                document.getElementById('roleta-resultado').innerText = '🎉 ' + prize.name;
+                const rest = (data.chances || 0) - usados;
+                document.getElementById('roleta-status').innerText = rest > 0
+                    ? `Restam ${rest} giro${rest > 1 ? 's' : ''}.`
+                    : 'Todos os giros deste pagamento foram usados.';
+                document.getElementById('btn-roleta-girar').disabled = rest <= 0;
+                this.showToast('Você ganhou: ' + prize.name);
+
+                // atualiza box do sucesso se aberta
+                const premiosEl = document.getElementById('sucesso-roleta-premios');
+                if (premiosEl) premiosEl.innerText = 'Prêmios: ' + resultados.map(r => r.name).join(', ');
+            }
+
+            async buscarRoletaPendentesPorTel(tel) {
+                const clean = (tel || '').replace(/\D/g, '');
+                if (!clean) return [];
+                try {
+                    const snap = await get(ref(db, `${dbPath}/roleta_giros`));
+                    if (!snap.exists()) return [];
+                    const all = snap.val() || {};
+                    return Object.entries(all)
+                        .map(([nsu, v]) => ({ nsu, ...v }))
+                        .filter(g => String(g.telefone || '').replace(/\D/g, '') === clean)
+                        .filter(g => (g.chances || 0) > (g.usados || 0))
+                        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                } catch (_) {
+                    return [];
+                }
             }
 
             copiarNumerosSucesso() {
@@ -3298,6 +3838,27 @@ setGridPage(page) {
                     }
                     textDesc.style.display = 'block';
                 } else { textDesc.style.display = 'none'; }
+
+                // Dica roleta: faltam X bilhetes
+                try {
+                    const hint = document.getElementById('roleta-hint');
+                    const r = this.app.config.roleta || {};
+                    if (hint && r.active) {
+                        const minQ = parseInt(r.minQtd) || 10;
+                        const ch = parseInt(r.chances) || 1;
+                        if (count <= 0) {
+                            hint.style.display = 'none';
+                        } else if (count >= minQ) {
+                            hint.style.display = 'block';
+                            hint.innerText = `🎯 Roleta liberada! Com ${count} bilhete(s) você ganha ${ch} giro(s) após o pagamento.`;
+                        } else {
+                            hint.style.display = 'block';
+                            hint.innerText = `🎯 Faltam ${minQ - count} bilhete(s) para liberar a roleta (${ch} giro(s)).`;
+                        }
+                    } else if (hint) {
+                        hint.style.display = 'none';
+                    }
+                } catch (_) {}
             }
 
             abrirCheckout() {
@@ -3416,10 +3977,23 @@ setGridPage(page) {
                     this.app.consultarMeusNumeros();
                 }
 
+                let roletaGiro = null;
+                try {
+                    roletaGiro = await this.app.garantirRoletaAposPagamento({
+                        nsu: payData.nsu || '',
+                        telefone: payData.telefone || '',
+                        nome: payData.nome || '',
+                        qtd: cotasPagas.length
+                    });
+                } catch (e) { console.warn('roleta', e); }
+
                 this.app.mostrarSucessoPagamento({
                     numeros: cotasPagas,
                     valor: valorPago,
-                    nome: payData.nome || ''
+                    nome: payData.nome || '',
+                    nsu: payData.nsu || '',
+                    telefone: payData.telefone || '',
+                    roletaGiro
                 });
 
                 // WhatsApp automático para o organizador (abre link)
@@ -4445,6 +5019,8 @@ setGridPage(page) {
 
             openConfig() {
                 document.getElementById('cfg-premio').value = this.app.config.premio || "";
+                const descEl = document.getElementById('cfg-descricao');
+                if (descEl) descEl.value = this.app.config.descricao || "";
                 const capasArr = (Array.isArray(this.app.config.capas) && this.app.config.capas.length)
                     ? this.app.config.capas
                     : (this.app.config.capa ? [this.app.config.capa] : []);
@@ -4492,6 +5068,20 @@ setGridPage(page) {
                 this._updateToggleUI(document.getElementById('btn-toggle-promos'), !!this.app.config.promosActive);
                 this._updateToggleUI(document.getElementById('btn-toggle-doacoes'), this.app.config.doacoesActive !== false);
                 this._updateToggleUI(document.getElementById('btn-toggle-ocultar'), !!this.app.config.ocultarNumeros);
+                if (!this.app.config.roleta) {
+                    this.app.config.roleta = { active: false, minQtd: 10, chances: 1, prizes: [] };
+                }
+                this._updateToggleUI(document.getElementById('btn-toggle-roleta'), !!this.app.config.roleta.active);
+                const rMin = document.getElementById('cfg-roleta-min');
+                const rCh = document.getElementById('cfg-roleta-chances');
+                if (rMin) rMin.value = this.app.config.roleta.minQtd || 10;
+                if (rCh) rCh.value = this.app.config.roleta.chances || 1;
+                const rList = document.getElementById('roleta-premios-list');
+                if (rList) {
+                    rList.innerHTML = '';
+                    (this.app.config.roleta.prizes || []).forEach(p => this.addRoletaPremioRow(p));
+                    this.updateRoletaChanceSum();
+                }
 
                 const pList = document.getElementById('promos-list'); pList.innerHTML = '';
                 if(this.app.config.promos) this.app.config.promos.forEach(p => this.addPromoRow(p));
@@ -4514,7 +5104,23 @@ setGridPage(page) {
                 const cList = document.getElementById('cupons-config-list'); cList.innerHTML = '';
                 if(this.app.config.cupons) this.app.config.cupons.forEach(c => this.addCupomRow(c));
 
-                this.switchConfigTab('geral', document.querySelector('.config-tab'));
+                // redes
+                const soc = this.app.config.social || {};
+                const setV = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+                setV('cfg-social-ig', soc.instagram);
+                setV('cfg-social-fb', soc.facebook);
+                setV('cfg-social-wa-grupo', soc.waGrupo);
+                setV('cfg-social-wa', soc.whatsapp);
+                setV('cfg-social-tg', soc.telegram);
+
+                this.bindConfigDirtyWatchers();
+                this.updateCfgResumo();
+                this.updateCfgPreview();
+                this.updateGatewayStatus();
+                this.setConfigMode(localStorage.getItem('rifa_cfg_mode') || 'advanced');
+                this.clearUnsaved();
+
+                this.switchConfigTab('geral', document.querySelector('.config-tab[data-cfg-tab="geral"]') || document.querySelector('.config-tab'));
 
                 document.getElementById('modal-config').style.display = 'flex';
                 lucide.createIcons();
@@ -4528,6 +5134,234 @@ setGridPage(page) {
             toggleDoacoes() {
                 this.app.config.doacoesActive = !(this.app.config.doacoesActive !== false);
                 this._updateToggleUI(document.getElementById('btn-toggle-doacoes'), this.app.config.doacoesActive !== false);
+            }
+
+            toggleRoleta() {
+                if (!this.app.config.roleta) this.app.config.roleta = { active: false, minQtd: 10, chances: 1, prizes: [] };
+                this.app.config.roleta.active = !this.app.config.roleta.active;
+                this._updateToggleUI(document.getElementById('btn-toggle-roleta'), !!this.app.config.roleta.active);
+            }
+
+            addRoletaPremioRow(d = { name: '', chance: 0, slices: 1, color: '#7c3aed' }) {
+                const list = document.getElementById('roleta-premios-list');
+                if (!list) return;
+                const div = document.createElement('div');
+                div.className = 'cfg-list-item roleta-premio-row';
+                div.style.marginBottom = '10px';
+                div.innerHTML = `
+                    <div style="display:grid; grid-template-columns:1.4fr 0.7fr 0.7fr 0.7fr 40px; gap:8px; align-items:end;">
+                        <div>
+                            <label class="cfg-label">Nome</label>
+                            <input type="text" class="input-form r-name" value="${(d.name || '').replace(/"/g, '&quot;')}" placeholder="Ex: Brinde" style="margin:0;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Chance %</label>
+                            <input type="number" class="input-form r-chance" min="0" max="100" step="0.1" value="${d.chance || 0}" style="margin:0;" oninput="window.adminPanel.updateRoletaChanceSum()">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Fatias</label>
+                            <input type="number" class="input-form r-slices" min="1" max="20" value="${d.slices || 1}" style="margin:0;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Cor</label>
+                            <input type="color" class="input-form r-color" value="${d.color || '#7c3aed'}" style="margin:0; height:42px; padding:4px;">
+                        </div>
+                        <button type="button" class="remove-btn" style="height:42px;" onclick="this.closest('.roleta-premio-row').remove(); window.adminPanel.updateRoletaChanceSum();">
+                            <i data-lucide="trash-2" style="width:14px;"></i>
+                        </button>
+                    </div>`;
+                list.appendChild(div);
+                this.updateRoletaChanceSum();
+                lucide.createIcons();
+            }
+
+            updateRoletaChanceSum() {
+                let sum = 0;
+                document.querySelectorAll('#roleta-premios-list .r-chance').forEach(el => {
+                    sum += parseFloat(el.value) || 0;
+                });
+                const box = document.getElementById('roleta-chance-sum');
+                const bar = document.getElementById('roleta-chance-bar');
+                if (!box) return;
+                const ok = Math.abs(sum - 100) < 0.05;
+                box.innerText = 'Soma: ' + (Math.round(sum * 10) / 10) + '%' + (ok ? ' ✓' : ' (precisa 100%)');
+                box.style.color = ok ? 'var(--paid)' : 'var(--danger)';
+                if (bar) {
+                    bar.style.width = Math.min(100, Math.max(0, sum)) + '%';
+                    bar.style.background = ok ? 'var(--paid)' : (sum > 100 ? 'var(--danger)' : 'var(--reserved)');
+                }
+            }
+
+            setConfigMode(mode) {
+                this._configMode = mode === 'simple' ? 'simple' : 'advanced';
+                localStorage.setItem('rifa_cfg_mode', this._configMode);
+                const simple = this._configMode === 'simple';
+                document.querySelectorAll('.config-tab[data-advanced="1"]').forEach(btn => {
+                    btn.style.display = simple ? 'none' : '';
+                });
+                const bS = document.getElementById('btn-mode-simple');
+                const bA = document.getElementById('btn-mode-advanced');
+                if (bS) {
+                    bS.style.background = simple ? 'var(--paid)' : 'var(--gray-400)';
+                    bS.style.color = simple ? '#000' : 'var(--title-color)';
+                }
+                if (bA) {
+                    bA.style.background = !simple ? 'var(--paid)' : 'var(--gray-400)';
+                    bA.style.color = !simple ? '#000' : 'var(--title-color)';
+                }
+                // se estiver numa aba avançada no modo simples, volta para geral
+                if (simple) {
+                    const active = document.querySelector('.config-tab.active');
+                    if (active && active.getAttribute('data-advanced') === '1') {
+                        this.switchConfigTab('geral', document.querySelector('.config-tab[data-cfg-tab="geral"]'));
+                    }
+                }
+            }
+
+            updateCfgResumo() {
+                const titulo = document.getElementById('cfg-premio')?.value || this.app.config.premio || '—';
+                const valor = parseFloat(document.getElementById('cfg-valor')?.value) || this.app.config.valor || 0;
+                const total = parseInt(document.getElementById('cfg-total')?.value) || this.app.config.total || 0;
+                const el = document.getElementById('cfg-resumo-txt');
+                if (el) el.innerText = `${titulo} · ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} · ${total} cotas`;
+            }
+
+            updateCfgPreview() {
+                const titulo = document.getElementById('cfg-premio')?.value || this.app.config.premio || '—';
+                const valor = parseFloat(document.getElementById('cfg-valor')?.value) || this.app.config.valor || 0;
+                const t = document.getElementById('cfg-preview-title');
+                const p = document.getElementById('cfg-preview-price');
+                const img = document.getElementById('cfg-preview-img');
+                if (t) t.innerText = titulo;
+                if (p) p.innerText = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                const capas = (document.getElementById('cfg-capas')?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+                const url = capas[0] || this.app.config.capa || '';
+                if (img) {
+                    if (url) {
+                        img.src = url;
+                        img.style.display = 'block';
+                    } else {
+                        img.style.display = 'none';
+                    }
+                }
+            }
+
+            markUnsaved() {
+                this._cfgDirty = true;
+                const el = document.getElementById('cfg-unsaved');
+                if (el) el.style.display = 'inline-block';
+            }
+
+            clearUnsaved() {
+                this._cfgDirty = false;
+                const el = document.getElementById('cfg-unsaved');
+                if (el) el.style.display = 'none';
+            }
+
+            bindConfigDirtyWatchers() {
+                const modal = document.getElementById('modal-config');
+                if (!modal || modal._dirtyBound) return;
+                modal._dirtyBound = true;
+                modal.addEventListener('input', () => {
+                    this.markUnsaved();
+                    this.updateCfgResumo();
+                    this.updateCfgPreview();
+                    this.updateGatewayStatus();
+                });
+                modal.addEventListener('change', () => {
+                    this.markUnsaved();
+                    this.updateCfgResumo();
+                    this.updateCfgPreview();
+                });
+            }
+
+            updateGatewayStatus() {
+                const mp = (document.getElementById('cfg-mptoken')?.value || '').trim();
+                const ip = (document.getElementById('cfg-handle')?.value || '').trim();
+                const sMp = document.getElementById('status-mp');
+                const sIp = document.getElementById('status-ip');
+                if (sMp) {
+                    sMp.innerText = mp ? 'Status: Token MP configurado ✓' : 'Status: PIX desativado (sem token)';
+                    sMp.style.color = mp ? 'var(--paid)' : 'var(--danger)';
+                }
+                if (sIp) {
+                    sIp.innerText = ip ? 'Status: InfinitePay configurado ✓' : 'Status: Cartão desativado (sem handle)';
+                    sIp.style.color = ip ? 'var(--paid)' : 'var(--danger)';
+                }
+            }
+
+            filterConfigSearch(q) {
+                const query = (q || '').trim().toLowerCase();
+                const map = {
+                    geral: 'ajustes titulo descricao capa valor total sorteio upsell pix token handle pixel pin reserva',
+                    tema: 'tema cor noite dia primary pago reservado doacao',
+                    botoes: 'selecao rapida popular quantidade',
+                    doacoes: 'doacao presente item',
+                    premios: 'premio foto classificacao',
+                    ofertas: 'promocao cascata cupom historico desconto',
+                    roleta: 'roleta giro chance fatia brinde',
+                    redes: 'instagram facebook whatsapp telegram rede social'
+                };
+                document.querySelectorAll('.config-tab[data-cfg-tab]').forEach(btn => {
+                    const id = btn.getAttribute('data-cfg-tab');
+                    const hay = (map[id] || '') + ' ' + id + ' ' + (btn.innerText || '');
+                    const show = !query || hay.toLowerCase().includes(query);
+                    // respeita modo simples
+                    if (this._configMode === 'simple' && btn.getAttribute('data-advanced') === '1') {
+                        btn.style.display = 'none';
+                    } else {
+                        btn.style.display = show ? '' : 'none';
+                    }
+                });
+            }
+
+            openChecklist() {
+                const items = [];
+                const titulo = (document.getElementById('cfg-premio')?.value || this.app.config.premio || '').trim();
+                const valor = parseFloat(document.getElementById('cfg-valor')?.value) || this.app.config.valor || 0;
+                const total = parseInt(document.getElementById('cfg-total')?.value) || this.app.config.total || 0;
+                const capas = (document.getElementById('cfg-capas')?.value || '').split('\n').map(s => s.trim()).filter(Boolean);
+                const mp = (document.getElementById('cfg-mptoken')?.value || this.app.config.mpToken || '').trim();
+                const ip = (document.getElementById('cfg-handle')?.value || this.app.config.handle || '').trim();
+                const premios = document.querySelectorAll('#premios-config-list .cfg-list-item').length || (this.app.config.premios || []).length;
+                const roleta = this.readRoletaConfig();
+                items.push({ ok: !!titulo, text: 'Título da rifa preenchido' });
+                items.push({ ok: valor > 0, text: 'Valor da cota > 0' });
+                items.push({ ok: total > 0, text: 'Total de cotas definido' });
+                items.push({ ok: capas.length > 0 || !!(this.app.config.capa), text: 'Capa configurada' });
+                items.push({ ok: premios > 0, text: 'Pelo menos 1 prêmio' });
+                items.push({ ok: !!(mp || ip), text: 'Pelo menos 1 gateway (PIX ou Cartão)' });
+                if (roleta.active) {
+                    const sum = (roleta.prizes || []).reduce((a, p) => a + (parseFloat(p.chance) || 0), 0);
+                    items.push({ ok: Math.abs(sum - 100) < 0.05, text: 'Roleta com chances somando 100%' });
+                }
+                const box = document.getElementById('checklist-list');
+                if (box) {
+                    box.innerHTML = items.map(i => `
+                        <div style="display:flex; gap:10px; align-items:center; padding:10px 12px; border-radius:10px; background:var(--gray-400); border:1px solid ${i.ok ? 'var(--paid)' : 'var(--danger)'};">
+                            <span style="font-size:16px;">${i.ok ? '✅' : '⚠️'}</span>
+                            <span style="font-size:13px; color:var(--title-color); font-weight:600;">${i.text}</span>
+                        </div>`).join('');
+                }
+                document.getElementById('modal-checklist').style.display = 'flex';
+            }
+
+            readRoletaConfig() {
+                const prizes = [];
+                document.querySelectorAll('#roleta-premios-list .roleta-premio-row').forEach(row => {
+                    prizes.push({
+                        name: row.querySelector('.r-name')?.value?.trim() || '',
+                        chance: parseFloat(row.querySelector('.r-chance')?.value) || 0,
+                        slices: Math.max(1, parseInt(row.querySelector('.r-slices')?.value) || 1),
+                        color: row.querySelector('.r-color')?.value || '#7c3aed'
+                    });
+                });
+                return {
+                    active: !!(this.app.config.roleta && this.app.config.roleta.active),
+                    minQtd: parseInt(document.getElementById('cfg-roleta-min')?.value) || 10,
+                    chances: Math.max(1, parseInt(document.getElementById('cfg-roleta-chances')?.value) || 1),
+                    prizes
+                };
             }
 
             async carregarHistoricoCupons() {
@@ -4865,6 +5699,7 @@ setGridPage(page) {
 
                 const up = { 
                     premio: document.getElementById('cfg-premio').value || "", 
+                    descricao: (document.getElementById('cfg-descricao')?.value || '').trim(),
                     capa: capaPrincipal,
                     capas: capasTxt,
                     carouselTempo: parseInt(document.getElementById('cfg-carousel-tempo')?.value) || 5,
@@ -4887,6 +5722,14 @@ setGridPage(page) {
                     promosActive: this.app.config.promosActive, 
                     doacoesActive: this.app.config.doacoesActive !== false,
                     ocultarNumeros: this.app.config.ocultarNumeros,
+                    roleta: this.readRoletaConfig(),
+                    social: {
+                        instagram: (document.getElementById('cfg-social-ig')?.value || '').trim(),
+                        facebook: (document.getElementById('cfg-social-fb')?.value || '').trim(),
+                        waGrupo: (document.getElementById('cfg-social-wa-grupo')?.value || '').trim(),
+                        whatsapp: (document.getElementById('cfg-social-wa')?.value || '').trim(),
+                        telegram: (document.getElementById('cfg-social-tg')?.value || '').trim()
+                    },
                     theme: theme,
                     quickSelects: qSelects,
                     doacoes: dItens,
@@ -4895,7 +5738,10 @@ setGridPage(page) {
                     premiosBaseUrl: premiosBaseUrl,
                     cupons: cupons
                 };
-                                set(cfgRef, up).then(() => { 
+                this.app.config.roleta = up.roleta;
+                this.app.config.social = up.social;
+                                set(cfgRef, up).then(() => {
+                    this.clearUnsaved();
                     this.app.closeModal('modal-config'); 
                     this.app.showToast("Salvo com sucesso!");
               }); // fecha o then
