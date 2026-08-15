@@ -1051,6 +1051,11 @@
                     <div id="ganhadores-publicos-list"></div>
                 </div>
 
+                <div id="card-roleta-estoque" class="card" style="display:none; margin-bottom:14px; padding:14px;">
+                    <div style="font-size:12px; font-weight:800; color:#a78bfa; margin-bottom:8px; text-transform:uppercase;">🎯 Estoque da Roleta</div>
+                    <div id="roleta-estoque-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+
                 <div id="card-roleta-ganhadores" class="card" style="display:none; margin-bottom:14px;">
                     <div class="section-title">
                         <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:20px;"></i></div>
@@ -1060,6 +1065,17 @@
                         </div>
                     </div>
                     <div id="roleta-ganhadores-publicos"></div>
+                </div>
+
+                <div class="card" id="card-como-funciona" style="margin-bottom:14px; padding:16px;">
+                    <div style="font-size:13px; font-weight:800; color:var(--title-color); margin-bottom:10px;">✅ Como funciona</div>
+                    <ul style="margin:0; padding-left:18px; color:var(--text-color); font-size:12px; line-height:1.55;">
+                        <li>Escolha a quantidade de bilhetes e reserve</li>
+                        <li>Pague via PIX ou cartão — confirmação automática</li>
+                        <li>Se atingir a meta, libera giros na roleta de brindes</li>
+                        <li>O sorteio principal segue as regras da campanha</li>
+                    </ul>
+                    <button type="button" onclick="window.rifaApp.openFaq()" style="margin-top:12px; background:var(--gray-400); border:1px solid var(--border-color); color:var(--title-color); padding:10px 14px; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; width:100%;">Ver dúvidas frequentes</button>
                 </div>
 
                 <div class="card" id="card-doacoes" style="display: none; margin-bottom: 14px;">
@@ -1153,13 +1169,16 @@
                         <button type="button" class="btn-admin" onclick="window.adminPanel.openRoletaHistoricoAdmin()" style="background:#7c3aed; color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="gift" style="width:15px;"></i> Ganhadores Roleta
                         </button>
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.openRelatorioDia()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="bar-chart-3" style="width:15px;"></i> Relatório do dia
+                        </button>
                         <button type="button" class="btn-admin" onclick="window.adminPanel.exportCSV()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="download" style="width:15px;"></i> Exportar CSV
                         </button>
                         <button type="button" class="btn-admin" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="eye-off" style="width:15px;"></i> Valores
                         </button>
-                        <button type="button" class="btn-admin bg-red" onclick="window.adminPanel.resetRifa()" style="grid-column:1 / -1; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <button type="button" class="btn-admin bg-red" onclick="window.adminPanel.resetRifa()" style="padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="trash-2" style="width:15px;"></i> Resetar Rifa
                         </button>
                     </div>
@@ -1225,6 +1244,7 @@
                         <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
+                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('expiring')">Vencendo</button>
                         <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('donated')">Doações</button>
                     </div>
 
@@ -1321,13 +1341,20 @@
                     <span style="width:28px;height:4px;border-radius:4px;background:var(--border-color);"></span>
                 </div>
 
-                <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                <div style="background: rgba(255, 77, 77, 0.1); border: 1px solid var(--danger); color: var(--danger); padding: 12px; border-radius: 8px; margin-bottom: 12px; font-weight: 600; text-align: center; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px;">
                     <i data-lucide="clock" style="width: 16px;"></i> Reserve e pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
+                </div>
+                <div id="checkout-escassez" style="display:none; text-align:center; font-size:12px; font-weight:700; color:var(--reserved); margin-bottom:12px;"></div>
+                <div id="checkout-roleta-hint" style="display:none; text-align:center; font-size:12px; font-weight:700; color:#a78bfa; background:rgba(124,58,237,0.12); border:1px solid #7c3aed; border-radius:10px; padding:10px; margin-bottom:12px;"></div>
+                <div id="checkout-pay-badges" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:12px; font-size:11px; color:var(--text-color);">
+                    <span style="background:var(--gray-400); border:1px solid var(--border-color); border-radius:999px; padding:4px 10px;">🔒 Pagamento seguro</span>
+                    <span style="background:var(--gray-400); border:1px solid var(--border-color); border-radius:999px; padding:4px 10px;">⚡ Confirma automático</span>
                 </div>
 
                 <input type="text" id="cust-name" class="input-form" placeholder="Seu Nome Completo" autocomplete="name">
                 <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD + número)" oninput="window.rifaApp.maskPhone(this)" autocomplete="tel">
                 <p id="checkout-phone-hint" style="font-size:11px; color:var(--text-color); margin:-8px 0 12px; display:none;"></p>
+                <p id="checkout-suporte" style="text-align:center; margin:0 0 12px; font-size:12px;"></p>
 
                 <div id="checkout-resumo-cotas" style="background:var(--background-color); border:1px solid var(--border-color); border-radius:12px; padding:12px; margin-bottom:16px;">
                     <div style="font-size:11px; color:var(--text-color); font-weight:600; margin-bottom:6px;">SUAS COTAS</div>
@@ -1850,6 +1877,19 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             <button class="btn-participar" onclick="window.rifaApp.closeModal('modal-checklist')">Entendi</button>
         </div>
     </div>
+
+    <div class="modal-overlay" id="modal-relatorio-dia">
+        <div class="modal-card" style="max-width:420px;">
+            <h3 style="color:var(--title-color); margin-bottom:12px; font-size:18px;">📊 Relatório do dia</h3>
+            <div id="relatorio-dia-body"></div>
+            <button class="btn-participar" style="margin-top:16px;" onclick="window.rifaApp.closeModal('modal-relatorio-dia')">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Suporte flutuante -->
+    <a id="fab-suporte" href="#" target="_blank" rel="noopener" style="display:none; position:fixed; right:14px; bottom:84px; z-index:40; background:#25d366; color:#fff; width:48px; height:48px; border-radius:50%; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.35); text-decoration:none; font-size:22px;">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
 
 
     <div class="modal-overlay" id="modal-sorteio">
@@ -2431,6 +2471,8 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 } catch (_) {}
 
                 try { this.renderRoletaGanhadoresPublicos(); } catch (_) {}
+                try { this.renderRoletaEstoque(); } catch (_) {}
+                try { this.updateSuporteFab(); } catch (_) {}
 
                 const qsGrid = document.getElementById('quick-select-grid');
                 if (qsGrid) {
@@ -3430,7 +3472,17 @@ setGridPage(page) {
                     if (resEl) resEl.innerHTML = `<div style="color:var(--text-color);">😅 ${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:6px; color:var(--text-color);">Tente na próxima!</div>`;
                     this.showToast(prize.name || 'Não foi dessa vez');
                 } else {
-                    if (resEl) resEl.innerHTML = `<div style="font-size:20px; color:var(--paid);">🎉 PARABÉNS!</div><div style="margin-top:6px; color:var(--title-color);">${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:8px; color:var(--text-color);">Prêmio válido da roleta</div>`;
+                    const soc = this.config.social || {};
+                    const suporte = soc.whatsapp || '';
+                    const msg = encodeURIComponent(`Olá! Ganhei na roleta: ${prize.name}. NSU: ${data.nsu || ''}`);
+                    let waBtn = '';
+                    if (suporte) {
+                        const href = suporte.includes('wa.me') || suporte.includes('whatsapp')
+                            ? (suporte.includes('?') ? suporte + '&text=' + msg : suporte + (suporte.includes('wa.me') ? '?text=' + msg : ''))
+                            : `https://wa.me/?text=${msg}`;
+                        waBtn = `<a href="${href}" target="_blank" rel="noopener" style="display:inline-block; margin-top:12px; background:#25d366; color:#fff; padding:10px 14px; border-radius:10px; font-size:12px; font-weight:800; text-decoration:none;">Falar no WhatsApp para retirar</a>`;
+                    }
+                    if (resEl) resEl.innerHTML = `<div style="font-size:20px; color:var(--paid);">🎉 PARABÉNS!</div><div style="margin-top:6px; color:var(--title-color);">${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:8px; color:var(--text-color);">Prêmio válido da roleta</div>${waBtn}`;
                     this.showToast('Você ganhou: ' + prize.name);
                     try {
                         if (typeof confetti === 'function') {
@@ -3439,8 +3491,7 @@ setGridPage(page) {
                             setTimeout(() => confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } }), 320);
                         }
                     } catch (_) {}
-                    // atualiza lista pública
-                    try { this.renderRoletaGanhadoresPublicos(); } catch (_) {}
+                    try { this.renderRoletaGanhadoresPublicos(); this.renderRoletaEstoque(); } catch (_) {}
                 }
 
                 const premiosEl = document.getElementById('sucesso-roleta-premios');
@@ -3459,6 +3510,41 @@ setGridPage(page) {
                 if (!n) return false;
                 if (n.includes('não foi') || n.includes('nao foi') || n.includes('tente de novo') || n.includes('tente outra')) return false;
                 return true;
+            }
+
+            async renderRoletaEstoque() {
+                const card = document.getElementById('card-roleta-estoque');
+                const box = document.getElementById('roleta-estoque-list');
+                if (!card || !box) return;
+                const prizes = (this.roletaCfg().prizes || []).filter(p => !p.perde && (p.unico || parseInt(p.limite) > 0));
+                if (!prizes.length || !(this.roletaCfg().active)) {
+                    card.style.display = 'none';
+                    return;
+                }
+                const counts = await this.contarPremiosRoletaEntregues();
+                box.innerHTML = prizes.map(p => {
+                    const lim = p.unico ? 1 : (parseInt(p.limite) || 0);
+                    const usados = counts[String(p.name || '').trim().toLowerCase()] || 0;
+                    const rest = Math.max(0, lim - usados);
+                    const esgotado = rest <= 0;
+                    return `<div style="display:flex; justify-content:space-between; gap:8px; font-size:12px; padding:8px 10px; background:var(--gray-400); border-radius:8px;">
+                        <span style="color:var(--title-color); font-weight:700;">${p.name}</span>
+                        <span style="font-weight:800; color:${esgotado ? 'var(--danger)' : 'var(--paid)'};">${esgotado ? 'Esgotado' : `Restam ${rest}`}</span>
+                    </div>`;
+                }).join('');
+                card.style.display = 'block';
+            }
+
+            updateSuporteFab() {
+                const fab = document.getElementById('fab-suporte');
+                if (!fab) return;
+                const wa = (this.config.social || {}).whatsapp || '';
+                if (wa) {
+                    fab.href = wa;
+                    fab.style.display = 'flex';
+                } else {
+                    fab.style.display = 'none';
+                }
             }
 
             async renderRoletaGanhadoresPublicos() {
@@ -4021,6 +4107,13 @@ setGridPage(page) {
             }
 
             abrirCheckout() {
+                // rate limit simples anti-spam
+                const now = Date.now();
+                if (this._lastCheckoutOpen && (now - this._lastCheckoutOpen) < 1500) {
+                    return this.app.showToast('Aguarde um instante...');
+                }
+                this._lastCheckoutOpen = now;
+
                 this.cupomAplicado = null;
                 this.upsellAplicado = null;
                 const inputCupom = document.getElementById('checkout-cupom');
@@ -4041,6 +4134,7 @@ setGridPage(page) {
                 this.atualizarValoresCheckout();
                 this.renderUpsell();
                 this.atualizarResumoCotas();
+                this.atualizarCheckoutExtras();
 
                 // sugestão cupom 1ª compra
                 const cupom1 = (this.app.config.cupomPrimeiraCompra || '').trim().toUpperCase();
@@ -4054,6 +4148,45 @@ setGridPage(page) {
                 document.getElementById('checkout-step-2').style.display = 'none';
                 document.getElementById('modal-checkout').style.display = 'flex';
                 this.startTimer(this.app.getPixTimeoutMin()); 
+            }
+
+            atualizarCheckoutExtras() {
+                try {
+                    // escassez
+                    const total = parseInt(this.app.config.total) || 0;
+                    const ocupadas = Object.values(this.app.dbNumbers || {}).filter(d => d && ['paid','reserved','donated','donated_pending'].includes(d.status)).length;
+                    const restam = Math.max(0, total - ocupadas);
+                    const esc = document.getElementById('checkout-escassez');
+                    if (esc) {
+                        if (total > 0 && restam <= Math.max(50, Math.floor(total * 0.15))) {
+                            esc.style.display = 'block';
+                            esc.innerText = restam <= 20 ? `🔥 Restam só ${restam} cotas!` : `Restam ${restam} cotas disponíveis`;
+                        } else esc.style.display = 'none';
+                    }
+                    // roleta hint
+                    const rh = document.getElementById('checkout-roleta-hint');
+                    const r = this.app.config.roleta || {};
+                    const count = this.app.selected.size;
+                    if (rh && r.active) {
+                        const minQ = parseInt(r.minQtd) || 10;
+                        const ch = parseInt(r.chances) || 1;
+                        if (count >= minQ) {
+                            rh.style.display = 'block';
+                            rh.innerText = `🎯 Roleta liberada! ${ch} giro(s) após o pagamento.`;
+                        } else if (count > 0) {
+                            rh.style.display = 'block';
+                            rh.innerText = `🎯 Faltam ${minQ - count} bilhete(s) para liberar a roleta.`;
+                        } else rh.style.display = 'none';
+                    } else if (rh) rh.style.display = 'none';
+                    // suporte
+                    const sup = document.getElementById('checkout-suporte');
+                    const wa = (this.app.config.social || {}).whatsapp || '';
+                    if (sup) {
+                        if (wa) {
+                            sup.innerHTML = `<a href="${wa}" target="_blank" rel="noopener" style="color:var(--primary-color); font-weight:700; text-decoration:none;">Dúvidas? Falar no WhatsApp</a>`;
+                        } else sup.innerHTML = '';
+                    }
+                } catch (_) {}
             }
 
             atualizarResumoCotas(listaOverride = null) {
@@ -4856,6 +4989,13 @@ setGridPage(page) {
                         else if (allRes) card.dataset.statusGroup = 'reserved';
                         else card.dataset.statusGroup = 'mixed';
 
+                        // Vencendo: tem reserva e falta menos de 5 min
+                        const timeoutMs = (this.app.getReservaTimeoutMs ? this.app.getReservaTimeoutMs() : ((this.app.config.reservaMinutos || 15) * 60000));
+                        const hasReserved = p.cotas.some(c => c.status === 'reserved' || c.status === 'donated_pending');
+                        const age = p.recent ? (Date.now() - p.recent) : 0;
+                        const left = timeoutMs - age;
+                        card.dataset.expiring = (hasReserved && left > 0 && left <= 5 * 60000) ? 'true' : 'false';
+
                         // Botões unificados: confirma/pendente respeitam se é doação ou compra
                         let buttonsHTML = `
                             <div style="display:flex; gap:8px;">
@@ -4936,10 +5076,69 @@ setGridPage(page) {
                     let matchTab = true;
                     if (this.filter === 'paid' && card.dataset.statusGroup !== 'paid') matchTab = false;
                     if (this.filter === 'reserved' && !['reserved', 'mixed'].includes(card.dataset.statusGroup)) matchTab = false;
+                    if (this.filter === 'expiring' && card.dataset.expiring !== 'true') matchTab = false;
                     if (this.filter === 'donated' && card.dataset.isDoacao !== 'true') matchTab = false; 
 
                     card.style.display = (matchSearch && matchTab) ? 'block' : 'none';
                 });
+            }
+
+            openRelatorioDia() {
+                const now = new Date();
+                const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+                let receitaHoje = 0, cotasHoje = 0, pend = 0, doac = 0;
+                const porTel = new Set();
+                Object.values(this.app.dbNumbers || {}).forEach(d => {
+                    if (!d) return;
+                    const when = d.reservedAt || 0;
+                    const val = (d.valor_pago_unidade !== undefined) ? parseFloat(d.valor_pago_unidade) : parseFloat(this.app.config.valor || 0);
+                    if (d.status === 'reserved') pend++;
+                    if (d.status === 'donated' || d.status === 'donated_pending') doac++;
+                    if (when >= start && (d.status === 'paid' || d.status === 'donated')) {
+                        receitaHoje += val;
+                        cotasHoje++;
+                        if (d.telefone) porTel.add(String(d.telefone).replace(/\D/g, ''));
+                    }
+                });
+                // roleta ganhos válidos hoje
+                let roletaHoje = 0;
+                (this._roletaHistRows || []).forEach(r => {
+                    if (r.at && r.at >= start && r.premio && !r.perde) roletaHoje++;
+                });
+                const box = document.getElementById('relatorio-dia-body');
+                if (box) {
+                    box.innerHTML = `
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                            <div style="background:var(--gray-400); border-radius:10px; padding:12px;"><div style="font-size:11px; color:var(--text-color);">Receita hoje</div><b style="color:var(--paid); font-size:18px;">R$ ${receitaHoje.toFixed(2).replace('.',',')}</b></div>
+                            <div style="background:var(--gray-400); border-radius:10px; padding:12px;"><div style="font-size:11px; color:var(--text-color);">Cotas pagas hoje</div><b style="color:var(--title-color); font-size:18px;">${cotasHoje}</b></div>
+                            <div style="background:var(--gray-400); border-radius:10px; padding:12px;"><div style="font-size:11px; color:var(--text-color);">Compradores hoje</div><b style="color:var(--title-color); font-size:18px;">${porTel.size}</b></div>
+                            <div style="background:var(--gray-400); border-radius:10px; padding:12px;"><div style="font-size:11px; color:var(--text-color);">Pendentes agora</div><b style="color:var(--reserved); font-size:18px;">${pend}</b></div>
+                            <div style="background:var(--gray-400); border-radius:10px; padding:12px;"><div style="font-size:11px; color:var(--text-color);">Doações (total)</div><b style="color:var(--donated); font-size:18px;">${doac}</b></div>
+                            <div style="background:var(--gray-400); border-radius:10px; padding:12px;"><div style="font-size:11px; color:var(--text-color);">Roleta válidos hoje</div><b style="color:#a78bfa; font-size:18px;">${roletaHoje}</b></div>
+                        </div>
+                        <p style="font-size:11px; color:var(--text-color); margin-top:12px; text-align:center;">Baseado em cotas com data de hoje · atualize a lista de roleta para bater o contador de brindes</p>`;
+                }
+                document.getElementById('modal-relatorio-dia').style.display = 'flex';
+                // tenta carregar roleta em background
+                this.carregarHistoricoRoleta().then(() => {
+                    // refresh counts after load
+                }).catch(() => {});
+            }
+
+            async marcarRoletaEntregue(nsu, idx) {
+                try {
+                    const snap = await get(ref(db, `${dbPath}/roleta_giros/${nsu}`));
+                    if (!snap.exists()) return this.app.showToast('Registro não encontrado');
+                    const data = snap.val();
+                    const resultados = Array.isArray(data.resultados) ? data.resultados.slice() : [];
+                    if (!resultados[idx]) return;
+                    resultados[idx] = { ...resultados[idx], entregue: true, entregueAt: Date.now() };
+                    await update(ref(db, `${dbPath}/roleta_giros/${nsu}`), { resultados });
+                    this.app.showToast('Marcado como entregue');
+                    this.carregarHistoricoRoleta();
+                } catch (e) {
+                    this.app.showToast('Erro ao marcar entrega');
+                }
             }
 
 
@@ -5650,6 +5849,7 @@ setGridPage(page) {
                                 ...base,
                                 premio: r.name,
                                 perde: !!r.perde,
+                                entregue: !!r.entregue,
                                 at: r.at || base.createdAt,
                                 idx: i + 1
                             });
@@ -5704,12 +5904,19 @@ setGridPage(page) {
                         if (wa && !wa.startsWith('55') && wa.length <= 11) wa = '55' + wa;
                         const msg = encodeURIComponent(`Olá ${r.nome || ''}! Você ganhou na roleta: ${premio}. Vamos combinar a entrega?`);
                         const waHref = wa ? `https://wa.me/${wa}?text=${msg}` : '#';
-                        return `<div style="display:flex; align-items:center; justify-content:space-between; gap:8px; padding:10px 12px; background:var(--background-color); border:1px solid var(--border-color); border-radius:10px; margin-bottom:6px;">
-                            <div style="min-width:0;">
-                                <div style="font-size:13px; font-weight:800; color:var(--title-color);">${this._esc(r.nome)}</div>
-                                <div style="font-size:11px; color:var(--text-color); margin-top:2px;">📱 ${this._esc(r.telefone || '—')} · ${when}</div>
+                        const entregue = !!r.entregue;
+                        return `<div style="padding:10px 12px; background:var(--background-color); border:1px solid var(--border-color); border-radius:10px; margin-bottom:6px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;">
+                                <div style="min-width:0;">
+                                    <div style="font-size:13px; font-weight:800; color:var(--title-color);">${this._esc(r.nome)}</div>
+                                    <div style="font-size:11px; color:var(--text-color); margin-top:2px;">📱 ${this._esc(r.telefone || '—')} · ${when}</div>
+                                    <div style="font-size:11px; margin-top:4px; font-weight:700; color:${entregue ? 'var(--paid)' : 'var(--reserved)'};">${entregue ? '✅ Entregue' : '⏳ Pendente entrega'}</div>
+                                </div>
                             </div>
-                            ${wa ? `<a href="${waHref}" target="_blank" rel="noopener" style="flex-shrink:0; background:#25d366; color:#fff; border-radius:8px; padding:8px 10px; font-size:11px; font-weight:800; text-decoration:none;">WhatsApp</a>` : ''}
+                            <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                                ${wa ? `<a href="${waHref}" target="_blank" rel="noopener" style="background:#25d366; color:#fff; border-radius:8px; padding:8px 10px; font-size:11px; font-weight:800; text-decoration:none;">WhatsApp</a>` : ''}
+                                ${!entregue ? `<button type="button" onclick="window.adminPanel.marcarRoletaEntregue('${this._esc(r.nsu)}', ${r.idx - 1})" style="background:var(--primary-color); color:#fff; border:none; border-radius:8px; padding:8px 10px; font-size:11px; font-weight:800; cursor:pointer;">Marcar entregue</button>` : ''}
+                            </div>
                         </div>`;
                     }).join('');
                     return `<div style="margin-bottom:16px;">
