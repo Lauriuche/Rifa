@@ -1595,8 +1595,9 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     </div>
 
                     <div id="wrap-infinitepay">
-                        <label class="cfg-label">Cartão — InfinitePay Handle</label>
-                        <input type="text" id="cfg-handle" class="input-form" placeholder="@seuusuario ou handle" style="margin-bottom: 0;" oninput="window.adminPanel.updateGatewayStatus()">
+                        <label class="cfg-label">Cartão — InfinitePay Handle (InfiniteTag)</label>
+                        <input type="text" id="cfg-handle" class="input-form" placeholder="seuusuario (sem $ e sem @)" style="margin-bottom: 0;" oninput="window.adminPanel.updateGatewayStatus()">
+                        <p style="font-size:10px; color:var(--text-color); margin-top:6px; line-height:1.4;">Use a InfiniteTag do app InfinitePay <b>sem o $</b>. Ex: se no app aparece <b>$minhaloja</b>, digite <b>minhaloja</b>.</p>
                         <p id="status-ip" style="font-size:11px; font-weight:700; margin-top:6px; color:var(--text-color);">Status: —</p>
                     </div>
                     <input type="hidden" id="cfg-gateway" value="ambos">
@@ -2080,40 +2081,129 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 } catch(e) { return null; }
             }
 
+            static normalizeInfiniteHandle(handle) {
+                return String(handle || '').trim().replace(/^[@$]+/, '').trim();
+            }
+
+            static buildInfinitePayPayload(payData, handle) {
+                const h = this.normalizeInfiniteHandle(handle);
+                const redirectUrl = `${window.location.origin}${window.location.pathname}?pay_return=1&nsu=${encodeURIComponent(payData.nsu || '')}&tenant=${encodeURIComponent(tenantId)}&rifa=${encodeURIComponent(rifaId)}`;
+                const phoneDigits = String(payData.telefone || '').replace(/\D/g, '');
+                let phone = '';
+                if (phoneDigits) {
+                    phone = phoneDigits.startsWith('55') ? `+${phoneDigits}` : `+55${phoneDigits}`;
+                }
+                const price = Math.max(1, Math.round(Number(payData.priceCents) || 0));
+                const desc = String(payData.description || 'Cotas da rifa').slice(0, 120);
+                return {
+                    handle: h,
+                    redirect_url: redirectUrl,
+                    webhook_url: `${BACKEND_URL}/api/webhook-infinitepay`,
+                    order_nsu: String(payData.nsu || ''),
+                    items: [{
+                        quantity: 1,
+                        price: price,
+                        description: desc
+                    }],
+                    customer: {
+                        name: String(payData.nome || 'Cliente').slice(0, 80),
+                        ...(phone ? { phone_number: phone } : {})
+                    }
+                };
+            }
+
             static async generateInfinitePayLink(payData, handle) {
+                const payload = this.buildInfinitePayPayload(payData, handle);
+                if (!payload.handle) throw new Error('Handle InfinitePay vazio. Configure nas Configurações (sem $ ou @).');
+                if (!payload.order_nsu) throw new Error('NSU do pedido ausente.');
+                if (!payload.items[0].price) throw new Error('Valor do pagamento inválido.');
+
+                // 1) Tenta API pública oficial da InfinitePay
                 try {
-                    const redirectUrl = `${window.location.origin}${window.location.pathname}?pay_return=1&nsu=${encodeURIComponent(payData.nsu)}&tenant=${encodeURIComponent(tenantId)}&rifa=${encodeURIComponent(rifaId)}`;
+                    const res = await fetch('https://api.infinitepay.io/invoices/public/checkout/links', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const data = await res.json().catch(() => ({}));
+                    const url = data.url || data.checkout_url || data.checkoutUrl;
+                    if (url) {
+                        return {
+                            url,
+                            slug: data.slug || data.invoice_slug || data.invoiceSlug || null
+                        };
+                    }
+                    // se a API respondeu mas sem URL, tenta backend
+                    console.warn('InfinitePay API direta sem URL:', data);
+                } catch (e) {
+                    // CORS ou rede — cai no backend
+                    console.warn('InfinitePay API direta falhou, tentando backend:', e);
+                }
+
+                // 2) Fallback: backend próprio (com payload no formato oficial)
+                try {
                     const res = await fetch(`${BACKEND_URL}/api/create-infinitepay`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            payData,
-                            handle,
-                            redirect_url: redirectUrl,
-                            webhook_url: `${BACKEND_URL}/api/webhook-infinitepay`
+                            ...payload,
+                            // compatibilidade com backends antigos
+                            payData: {
+                                ...payData,
+                                nsu: payload.order_nsu,
+                                priceCents: payload.items[0].price,
+                                description: payload.items[0].description
+                            },
+                            handle: payload.handle,
+                            redirect_url: payload.redirect_url,
+                            webhook_url: payload.webhook_url
                         })
                     });
-                    const data = await res.json();
-                    if (data.url) return { url: data.url, slug: data.slug || data.invoice_slug || null };
-                    throw new Error(data.error || "Link InfinitePay não gerado");
-                } catch(e) { throw e; }
+                    const data = await res.json().catch(() => ({}));
+                    const url = data.url || data.checkout_url;
+                    if (url) return { url, slug: data.slug || data.invoice_slug || null };
+                    const msg = data.error || data.message || data.detail || `Erro InfinitePay (${res.status})`;
+                    throw new Error(typeof msg === 'string' ? msg : 'Link InfinitePay não gerado');
+                } catch (e) {
+                    throw new Error(e.message || 'Não foi possível gerar o link InfinitePay. Verifique o handle e a conta.');
+                }
             }
 
             static async checkInfinitePayStatus(handle, orderNsu, extra = {}) {
+                const h = this.normalizeInfiniteHandle(handle);
+                const body = {
+                    handle: h,
+                    order_nsu: orderNsu,
+                    transaction_nsu: extra.transaction_nsu || null,
+                    slug: extra.slug || null
+                };
+
+                // 1) API pública
+                try {
+                    const res = await fetch(`https://api.infinitepay.io/invoices/public/checkout/payment_check/${encodeURIComponent(h)}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                        body: JSON.stringify(body)
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && (data.paid === true || data.success === true && data.paid !== false)) {
+                            return { paid: !!data.paid, ...data };
+                        }
+                        if (data && typeof data.paid === 'boolean') return data;
+                    }
+                } catch (_) {}
+
+                // 2) Backend
                 try {
                     const res = await fetch(`${BACKEND_URL}/api/check-infinitepay`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            handle,
-                            order_nsu: orderNsu,
-                            transaction_nsu: extra.transaction_nsu || null,
-                            slug: extra.slug || null
-                        })
+                        body: JSON.stringify(body)
                     });
                     if (!res.ok) return { paid: false };
                     return await res.json();
-                } catch(e) {
+                } catch (e) {
                     return { paid: false };
                 }
             }
@@ -3749,7 +3839,8 @@ setGridPage(page) {
             }
 
             hasCardEnabled() {
-                return !!(this.app.config.handle && String(this.app.config.handle).trim());
+                const h = PaymentService.normalizeInfiniteHandle(this.app.config.handle);
+                return !!h;
             }
 
             setPayMethod(method) {
@@ -4319,8 +4410,9 @@ setGridPage(page) {
                         return this.app.showToast('Cartão não configurado (InfinitePay handle).');
                     }
                     try {
-                        this.app.showToast('Gerando link de pagamento...');
+                        this.app.showToast('Gerando link InfinitePay...');
                         const result = await PaymentService.generateInfinitePayLink(payData, this.app.config.handle);
+                        if (!result || !result.url) throw new Error('Link de pagamento não retornado.');
 
                         // Guarda pendência para verificação automática ao voltar
                         const pending = {
@@ -4339,8 +4431,15 @@ setGridPage(page) {
                         // Abre checkout InfinitePay (cartão / pix deles)
                         window.location.href = result.url;
                     } catch (e) {
+                        console.error('InfinitePay error:', e);
                         this._reenablePayButtons(isExisting);
-                        this.app.showToast(e.message || 'Erro ao gerar link InfinitePay.');
+                        const msg = (e && e.message) ? e.message : 'Erro ao gerar link InfinitePay.';
+                        // mensagens mais claras
+                        if (/handle|Unable to create|422|não gerado/i.test(msg)) {
+                            this.app.showToast('InfinitePay: confira o Handle (InfiniteTag sem $). Conta precisa estar ativa no app.');
+                        } else {
+                            this.app.showToast(msg);
+                        }
                     }
                     return;
                 }
@@ -6277,7 +6376,7 @@ setGridPage(page) {
                     valor: parseFloat(document.getElementById('cfg-valor').value) || 0, 
                     total: parseInt(document.getElementById('cfg-total').value) || 0, 
                     gateway: 'ambos',
-                    handle: document.getElementById('cfg-handle').value, 
+                    handle: PaymentService.normalizeInfiniteHandle(document.getElementById('cfg-handle')?.value || ''), 
                     mpToken: document.getElementById('cfg-mptoken').value,
                     pin: document.getElementById('cfg-pin').value, 
                     pixel: document.getElementById('cfg-pixel').value, 
