@@ -2140,14 +2140,13 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     console.warn('InfinitePay API direta falhou, tentando backend:', e);
                 }
 
-                // 2) Fallback: backend próprio (com payload no formato oficial)
+                // 2) Fallback: backend próprio (não interrompe se falhar)
                 try {
                     const res = await fetch(`${BACKEND_URL}/api/create-infinitepay`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             ...payload,
-                            // compatibilidade com backends antigos
                             payData: {
                                 ...payData,
                                 nsu: payload.order_nsu,
@@ -2162,10 +2161,33 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     const data = await res.json().catch(() => ({}));
                     const url = data.url || data.checkout_url;
                     if (url) return { url, slug: data.slug || data.invoice_slug || null };
-                    const msg = data.error || data.message || data.detail || `Erro InfinitePay (${res.status})`;
-                    throw new Error(typeof msg === 'string' ? msg : 'Link InfinitePay não gerado');
+                    console.warn('Backend InfinitePay falhou:', data);
                 } catch (e) {
-                    throw new Error(e.message || 'Não foi possível gerar o link InfinitePay. Verifique o handle e a conta.');
+                    console.warn('Backend InfinitePay erro:', e);
+                }
+
+                // 3) Fallback final: monta o link no próprio navegador (sem backend)
+                // Formato documentado: checkout.infinitepay.io/{handle}?items=[...]&order_nsu=...&redirect_url=...
+                try {
+                    const h = payload.handle;
+                    const price = payload.items[0].price;
+                    const desc = payload.items[0].description || 'Cotas da rifa';
+                    const itemsJson = encodeURIComponent(JSON.stringify([{
+                        name: desc,
+                        price: price,
+                        quantity: 1
+                    }]));
+                    const qs = new URLSearchParams();
+                    qs.set('order_nsu', payload.order_nsu);
+                    qs.set('redirect_url', payload.redirect_url);
+                    if (payData.nome) qs.set('customer_name', String(payData.nome).slice(0, 80));
+                    const phoneDigits = String(payData.telefone || '').replace(/\D/g, '');
+                    if (phoneDigits) qs.set('customer_cellphone', phoneDigits);
+                    const directUrl = `https://checkout.infinitepay.io/${encodeURIComponent(h)}?items=${itemsJson}&${qs.toString()}`;
+                    console.log('InfinitePay link direto:', directUrl);
+                    return { url: directUrl, slug: null };
+                } catch (e) {
+                    throw new Error('Não foi possível gerar o link InfinitePay. Confira o Handle (sem $).');
                 }
             }
 
