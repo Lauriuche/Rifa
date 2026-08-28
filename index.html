@@ -510,28 +510,6 @@
         .bg-pink { background-color: var(--donated); color: #fff;}
         .bg-red { background-color: var(--danger); border: none; }
 
-        .float-whatsapp {
-            position: fixed;
-            width: 56px;
-            height: 56px;
-            bottom: 100px;
-            right: 20px;
-            background-color: #25d366;
-            color: #FFF;
-            border-radius: 50px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: 0.2s;
-        }
-        .float-whatsapp:hover {
-            transform: scale(1.1);
-            background-color: #20ba59;
-            color: #fff;
-        }
         .footer-copyright {
             text-align: center;
             font-size: 12px;
@@ -1068,7 +1046,7 @@
                 </div>
 
                 <div class="card" id="card-como-funciona" style="margin-bottom:14px; padding:16px;">
-                    <div style="font-size:13px; font-weight:800; color:var(--title-color); margin-bottom:10px;">✅ Como funciona</div>
+                    <div style="font-size:13px; font-weight:800; color:var(--title-color); margin-bottom:10px;">✅ Veja Como funciona</div>
                     <ul style="margin:0; padding-left:18px; color:var(--text-color); font-size:12px; line-height:1.55;">
                         <li>Escolha a quantidade de bilhetes e reserve</li>
                         <li>Pague via PIX ou cartão — confirmação automática</li>
@@ -1881,9 +1859,9 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
     </div>
 
     <!-- Suporte flutuante -->
-    <a id="fab-suporte" href="#" target="_blank" rel="noopener" style="display:none; position:fixed; right:14px; bottom:84px; z-index:40; background:#25d366; color:#fff; width:48px; height:48px; border-radius:50%; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.35); text-decoration:none; font-size:22px;">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+<a id="fab-suporte" href="#" target="_blank" rel="noopener" style="display:none; position:fixed; right:14px; bottom:100px; z-index:210; background:#25d366; color:#fff; width:48px; height:48px; border-radius:50%; align-items:center; justify-content:center; box-shadow:0 6px 18px rgba(0,0,0,.35); text-decoration:none; font-size:22px;">
+    <i class="fa-brands fa-whatsapp"></i>
+</a>
 
 
     <div class="modal-overlay" id="modal-sorteio">
@@ -3656,14 +3634,14 @@ setGridPage(page) {
             updateSuporteFab() {
                 const fab = document.getElementById('fab-suporte');
                 if (!fab) return;
-                const wa = (this.config.social || {}).whatsapp || '';
-                if (wa) {
-                    fab.href = wa;
-                    fab.style.display = 'flex';
-                } else {
-                    fab.style.display = 'none';
-                }
+                
+                // Link direto para o responsável com mensagem prévia
+                fab.href = "https://wa.me/5599991026112?text=Olá, preciso de ajuda com a rifa!";
+                
+                // Força o botão a aparecer sempre
+                fab.style.display = 'flex';
             }
+
 
             async renderRoletaGanhadoresPublicos() {
                 const card = document.getElementById('card-roleta-ganhadores');
