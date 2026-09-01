@@ -333,6 +333,54 @@
 
         .filter-tab.tab-donated.active { background-color: rgba(214, 51, 132, 0.15); color: var(--donated); }
 
+
+        .numbers-grid {
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
+            will-change: transform, opacity;
+        }
+        /* Saída da página atual */
+        .numbers-grid.grid-out-left {
+            animation: gridOutLeft 0.22s ease-in forwards;
+        }
+        .numbers-grid.grid-out-right {
+            animation: gridOutRight 0.22s ease-in forwards;
+        }
+        /* Entrada da nova página */
+        .numbers-grid.grid-in-left {
+            animation: gridInLeft 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .numbers-grid.grid-in-right {
+            animation: gridInRight 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        @keyframes gridOutLeft {
+            0%   { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(-42%); opacity: 0; }
+        }
+        @keyframes gridOutRight {
+            0%   { transform: translateX(0); opacity: 1; }
+            100% { transform: translateX(42%); opacity: 0; }
+        }
+        @keyframes gridInLeft {
+            0%   { transform: translateX(42%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes gridInRight {
+            0%   { transform: translateX(-42%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+        .grid-swipe-tip {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-color);
+            opacity: 0.75;
+            margin-top: 10px;
+            font-weight: 600;
+            display: none;
+            letter-spacing: 0.2px;
+        }
+
         .numbers-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px;
             max-height: auto; overflow-y: auto; padding-right: 4px;
@@ -887,6 +935,64 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
+
+        /* Melhorias layout Configurações */
+        #modal-config .cfg-section {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+        #modal-config .cfg-section-title {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        #modal-config .config-tabs-container {
+            margin-bottom: 16px;
+            box-shadow: inset 0 0 0 1px var(--border-color);
+        }
+        #modal-config .filter-tab.config-tab {
+            font-size: 12px;
+            font-weight: 700;
+            padding: 11px 16px;
+        }
+        #cfg-sticky-save {
+            position: sticky;
+            bottom: 0;
+            left: 0; right: 0;
+            background: linear-gradient(180deg, transparent, var(--gray-500) 30%);
+            padding: 16px 0 8px;
+            z-index: 20;
+            margin-top: 12px;
+        }
+        #cfg-sticky-save .btn-participar {
+            box-shadow: 0 8px 24px rgba(0,139,119,0.35);
+        }
+        .cfg-list-item {
+            transition: border-color 0.2s, transform 0.15s;
+        }
+        .cfg-list-item:hover {
+            transform: translateY(-1px);
+        }
+        #admin-dash-roleta .admin-item {
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        #admin-dash-roleta .admin-item:hover {
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        .pay-method-btn {
+            transition: border-color 0.2s, background 0.2s, transform 0.15s;
+        }
+        .pay-method-btn:hover {
+            transform: translateY(-2px);
+        }
+
         #display-valor {
              font-size: 18px;
              font-weight: bold;
@@ -1095,6 +1201,7 @@
 
                     <div class="numbers-grid" id="grid"></div>
                     <div class="grid-pagination" id="grid-pagination" style="display:none;"></div>
+                    <div class="grid-swipe-tip" id="grid-swipe-tip">👈 Deslize para navegar nas páginas 👉</div>
                 </div>
                 
                 <div style="display:flex; gap:8px; margin:14px 0; flex-wrap:wrap;">
@@ -1144,7 +1251,7 @@
                         <button type="button" class="btn-admin" onclick="window.adminPanel.openConfig()" style="background:var(--primary-color); color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="sliders" style="width:15px;"></i> Configurações
                         </button>
-                        <button type="button" class="btn-admin" onclick="window.adminPanel.openRoletaHistoricoAdmin()" style="background:#7c3aed; color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.switchAdminDashTab('roleta')" style="background:#7c3aed; color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="gift" style="width:15px;"></i> Ganhadores Roleta
                         </button>
                         <button type="button" class="btn-admin" onclick="window.adminPanel.openRelatorioDia()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
@@ -1206,27 +1313,45 @@
 
                     <div id="admin-ganhadores-list"></div>
 
-                    <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante, cota ou NSU..." oninput="window.adminPanel.render(false)">
-
-                    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
-                        <select id="admin-sort" class="input-form" style="flex:1; min-width:140px; margin:0;" onchange="window.adminPanel.setSort(this.value)">
-                            <option value="recent">Mais recentes</option>
-                            <option value="name">Nome A-Z</option>
-                            <option value="cotas">Mais cotas</option>
-                            <option value="value">Maior valor</option>
-                        </select>
-                        <button type="button" class="btn-participar" style="width:auto; padding:10px 14px; font-size:12px; margin:0;" onclick="window.adminPanel.marcarSelecionadosPagos()">Marcar pagos</button>
+                    <!-- Abas do Dashboard Admin: Participantes | Roleta -->
+                    <div class="filter-tabs" style="margin-bottom: 14px; background: var(--gray-400); border-radius: 12px; padding: 4px; border: 1px solid var(--border-color);">
+                        <button class="filter-tab active" id="admin-dash-tab-participantes" onclick="window.adminPanel.switchAdminDashTab('participantes')" style="flex:1;">🎟️ Participantes</button>
+                        <button class="filter-tab" id="admin-dash-tab-roleta" onclick="window.adminPanel.switchAdminDashTab('roleta')" style="flex:1;">🎯 Ganhadores Roleta</button>
                     </div>
 
-                    <div class="filter-tabs" style="margin-bottom: 0px;">
-                        <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
-                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
-                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
-                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('expiring')">Vencendo</button>
-                        <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('donated')">Doações</button>
+                    <div id="admin-dash-participantes">
+                        <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante, cota ou NSU..." oninput="window.adminPanel.render(false)">
+
+                        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                            <select id="admin-sort" class="input-form" style="flex:1; min-width:140px; margin:0;" onchange="window.adminPanel.setSort(this.value)">
+                                <option value="recent">Mais recentes</option>
+                                <option value="name">Nome A-Z</option>
+                                <option value="cotas">Mais cotas</option>
+                                <option value="value">Maior valor</option>
+                            </select>
+                            <button type="button" class="btn-participar" style="width:auto; padding:10px 14px; font-size:12px; margin:0;" onclick="window.adminPanel.marcarSelecionadosPagos()">Marcar pagos</button>
+                        </div>
+
+                        <div class="filter-tabs" style="margin-bottom: 0px;">
+                            <button class="filter-tab active admin-tab" onclick="window.adminPanel.setFilter('all')">Todos</button>
+                            <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('paid')">Pagos</button>
+                            <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('reserved')">Pendentes</button>
+                            <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('expiring')">Vencendo</button>
+                            <button class="filter-tab admin-tab" onclick="window.adminPanel.setFilter('donated')">Doações</button>
+                        </div>
+
+                        <div id="admin-list" style="max-height: 500px; overflow-y: auto; padding-right: 4px;"></div>
                     </div>
 
-                    <div id="admin-list" style="max-height: 500px; overflow-y: auto; padding-right: 4px;"></div>
+                    <div id="admin-dash-roleta" style="display:none;">
+                        <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; align-items:center;">
+                            <input type="text" id="admin-roleta-filtro" class="input-form" placeholder="Filtrar por nome, telefone ou prêmio..." style="flex:1; margin:0;" oninput="window.adminPanel.filtrarHistoricoRoletaDashboard()">
+                            <button type="button" class="btn-admin bg-orange" style="padding:10px 14px;" onclick="window.adminPanel.carregarHistoricoRoletaDashboard()">Atualizar</button>
+                        </div>
+                        <div id="admin-roleta-list" style="max-height: 520px; overflow-y: auto; padding-right: 4px;">
+                            <p style="font-size:12px; color:var(--text-color); text-align:center; padding:20px;">Carregando ganhadores da roleta...</p>
+                        </div>
+                    </div>
 
 
                 </div>
@@ -1351,7 +1476,7 @@
 
                 <div id="checkout-pay-methods" style="display:flex; flex-direction:column; gap:10px; margin-bottom:12px;">
                     <p style="font-size:12px; color:var(--text-color); font-weight:600; text-align:center; margin-bottom:4px;">Escolha a forma de pagamento</p>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div id="pay-methods-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                         <button type="button" id="btn-method-pix" class="pay-method-btn active" onclick="window.cartManager.setPayMethod('pix')" style="padding:14px 10px; border-radius:12px; border:2px solid var(--primary-color); background:var(--primary-color-15); color:var(--title-color); cursor:pointer; font-weight:700; font-size:13px; display:flex; flex-direction:column; align-items:center; gap:6px;">
                             <span style="font-size:42px;">
                                 <i class="fa-brands fa-pix"></i>
@@ -2265,6 +2390,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 lucide.createIcons();
                 this.applyTheme(this.config.theme);
                 this.listenFirebase();
+                this.initGridSwipe();
             }
 
 
@@ -2730,34 +2856,157 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             }
             renderGridPagination(totalItems, totalPages) {
                 const pag = document.getElementById('grid-pagination');
+                const tip = document.getElementById('grid-swipe-tip');
                 if (!pag) return;
+
+                this._gridTotalPages = totalPages;
 
                 if (totalItems <= this.pageSize) {
                     pag.style.display = 'none';
                     pag.innerHTML = '';
+                    if (tip) tip.style.display = 'none';
                     return;
                 }
 
                 pag.style.display = 'flex';
+                if (tip) tip.style.display = 'block';
                 const current = this.gridPage;
 
                 pag.innerHTML = `
-                    <button type="button" class="page-btn" onclick="window.rifaApp.setGridPage(${current - 1})" ${current === 0 ? 'disabled' : ''}>
+                    <button type="button" class="page-btn" onclick="window.rifaApp.setGridPage(${current - 1}, { animate: true, dir: 'right', skipScroll: true })" ${current === 0 ? 'disabled' : ''}>
                         Anterior
                     </button>
                     <span class="page-info">Página ${current + 1} / ${totalPages} (${totalItems} cotas)</span>
-                    <button type="button" class="page-btn" onclick="window.rifaApp.setGridPage(${current + 1})" ${current >= totalPages - 1 ? 'disabled' : ''}>
+                    <button type="button" class="page-btn" onclick="window.rifaApp.setGridPage(${current + 1}, { animate: true, dir: 'left', skipScroll: true })" ${current >= totalPages - 1 ? 'disabled' : ''}>
                         Próxima
                     </button>
                 `;
             }
 
-setGridPage(page) {
-    this.gridPage = Math.max(0, parseInt(page) || 0);
-    this.renderGrid();
-    const cardGrid = document.getElementById('card-grid');
-    if (cardGrid) cardGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+            setGridPage(page, opts = {}) {
+                const totalPages = this._gridTotalPages || 1;
+                const next = Math.max(0, Math.min(totalPages - 1, parseInt(page) || 0));
+                if (next === this.gridPage && !opts.force) {
+                    if (!opts.skipScroll) {
+                        const cardGrid = document.getElementById('card-grid');
+                        if (cardGrid) cardGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    return;
+                }
+
+                const dir = opts.dir || (next > this.gridPage ? 'left' : 'right');
+                const gridEl = document.getElementById('grid');
+
+                // Transição animada (swipe ou clique)
+                if (opts.animate && gridEl && !this._gridAnimating) {
+                    this._gridAnimating = true;
+                    const outClass = dir === 'left' ? 'grid-out-left' : 'grid-out-right';
+                    const inClass = dir === 'left' ? 'grid-in-left' : 'grid-in-right';
+
+                    gridEl.classList.remove('grid-out-left', 'grid-out-right', 'grid-in-left', 'grid-in-right');
+                    void gridEl.offsetWidth; // reflow
+                    gridEl.classList.add(outClass);
+
+                    setTimeout(() => {
+                        this.gridPage = next;
+                        this.renderGrid();
+                        const g = document.getElementById('grid');
+                        if (g) {
+                            g.classList.remove('grid-out-left', 'grid-out-right');
+                            void g.offsetWidth;
+                            g.classList.add(inClass);
+                            setTimeout(() => {
+                                g.classList.remove('grid-in-left', 'grid-in-right');
+                                this._gridAnimating = false;
+                            }, 280);
+                        } else {
+                            this._gridAnimating = false;
+                        }
+                    }, 200);
+                    return;
+                }
+
+                this.gridPage = next;
+                this.renderGrid();
+                if (!opts.skipScroll) {
+                    const cardGrid = document.getElementById('card-grid');
+                    if (cardGrid) cardGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            }
+
+            initGridSwipe() {
+                if (this._gridSwipeBound) return;
+                const grid = document.getElementById('grid');
+                const card = document.getElementById('card-grid');
+                const target = grid || card;
+                if (!target) {
+                    // DOM ainda não pronto — tenta de novo em breve
+                    setTimeout(() => this.initGridSwipe(), 400);
+                    return;
+                }
+                this._gridSwipeBound = true;
+
+                let startX = 0;
+                let startY = 0;
+                let startT = 0;
+                let tracking = false;
+
+                const onStart = (x, y) => {
+                    startX = x;
+                    startY = y;
+                    startT = Date.now();
+                    tracking = true;
+                };
+
+                const onEnd = (x, y) => {
+                    if (!tracking) return;
+                    tracking = false;
+                    const dx = x - startX;
+                    const dy = y - startY;
+                    const dt = Date.now() - startT;
+                    const absX = Math.abs(dx);
+                    const absY = Math.abs(dy);
+
+                    // Swipe horizontal dominante, distância e tempo razoáveis
+                    if (absX < 50 || absX < absY * 1.2 || dt > 800) return;
+
+                    const totalPages = this._gridTotalPages || 1;
+                    if (totalPages <= 1) return;
+                    if (this._gridAnimating) return;
+
+                    if (dx < 0) {
+                        // deslize para a esquerda → próxima página
+                        if (this.gridPage < totalPages - 1) {
+                            this.setGridPage(this.gridPage + 1, { skipScroll: true, animate: true, dir: 'left' });
+                        }
+                    } else {
+                        // deslize para a direita → página anterior
+                        if (this.gridPage > 0) {
+                            this.setGridPage(this.gridPage - 1, { skipScroll: true, animate: true, dir: 'right' });
+                        }
+                    }
+                };
+
+                // Touch
+                target.addEventListener('touchstart', (e) => {
+                    if (!e.touches || !e.touches[0]) return;
+                    onStart(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+
+                target.addEventListener('touchend', (e) => {
+                    if (!e.changedTouches || !e.changedTouches[0]) return;
+                    onEnd(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+                }, { passive: true });
+
+                // Pointer (mouse / stylus) — útil em desktop também
+                target.addEventListener('pointerdown', (e) => {
+                    if (e.pointerType === 'mouse' && e.button !== 0) return;
+                    onStart(e.clientX, e.clientY);
+                });
+                target.addEventListener('pointerup', (e) => {
+                    onEnd(e.clientX, e.clientY);
+                });
+            }
 
             setGridFilter(f) {
                 this.gridFilter = f;
@@ -3100,18 +3349,30 @@ setGridPage(page) {
                 if (id === 'modal-checkout') {
                     if (window.cartManager) {
                         window.cartManager._pagamentoExistente = null;
+                        // Sempre limpa cupom ao fechar o checkout (sucesso, cancelar ou timeout)
+                        if (typeof window.cartManager.limparEstadoCupom === 'function') {
+                            window.cartManager.limparEstadoCupom();
+                        }
+                        window.cartManager.updateCartUI && window.cartManager.updateCartUI();
                         const btnLater = document.getElementById('btn-pay-later');
                         if (btnLater) btnLater.style.display = '';
                     }
                     if (window.cartManager && window.cartManager.pixInterval) {
                         clearInterval(window.cartManager.pixInterval);
                     }
+                    if (window.cartManager && window.cartManager.timerInterval) {
+                        clearInterval(window.cartManager.timerInterval);
+                    }
                     document.getElementById('checkout-step-1').style.display = 'block';
                     const step2 = document.getElementById('checkout-step-2');
                     if(step2) step2.style.display = 'none';
 
                     const btnNow = document.getElementById('btn-pay-now');
-                    if(btnNow) btnNow.disabled = false;
+                    if(btnNow) {
+                        btnNow.disabled = false;
+                        btnNow.style.background = 'var(--primary-color)';
+                        btnNow.style.color = '#fff';
+                    }
                     const btnLater = document.getElementById('btn-pay-later');
                     if(btnLater) btnLater.disabled = false;
                 }
@@ -3867,6 +4128,7 @@ setGridPage(page) {
                 const wrap = document.getElementById('checkout-pay-methods');
                 const btnPix = document.getElementById('btn-method-pix');
                 const btnCard = document.getElementById('btn-method-card');
+                const grid = document.getElementById('pay-methods-grid');
                 if (!wrap || !btnPix || !btnCard) return;
 
                 const pixOk = this.hasPixEnabled();
@@ -3881,6 +4143,15 @@ setGridPage(page) {
                 btnPix.style.display = pixOk ? 'flex' : 'none';
                 btnCard.style.display = cardOk ? 'flex' : 'none';
 
+                // Quando só um método está ativo, ocupa o grid inteiro (1 coluna)
+                if (grid) {
+                    if (pixOk && cardOk) {
+                        grid.style.gridTemplateColumns = '1fr 1fr';
+                    } else {
+                        grid.style.gridTemplateColumns = '1fr';
+                    }
+                }
+
                 if (pixOk && !cardOk) this.payMethod = 'pix';
                 if (!pixOk && cardOk) this.payMethod = 'card';
 
@@ -3893,6 +4164,42 @@ setGridPage(page) {
                 btnPix.style.background = this.payMethod === 'pix' ? activeBg : idleBg;
                 btnCard.style.border = this.payMethod === 'card' ? activeStyle : idleStyle;
                 btnCard.style.background = this.payMethod === 'card' ? activeBg : idleBg;
+            }
+
+            _updateFreeCheckoutUI(finalVal) {
+                const isFree = Number(finalVal) <= 0;
+                const payMethods = document.getElementById('checkout-pay-methods');
+                const btnNow = document.getElementById('btn-pay-now');
+                const btnLater = document.getElementById('btn-pay-later');
+                const payBadges = document.getElementById('checkout-pay-badges');
+
+                if (isFree) {
+                    if (payMethods) payMethods.style.display = 'none';
+                    if (payBadges) payBadges.style.display = 'none';
+                    if (btnNow) {
+                        btnNow.innerHTML = '<i data-lucide="check-circle" style="width:18px;"></i> FINALIZAR (GRÁTIS)';
+                        btnNow.style.background = 'var(--paid)';
+                        btnNow.style.color = '#003d26';
+                        if (window.lucide) lucide.createIcons();
+                    }
+                    if (btnLater) btnLater.style.display = 'none';
+                } else {
+                    if (payMethods) {
+                        // updatePayMethodsUI já cuida de mostrar/esconder
+                        this.updatePayMethodsUI();
+                    }
+                    if (payBadges) payBadges.style.display = 'flex';
+                    if (btnNow) {
+                        const method = this.payMethod || 'pix';
+                        btnNow.innerHTML = method === 'card'
+                            ? '<i data-lucide="credit-card" style="width:18px;"></i> PAGAR COM CARTÃO'
+                            : '<i data-lucide="qr-code" style="width:18px;"></i> PAGAR COM PIX';
+                        btnNow.style.background = 'var(--primary-color)';
+                        btnNow.style.color = '#fff';
+                        if (window.lucide) lucide.createIcons();
+                    }
+                    if (btnLater) btnLater.style.display = '';
+                }
             }
 
             calculateBestPrice(count) {
@@ -3966,6 +4273,22 @@ setGridPage(page) {
                 return { final, original, promoDiscount, cupomDiscount, freeTickets, upsellDiscount };
             }
 
+            /** Limpa cupom da sessão (evita cupom “grudar” na próxima compra) */
+            limparEstadoCupom() {
+                this.cupomAplicado = null;
+                this._ultimoDescontoCupom = 0;
+                this.upsellAplicado = null;
+                const inputCupom = document.getElementById('checkout-cupom');
+                if (inputCupom) inputCupom.value = '';
+                const disc = document.getElementById('checkout-discount-info');
+                if (disc) disc.innerHTML = '';
+                const promoTxt = document.getElementById('promo-discount-text');
+                if (promoTxt) {
+                    promoTxt.style.display = 'none';
+                    promoTxt.innerText = '';
+                }
+            }
+
             async aplicarCupom() {
                 const cod = document.getElementById('checkout-cupom').value.trim().toUpperCase();
                 if (!cod) return;
@@ -3986,11 +4309,12 @@ setGridPage(page) {
                             try {
                                 const snap = await get(cuponsHistRef);
                                 if (snap.exists()) {
+                                    // Apenas 1 cupom por número de WhatsApp (qualquer código)
                                     const jaUsou = Object.values(snap.val()).some(h =>
-                                        h.codigo === cod && (h.telefone || '').replace(/\D/g, '') === tel
+                                        (h.telefone || '').replace(/\D/g, '') === tel
                                     );
                                     if (jaUsou) {
-                                        this.app.showToast('Este cupom já foi usado neste WhatsApp.');
+                                        this.app.showToast('Você já utilizou um cupom neste WhatsApp. Apenas 1 cupom por participante.');
                                         this.cupomAplicado = null;
                                         if (this._pagamentoExistente) this.atualizarValoresCheckoutExistente();
                                         else this.atualizarValoresCheckout();
@@ -4107,6 +4431,7 @@ setGridPage(page) {
                 const res = this.calculateBestPrice(count); 
                 document.getElementById('checkout-final-val').innerText = res.final.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}); 
                 this._ultimoDescontoCupom = res.cupomDiscount || 0;
+                this._updateFreeCheckoutUI(res.final);
 
                 const desc = document.getElementById('checkout-discount-info');
                 const unit = parseFloat(this.app.config.valor) || 0;
@@ -4211,10 +4536,8 @@ setGridPage(page) {
                 }
                 this._lastCheckoutOpen = now;
 
-                this.cupomAplicado = null;
-                this.upsellAplicado = null;
+                this.limparEstadoCupom();
                 const inputCupom = document.getElementById('checkout-cupom');
-                if(inputCupom) inputCupom.value = "";
 
                 const wrap = document.getElementById('checkout-cupom-wrap');
                 const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
@@ -4352,6 +4675,9 @@ setGridPage(page) {
                     descontoAplicado: this._ultimoDescontoCupom || 0,
                     cotas: cotasTxt
                 });
+
+                // Limpa cupom imediatamente para não “grudar” na próxima seleção
+                this.limparEstadoCupom();
 
                 if (window.fbq && !isExisting) {
                     window.fbq('track', 'Purchase', { value: valorPago, currency: 'BRL', contents: [{ id: 'rifa', quantity: cotasPagas.length }] });
@@ -4579,6 +4905,42 @@ setGridPage(page) {
                         const up = {};
                         pe.lista.forEach(n => { up[`${n}/order_nsu`] = oid; });
                         await update(numRef, up);
+
+                        // Grátis (cupom 100%) → confirma pago sem API
+                        if (priceCents <= 0) {
+                            const upPaid = {};
+                            pe.lista.forEach(n => {
+                                upPaid[`${n}/status`] = 'paid';
+                                upPaid[`${n}/valor_pago_unidade`] = 0;
+                            });
+                            await update(numRef, upPaid);
+                            if (this.cupomAplicado) {
+                                await this.registrarUsoCupom({
+                                    descontoAplicado: this._ultimoDescontoCupom || 0,
+                                    valorPago: 0,
+                                    nome: pe.nome,
+                                    telefone: pe.tel,
+                                    nsu: oid,
+                                    cotas: listaStr
+                                });
+                            }
+                            this.limparEstadoCupom();
+                            this._pagamentoExistente = null;
+                            this.app.closeModal('modal-checkout');
+                            if (btnNow) btnNow.disabled = false;
+                            this.app.renderGrid();
+                            this.app.consultarMeusNumeros && this.app.consultarMeusNumeros();
+                            this.app.mostrarSucessoPagamento({
+                                numeros: pe.lista,
+                                valor: 0,
+                                nome: pe.nome,
+                                nsu: oid,
+                                telefone: pe.tel,
+                                roletaGiro: null
+                            });
+                            return;
+                        }
+
                         const payData = {
                             nsu: oid,
                             nome: pe.nome,
@@ -4637,6 +4999,57 @@ setGridPage(page) {
                         return;
                     }
 
+                    // Cupom 100% / valor zero → confirma como pago sem API de pagamento
+                    if (priceCents <= 0) {
+                        const cotasGratis = Array.from(this.app.selected);
+                        const upPaid = {};
+                        cotasGratis.forEach(num => {
+                            upPaid[`${num}/status`] = 'paid';
+                            upPaid[`${num}/valor_pago_unidade`] = 0;
+                        });
+                        await update(numRef, upPaid);
+                        if (this.cupomAplicado) {
+                            await this.registrarUsoCupom({
+                                descontoAplicado: this._ultimoDescontoCupom || 0,
+                                valorPago: 0,
+                                nome: n,
+                                telefone: t,
+                                nsu: oid,
+                                cotas: cotasGratis.join(',')
+                            });
+                        }
+                        // Limpa cupom + seleção ANTES de atualizar UI (evita cupom grudar)
+                        this.limparEstadoCupom();
+                        this.app.selected.clear();
+                        this.app.closeModal('modal-checkout');
+                        this.app.renderGrid();
+                        this.updateCartUI();
+                        if (btnNow) btnNow.disabled = false;
+                        if (btnLater) btnLater.disabled = false;
+
+                        // Roleta se elegível
+                        let roletaGiro = null;
+                        try {
+                            roletaGiro = await this.app.garantirRoletaAposPagamento({
+                                nsu: oid,
+                                telefone: t,
+                                nome: n,
+                                qtd: cotasGratis.length
+                            });
+                        } catch (_) {}
+
+                        // Mostra sucesso (mesmo fluxo do pagamento normal)
+                        this.app.mostrarSucessoPagamento({
+                            numeros: cotasGratis,
+                            valor: 0,
+                            nome: n,
+                            nsu: oid,
+                            telefone: t,
+                            roletaGiro
+                        });
+                        return;
+                    }
+
                     const payData = { nsu: oid, nome: n, telefone: t, priceCents: priceCents, description: `Cotas ${this.app.config.premio}` };
 
                     await this.processarPagamentoPix(payData, false);
@@ -4663,9 +5076,8 @@ setGridPage(page) {
                     totalBase: total
                 };
             
-                this.cupomAplicado = null;
+                this.limparEstadoCupom();
                 const inputCupom = document.getElementById('checkout-cupom');
-                if (inputCupom) inputCupom.value = '';
 
                 const wrap = document.getElementById('checkout-cupom-wrap');
                 const temCupons = (this.app.config.cupons || []).some(c => c.codigo && String(c.codigo).trim() !== '');
@@ -4710,6 +5122,7 @@ setGridPage(page) {
             
                 this._pagamentoExistente.totalFinal = final;
                 this._ultimoDescontoCupom = cupomDiscount || 0;
+                this._updateFreeCheckoutUI(final);
             
                 document.getElementById('checkout-final-val').innerText =
                     final.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -5915,6 +6328,105 @@ setGridPage(page) {
                     chances: Math.max(1, parseInt(document.getElementById('cfg-roleta-chances')?.value) || 1),
                     prizes
                 };
+            }
+
+            switchAdminDashTab(tab) {
+                const part = document.getElementById('admin-dash-participantes');
+                const role = document.getElementById('admin-dash-roleta');
+                const btnP = document.getElementById('admin-dash-tab-participantes');
+                const btnR = document.getElementById('admin-dash-tab-roleta');
+                if (!part || !role) return;
+                if (tab === 'roleta') {
+                    part.style.display = 'none';
+                    role.style.display = 'block';
+                    if (btnP) btnP.classList.remove('active');
+                    if (btnR) btnR.classList.add('active');
+                    this.carregarHistoricoRoletaDashboard();
+                } else {
+                    part.style.display = 'block';
+                    role.style.display = 'none';
+                    if (btnP) btnP.classList.add('active');
+                    if (btnR) btnR.classList.remove('active');
+                }
+                if (window.lucide) lucide.createIcons();
+            }
+
+            async carregarHistoricoRoletaDashboard() {
+                const box = document.getElementById('admin-roleta-list');
+                if (!box) return;
+                box.innerHTML = '<p style="font-size:12px; color:var(--text-color); text-align:center; padding:20px;">Carregando...</p>';
+                try {
+                    // reutiliza a mesma lógica do histórico da config
+                    await this.carregarHistoricoRoleta();
+                    this.renderRoletaDashboard();
+                } catch (e) {
+                    box.innerHTML = '<p style="font-size:12px; color:var(--danger); text-align:center; padding:20px;">Erro ao carregar.</p>';
+                }
+            }
+
+            filtrarHistoricoRoletaDashboard() {
+                this.renderRoletaDashboard();
+            }
+
+            renderRoletaDashboard() {
+                const box = document.getElementById('admin-roleta-list');
+                if (!box) return;
+                const q = (document.getElementById('admin-roleta-filtro')?.value || '').trim().toLowerCase();
+                let rows = (this._roletaHistRows || []).filter(r => {
+                    if (!r.premio || r.pendente) return false;
+                    if (r.perde === true) return false;
+                    return this.app.isRoletaPremioValido ? this.app.isRoletaPremioValido(r.premio) : true;
+                });
+                if (q) {
+                    rows = rows.filter(r =>
+                        String(r.nome || '').toLowerCase().includes(q) ||
+                        String(r.telefone || '').includes(q) ||
+                        String(r.premio || '').toLowerCase().includes(q) ||
+                        String(r.nsu || '').toLowerCase().includes(q)
+                    );
+                }
+                if (!rows.length) {
+                    box.innerHTML = '<p style="font-size:13px; color:var(--text-color); text-align:center; padding:28px;">Nenhum ganhador da roleta ainda.</p>';
+                    return;
+                }
+                const groups = {};
+                rows.forEach(r => {
+                    const key = r.premio || 'Outro';
+                    if (!groups[key]) groups[key] = [];
+                    groups[key].push(r);
+                });
+                box.innerHTML = Object.keys(groups).map(premio => {
+                    const people = groups[premio];
+                    const list = people.map(r => {
+                        const when = r.at ? new Date(r.at).toLocaleString('pt-BR') : '—';
+                        const telDigits = String(r.telefone || '').replace(/\D/g, '');
+                        let wa = telDigits;
+                        if (wa && !wa.startsWith('55') && wa.length <= 11) wa = '55' + wa;
+                        const msg = encodeURIComponent(`Olá ${r.nome || ''}! Você ganhou na roleta: ${premio}. Vamos combinar a entrega?`);
+                        const waHref = wa ? `https://wa.me/${wa}?text=${msg}` : '#';
+                        const entregue = !!r.entregue;
+                        return `<div class="admin-item" style="border-color:${entregue ? 'var(--paid)' : 'var(--border-color)'}; margin-bottom:8px;">
+                            <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start;">
+                                <div style="min-width:0;">
+                                    <div style="font-size:14px; font-weight:800; color:var(--title-color);">${this._esc(r.nome)}</div>
+                                    <div style="font-size:12px; color:var(--text-color); margin-top:4px;">📱 ${this._esc(r.telefone || '—')} · ${when}</div>
+                                    <div style="font-size:12px; margin-top:6px; font-weight:700; color:${entregue ? 'var(--paid)' : 'var(--reserved)'};">${entregue ? '✅ Entregue' : '⏳ Pendente entrega'}</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+                                ${wa ? `<a href="${waHref}" target="_blank" rel="noopener" style="background:#25d366; color:#fff; border-radius:8px; padding:8px 12px; font-size:12px; font-weight:800; text-decoration:none; display:inline-flex; align-items:center; gap:6px;"><i data-lucide="message-circle" style="width:14px;"></i> WhatsApp</a>` : ''}
+                                ${!entregue ? `<button type="button" class="btn-admin bg-green" style="padding:8px 12px;" onclick="window.adminPanel.marcarRoletaEntregue('${this._esc(r.nsu)}', ${r.idx - 1})">Marcar entregue</button>` : ''}
+                            </div>
+                        </div>`;
+                    }).join('');
+                    return `<div style="margin-bottom:20px;">
+                        <div style="font-size:15px; font-weight:800; color:#a78bfa; margin-bottom:10px; display:flex; align-items:center; gap:8px; padding:10px 12px; background:rgba(124,58,237,0.12); border:1px solid #7c3aed; border-radius:10px;">
+                            🎁 ${this._esc(premio)} <span style="font-size:12px; color:var(--text-color); font-weight:600; margin-left:auto;">${people.length} ganhador(es)</span>
+                        </div>
+                        ${list}
+                    </div>`;
+                }).join('');
+                if (window.lucide) lucide.createIcons();
             }
 
             openRoletaHistoricoAdmin() {
