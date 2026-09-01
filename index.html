@@ -134,7 +134,7 @@
         }
 
         .content-wrapper {
-            position: relative; z-index: 10; max-width: 800px; margin: -20px auto 40px auto;
+            position: relative; z-index: 10; max-width: 800px; margin: 0px auto 40px auto;
             padding: 0 16px; display: flex; flex-direction: column; gap: 16px;
         }
 
@@ -380,6 +380,116 @@
             display: none;
             letter-spacing: 0.2px;
         }
+
+
+        /* Skeleton loading do grid */
+        .num-cell.skeleton {
+            background: linear-gradient(90deg, var(--gray-100) 25%, var(--gray-300) 50%, var(--gray-100) 75%);
+            background-size: 200% 100%;
+            animation: skeletonShimmer 1.2s ease-in-out infinite;
+            color: transparent !important;
+            pointer-events: none;
+            border-color: var(--border-color);
+        }
+        @keyframes skeletonShimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        #offline-banner, #abandon-banner {
+            display: none;
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 420px;
+            z-index: 9998;
+            border-radius: 12px;
+            padding: 12px 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+            align-items: center;
+            gap: 10px;
+        }
+        #offline-banner {
+            top: 76px;
+            background: #3d1f1f;
+            border: 1px solid var(--danger);
+            color: #ffb4b4;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        #abandon-banner {
+            bottom: 90px;
+            background: #1a1b1e;
+            border: 2px solid var(--reserved);
+            color: var(--title-color);
+            font-size: 12px;
+            font-weight: 600;
+            flex-direction: column;
+            text-align: center;
+            box-shadow: 0 10px 28px rgba(0,0,0,0.65);
+        }
+        #abandon-banner #abandon-text {
+            color: #f5f5f7;
+            line-height: 1.45;
+        }
+        #abandon-banner #abandon-text b {
+            color: var(--reserved);
+        }
+
+        #card-grid.compact-grid .num-cell {
+            font-size: 11px;
+            border-radius: 6px;
+        }
+        #card-grid.compact-grid .numbers-grid {
+            gap: 6px;
+            grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+        }
+        .num-cell.fav {
+            box-shadow: 0 0 0 2px #f59e0b inset;
+        }
+        .num-cell.flash-find {
+            animation: flashFind 1.2s ease;
+            z-index: 2;
+        }
+        @keyframes flashFind {
+            0%, 100% { box-shadow: 0 0 0 0 transparent; transform: scale(1); }
+            30% { box-shadow: 0 0 0 3px var(--primary-color); transform: scale(1.15); }
+            60% { box-shadow: 0 0 12px rgba(0,139,119,0.6); transform: scale(1.08); }
+        }
+        #countdown-timer {
+            font-size: 26px !important;
+            font-weight: 900 !important;
+            color: var(--primary-color) !important;
+            text-shadow: 0 0 20px rgba(0,139,119,0.35);
+        }
+
+        #abandon-banner .abandon-actions {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            margin-top: 8px;
+        }
+        #abandon-banner .abandon-actions button,
+        #abandon-banner .abandon-actions a {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+        }
+        #checkout-upsell {
+            border-width: 2px !important;
+            animation: upsellPulse 2.2s ease-in-out infinite;
+        }
+        @keyframes upsellPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0,139,119,0.25); }
+            50% { box-shadow: 0 0 0 6px rgba(0,139,119,0.08); }
+        }
+
 
         .numbers-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 10px;
@@ -1009,6 +1119,17 @@
 
     <div id="toast" class="toast">Mensagem</div>
 
+    <div id="offline-banner">📡 Sem conexão. Algumas funções podem falhar — reconecte e atualize.</div>
+    <div id="abandon-banner">
+        <div id="abandon-text">Você tem cotas reservadas aguardando pagamento.</div>
+        <div id="abandon-timer" style="font-size:18px;font-weight:900;color:var(--reserved);margin:6px 0 2px;letter-spacing:1px;">--:--</div>
+        <div class="abandon-actions">
+            <button type="button" style="background:var(--primary-color);color:#fff;" onclick="window.rifaApp.switchTab('consulta')">Pagar agora</button>
+            <a id="abandon-wa-btn" href="#" target="_blank" rel="noopener" style="background:#25d366;color:#fff;display:none;">WhatsApp</a>
+            <button type="button" style="background:var(--gray-400);color:var(--title-color);" onclick="window.rifaApp.dismissAbandonBanner()">Depois</button>
+        </div>
+    </div>
+
     <header class="header-fixed">
         <button class="header-btn" onclick="window.rifaApp.askAdmin()">
             <i data-lucide="menu" style="width: 24px;"></i>
@@ -1073,10 +1194,11 @@
                         <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                     </div>
                     <div id="cotas-restantes-info" style="text-align:center; margin-top:8px; font-size:12px; font-weight:700; color:var(--reserved);"></div>
+                    <div id="progress-urgency-badge" style="display:none; text-align:center; margin-top:8px; font-size:12px; font-weight:800; padding:8px 10px; border-radius:10px;"></div>
                 </div>
 
-                <div id="countdown-sorteio" class="card" style="display:none; margin-bottom:14px; text-align:center; padding:16px;">
-                    <p style="font-size:12px; color:var(--text-color); font-weight:600; margin-bottom:8px;">⏰ SORTEIO EM</p>
+                <div id="countdown-sorteio" class="card" style="display:none; margin-bottom:14px; text-align:center; padding:18px; border:2px solid var(--primary-color); background:linear-gradient(180deg, rgba(0,139,119,0.15), var(--gray-500));">
+                    <p style="font-size:13px; color:var(--primary-color); font-weight:800; margin-bottom:8px; letter-spacing:1px;">⏰ SORTEIO EM</p>
                     <div id="countdown-timer" style="font-size:22px; font-weight:800; color:var(--primary-color); letter-spacing:1px;">--</div>
                 </div>
 
@@ -1181,6 +1303,14 @@
                         <h2 style="font-size: 18px;">Visualizar Cotas</h2>
                     </div>
 
+                    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                        <input type="search" id="grid-search-cota" class="input-form" placeholder="Buscar cota (ex: 0427)" style="flex:1; min-width:140px; margin:0;" onkeydown="if(event.key==='Enter'){event.preventDefault();window.rifaApp.buscarCotaNoGrid();}">
+                        <button type="button" class="btn-admin" style="background:var(--primary-color);color:#fff;padding:10px 12px;" onclick="window.rifaApp.buscarCotaNoGrid()">Buscar</button>
+                        <button type="button" class="btn-admin" style="background:#7c3aed;color:#fff;padding:10px 12px;" onclick="window.rifaApp.selecionarSurpresa()" title="Cotas aleatórias">🎲 Surpresa</button>
+                        <button type="button" class="btn-admin" style="background:var(--gray-400);color:var(--title-color);padding:10px 12px;" onclick="window.rifaApp.toggleGridCompacto()" id="btn-grid-compact">Compacto</button>
+                    </div>
+                    <div id="fav-cotas-bar" style="display:none; margin-bottom:10px; padding:8px 10px; border-radius:10px; background:var(--gray-400); border:1px solid var(--border-color); font-size:12px; color:var(--title-color);"></div>
+
                     <div class="filter-tabs">
                         <button class="filter-tab active" data-filter="all" onclick="window.rifaApp.setGridFilter('all')">Todos</button>
                         <button class="filter-tab" data-filter="available" onclick="window.rifaApp.setGridFilter('available')">Disp.</button>
@@ -1260,6 +1390,12 @@
                         <button type="button" class="btn-admin" onclick="window.adminPanel.exportCSV()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="download" style="width:15px;"></i> Exportar CSV
                         </button>
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.whatsappPendentesEmMassa()" style="background:#25d366; color:#fff; padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="message-circle" style="width:15px;"></i> WA Pendentes
+                        </button>
+                        <button type="button" class="btn-admin" onclick="window.adminPanel.verLogsPagamento()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <i data-lucide="list" style="width:15px;"></i> Logs pagamento
+                        </button>
                         <button type="button" class="btn-admin" id="btn-toggle-stats" onclick="window.adminPanel.toggleStats()" style="background:var(--gray-400); color:var(--title-color); padding:12px 10px; border-radius:10px; font-size:12px; display:flex; align-items:center; justify-content:center; gap:6px;">
                             <i data-lucide="eye-off" style="width:15px;"></i> Valores
                         </button>
@@ -1297,8 +1433,21 @@
                                 <b style="display: block; color: var(--title-color); font-size: 16px; margin-top: 4px;" id="admin-conversao">0%</b>
                             </div>
                         </div>
-                       
+                    </div>
 
+                    <div id="admin-hoje-cards" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:18px;">
+                        <div style="background:rgba(0,219,135,0.1); border:1px solid var(--paid); border-radius:12px; padding:12px 8px; text-align:center;">
+                            <span style="font-size:10px; color:var(--text-color); font-weight:600;">Receita hoje</span>
+                            <b style="display:block; color:var(--paid); font-size:15px; margin-top:4px;" id="admin-hoje-receita">R$ 0</b>
+                        </div>
+                        <div style="background:var(--background-color); border:1px solid var(--border-color); border-radius:12px; padding:12px 8px; text-align:center;">
+                            <span style="font-size:10px; color:var(--text-color); font-weight:600;">Pagos hoje</span>
+                            <b style="display:block; color:var(--title-color); font-size:15px; margin-top:4px;" id="admin-hoje-cotas">0</b>
+                        </div>
+                        <div style="background:rgba(255,170,0,0.1); border:1px solid var(--reserved); border-radius:12px; padding:12px 8px; text-align:center;">
+                            <span style="font-size:10px; color:var(--text-color); font-weight:600;">Pendentes</span>
+                            <b style="display:block; color:var(--reserved); font-size:15px; margin-top:4px;" id="admin-hoje-pend">0</b>
+                        </div>
                     </div>
 
 
@@ -1320,6 +1469,10 @@
                     </div>
 
                     <div id="admin-dash-participantes">
+                        <div style="display:flex; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+                            <input type="date" id="admin-date-from" class="input-form" style="flex:1; min-width:130px; margin:0;" onchange="window.adminPanel.render(false)" title="De">
+                            <input type="date" id="admin-date-to" class="input-form" style="flex:1; min-width:130px; margin:0;" onchange="window.adminPanel.render(false)" title="Até">
+                        </div>
                         <input type="text" id="admin-search" class="input-form" placeholder="Pesquisar participante, cota ou NSU..." oninput="window.adminPanel.render(false)">
 
                         <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
@@ -1441,6 +1594,7 @@
                     <i data-lucide="clock" style="width: 16px;"></i> Reserve e pague em até <span id="checkout-timer-display" style="font-weight: 800;">15:00</span>
                 </div>
                 <div id="checkout-escassez" style="display:none; text-align:center; font-size:12px; font-weight:700; color:var(--reserved); margin-bottom:12px;"></div>
+                <div id="checkout-social-proof" style="display:none; text-align:center; font-size:12px; font-weight:700; color:var(--paid); background:rgba(0,219,135,0.1); border:1px solid var(--paid); border-radius:10px; padding:10px; margin-bottom:12px;"></div>
                 <div id="checkout-roleta-hint" style="display:none; text-align:center; font-size:12px; font-weight:700; color:#a78bfa; background:rgba(124,58,237,0.12); border:1px solid #7c3aed; border-radius:10px; padding:10px; margin-bottom:12px;"></div>
                 <div id="checkout-pay-badges" style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:12px; font-size:11px; color:var(--text-color);">
                     <span style="background:var(--gray-400); border:1px solid var(--border-color); border-radius:999px; padding:4px 10px;">🔒 Pagamento seguro</span>
@@ -1524,6 +1678,8 @@
                     Aguardando pagamento...
                 </div>
 
+                <button type="button" class="btn-participar" style="margin-top:12px; background:var(--gray-400); color:var(--title-color);" onclick="window.cartManager.reenviarPix()">🔄 Gerar novo PIX</button>
+
                 <button onclick="window.rifaApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); font-weight: 600; padding: 12px; cursor: pointer; border: none; font-size: 14px;">
                     Fechar e Voltar
                 </button>
@@ -1538,6 +1694,9 @@
             </div>
             <h3 style="color:var(--title-color); margin-bottom:20px; font-size: 18px;">Acesso Restrito</h3>
             <input type="password" id="admin-pin" class="input-form" placeholder="****" maxlength="8" inputmode="numeric" style="text-align: center; letter-spacing: 12px; font-size: 24px; font-weight: 700;" oninput="window.adminPanel.onPinInput(this)">
+            <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;color:var(--text-color);margin:8px 0 12px;cursor:pointer;">
+                <input type="checkbox" id="admin-pin-remember" style="width:16px;height:16px;accent-color:var(--primary-color);"> Lembrar este dispositivo (7 dias)
+            </label>
             <p style="font-size:11px; color:var(--text-color); text-align:center; margin-top:-4px; margin-bottom:12px;">Digite o PIN — entrada automática</p>
             <button class="btn-participar" onclick="window.adminPanel.validate()" style="opacity:0.7;">Entrar no Painel</button>
             <button onclick="window.rifaApp.closeModal('modal-pin')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); border: none; cursor: pointer; font-weight: 600;">Cancelar</button>
@@ -2056,6 +2215,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
 
             <button type="button" class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:10px;" onclick="window.rifaApp.copiarNumerosSucesso()">Copiar números</button>
             <a id="sucesso-whatsapp" href="#" target="_blank" class="btn-participar" style="background:#25d366;margin-bottom:10px;text-decoration:none;">Compartilhar no WhatsApp</a>
+            <button class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:8px;" onclick="window.rifaApp.copiarComprovante()">📋 Copiar comprovante</button>
             <button class="btn-participar" style="background:var(--gray-400);color:var(--title-color);margin-bottom:8px;" onclick="window.rifaApp.closeModal('modal-sucesso'); window.rifaApp.switchTab('consulta');">Ver meus bilhetes</button>
             <button onclick="window.rifaApp.closeModal('modal-sucesso')" style="width:100%;background:transparent;color:var(--text-color);border:none;padding:12px;font-weight:600;cursor:pointer;">Fechar</button>
         </div>
@@ -2110,7 +2270,9 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             <h3 style="color:var(--title-color);margin-bottom:16px;font-size:18px;">Reserva Manual</h3>
             <input type="text" id="manual-nome" class="input-form" placeholder="Nome completo">
             <input type="tel" id="manual-tel" class="input-form" placeholder="WhatsApp" oninput="window.rifaApp.maskPhone(this)">
-            <input type="number" id="manual-qtd" class="input-form" placeholder="Quantidade de cotas" min="1" value="1">
+            <input type="number" id="manual-qtd" class="input-form" placeholder="Quantidade (aleatório se vazio abaixo)" min="1" value="1">
+            <input type="text" id="manual-cotas" class="input-form" placeholder="Cotas específicas (ex: 007, 042, 100) — opcional">
+            <p style="font-size:11px;color:var(--text-color);margin:-6px 0 10px;">Se preencher cotas específicas, a quantidade é ignorada.</p>
             <select id="manual-status" class="input-form">
                 <option value="paid">Pago / Confirmado</option>
                 <option value="reserved">Pendente</option>
@@ -2383,7 +2545,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 this.selected = new Set();
                 this.gridFilter = 'all';
                 this.gridPage = 0;
-                this.pageSize = 250;
+                this.pageSize = 120;
                 this.pendingAction = null;
                 this.doacaoAtiva = null; 
 
@@ -2391,6 +2553,18 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 this.applyTheme(this.config.theme);
                 this.listenFirebase();
                 this.initGridSwipe();
+                this.initOfflineAndAbandon();
+                this.showGridSkeleton();
+                try {
+                    if (localStorage.getItem('rifa_grid_compact') === '1') {
+                        const card = document.getElementById('card-grid');
+                        const btn = document.getElementById('btn-grid-compact');
+                        if (card) card.classList.add('compact-grid');
+                        if (btn) btn.innerText = 'Normal';
+                    }
+                } catch (_) {}
+                this.renderFavoritosBar();
+                this.watchNewPayments();
             }
 
 
@@ -2551,6 +2725,275 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 this._consultaTimerInterval = setInterval(tick, 1000);
             }
 
+
+
+            showGridSkeleton() {
+                const grid = document.getElementById('grid');
+                if (!grid || grid.dataset.ready === '1') return;
+                let html = '';
+                for (let i = 0; i < 48; i++) {
+                    html += '<div class="num-cell skeleton">000</div>';
+                }
+                grid.innerHTML = html;
+            }
+
+            initOfflineAndAbandon() {
+                const offline = document.getElementById('offline-banner');
+                const setOffline = () => {
+                    if (!offline) return;
+                    offline.style.display = navigator.onLine ? 'none' : 'flex';
+                };
+                window.addEventListener('online', setOffline);
+                window.addEventListener('offline', setOffline);
+                setOffline();
+                this.refreshAbandonBanner();
+                // recheck a cada 30s
+                setInterval(() => this.refreshAbandonBanner(), 30000);
+            }
+
+            saveAbandonDraft(payload) {
+                try {
+                    localStorage.setItem('rifa_abandon', JSON.stringify({
+                        ...payload,
+                        savedAt: Date.now()
+                    }));
+                } catch (_) {}
+                this.refreshAbandonBanner();
+            }
+
+            clearAbandonDraft() {
+                try { localStorage.removeItem('rifa_abandon'); } catch (_) {}
+                this.dismissAbandonBanner();
+            }
+
+            dismissAbandonBanner() {
+                const el = document.getElementById('abandon-banner');
+                if (el) el.style.display = 'none';
+                try { localStorage.setItem('rifa_abandon_dismiss', String(Date.now())); } catch (_) {}
+            }
+
+            refreshAbandonBanner() {
+                const el = document.getElementById('abandon-banner');
+                const txt = document.getElementById('abandon-text');
+                const timerEl = document.getElementById('abandon-timer');
+                const waBtn = document.getElementById('abandon-wa-btn');
+                if (!el || !txt) return;
+                let data = null;
+                try { data = JSON.parse(localStorage.getItem('rifa_abandon') || 'null'); } catch (_) {}
+                if (!data || !data.tel) {
+                    el.style.display = 'none';
+                    if (this._abandonTimerInterval) {
+                        clearInterval(this._abandonTimerInterval);
+                        this._abandonTimerInterval = null;
+                    }
+                    return;
+                }
+                try {
+                    const d = parseInt(localStorage.getItem('rifa_abandon_dismiss') || '0');
+                    if (d && Date.now() - d < 10 * 60 * 1000) {
+                        el.style.display = 'none';
+                        return;
+                    }
+                } catch (_) {}
+
+                const qtd = data.qtd || (data.cotas ? String(data.cotas).split(',').filter(Boolean).length : 0);
+                const mins = this.config.reservaMinutos || 15;
+                const expiresAt = (data.savedAt || Date.now()) + mins * 60000;
+                txt.innerHTML = `⏳ Você reservou <b>${qtd}</b> cota(s)${data.nome ? ' (' + data.nome + ')' : ''}. Finalize o pagamento para não perder.`;
+
+                // WhatsApp suporte
+                const wa = ((this.config.social || {}).whatsapp || '').trim();
+                if (waBtn) {
+                    if (wa) {
+                        let href = wa;
+                        if (!/^https?:/i.test(href)) {
+                            const digits = wa.replace(/\D/g, '');
+                            const msg = encodeURIComponent(`Olá! Reservei ${qtd} cota(s)${data.nsu ? ' (NSU ' + data.nsu + ')' : ''} e quero pagar.`);
+                            href = `https://wa.me/${digits.startsWith('55') ? digits : '55' + digits}?text=${msg}`;
+                        }
+                        waBtn.href = href;
+                        waBtn.style.display = 'inline-flex';
+                        waBtn.style.alignItems = 'center';
+                        waBtn.style.justifyContent = 'center';
+                    } else {
+                        waBtn.style.display = 'none';
+                    }
+                }
+
+                const tick = () => {
+                    const left = Math.max(0, expiresAt - Date.now());
+                    if (timerEl) {
+                        const s = Math.floor(left / 1000);
+                        const mm = String(Math.floor(s / 60)).padStart(2, '0');
+                        const ss = String(s % 60).padStart(2, '0');
+                        timerEl.innerText = left > 0 ? `${mm}:${ss}` : '00:00';
+                        timerEl.style.color = left < 120000 ? 'var(--danger)' : 'var(--reserved)';
+                    }
+                    if (left <= 0) {
+                        this.clearAbandonDraft();
+                    }
+                };
+                tick();
+                if (this._abandonTimerInterval) clearInterval(this._abandonTimerInterval);
+                this._abandonTimerInterval = setInterval(tick, 1000);
+
+                el.style.display = 'flex';
+            }
+
+            buscarCotaNoGrid() {
+                const input = document.getElementById('grid-search-cota');
+                if (!input) return;
+                const raw = (input.value || '').replace(/\D/g, '');
+                if (!raw) return this.showToast('Digite o número da cota');
+                const total = parseInt(this.config.total) || 0;
+                const padLen = Math.max(3, (total - 1).toString().length);
+                const n = raw.padStart(padLen, '0');
+                if (Number(n) >= total) return this.showToast('Cota fora do intervalo');
+
+                // encontra página
+                const matching = [];
+                for (let i = 0; i < total; i++) {
+                    const num = i.toString().padStart(padLen, '0');
+                    const info = this.dbNumbers[num];
+                    const isSel = this.selected.has(num);
+                    if (this.gridFilter !== 'all') {
+                        if (this.gridFilter === 'available' && (info || isSel)) continue;
+                        if (this.gridFilter === 'reserved' && (!info || info.status !== 'reserved')) continue;
+                        if (this.gridFilter === 'paid' && (!info || info.status !== 'paid')) continue;
+                        if (this.gridFilter === 'selected' && !isSel) continue;
+                        if (this.gridFilter === 'donated' && (!info || !String(info.status).includes('donated'))) continue;
+                    }
+                    matching.push(num);
+                }
+                const idx = matching.indexOf(n);
+                if (idx < 0) {
+                    // tenta mostrar mesmo assim na página all
+                    this.setGridFilter('all');
+                    return setTimeout(() => this.buscarCotaNoGrid(), 50);
+                }
+                const page = Math.floor(idx / this.pageSize);
+                this.setGridPage(page, { skipScroll: true, force: true });
+                setTimeout(() => {
+                    const cell = document.querySelector(`.num-cell[data-n="${n}"]`);
+                    if (cell) {
+                        cell.classList.add('flash-find');
+                        cell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        setTimeout(() => cell.classList.remove('flash-find'), 1300);
+                        this.vibrateSoft([10, 40, 10]);
+                    } else {
+                        this.showToast(`Cota ${n} não visível neste filtro`);
+                    }
+                }, 80);
+            }
+
+            selecionarSurpresa() {
+                const q = parseInt(prompt('Quantas cotas surpresa?', '5')) || 0;
+                if (q < 1) return;
+                const padLen = Math.max(3, (this.config.total - 1).toString().length);
+                const available = [];
+                for (let i = 0; i < this.config.total; i++) {
+                    const n = i.toString().padStart(padLen, '0');
+                    if (!this.dbNumbers[n] && !this.selected.has(n)) available.push(n);
+                }
+                if (!available.length) return this.showToast('Sem cotas disponíveis');
+                const pick = available.sort(() => Math.random() - 0.5).slice(0, Math.min(q, available.length));
+                pick.forEach(n => this.selected.add(n));
+                this.renderGrid();
+                window.cartManager.updateCartUI();
+                this.showToast(`🎲 Surpresa: ${pick.join(', ')}`);
+                this.vibrateSoft([15, 30, 15, 30, 20]);
+            }
+
+            toggleGridCompacto() {
+                const card = document.getElementById('card-grid');
+                const btn = document.getElementById('btn-grid-compact');
+                if (!card) return;
+                card.classList.toggle('compact-grid');
+                const on = card.classList.contains('compact-grid');
+                if (btn) btn.innerText = on ? 'Normal' : 'Compacto';
+                try { localStorage.setItem('rifa_grid_compact', on ? '1' : '0'); } catch (_) {}
+            }
+
+            toggleFavoritoCota(n) {
+                let favs = [];
+                try { favs = JSON.parse(localStorage.getItem('rifa_fav_cotas') || '[]'); } catch (_) { favs = []; }
+                if (favs.includes(n)) favs = favs.filter(x => x !== n);
+                else favs.push(n);
+                try { localStorage.setItem('rifa_fav_cotas', JSON.stringify(favs)); } catch (_) {}
+                this.renderFavoritosBar();
+                this.renderGrid();
+            }
+
+            getFavoritos() {
+                try { return JSON.parse(localStorage.getItem('rifa_fav_cotas') || '[]'); } catch (_) { return []; }
+            }
+
+            renderFavoritosBar() {
+                const bar = document.getElementById('fav-cotas-bar');
+                if (!bar) return;
+                const favs = this.getFavoritos();
+                if (!favs.length) {
+                    bar.style.display = 'none';
+                    bar.innerHTML = '';
+                    return;
+                }
+                bar.style.display = 'block';
+                bar.innerHTML = `⭐ Favoritas: <b style="color:var(--reserved)">${favs.join(', ')}</b>
+                    <button type="button" style="margin-left:8px;background:var(--primary-color);color:#fff;border:none;border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700;cursor:pointer;" onclick="window.rifaApp.selecionarFavoritas()">Selecionar</button>
+                    <button type="button" style="margin-left:4px;background:transparent;color:var(--text-color);border:none;font-size:11px;cursor:pointer;" onclick="localStorage.removeItem('rifa_fav_cotas');window.rifaApp.renderFavoritosBar();window.rifaApp.renderGrid();">Limpar</button>`;
+            }
+
+            selecionarFavoritas() {
+                const favs = this.getFavoritos();
+                let add = 0;
+                favs.forEach(n => {
+                    if (!this.dbNumbers[n] && !this.selected.has(n)) {
+                        this.selected.add(n);
+                        add++;
+                    }
+                });
+                this.renderGrid();
+                window.cartManager.updateCartUI();
+                this.showToast(add ? `${add} favorita(s) selecionada(s)` : 'Favoritas indisponíveis ou já selecionadas');
+            }
+
+            playPaySound() {
+                try {
+                    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'sine';
+                    o.frequency.value = 880;
+                    g.gain.value = 0.04;
+                    o.connect(g); g.connect(ctx.destination);
+                    o.start();
+                    setTimeout(() => { o.frequency.value = 1175; }, 90);
+                    setTimeout(() => { o.stop(); ctx.close(); }, 220);
+                } catch (_) {}
+            }
+
+            watchNewPayments() {
+                // Alerta sonoro quando sobe quantidade de pagos (admin ou home)
+                this._lastPaidCount = Object.values(this.dbNumbers || {}).filter(d => d && d.status === 'paid').length;
+                // reavaliado no listener Firebase via hook em renderGrid
+            }
+
+            maybeNotifyNewPayment() {
+                const count = Object.values(this.dbNumbers || {}).filter(d => d && d.status === 'paid').length;
+                if (this._lastPaidCount != null && count > this._lastPaidCount) {
+                    this.playPaySound();
+                    if (window.adminPanel && window.adminPanel.isAdmin) {
+                        this.showToast('💰 Novo pagamento confirmado!');
+                    }
+                }
+                this._lastPaidCount = count;
+            }
+
+            vibrateSoft(pattern = 12) {
+                try {
+                    if (navigator.vibrate) navigator.vibrate(pattern);
+                } catch (_) {}
+            }
 
             liberateExpiredReservas() {
                 // Libera reservas expiradas conforme config.reservaMinutos
@@ -2807,6 +3250,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     let classes = 'num-cell';
                     if (info) classes += ` ${info.status}`;
                     else if (isSel) classes += ' selected';
+                    if (this.getFavoritos().includes(n)) classes += ' fav';
                     html += `<div class="${classes}" data-n="${n}">${n}</div>`;
                 });
 
@@ -2815,6 +3259,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 }
 
                 grid.innerHTML = html;
+                grid.dataset.ready = '1';
 
                 grid.onclick = (e) => {
                     if (e.target.classList.contains('num-cell')) {
@@ -2822,9 +3267,6 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         const info = this.dbNumbers[n];
                         if (info) {
                             const nomeComprador = info.nome ? info.nome.toUpperCase() : 'ALGUÉM';
-                            const statusStr = info.status === 'paid' ? 'Pago'
-                                : (info.status === 'donated' ? 'Doação Recebida'
-                                : (info.status === 'donated_pending' ? 'Doação Pendente' : 'Reservado'));
                             this.showToast(`${nomeComprador}`);
                         } else {
                             this.selected.has(n) ? this.selected.delete(n) : this.selected.add(n);
@@ -2832,6 +3274,13 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                             window.cartManager.updateCartUI();
                         }
                     }
+                };
+                grid.oncontextmenu = (e) => {
+                    const cell = e.target.closest('.num-cell');
+                    if (!cell) return;
+                    e.preventDefault();
+                    this.toggleFavoritoCota(cell.dataset.n);
+                    this.showToast('Favorito atualizado ⭐');
                 };
 
                 this.renderGridPagination(matching.length, totalPages);
@@ -2853,6 +3302,26 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         ? `🔥 Restam ${restantes} cota${restantes !== 1 ? 's' : ''} disponível${restantes !== 1 ? 'is' : ''}`
                         : '✅ Esgotado';
                 }
+                const urg = document.getElementById('progress-urgency-badge');
+                if (urg) {
+                    if (porcentagem >= 90) {
+                        urg.style.display = 'block';
+                        urg.style.background = 'rgba(255,77,77,0.15)';
+                        urg.style.border = '1px solid var(--danger)';
+                        urg.style.color = 'var(--danger)';
+                        urg.innerText = '🚨 QUASE ESGOTANDO — últimas cotas!';
+                    } else if (porcentagem >= 70) {
+                        urg.style.display = 'block';
+                        urg.style.background = 'rgba(255,170,0,0.15)';
+                        urg.style.border = '1px solid var(--reserved)';
+                        urg.style.color = 'var(--reserved)';
+                        urg.innerText = '⚡ Acima de 70% vendido — acelere!';
+                    } else {
+                        urg.style.display = 'none';
+                    }
+                }
+                this.renderFavoritosBar && this.renderFavoritosBar();
+                this.maybeNotifyNewPayment && this.maybeNotifyNewPayment();
             }
             renderGridPagination(totalItems, totalPages) {
                 const pag = document.getElementById('grid-pagination');
@@ -2900,6 +3369,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 // Transição animada (swipe ou clique)
                 if (opts.animate && gridEl && !this._gridAnimating) {
                     this._gridAnimating = true;
+                    this.vibrateSoft([8, 30, 12]);
                     const outClass = dir === 'left' ? 'grid-out-left' : 'grid-out-right';
                     const inClass = dir === 'left' ? 'grid-in-left' : 'grid-in-right';
 
@@ -3301,7 +3771,22 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         }
 
                         if(pagos.length > 0) {
-                            area.innerHTML += `<div class="admin-item" style="border-color:var(--paid);"><b style="color:var(--paid); font-size:12px; text-transform: uppercase;">Pagos Confirmados:</b><p style="font-weight:600; margin-top:8px; color:var(--title-color); font-size: 15px;">${pagos.join(', ')}</p></div>`;
+                            // Agrupa por pedido (NSU)
+                            const byNsu = {};
+                            pagos.forEach(n => {
+                                const nsu = (all[n] && all[n].order_nsu) ? all[n].order_nsu : 'sem-nsu';
+                                if (!byNsu[nsu]) byNsu[nsu] = [];
+                                byNsu[nsu].push(n);
+                            });
+                            let htmlPagos = `<div class="admin-item" style="border-color:var(--paid);"><b style="color:var(--paid); font-size:12px; text-transform: uppercase;">Pagos Confirmados (${pagos.length}):</b>`;
+                            Object.entries(byNsu).forEach(([nsu, nums]) => {
+                                htmlPagos += `<div style="margin-top:10px;padding:10px;background:var(--gray-400);border-radius:8px;border:1px solid var(--border-color);">
+                                    <div style="font-size:11px;color:var(--text-color);font-weight:600;">Pedido ${nsu === 'sem-nsu' ? '—' : nsu} · ${nums.length} cota(s)</div>
+                                    <p style="font-weight:700;margin-top:6px;color:var(--title-color);font-size:14px;word-break:break-word;">${nums.join(', ')}</p>
+                                </div>`;
+                            });
+                            htmlPagos += `</div>`;
+                            area.innerHTML += htmlPagos;
                         }
                         if(doadosConfirmados.length > 0) {
                             area.innerHTML += `<div class="admin-item" style="border-color:var(--donated);"><b style="color:var(--donated); font-size:12px; text-transform: uppercase;">🎁 Doações Confirmadas:</b><p style="font-weight:600; margin-top:8px; color:var(--title-color); font-size: 15px;">${doadosConfirmados.join(', ')}</p></div>`;
@@ -3536,6 +4021,21 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 }).join('');
             }
 
+            copiarComprovante() {
+                const nums = document.getElementById('sucesso-numeros')?.innerText || '';
+                const valor = document.getElementById('sucesso-valor')?.innerText || '';
+                const txt = `Comprovante Rifa Master\nPrêmio: ${this.config.premio || ''}\nNúmeros: ${nums}\nValor: ${valor}\nLink: ${location.href}`;
+                try {
+                    navigator.clipboard.writeText(txt);
+                    this.showToast('Comprovante copiado!');
+                } catch (_) {
+                    this.showToast('Não foi possível copiar');
+                }
+                if (navigator.share) {
+                    navigator.share({ title: 'Meus bilhetes', text: txt }).catch(() => {});
+                }
+            }
+
             mostrarSucessoPagamento({ numeros, valor, nome, nsu = '', telefone = '', roletaGiro = null }) {
                 const nums = Array.isArray(numeros) ? numeros.slice().sort().join(', ') : String(numeros || '');
                 document.getElementById('sucesso-numeros').innerText = nums;
@@ -3575,6 +4075,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     }
                 }
 
+                this.playPaySound && this.playPaySound();
                 document.getElementById('modal-sucesso').style.display = 'flex';
                 lucide.createIcons();
                 try {
@@ -4304,6 +4805,35 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         this.app.showToast('Cupom esgotado (limite de usos atingido).');
                         this.cupomAplicado = null;
                     } else {
+                        // Validade por data
+                        const today = new Date();
+                        const ymd = today.toISOString().slice(0, 10);
+                        if (cupom.validFrom && ymd < cupom.validFrom) {
+                            this.app.showToast('Este cupom ainda não está válido.');
+                            this.cupomAplicado = null;
+                            if (this._pagamentoExistente) this.atualizarValoresCheckoutExistente();
+                            else this.atualizarValoresCheckout();
+                            return;
+                        }
+                        if (cupom.validUntil && ymd > cupom.validUntil) {
+                            this.app.showToast('Este cupom expirou.');
+                            this.cupomAplicado = null;
+                            if (this._pagamentoExistente) this.atualizarValoresCheckoutExistente();
+                            else this.atualizarValoresCheckout();
+                            return;
+                        }
+                        // Mínimo de cotas
+                        const minQ = parseInt(cupom.minQtd) || 0;
+                        const qtdAtual = this._pagamentoExistente
+                            ? (this._pagamentoExistente.lista || []).length
+                            : this.app.selected.size;
+                        if (minQ > 0 && qtdAtual < minQ) {
+                            this.app.showToast(`Este cupom exige no mínimo ${minQ} cotas.`);
+                            this.cupomAplicado = null;
+                            if (this._pagamentoExistente) this.atualizarValoresCheckoutExistente();
+                            else this.atualizarValoresCheckout();
+                            return;
+                        }
                         const tel = (document.getElementById('cust-phone')?.value || '').replace(/\D/g, '');
                         if (tel.length >= 10) {
                             try {
@@ -4379,11 +4909,11 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 if (tipo === 'fixo') {
                     const de = normal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                     const por = valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                    promoTxt = `🔥 Leve <b>+${qtd}</b> bilhetes de <s>${de}</s> por só <b style="color:var(--paid)">${por}</b>`;
+                    promoTxt = `🔥 OFERTA LIMITADA: leve <b>+${qtd}</b> bilhetes de <s>${de}</s> por só <b style="color:var(--paid)">${por}</b><br><span style="font-size:11px;color:var(--reserved);">Aproveite agora no checkout</span>`;
                 } else {
                     const de = normal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                     const por = (normal * (1 - valor / 100)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                    promoTxt = `🔥 Leve <b>+${qtd}</b> bilhetes com <b style="color:var(--paid)">${valor}% OFF</b><br><span style="font-size:11px;"><s>${de}</s> → <b>${por}</b></span>`;
+                    promoTxt = `🔥 OFERTA LIMITADA: +<b>${qtd}</b> bilhetes com <b style="color:var(--paid)">${valor}% OFF</b><br><span style="font-size:11px;"><s>${de}</s> → <b>${por}</b></span><br><span style="font-size:11px;color:var(--reserved);">Só nesta compra</span>`;
                 }
                 txt.innerHTML = promoTxt;
                 box.style.display = 'block';
@@ -4504,6 +5034,28 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         textDesc.innerText = `🎁 Desconto: - ${totalDesc.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`;
                     }
                     textDesc.style.display = 'block';
+                } else if (this.app.config.promosActive && this.app.config.promos && this.app.config.promos.length) {
+                    // Próximo degrau de promoção
+                    let nextHint = '';
+                    const sorted = [...this.app.config.promos].sort((a,b) => (parseInt(a.min)||0) - (parseInt(b.min)||0));
+                    for (const pr of sorted) {
+                        const min = parseInt(pr.min) || 0;
+                        if (min > count) {
+                            const falta = min - count;
+                            const tipo = pr.type === 'free' || pr.type === 'free_tickets' ? 'free' : 'pct';
+                            const val = pr.val;
+                            nextHint = tipo === 'free'
+                                ? `⚡ Faltam ${falta} cota(s) para ganhar ${val} grátis`
+                                : `⚡ Faltam ${falta} cota(s) para ${val}% OFF`;
+                            break;
+                        }
+                    }
+                    if (nextHint) {
+                        textDesc.innerText = nextHint;
+                        textDesc.style.display = 'block';
+                    } else {
+                        textDesc.style.display = 'none';
+                    }
                 } else { textDesc.style.display = 'none'; }
 
                 // Dica roleta: faltam X bilhetes
@@ -4582,6 +5134,21 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                             esc.style.display = 'block';
                             esc.innerText = restam <= 20 ? `🔥 Restam só ${restam} cotas!` : `Restam ${restam} cotas disponíveis`;
                         } else esc.style.display = 'none';
+                    }
+                    // prova social
+                    const sp = document.getElementById('checkout-social-proof');
+                    if (sp) {
+                        const recent = Object.values(this.app.dbNumbers || {})
+                            .filter(d => d && (d.status === 'paid' || d.status === 'reserved') && d.nome)
+                            .sort((a, b) => (b.reservedAt || 0) - (a.reservedAt || 0))
+                            .slice(0, 12);
+                        if (recent.length) {
+                            const pick = recent[Math.floor(Math.random() * Math.min(5, recent.length))];
+                            const first = String(pick.nome || '').split(' ')[0];
+                            const q = Object.values(this.app.dbNumbers || {}).filter(d => d && d.telefone === pick.telefone && (d.status === 'paid' || d.status === 'reserved')).length;
+                            sp.style.display = 'block';
+                            sp.innerText = `✅ ${first} acabou de garantir ${q || 1} cota(s)`;
+                        } else sp.style.display = 'none';
                     }
                     // roleta hint
                     const rh = document.getElementById('checkout-roleta-hint');
@@ -4678,6 +5245,12 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
 
                 // Limpa cupom imediatamente para não “grudar” na próxima seleção
                 this.limparEstadoCupom();
+                this.app.clearAbandonDraft();
+                try {
+                    const logs = JSON.parse(localStorage.getItem('rifa_pay_logs') || '[]');
+                    logs.unshift({ at: Date.now(), nsu: payData.nsu, nome: payData.nome, valor: (payData.priceCents||0)/100, tipo: 'pago' });
+                    localStorage.setItem('rifa_pay_logs', JSON.stringify(logs.slice(0, 50)));
+                } catch (_) {}
 
                 if (window.fbq && !isExisting) {
                     window.fbq('track', 'Purchase', { value: valorPago, currency: 'BRL', contents: [{ id: 'rifa', quantity: cotasPagas.length }] });
@@ -4732,7 +5305,21 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 }
             }
 
+            async reenviarPix() {
+                if (!this._lastPayCtx || !this._lastPayCtx.payData) {
+                    return this.app.showToast('Nenhum PIX anterior para reenviar. Feche e pague de novo.');
+                }
+                if (this.pixInterval) clearInterval(this.pixInterval);
+                this.app.showToast('Gerando novo PIX...');
+                const { payData, isExisting, listaStr } = this._lastPayCtx;
+                // novo NSU para novo QR
+                const fresh = { ...payData, nsu: 'RX' + Date.now() };
+                this.payMethod = 'pix';
+                await this.processarPagamentoPix(fresh, isExisting, listaStr || '');
+            }
+
             async processarPagamentoPix(payData, isExisting = false, listaStr = '') {
+                this._lastPayCtx = { payData, isExisting, listaStr };
                 const method = this.payMethod || 'pix';
 
                 // ---- CARTÃO via InfinitePay ----
@@ -4821,6 +5408,9 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
 
                 // Se não é retorno e não há pendência recente, ignora
                 if (!isReturn && !pending) return;
+                if (isReturn) {
+                    this.app.showToast('💳 Processando pagamento no cartão...');
+                }
                 if (pending && pending.createdAt && (Date.now() - pending.createdAt > 2 * 60 * 60 * 1000)) {
                     try { localStorage.removeItem('rifa_pending_ipay'); } catch (_) {}
                     return;
@@ -4925,6 +5515,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                                 });
                             }
                             this.limparEstadoCupom();
+                            this.app.clearAbandonDraft();
                             this._pagamentoExistente = null;
                             this.app.closeModal('modal-checkout');
                             if (btnNow) btnNow.disabled = false;
@@ -4982,7 +5573,15 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         up[num] = { nome: n, telefone: t, status: 'reserved', order_nsu: oid, valor_fixado_unidade: valorUnidadeFixado, reservedAt };
                     }); 
                     await update(numRef, up);
- 
+
+                    // Recuperação de abandono
+                    this.app.saveAbandonDraft({
+                        nome: n,
+                        tel: t,
+                        qtd: this.app.selected.size,
+                        cotas: Array.from(this.app.selected).join(','),
+                        nsu: oid
+                    });
 
                     if(window.fbq) window.fbq('track', 'InitiateCheckout');
 
@@ -4995,6 +5594,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                             this.updateCartUI();
                             if(btnNow) btnNow.disabled = false;
                             if(btnLater) btnLater.disabled = false;
+                            this.app.refreshAbandonBanner();
                         }, 1500);
                         return;
                     }
@@ -5020,6 +5620,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         }
                         // Limpa cupom + seleção ANTES de atualizar UI (evita cupom grudar)
                         this.limparEstadoCupom();
+                        this.app.clearAbandonDraft();
                         this.app.selected.clear();
                         this.app.closeModal('modal-checkout');
                         this.app.renderGrid();
@@ -5205,6 +5806,15 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     this.app._pinLockUntil = 0;
                     localStorage.setItem('rifa_pin_fails', '0');
                     localStorage.setItem('rifa_pin_lock', '0');
+                    const remember = document.getElementById('admin-pin-remember');
+                    if (remember && remember.checked) {
+                        try {
+                            localStorage.setItem('rifa_admin_session', JSON.stringify({
+                                ok: true,
+                                exp: Date.now() + 7 * 24 * 60 * 60 * 1000
+                            }));
+                        } catch (_) {}
+                    }
                     this.app.closeModal('modal-pin');
                     this.render(true);
                     this.app.switchTab('admin');
@@ -5483,6 +6093,32 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     };
                     this.refreshAdminStatsText(!this.statsVisible);
 
+                    // Métricas do dia
+                    try {
+                        const start = new Date(); start.setHours(0,0,0,0);
+                        const startTs = start.getTime();
+                        let receitaHoje = 0, cotasHoje = 0;
+                        Object.values(this.app.dbNumbers || {}).forEach(d => {
+                            if (!d) return;
+                            const when = d.reservedAt || 0;
+                            const val = (d.valor_pago_unidade !== undefined) ? parseFloat(d.valor_pago_unidade) : parseFloat(this.app.config.valor || 0);
+                            if (when >= startTs && (d.status === 'paid' || d.status === 'donated')) {
+                                receitaHoje += val;
+                                cotasHoje++;
+                            }
+                        });
+                        const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+                        if (!this.statsVisible) {
+                            setTxt('admin-hoje-receita', 'R$ --');
+                            setTxt('admin-hoje-cotas', '--');
+                            setTxt('admin-hoje-pend', '--');
+                        } else {
+                            setTxt('admin-hoje-receita', `R$ ${receitaHoje.toFixed(2).replace('.', ',')}`);
+                            setTxt('admin-hoje-cotas', String(cotasHoje));
+                            setTxt('admin-hoje-pend', String(tPend));
+                        }
+                    } catch (_) {}
+
 
                     let listaP = Object.values(participantes);
                     if (this.sortBy === 'name') listaP.sort((a, b) => (a.nome || '').localeCompare(b.nome || '', 'pt-BR'));
@@ -5499,6 +6135,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         card.dataset.cotas = p.cotas.map(c => c.n).join(',');
                         card.dataset.nsu = (p.nsus || []).join(',');
                         card.dataset.isDoacao = p.hasDoacao ? 'true' : 'false';
+                        card.dataset.recent = String(p.recent || 0);
 
                         const allPaid = p.cotas.every(c => c.status === 'paid' || c.status === 'donated');
                         const allRes = p.cotas.every(c => c.status === 'reserved' || c.status === 'donated_pending');
@@ -5584,21 +6221,55 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 }
 
                 const searchTxt = document.getElementById('admin-search').value.toLowerCase().trim();
+                const dateFrom = document.getElementById('admin-date-from')?.value || '';
+                const dateTo = document.getElementById('admin-date-to')?.value || '';
+                let fromTs = dateFrom ? new Date(dateFrom + 'T00:00:00').getTime() : 0;
+                let toTs = dateTo ? new Date(dateTo + 'T23:59:59').getTime() : Infinity;
                 document.querySelectorAll('#admin-list .admin-item').forEach(card => {
                     const dNome = card.dataset.nome || '';
                     const dCotas = card.dataset.cotas || '';
                     const dTel = card.dataset.telefone || '';
                     const dNsu = (card.dataset.nsu || '').toLowerCase();
+                    const dRecent = parseInt(card.dataset.recent || '0') || 0;
 
                     const matchSearch = !searchTxt || dNome.includes(searchTxt) || dCotas.includes(searchTxt) || dTel.includes(searchTxt) || dNsu.includes(searchTxt);
+                    const matchDate = (!dateFrom && !dateTo) || (dRecent >= fromTs && dRecent <= toTs);
                     let matchTab = true;
                     if (this.filter === 'paid' && card.dataset.statusGroup !== 'paid') matchTab = false;
                     if (this.filter === 'reserved' && !['reserved', 'mixed'].includes(card.dataset.statusGroup)) matchTab = false;
                     if (this.filter === 'expiring' && card.dataset.expiring !== 'true') matchTab = false;
                     if (this.filter === 'donated' && card.dataset.isDoacao !== 'true') matchTab = false; 
 
-                    card.style.display = (matchSearch && matchTab) ? 'block' : 'none';
+                    card.style.display = (matchSearch && matchTab && matchDate) ? 'block' : 'none';
                 });
+            }
+
+            verLogsPagamento() {
+                let logs = [];
+                try { logs = JSON.parse(localStorage.getItem('rifa_pay_logs') || '[]'); } catch (_) {}
+                if (!logs.length) return this.app.showToast('Sem eventos de pagamento locais');
+                const txt = logs.map(l => `${new Date(l.at).toLocaleString('pt-BR')} | ${l.nome||'-'} | NSU ${l.nsu||'-'} | R$ ${Number(l.valor||0).toFixed(2)}`).join('\n');
+                alert(txt);
+            }
+
+            whatsappPendentesEmMassa() {
+                const map = {};
+                Object.entries(this.app.dbNumbers || {}).forEach(([n, d]) => {
+                    if (!d || d.status !== 'reserved') return;
+                    const tel = String(d.telefone || '').replace(/\D/g, '');
+                    if (!tel) return;
+                    if (!map[tel]) map[tel] = { nome: d.nome || '', cotas: [] };
+                    map[tel].cotas.push(n);
+                });
+                const list = Object.entries(map);
+                if (!list.length) return this.app.showToast('Nenhum pendente no momento');
+                const lines = list.map(([tel, p]) => `${p.nome} | ${tel} | cotas: ${p.cotas.join(',')}`).join('\n');
+                try { navigator.clipboard.writeText(lines); } catch (_) {}
+                const [tel, p] = list[0];
+                const wa = tel.startsWith('55') ? tel : '55' + tel;
+                const msg = encodeURIComponent(`Olá ${(p.nome || '').split(' ')[0] || ''}! Sua reserva de ${p.cotas.length} cota(s) ainda está pendente. Pague agora para garantir: ${location.href}`);
+                window.open(`https://wa.me/${wa}?text=${msg}`, '_blank');
+                this.app.showToast(`${list.length} pendente(s) — lista copiada. Abrindo 1º WhatsApp.`);
             }
 
             openRelatorioDia() {
@@ -5753,6 +6424,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                             setTimeout(() => {
                                 nomeContainer.style.opacity = '1';
                                 confetti({ particleCount: 150, spread: 180, origin: { y: 0.3 } });
+                                try { this.app.playPaySound && this.app.playPaySound(); } catch(_) {}
 
                                 const ganhadorRef = ref(db, `${dbPath}/ganhadores/${premioIndex}`);
                                 set(ganhadorRef, {
@@ -5799,6 +6471,8 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 document.getElementById('manual-nome').value = '';
                 document.getElementById('manual-tel').value = '';
                 document.getElementById('manual-qtd').value = '1';
+                const mc = document.getElementById('manual-cotas');
+                if (mc) mc.value = '';
                 document.getElementById('manual-status').value = 'paid';
                 document.getElementById('modal-reserva-manual').style.display = 'flex';
             }
@@ -5808,28 +6482,47 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 const tel = document.getElementById('manual-tel').value.trim();
                 const qtd = parseInt(document.getElementById('manual-qtd').value) || 0;
                 const status = document.getElementById('manual-status').value || 'paid';
-                if (!nome || tel.length < 10 || qtd < 1) return this.app.showToast('Preencha nome, WhatsApp e quantidade.');
+                const cotasRaw = (document.getElementById('manual-cotas')?.value || '').trim();
+                if (!nome || tel.length < 10) return this.app.showToast('Preencha nome e WhatsApp.');
 
                 const padLen = Math.max(3, (this.app.config.total - 1).toString().length);
-                const available = [];
-                for (let i = 0; i < this.app.config.total; i++) {
-                    const n = i.toString().padStart(padLen, '0');
-                    if (!this.app.dbNumbers[n]) available.push(n);
-                }
-                if (available.length < qtd) return this.app.showToast('Cotas insuficientes disponíveis.');
+                let chosen = [];
 
-                const chosen = available.sort(() => Math.random() - 0.5).slice(0, qtd);
+                if (cotasRaw) {
+                    const parts = cotasRaw.split(/[,;\s]+/).map(s => s.trim()).filter(Boolean);
+                    for (const p of parts) {
+                        const n = p.replace(/\D/g, '').padStart(padLen, '0');
+                        if (!n || Number(n) >= this.app.config.total) {
+                            return this.app.showToast(`Cota inválida: ${p}`);
+                        }
+                        if (this.app.dbNumbers[n]) {
+                            return this.app.showToast(`Cota ${n} já está ocupada.`);
+                        }
+                        if (!chosen.includes(n)) chosen.push(n);
+                    }
+                    if (!chosen.length) return this.app.showToast('Informe cotas válidas.');
+                } else {
+                    if (qtd < 1) return this.app.showToast('Informe a quantidade ou cotas específicas.');
+                    const available = [];
+                    for (let i = 0; i < this.app.config.total; i++) {
+                        const n = i.toString().padStart(padLen, '0');
+                        if (!this.app.dbNumbers[n]) available.push(n);
+                    }
+                    if (available.length < qtd) return this.app.showToast('Cotas insuficientes disponíveis.');
+                    chosen = available.sort(() => Math.random() - 0.5).slice(0, qtd);
+                }
+
                 const oid = 'ADM' + Date.now();
                 const up = {};
                 chosen.forEach(n => {
                     up[n] = {
                         nome, telefone: tel, status, order_nsu: oid,
-                        valor_fixado_unidade: status === 'paid' ? (this.app.config.valor || 0) : 0,
+                        valor_pago_unidade: status === 'paid' ? (this.app.config.valor || 0) : 0,
                         reservedAt: Date.now()
                     };
                 });
                 await update(numRef, up);
-                this.app.logAdmin('reserva_manual', `${nome} ${qtd} cotas (${status})`);
+                this.app.logAdmin('reserva_manual', `${nome} ${chosen.length} cotas (${status})`);
                 this.app.closeModal('modal-reserva-manual');
                 this.app.showToast(`Reservadas: ${chosen.join(', ')}`);
                 this.render(true);
@@ -5847,8 +6540,18 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             }
 
             exportCSV() {
+                const filtro = (prompt('Filtrar por data? Vazio = tudo.\nEx: 2026-09-01  ou  2026-09-01|2026-09-30', '') || '').trim();
+                let fromTs = 0, toTs = Infinity;
+                if (filtro) {
+                    const parts = filtro.split('|').map(s => s.trim());
+                    if (parts[0]) fromTs = new Date(parts[0] + 'T00:00:00').getTime() || 0;
+                    if (parts[1]) toTs = new Date(parts[1] + 'T23:59:59').getTime() || Infinity;
+                    else if (parts[0]) toTs = new Date(parts[0] + 'T23:59:59').getTime() || Infinity;
+                }
                 const rows = [['Cota', 'Nome', 'Telefone', 'Status', 'Item Doacao', 'NSU', 'Valor Unidade', 'Reservado Em']];
                 Object.entries(this.app.dbNumbers || {}).forEach(([n, d]) => {
+                    const when = d.reservedAt || 0;
+                    if (filtro && (when < fromTs || when > toTs)) return;
                     rows.push([
                         n,
                         d.nome || '',
@@ -6815,6 +7518,20 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                                 <input type="hidden" class="c-usados" value="${usados}">
                             </div>
                         </div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:8px;">
+                            <div>
+                                <label class="cfg-label">Mín. cotas</label>
+                                <input type="number" class="input-form c-minqtd" value="${d.minQtd || 0}" min="0" style="margin:0;" placeholder="0 = qualquer">
+                            </div>
+                            <div>
+                                <label class="cfg-label">Validade início</label>
+                                <input type="date" class="input-form c-inicio" value="${d.validFrom || ''}" style="margin:0;">
+                            </div>
+                            <div style="grid-column:1/-1;">
+                                <label class="cfg-label">Validade fim</label>
+                                <input type="date" class="input-form c-fim" value="${d.validUntil || ''}" style="margin:0;">
+                            </div>
+                        </div>
                         <button class="remove-btn" style="width:100%; justify-content:center;" onclick="this.closest('.cfg-list-item').remove()">
                             <i data-lucide="trash-2" style="width:14px;"></i> Remover Cupom
                         </button>
@@ -6863,7 +7580,10 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         valor: parseFloat(row.querySelector('.c-val').value) || 0, 
                         tipo: row.querySelector('.c-tipo').value,
                         limite: parseInt(row.querySelector('.c-limite')?.value) || 0,
-                        usados: parseInt(row.querySelector('.c-usados')?.value) || 0
+                        usados: parseInt(row.querySelector('.c-usados')?.value) || 0,
+                        minQtd: parseInt(row.querySelector('.c-minqtd')?.value) || 0,
+                        validFrom: row.querySelector('.c-inicio')?.value || '',
+                        validUntil: row.querySelector('.c-fim')?.value || ''
                     }); 
                 });
 
@@ -6941,6 +7661,14 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
         window.rifaApp = new RifaApp();
         window.cartManager = new CartManager(window.rifaApp);
         window.adminPanel = new AdminPanel(window.rifaApp);
+        try {
+            const sess = JSON.parse(localStorage.getItem('rifa_admin_session') || 'null');
+            if (sess && sess.ok && sess.exp > Date.now()) {
+                window.adminPanel.isAdmin = true;
+            } else if (sess) {
+                localStorage.removeItem('rifa_admin_session');
+            }
+        } catch (_) {}
 
         // Retorno do InfinitePay (cartão) → verificação automática
         setTimeout(() => {
