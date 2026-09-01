@@ -1273,7 +1273,7 @@
                     <div id="roleta-ganhadores-publicos"></div>
                 </div>
 
-                <div class="card" id="card-como-funciona" style="margin-bottom:14px; padding:16px;">
+                <!--<div class="card" id="card-como-funciona" style="margin-bottom:14px; padding:16px;">
                     <div style="font-size:13px; font-weight:800; color:var(--title-color); margin-bottom:10px;">✅ Veja Como funciona</div>
                     <ul style="margin:0; padding-left:18px; color:var(--text-color); font-size:12px; line-height:1.55;">
                         <li>Escolha a quantidade de bilhetes e reserve</li>
@@ -1282,7 +1282,7 @@
                         <li>O sorteio principal segue as regras da campanha</li>
                     </ul>
                     <button type="button" onclick="window.rifaApp.openFaq()" style="margin-top:12px; background:var(--gray-400); border:1px solid var(--border-color); color:var(--title-color); padding:10px 14px; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; width:100%;">Ver dúvidas frequentes</button>
-                </div>
+                </div>-->
 
                 <div class="card" id="card-doacoes" style="display: none; margin-bottom: 14px;">
                     <div class="section-title">
@@ -2080,6 +2080,15 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     <div id="roleta-chance-sum" style="margin-top:10px; font-size:12px; font-weight:700; color:var(--text-color);">Soma: 0%</div>
                     <div style="height:10px; background:var(--gray-300); border-radius:999px; overflow:hidden; margin-top:8px;">
                         <div id="roleta-chance-bar" style="height:100%; width:0%; background:var(--danger); transition:width .25s ease;"></div>
+                    </div>
+                    <div style="margin-top:16px; padding:14px; border-radius:12px; border:1px dashed #7c3aed; background:rgba(124,58,237,0.1);">
+                        <div style="font-size:13px; font-weight:800; color:#a78bfa; margin-bottom:6px;">🧪 Teste de Roleta</div>
+                        <p style="font-size:11px; color:var(--text-color); margin-bottom:12px; line-height:1.45;">
+                            Gira a roleta em <b>modo teste</b> (não grava ganhador, não consome estoque real). Usa os prêmios configurados nesta tela.
+                        </p>
+                        <button type="button" class="btn-participar" style="background:#7c3aed; padding:12px; font-size:13px;" onclick="window.adminPanel.testarRoleta()">
+                            Testar roleta agora
+                        </button>
                     </div>
                 </div>
 
@@ -3867,6 +3876,10 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     const btnConf = document.getElementById('btn-doacao-confirmar');
                     if (btnConf) btnConf.disabled = false;
                 }
+                if (id === 'modal-roleta') {
+                    this._roletaTestOverride = null;
+                    this._roletaSpinning = false;
+                }
             }
 
 
@@ -4088,6 +4101,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             }
 
             roletaCfg() {
+                if (this._roletaTestOverride) return this._roletaTestOverride;
                 return this.config.roleta || { active: false, minQtd: 10, chances: 1, prizes: [] };
             }
 
@@ -4220,6 +4234,42 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 if (this._roletaNsuSucesso) this.abrirRoleta(this._roletaNsuSucesso);
             }
 
+            abrirRoletaTeste(cfgOverride = null) {
+                if (cfgOverride && (cfgOverride.prizes || []).length) {
+                    this._roletaTestOverride = cfgOverride;
+                } else {
+                    this._roletaTestOverride = null;
+                }
+                const prizes = (this.roletaCfg().prizes || []).filter(p => (p.name || '').trim());
+                if (!prizes.length) {
+                    this._roletaTestOverride = null;
+                    return this.showToast('Configure prêmios na roleta antes de testar.');
+                }
+                this._roletaAtual = {
+                    nsu: 'TEST-' + Date.now(),
+                    nome: 'TESTE ADMIN',
+                    telefone: '',
+                    qtd: 99,
+                    chances: 20,
+                    usados: 0,
+                    resultados: [],
+                    isTest: true,
+                    createdAt: Date.now()
+                };
+                this._roletaSpinning = false;
+                this._roletaRotation = 0;
+                this.buildRoletaSegments();
+                this.drawRoletaWheel();
+                const status = document.getElementById('roleta-status');
+                if (status) status.innerHTML = '🧪 <b style="color:#a78bfa;">MODO TESTE</b> — giros ilimitados (não grava ganhador)';
+                const res = document.getElementById('roleta-resultado');
+                if (res) res.innerText = '';
+                const btn = document.getElementById('btn-roleta-girar');
+                if (btn) btn.disabled = false;
+                document.getElementById('modal-roleta').style.display = 'flex';
+                if (window.lucide) lucide.createIcons();
+            }
+
             async contarPremiosRoletaEntregues() {
                 const counts = {};
                 try {
@@ -4311,19 +4361,32 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 this._roletaSpinning = false;
                 const data = this._roletaAtual;
                 if (!data) return;
+                const isTest = !!data.isTest;
                 const isLose = !!(prize && prize.perde);
                 const resultados = Array.isArray(data.resultados) ? data.resultados.slice() : [];
-                resultados.push({ name: prize.name, at: Date.now(), perde: isLose });
+                resultados.push({ name: prize.name, at: Date.now(), perde: isLose, teste: isTest });
                 const usados = (parseInt(data.usados) || 0) + 1;
                 const patch = { usados, resultados };
-                await update(ref(db, `${dbPath}/roleta_giros/${data.nsu}`), patch);
+                if (!isTest) {
+                    await update(ref(db, `${dbPath}/roleta_giros/${data.nsu}`), patch);
+                }
                 this._roletaAtual = { ...data, ...patch };
 
                 const rest = (data.chances || 0) - usados;
-                document.getElementById('btn-roleta-girar').disabled = rest <= 0;
-                document.getElementById('roleta-status').innerText = rest > 0
-                    ? `Restam ${rest} giro${rest > 1 ? 's' : ''}.`
-                    : 'Todos os giros deste pagamento foram usados.';
+                // Em teste, mantém botão sempre ativo (reinicia contador se zerar)
+                if (isTest) {
+                    if (rest <= 0) {
+                        this._roletaAtual.usados = 0;
+                        this._roletaAtual.resultados = [];
+                    }
+                    document.getElementById('btn-roleta-girar').disabled = false;
+                    document.getElementById('roleta-status').innerHTML = '🧪 <b style="color:#a78bfa;">MODO TESTE</b> — resultado não é gravado';
+                } else {
+                    document.getElementById('btn-roleta-girar').disabled = rest <= 0;
+                    document.getElementById('roleta-status').innerText = rest > 0
+                        ? `Restam ${rest} giro${rest > 1 ? 's' : ''}.`
+                        : 'Todos os giros deste pagamento foram usados.';
+                }
 
                 const resEl = document.getElementById('roleta-resultado');
                 if (isLose) {
@@ -4340,8 +4403,8 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                             : `https://wa.me/?text=${msg}`;
                         waBtn = `<a href="${href}" target="_blank" rel="noopener" style="display:inline-block; margin-top:12px; background:#25d366; color:#fff; padding:10px 14px; border-radius:10px; font-size:12px; font-weight:800; text-decoration:none;">Falar no WhatsApp para retirar</a>`;
                     }
-                    if (resEl) resEl.innerHTML = `<div style="font-size:20px; color:var(--paid);">🎉 PARABÉNS!</div><div style="margin-top:6px; color:var(--title-color);">${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:8px; color:var(--text-color);">Prêmio válido da roleta</div>${waBtn}`;
-                    this.showToast('Você ganhou: ' + prize.name);
+                    if (resEl) resEl.innerHTML = `<div style="font-size:20px; color:var(--paid);">🎉 PARABÉNS!</div><div style="margin-top:6px; color:var(--title-color);">${prize.name}</div><div style="font-size:12px; font-weight:600; margin-top:8px; color:var(--text-color);">${isTest ? '🧪 Teste — não grava ganhador' : 'Prêmio válido da roleta'}</div>${isTest ? '' : waBtn}`;
+                    this.showToast((isTest ? '🧪 Teste: ' : '') + 'Você ganhou: ' + prize.name);
                     try {
                         if (typeof confetti === 'function') {
                             confetti({ particleCount: 120, spread: 70, origin: { y: 0.6 } });
@@ -4349,7 +4412,9 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                             setTimeout(() => confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } }), 320);
                         }
                     } catch (_) {}
-                    try { this.renderRoletaGanhadoresPublicos(); this.renderRoletaEstoque(); } catch (_) {}
+                    if (!isTest) {
+                        try { this.renderRoletaGanhadoresPublicos(); this.renderRoletaEstoque(); } catch (_) {}
+                    }
                 }
 
                 const premiosEl = document.getElementById('sucesso-roleta-premios');
@@ -6746,6 +6811,27 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 if (!this.app.config.roleta) this.app.config.roleta = { active: false, minQtd: 10, chances: 1, prizes: [] };
                 this.app.config.roleta.active = !this.app.config.roleta.active;
                 this._updateToggleUI(document.getElementById('btn-toggle-roleta'), !!this.app.config.roleta.active);
+            }
+
+            testarRoleta() {
+                const live = this.readRoletaConfig ? this.readRoletaConfig() : (this.app.config.roleta || {});
+                const prizes = (live.prizes || []).filter(p => (p.name || '').trim());
+                if (!prizes.length) {
+                    return this.app.showToast('Adicione pelo menos 1 prêmio na roleta para testar.');
+                }
+                const sum = prizes.reduce((a, p) => a + (parseFloat(p.chance) || 0), 0);
+                if (Math.abs(sum - 100) > 0.5) {
+                    this.app.showToast('Aviso: chances não somam 100% — o teste usa as chances atuais.');
+                }
+                this.app.closeModal('modal-config');
+                const bar = document.getElementById('cfg-sticky-save');
+                if (bar) bar.style.display = 'none';
+                this.app.abrirRoletaTeste({
+                    active: true,
+                    minQtd: live.minQtd || 1,
+                    chances: live.chances || 1,
+                    prizes
+                });
             }
 
             addRoletaPremioRow(d = { name: '', chance: 0, slices: 2, color: '#7c3aed', perde: false, unico: false, limite: 0 }) {
