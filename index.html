@@ -1169,6 +1169,9 @@
                     <div style="border-top:1px solid var(--border-color); padding-top:14px; margin-bottom:12px;">
                         <h3 style="font-size:13px; margin-bottom:10px; color:var(--text-color); font-weight:700;">Prêmios:</h3>
                         <div id="premios-list" style="display:flex; flex-direction:column; gap:0;"></div>
+                        <button type="button" class="btn-participar" id="btn-adquirir-bilhete" onclick="window.rifaApp.scrollToBilhetes()" style="margin-top:14px; padding:14px; font-size:14px;">
+                            <i data-lucide="ticket" style="width:18px;"></i> Adquirir meu bilhete
+                        </button>
                     </div>
 
                     <div id="desc-block" style="border-top:1px solid var(--border-color); padding-top:14px;">
@@ -1203,7 +1206,7 @@
                 </div>
 
                 <!-- Bilhetes (estilo app) -->
-                <div class="card" style="margin-bottom: 14px;">
+                <div class="card" id="card-bilhetes" style="margin-bottom: 14px;">
                     <div class="bilhetes-head">
                         <div style="display:flex; gap:12px; align-items:flex-start;">
                             <div class="icon-box"><i data-lucide="ticket" style="width:20px;"></i></div>
@@ -1795,6 +1798,11 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                         <div>
                             <label class="cfg-label">Total Bilhetes</label>
                             <input type="number" id="cfg-total" class="input-form" style="margin-bottom: 0;">
+                        </div>
+                        <div>
+                            <label class="cfg-label">Cotas por página (grid)</label>
+                            <input type="number" id="cfg-page-size" class="input-form" min="20" max="500" value="200" style="margin-bottom: 0;" placeholder="Ex: 200">
+                            <p style="font-size:10px; color:var(--text-color); margin-top:4px;">Quantas cotas aparecem em cada “janela” do grid (20–500).</p>
                         </div>
                     </div>
                 </div>
@@ -2514,7 +2522,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
         class RifaApp {
             constructor() {
                 this.config = { 
-                    premio: "Carregando...", descricao: "", valor: 5, total: 1000, 
+                    premio: "Carregando...", descricao: "", valor: 5, total: 1000, pageSize: 200,
                     pin: "6261", gateway: "mercadopago", handle: "", mpToken: "", 
                     promosActive: false, promos: [], pixel: "", premios: [],
                     premiosBaseUrl: "https://lauriuche.github.io/Rifa/img/", 
@@ -2554,7 +2562,7 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 this.selected = new Set();
                 this.gridFilter = 'all';
                 this.gridPage = 0;
-                this.pageSize = 120;
+                this.pageSize = parseInt(this.config.pageSize) || 200;
                 this.pendingAction = null;
                 this.doacaoAtiva = null; 
 
@@ -2988,12 +2996,18 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             }
 
             maybeNotifyNewPayment() {
+                // Só alerta em painel admin ativo — nunca em modo cliente
                 const count = Object.values(this.dbNumbers || {}).filter(d => d && d.status === 'paid').length;
-                if (this._lastPaidCount != null && count > this._lastPaidCount) {
+                // 1ª leitura = baseline (evita popup ao abrir a página)
+                if (this._lastPaidCount == null) {
+                    this._lastPaidCount = count;
+                    return;
+                }
+                const isAdminView = !!(window.adminPanel && window.adminPanel.isAdmin);
+                const onAdminTab = !!(document.getElementById('view-admin') && document.getElementById('view-admin').classList.contains('active'));
+                if (count > this._lastPaidCount && isAdminView && onAdminTab) {
                     this.playPaySound();
-                    if (window.adminPanel && window.adminPanel.isAdmin) {
-                        this.showToast('💰 Novo pagamento confirmado!');
-                    }
+                    this.showToast('💰 Novo pagamento confirmado!');
                 }
                 this._lastPaidCount = count;
             }
@@ -3225,6 +3239,10 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
             renderGrid() {
                 const grid = document.getElementById('grid');
                 if (!grid) return;
+
+                // Cotas por página (editável nas configs)
+                const ps = parseInt(this.config.pageSize) || 200;
+                this.pageSize = Math.min(500, Math.max(20, ps));
 
                 const total = parseInt(this.config.total) || 100;
                 const padLen = Math.max(3, (total - 1).toString().length);
@@ -3882,6 +3900,23 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 }
             }
 
+
+            scrollToBilhetes() {
+                // Garante aba da rifa e desce até a seleção de bilhetes
+                try { this.switchTab('rifa'); } catch (_) {}
+                const target = document.getElementById('card-bilhetes')
+                    || document.getElementById('quick-select-grid')
+                    || document.getElementById('card-grid');
+                if (!target) return;
+                setTimeout(() => {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // leve destaque
+                    target.style.transition = 'box-shadow 0.35s ease';
+                    const prev = target.style.boxShadow;
+                    target.style.boxShadow = '0 0 0 2px var(--primary-color)';
+                    setTimeout(() => { target.style.boxShadow = prev || ''; }, 1200);
+                }, 80);
+            }
 
             maskPhone(i) { let v = i.value.replace(/\D/g,""); v=v.replace(/^(\d{2})(\d)/g,"($1) $2"); v=v.replace(/(\d)(\d{4})$/,"$1-$2"); i.value = v; }
             showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.style.display = 'block'; setTimeout(() => t.style.display = 'none', 3000); }
@@ -6702,6 +6737,8 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                 if (cm) cm.value = this.app.config.carouselModo || 'auto';
                 document.getElementById('cfg-valor').value = this.app.config.valor || 0;
                 document.getElementById('cfg-total').value = this.app.config.total || 0;
+                const psEl = document.getElementById('cfg-page-size');
+                if (psEl) psEl.value = this.app.config.pageSize || 200;
                 document.getElementById('cfg-pin').value = this.app.config.pin || "";
                 document.getElementById('cfg-pixel').value = this.app.config.pixel || "";
                 document.getElementById('cfg-reserva-min').value = this.app.config.reservaMinutos || 15;
@@ -7698,7 +7735,8 @@ https://img3.jpg" style="margin-bottom:8px; font-size:12px; font-family:ui-monos
                     carouselTempo: parseInt(document.getElementById('cfg-carousel-tempo')?.value) || 5,
                     carouselModo: document.getElementById('cfg-carousel-modo')?.value || 'auto',
                     valor: parseFloat(document.getElementById('cfg-valor').value) || 0, 
-                    total: parseInt(document.getElementById('cfg-total').value) || 0, 
+                    total: parseInt(document.getElementById('cfg-total').value) || 0,
+                    pageSize: Math.min(500, Math.max(20, parseInt(document.getElementById('cfg-page-size')?.value) || 200)), 
                     gateway: 'ambos',
                     handle: PaymentService.normalizeInfiniteHandle(document.getElementById('cfg-handle')?.value || ''), 
                     mpToken: document.getElementById('cfg-mptoken').value,
