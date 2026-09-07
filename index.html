@@ -1205,33 +1205,6 @@
                     <div id="countdown-timer" style="font-size:22px; font-weight:800; color:var(--primary-color); letter-spacing:1px;">--</div>
                 </div>
 
-                <!-- Bilhetes (estilo app) -->
-                <div class="card" id="card-bilhetes" style="margin-bottom: 14px;">
-                    <div class="bilhetes-head">
-                        <div style="display:flex; gap:12px; align-items:flex-start;">
-                            <div class="icon-box"><i data-lucide="ticket" style="width:20px;"></i></div>
-                            <div>
-                                <h2 style="font-size:18px; color:var(--title-color); font-weight:800;">Bilhetes</h2>
-                                <p style="font-size:12px; color:var(--text-color); font-weight:400; margin-top:2px;">Selecione a quantidade que deseja comprar</p>
-                            </div>
-                        </div>
-                        <button type="button" class="btn-meus-bilhetes" onclick="window.rifaApp.switchTab('consulta')">
-                            <i data-lucide="shopping-cart" style="width:14px;"></i> Ver meus bilhetes
-                        </button>
-                    </div>
-
-                    <div class="quick-select-grid" id="quick-select-grid"></div>
-
-                    <div class="custom-amount-row">
-                        <button class="btn-qty" onclick="window.rifaApp.addSelection(-1)"><i data-lucide="minus"></i></button>
-                        <input type="number" class="input-qty" id="qty-input" value="0" readonly>
-                        <button class="btn-qty" onclick="window.rifaApp.addSelection(1)"><i data-lucide="plus"></i></button>
-                    </div>
-                    <div style="text-align:center; margin-top:6px;">
-                        <button type="button" onclick="window.rifaApp.setSelectionCount(0)" style="background:none; border:none; color:var(--text-color); font-size:12px; font-weight:600; cursor:pointer; padding:4px 10px; text-decoration:underline; opacity:0.75;">Limpar</button>
-                    </div>
-                </div>
-
                 <!-- Combos / promoções estilo app (Roleta + info) -->
                 <div class="card" id="card-promos-estilo" style="margin-bottom:14px; display:none;">
                     <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
@@ -1299,6 +1272,35 @@
                     </div>
                     <div class="doacoes-grid-improved" id="doacoes-grid"></div>
                 </div>
+
+
+                <!-- Bilhetes (estilo app) -->
+                <div class="card" id="card-bilhetes" style="margin-bottom: 14px;">
+                    <div class="bilhetes-head">
+                        <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <div class="icon-box"><i data-lucide="ticket" style="width:20px;"></i></div>
+                            <div>
+                                <h2 style="font-size:18px; color:var(--title-color); font-weight:800;">Bilhetes</h2>
+                                <p style="font-size:12px; color:var(--text-color); font-weight:400; margin-top:2px;">Selecione a quantidade que deseja comprar</p>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-meus-bilhetes" onclick="window.rifaApp.switchTab('consulta')">
+                            <i data-lucide="shopping-cart" style="width:14px;"></i> Ver meus bilhetes
+                        </button>
+                    </div>
+
+                    <div class="quick-select-grid" id="quick-select-grid"></div>
+
+                    <div class="custom-amount-row">
+                        <button class="btn-qty" onclick="window.rifaApp.addSelection(-1)"><i data-lucide="minus"></i></button>
+                        <input type="number" class="input-qty" id="qty-input" value="0" readonly>
+                        <button class="btn-qty" onclick="window.rifaApp.addSelection(1)"><i data-lucide="plus"></i></button>
+                    </div>
+                    <div style="text-align:center; margin-top:6px;">
+                        <button type="button" onclick="window.rifaApp.setSelectionCount(0)" style="background:none; border:none; color:var(--text-color); font-size:12px; font-weight:600; cursor:pointer; padding:4px 10px; text-decoration:underline; opacity:0.75;">Limpar</button>
+                    </div>
+                </div>
+
 
                 <div class="card" id="card-grid">
                     <div class="section-title">
