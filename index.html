@@ -95,10 +95,7 @@
 
         <div class="content-wrapper">
 
-            <div id="view-rifa" class="view-content active">
-
-                <!-- Card principal: título + preço + prêmios -->
-                <div class="card" style="margin-bottom: 14px; padding: 18px;">
+            <div id="view-rifa" class="view-content active"><div class="card" style="margin-bottom: 14px; padding: 18px;">
                     <h1 class="card-title" id="display-premio" style="font-size:22px; margin-bottom:10px;">Carregando...</h1>
                     <div style="display:flex; gap:8px; align-items:center; margin-bottom:14px; flex-wrap:wrap;">
                         <span style="font-size:13px; font-weight:600; color:var(--text-color);">Por apenas</span>
@@ -118,27 +115,7 @@
                         <p style="font-size:13px; color:var(--text-color); line-height:1.55; margin:0;" id="display-descricao"></p>
                     </div>
                 </div>
-
-                <div class="card trust-card" id="card-como-funciona" aria-labelledby="como-funciona-title">
-                    <h2 id="como-funciona-title">Como funciona</h2>
-                    <ol>
-                        <li>Escolha suas cotas e confira o resumo da compra.</li>
-                        <li>Realize o pagamento pelo método disponível.</li>
-                        <li>Aguarde a confirmação automática da reserva.</li>
-                        <li>O sorteio e a divulgação do ganhador seguem as regras da campanha.</li>
-                    </ol>
-                    <p style="margin-top:10px; color:var(--text-color); font-size:11px; line-height:1.5;">Consulte a data, as regras e o canal oficial de atendimento antes de participar.</p>
-                </div>
-
-                <!-- Redes sociais -->
-                <div class="card" id="card-redes" style="margin-bottom:14px; padding:16px; display:none;">
-                    <h3 style="font-size:13px; margin-bottom:12px; color:var(--text-color); font-weight:700;">Redes sociais:</h3>
-                    <div class="social-row" id="social-row"></div>
-                </div>
-
-                <div id="roleta-hint" style="display:none; margin-bottom:12px; padding:12px 14px; border-radius:12px; border:1px solid #7c3aed; background:rgba(124,58,237,0.12); font-size:12px; color:var(--title-color); font-weight:700; text-align:center;"></div>
-
-                <div class="progress-container" style="margin: 8px 0 14px;">
+<div class="progress-container" style="margin: 8px 0 14px;">
                     <div class="progress-info">
                         <span>Progresso da Campanha</span>
                         <span id="progress-text">0%</span>
@@ -149,83 +126,14 @@
                     <div id="cotas-restantes-info" style="text-align:center; margin-top:8px; font-size:12px; font-weight:700; color:var(--reserved);"></div>
                     <div id="progress-urgency-badge" style="display:none; text-align:center; margin-top:8px; font-size:12px; font-weight:800; padding:8px 10px; border-radius:10px;"></div>
                 </div>
-
-                <div id="countdown-sorteio" class="card" style="display:none; margin-bottom:14px; text-align:center; padding:18px; border:2px solid var(--primary-color); background:linear-gradient(180deg, rgba(0,139,119,0.15), var(--gray-500));">
+<div id="countdown-sorteio" class="card" style="display:none; margin-bottom:14px; text-align:center; padding:18px; border:2px solid var(--primary-color); background:linear-gradient(180deg, rgba(0,139,119,0.15), var(--gray-500));">
                     <p style="font-size:13px; color:var(--primary-color); font-weight:800; margin-bottom:8px; letter-spacing:1px;">⏰ SORTEIO EM</p>
                     <div id="countdown-timer" style="font-size:22px; font-weight:800; color:var(--primary-color); letter-spacing:1px;">--</div>
                 </div>
 
-                <!-- Combos / promoções estilo app (Roleta + info) -->
-                <div class="card" id="card-promos-estilo" style="margin-bottom:14px; display:none;">
-                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
-                        <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:18px;"></i></div>
-                        <div>
-                            <h2 style="font-size:16px; color:var(--title-color); font-weight:800;">Promoções</h2>
-                            <p style="font-size:12px; color:var(--text-color);">Combos e brindes extras</p>
-                        </div>
-                    </div>
-                    <div id="promos-estilo-list"></div>
-                </div>
+                <!-- Seção: ESCOLHA A QUANTIDADE -->
 
-                <div id="feed-compras" class="card" style="display:none; margin-bottom:14px; padding:14px;">
-                    <div id="feed-compras-titulo" style="font-size:12px; font-weight:800; color:var(--title-color); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Maiores compradores</div>
-                    <div id="feed-compras-list" style="display:flex; flex-direction:column; gap:8px;"></div>
-                </div>
-
-                <div id="card-ganhadores-publicos" class="card" style="display:none; margin-bottom:14px;">
-                    <div class="section-title">
-                        <div class="icon-box"><i data-lucide="trophy" style="width:20px;"></i></div>
-                        <div>
-                            <h2 style="font-size:18px;">Ganhadores</h2>
-                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Confira quem já faturou</p>
-                        </div>
-                    </div>
-                    <div id="ganhadores-publicos-list"></div>
-                </div>
-
-                <div id="card-roleta-estoque" class="card" style="display:none; margin-bottom:14px; padding:14px;">
-                    <div style="font-size:12px; font-weight:800; color:#a78bfa; margin-bottom:8px; text-transform:uppercase;">🎯 Roleta Disponivel</div>
-                    <div id="roleta-estoque-list" style="display:flex; flex-direction:column; gap:6px;"></div>
-                </div>
-
-                <div id="card-roleta-ganhadores" class="card" style="display:none; margin-bottom:14px;">
-                    <div class="section-title">
-                        <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:20px;"></i></div>
-                        <div>
-                            <h2 style="font-size:18px;">Ganhadores da Roleta</h2>
-                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Prêmios válidos da roleta premiada</p>
-                        </div>
-                    </div>
-                    <div id="roleta-ganhadores-publicos"></div>
-                </div>
-
-                <!--<div class="card" id="card-como-funciona" style="margin-bottom:14px; padding:16px;">
-                    <div style="font-size:13px; font-weight:800; color:var(--title-color); margin-bottom:10px;">✅ Veja Como funciona</div>
-                    <ul style="margin:0; padding-left:18px; color:var(--text-color); font-size:12px; line-height:1.55;">
-                        <li>Escolha a quantidade de bilhetes e reserve</li>
-                        <li>Pague via PIX ou cartão — confirmação automática</li>
-                        <li>Se atingir a meta, libera giros na roleta de brindes</li>
-                        <li>O sorteio principal segue as regras da campanha</li>
-                    </ul>
-                    <button type="button" onclick="window.rifaApp.openFaq()" style="margin-top:12px; background:var(--gray-400); border:1px solid var(--border-color); color:var(--title-color); padding:10px 14px; border-radius:10px; font-size:12px; font-weight:700; cursor:pointer; width:100%;">Ver dúvidas frequentes</button>
-                </div>-->
-
-                <div class="card" id="card-doacoes" style="display: none; margin-bottom: 14px;">
-                    <div class="section-title">
-                        <div class="icon-box" style="background-color: rgba(214, 51, 132, 0.1); border-color: var(--donated); color: var(--donated);">
-                            <i data-lucide="gift" style="width: 20px;"></i>
-                        </div>
-                        <div>
-                            <h2 style="font-size: 18px;">Lista de Presentes</h2>
-                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Doe um item e ganhe bilhetes da sorte!</p>
-                        </div>
-                    </div>
-                    <div class="doacoes-grid-improved" id="doacoes-grid"></div>
-                </div>
-
-
-                <!-- Bilhetes (estilo app) -->
-                <div class="card" id="card-bilhetes" style="margin-bottom: 14px;">
+<div class="card" id="card-bilhetes" style="margin-bottom: 14px;">
                     <div class="bilhetes-head">
                         <div style="display:flex; gap:12px; align-items:flex-start;">
                             <div class="icon-box"><i data-lucide="ticket" style="width:20px;"></i></div>
@@ -251,8 +159,9 @@
                     </div>
                 </div>
 
+                <!-- Seção: ESCOLHA OS NÚMEROS -->
 
-                <div class="card" id="card-grid">
+<div class="card" id="card-grid">
                     <div class="section-title">
                         <div class="icon-box"><i data-lucide="grid" style="width: 20px;"></i></div>
                         <h2 style="font-size: 18px;">Escolha suas cotas</h2>
@@ -288,8 +197,84 @@
                     <div class="grid-pagination" id="grid-pagination" style="display:none;"></div>
                     <div class="grid-swipe-tip" id="grid-swipe-tip">👈 Deslize para navegar nas páginas 👉</div>
                 </div>
-                
-                <div style="display:flex; gap:8px; margin:14px 0; flex-wrap:wrap;">
+<div id="roleta-hint" style="display:none; margin-bottom:12px; padding:12px 14px; border-radius:12px; border:1px solid #7c3aed; background:rgba(124,58,237,0.12); font-size:12px; color:var(--title-color); font-weight:700; text-align:center;"></div>
+
+                <!-- Seção: OFERTAS -->
+
+<div class="card" id="card-promos-estilo" style="margin-bottom:14px; display:none;">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+                        <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:18px;"></i></div>
+                        <div>
+                            <h2 style="font-size:16px; color:var(--title-color); font-weight:800;">Promoções</h2>
+                            <p style="font-size:12px; color:var(--text-color);">Combos e brindes extras</p>
+                        </div>
+                    </div>
+                    <div id="promos-estilo-list"></div>
+                </div>
+<div id="card-roleta-estoque" class="card" style="display:none; margin-bottom:14px; padding:14px;">
+                    <div style="font-size:12px; font-weight:800; color:#a78bfa; margin-bottom:8px; text-transform:uppercase;">🎯 Roleta Disponivel</div>
+                    <div id="roleta-estoque-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+<div class="card trust-card" id="card-como-funciona" aria-labelledby="como-funciona-title">
+                    <h2 id="como-funciona-title">Como funciona</h2>
+                    <ol>
+                        <li>Escolha suas cotas e confira o resumo da compra.</li>
+                        <li>Realize o pagamento pelo método disponível.</li>
+                        <li>Aguarde a confirmação automática da reserva.</li>
+                        <li>O sorteio e a divulgação do ganhador seguem as regras da campanha.</li>
+                    </ol>
+                    <p style="margin-top:10px; color:var(--text-color); font-size:11px; line-height:1.5;">Consulte a data, as regras e o canal oficial de atendimento antes de participar.</p>
+                </div>
+
+                <!-- Seção: DOAÇÕES -->
+
+<div class="card" id="card-doacoes" style="display: none; margin-bottom: 14px;">
+                    <div class="section-title">
+                        <div class="icon-box" style="background-color: rgba(214, 51, 132, 0.1); border-color: var(--donated); color: var(--donated);">
+                            <i data-lucide="gift" style="width: 20px;"></i>
+                        </div>
+                        <div>
+                            <h2 style="font-size: 18px;">Lista de Presentes</h2>
+                            <p style="font-size: 13px; color: var(--text-color); font-weight: 400;">Doe um item e ganhe bilhetes da sorte!</p>
+                        </div>
+                    </div>
+                    <div class="doacoes-grid-improved" id="doacoes-grid"></div>
+                </div>
+
+                <!-- Seção: RESULTADOS -->
+
+<div id="card-ganhadores-publicos" class="card" style="display:none; margin-bottom:14px;">
+                    <div class="section-title">
+                        <div class="icon-box"><i data-lucide="trophy" style="width:20px;"></i></div>
+                        <div>
+                            <h2 style="font-size:18px;">Ganhadores</h2>
+                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Confira quem já faturou</p>
+                        </div>
+                    </div>
+                    <div id="ganhadores-publicos-list"></div>
+                </div>
+<div id="card-roleta-ganhadores" class="card" style="display:none; margin-bottom:14px;">
+                    <div class="section-title">
+                        <div class="icon-box" style="background:rgba(124,58,237,0.15); border-color:#7c3aed; color:#a78bfa;"><i data-lucide="gift" style="width:20px;"></i></div>
+                        <div>
+                            <h2 style="font-size:18px;">Ganhadores da Roleta</h2>
+                            <p style="font-size:13px; color:var(--text-color); font-weight:400;">Prêmios válidos da roleta premiada</p>
+                        </div>
+                    </div>
+                    <div id="roleta-ganhadores-publicos"></div>
+                </div>
+<div id="feed-compras" class="card" style="display:none; margin-bottom:14px; padding:14px;">
+                    <div id="feed-compras-titulo" style="font-size:12px; font-weight:800; color:var(--title-color); margin-bottom:12px; text-transform:uppercase; letter-spacing:0.5px;">🏆 Maiores compradores</div>
+                    <div id="feed-compras-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
+
+                <!-- Seção: ATENDIMENTO E REDES -->
+
+<div class="card" id="card-redes" style="margin-bottom:14px; padding:16px; display:none;">
+                    <h3 style="font-size:13px; margin-bottom:12px; color:var(--text-color); font-weight:700;">Redes sociais:</h3>
+                    <div class="social-row" id="social-row"></div>
+                </div>
+<div style="display:flex; gap:8px; margin:14px 0; flex-wrap:wrap;">
                     <button type="button" class="btn-participar" style="flex:1; min-width:140px; padding:12px; font-size:13px; background:var(--gray-400); color:var(--title-color);" onclick="window.rifaApp.compartilharRifa()">
                         <i class="fa-solid fa-share-nodes"></i> Compartilhar
                     </button>
@@ -297,11 +282,11 @@
                         <i data-lucide="help-circle" style="width:16px;"></i> Como funciona
                     </button>
                 </div>
-
-                <div class="footer-copyright">
+<div class="footer-copyright">
                    © 2026 Vagner Sorteios · Desenvolvido por Vagner Lauriuche
                 </div>
-            </div>
+            
+</div>
 
             <div id="view-consulta" class="view-content">
                 <div class="card" style="text-align: center;">
