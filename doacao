@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#151617">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>Campanha de Doação Solidária</title>
+    <meta name="description" content="Participe da nossa campanha de arrecadação. Sua contribuição faz toda a diferença!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/lucide@latest" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+    <style>
+        :root {
+            --background-color: #1c1d1f;
+            --primary-color: #008b77;
+            --primary-text-color: #ffffff;
+            --primary-color-15: rgba(0, 139, 119, 0.15);
+            --header-color: #151617;
+            --header-border-color: #302f2f;
+            --border-color: #36383e;
+            --gray-50: #2f3238;
+            --gray-100: #444444;
+            --gray-200: #383c43;
+            --gray-300: #34343a;
+            --gray-400: #292b31;
+            --gray-500: #26282c;
+            --button-color: #303238;
+            --button-border: #3e4145;
+            --title-color: #eaeaef;
+            --text-color: #aaaaaa;
+            --paid: #00db87;
+            --reserved: #ffaa00;
+            --donated: #d63384;
+            --danger: #ff4d4d;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 14px;
+            overflow-x: hidden;
+        }
+        button, input, select, textarea {
+            outline: none;
+            border: none;
+            font-family: inherit;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        .header-fixed {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 66px;
+            background-color: var(--header-color);
+            border-bottom: 1px solid var(--header-border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 100;
+        }
+        .header-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            color: var(--text-color);
+            gap: 4px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .header-btn:hover { color: var(--primary-color); }
+        .header-btn span { font-size: 10px; font-weight: 500; }
+        .main-container {
+            padding-top: 66px;
+            position: relative;
+            min-height: calc(100vh - 66px);
+            padding-bottom: 90px;
+        }
+        .hero-blur {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            width: 100%; height: 350px;
+            opacity: 0.35;
+            filter: blur(25px);
+            pointer-events: none;
+            mask-image: linear-gradient(to bottom, black, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+            z-index: 0;
+        }
+        .hero-blur img { width: 100%; height: 100%; object-fit: cover; }
+        .hero-image-container {
+            position: relative;
+            width: 100%; max-width: 800px;
+            margin: 0 auto;
+            aspect-ratio: 20/9;
+            z-index: 15;
+            padding: 4px 16px 16px;
+        }
+        .hero-image-container img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .content-wrapper {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .card {
+            background-color: var(--gray-500);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .card-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--title-color);
+            line-height: 1.25;
+            margin-bottom: 8px;
+        }
+        .quick-select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .btn-quick {
+            background-color: var(--button-color);
+            border: 1px solid var(--button-border);
+            border-radius: 14px;
+            padding: 12px 6px;
+            text-align: center;
+            color: var(--title-color);
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 70px;
+        }
+        .btn-quick:hover { filter: brightness(1.2); }
+        .btn-quick.selected {
+            border: 2px solid var(--primary-color);
+            background-color: var(--primary-color-15);
+            color: #fff;
+        }
+        .btn-quick .val { font-size: 18px; font-weight: 800; }
+        .btn-quick .lbl { font-size: 10px; text-transform: uppercase; color: var(--text-color); margin-top: 2px; }
+        .custom-amount-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px 14px;
+            margin-bottom: 16px;
+        }
+        .custom-amount-row span { font-weight: 700; color: var(--primary-color); font-size: 16px; }
+        .custom-amount-row input {
+            background: transparent;
+            color: var(--title-color);
+            font-size: 18px;
+            font-weight: 700;
+            width: 100%;
+        }
+        .fixed-bottom-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background-color: var(--header-color);
+            border-top: 1px solid var(--header-border-color);
+            padding: 14px 16px;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+        }
+        .btn-participar {
+            width: 100%;
+            max-width: 800px;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-size: 15px;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-transform: uppercase;
+            transition: 0.2s;
+        }
+        .btn-participar:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-participar:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .progress-container { margin: 16px 0; }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background-color: var(--gray-300);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--paid));
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 10050;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-card {
+            background-color: var(--gray-500);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+        }
+        .input-form {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--background-color);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--title-color);
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .input-form:focus { border-color: var(--primary-color); }
+        .toast {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--primary-color);
+            color: #fff;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            z-index: 10100;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+        .doacoes-grid-improved {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+        .btn-doacao {
+            background: var(--gray-400);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-doacao:hover { border-color: var(--donated); transform: translateY(-2px); }
+        .view-content { display: none; }
+        .view-content.active { display: block; }
+        .admin-item {
+            background: var(--background-color);
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="toast" class="toast">Mensagem</div>
+
+    <header class="header-fixed">
+        <button type="button" class="header-btn" onclick="window.doacaoApp.askAdmin()">
+            <i data-lucide="shield" style="width: 22px;"></i>
+            <span>Painel</span>
+        </button>
+        <span style="font-weight: 800; font-size: 17px; color: var(--title-color); letter-spacing: 0.5px;">DOAÇÃO SOLIDÁRIA</span>
+        <button type="button" class="header-btn" onclick="window.doacaoApp.switchTab('consulta')">
+            <i data-lucide="receipt" style="width: 22px;"></i>
+            <span>Minhas Doações</span>
+        </button>
+    </header>
+
+    <div class="main-container">
+        <div class="hero-blur">
+            <img src="img/capa.jpg" id="img-blur" alt="Fundo">
+        </div>
+
+        <div class="hero-image-container">
+            <img src="img/capa.jpg" alt="Campanha" id="img-main">
+        </div>
+
+        <div class="content-wrapper">
+            <!-- TELA PRINCIPAL -->
+            <div id="view-doacao" class="view-content active">
+                <div class="card">
+                    <h1 class="card-title" id="display-titulo">Carregando causa...</h1>
+                    <p style="font-size: 14px; color: var(--text-color); line-height: 1.6;" id="display-descricao">
+                        Contribua com a nossa arrecadação para apoiar este projeto.
+                    </p>
+
+                    <!-- BARRA DE META -->
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span>Arrecadado: <b id="progresso-arrecadado" style="color:var(--paid);">R$ 0,00</b></span>
+                            <span>Meta: <b id="progresso-meta">R$ 0,00</b></span>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:12px;">
+                            <span id="progresso-porcento" style="font-weight:700; color:var(--primary-color);">0% atingido</span>
+                            <span id="total-doadores">0 apoiadores</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VALORES RÁPIDOS -->
+                <div class="card">
+                    <h2 style="font-size: 17px; color: var(--title-color); margin-bottom: 14px; display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="heart" style="color:var(--primary-color); width:20px;"></i> Escolha um valor para doar
+                    </h2>
+                    <div class="quick-select-grid" id="quick-values">
+                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(10)"><span class="val">R$ 10</span><span class="lbl">Apoiar</span></div>
+                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(25)"><span class="val">R$ 25</span><span class="lbl">Apoiar</span></div>
+                        <div class="btn-quick selected" onclick="window.doacaoApp.selectValue(50)"><span class="val">R$ 50</span><span class="lbl">Popular</span></div>
+                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(100)"><span class="val">R$ 100</span><span class="lbl">Apoiar</span></div>
+                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(200)"><span class="val">R$ 200</span><span class="lbl">Apoiar</span></div>
+                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(500)"><span class="val">R$ 500</span><span class="lbl">Benfeitor</span></div>
+                    </div>
+
+                    <div class="custom-amount-row">
+                        <span>R$</span>
+                        <input type="number" id="input-custom-val" placeholder="Outro valor" min="1" step="any" oninput="window.doacaoApp.onCustomValueInput(this.value)">
+                    </div>
+                </div>
+
+                <!-- MURAL DE APOIADORES -->
+                <div class="card" id="mural-card">
+                    <h2 style="font-size: 16px; color: var(--title-color); margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
+                        <i data-lucide="users" style="color:var(--paid); width:18px;"></i> Últimas Doações
+                    </h2>
+                    <div id="mural-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="btn-participar" style="background:var(--gray-400); color:var(--title-color);" onclick="window.doacaoApp.compartilhar()">
+                        <i data-lucide="share-2" style="width: 16px;"></i> Compartilhar
+                    </button>
+                </div>
+            </div>
+
+            <!-- CONSULTA MINHAS CONTRIBUIÇÕES -->
+            <div id="view-consulta" class="view-content">
+                <div class="card" style="text-align: center;">
+                    <button onclick="window.doacaoApp.switchTab('doacao')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer;">
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
+                    </button>
+                    <h2 style="color: var(--title-color); margin-bottom: 8px; font-size: 20px;">Consultar Doações</h2>
+                    <p style="color: var(--text-color); margin-bottom: 20px; font-size: 13px;">Informe seu WhatsApp para visualizar suas doações confirmadas ou pendentes.</p>
+                    <input type="tel" id="search-phone" class="input-form" placeholder="(00) 00000-0000" style="text-align: center; font-size: 18px;">
+                    <button class="btn-participar" onclick="window.doacaoApp.consultarDoacoes()">Buscar</button>
+                    <div id="results-area" style="margin-top: 20px; text-align: left;"></div>
+                </div>
+            </div>
+
+            <!-- ADMIN -->
+            <div id="view-admin" class="view-content">
+                <div class="card">
+                    <button onclick="window.doacaoApp.switchTab('doacao')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer;">
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar
+                    </button>
+                    <h2 style="color: var(--title-color); font-size: 20px; margin-bottom: 16px;">Painel de Arrecadação</h2>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
+                        <div class="admin-item">
+                            <span style="font-size:11px;">Total Arrecadado</span>
+                            <b id="admin-total-pago" style="display:block; color:var(--paid); font-size:18px; margin-top:4px;">R$ 0,00</b>
+                        </div>
+                        <div class="admin-item">
+                            <span style="font-size:11px;">Doadores Únicos</span>
+                            <b id="admin-qtd-doadores" style="display:block; color:var(--title-color); font-size:18px; margin-top:4px;">0</b>
+                        </div>
+                    </div>
+                    <div id="admin-doacoes-list"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÃO FIXO INFERIOR -->
+    <div class="fixed-bottom-bar" id="fixed-checkout">
+        <button class="btn-participar" id="btn-doar-agora" onclick="window.doacaoApp.abrirCheckout()">
+            <i data-lucide="heart"></i> Fazer Doação (<span id="btn-val-label">R$ 50,00</span>)
+        </button>
+    </div>
+
+    <!-- MODAL CHECKOUT / PAGAMENTO -->
+    <div class="modal-overlay" id="modal-checkout">
+        <div class="modal-card">
+            <div id="checkout-step-1">
+                <h2 style="color:var(--title-color); margin-bottom:12px; font-size: 20px; text-align:center;">Finalizar Doação</h2>
+                <div style="background: var(--background-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: center;">
+                    <span style="font-size: 12px; color: var(--text-color);">Valor da contribuição:</span>
+                    <p id="checkout-display-val" style="font-size: 28px; font-weight: 800; color: var(--paid); margin-top: 4px;">R$ 50,00</p>
+                </div>
+                
+                <input type="text" id="cust-name" class="input-form" placeholder="Seu nome (ou 'Anônimo')">
+                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD + Número)">
+                <textarea id="cust-msg" class="input-form" rows="2" placeholder="Deixe uma mensagem de apoio (opcional)"></textarea>
+
+                <p style="font-size:12px; color:var(--text-color); text-align:center; margin-bottom:10px;">Forma de pagamento:</p>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+                    <button type="button" id="btn-pay-pix" onclick="window.doacaoApp.setMethod('pix')" style="padding:12px; border-radius:10px; border:2px solid var(--primary-color); background:var(--primary-color-15); color:var(--title-color); font-weight:700;">
+                        <i class="fa-brands fa-pix"></i> PIX
+                    </button>
+                    <button type="button" id="btn-pay-card" onclick="window.doacaoApp.setMethod('card')" style="padding:12px; border-radius:10px; border:2px solid var(--border-color); background:var(--gray-400); color:var(--title-color); font-weight:700;">
+                        <i class="fa-solid fa-credit-card"></i> Cartão
+                    </button>
+                </div>
+
+                <button class="btn-participar" id="btn-confirm-pay" onclick="window.doacaoApp.processarPagamento()">
+                    Confirmar Contribuição
+                </button>
+                <button onclick="window.doacaoApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); cursor: pointer; padding: 8px;">
+                    Cancelar
+                </button>
+            </div>
+
+            <!-- TELA DO QR CODE PIX -->
+            <div id="checkout-step-2" style="display: none; text-align: center;">
+                <h2 style="color:var(--title-color); margin-bottom:14px; font-size: 20px;">Pagamento via PIX</h2>
+                <p style="font-size: 13px; color: var(--text-color); margin-bottom: 16px;">Abra o app do seu banco e escaneie o QR Code:</p>
+                <div style="background: #fff; padding: 10px; border-radius: 12px; display: inline-block; margin-bottom: 16px;">
+                    <img id="pix-qr-img" src="" alt="QR Code PIX" style="width: 200px; height: 200px; display: block;">
+                </div>
+                <input type="text" id="pix-copia-cola" class="input-form" readonly style="text-align: center; font-size: 12px;">
+                <button class="btn-participar" onclick="window.doacaoApp.copiarPix()" style="margin-bottom: 16px; background-color: var(--gray-400); color: var(--title-color);">
+                    <i data-lucide="copy" style="width: 16px;"></i> Copiar Código PIX
+                </button>
+                <div id="pix-status" style="color: var(--reserved); font-weight: 700; font-size: 13px;">
+                    Aguardando confirmação do pagamento...
+                </div>
+                <button onclick="window.doacaoApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); cursor: pointer;">
+                    Fechar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL SUCESSO -->
+    <div class="modal-overlay" id="modal-sucesso">
+        <div class="modal-card" style="text-align:center;">
+            <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,219,135,0.15);border:2px solid var(--paid);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+                <i data-lucide="heart" style="color:var(--paid);width:32px;height:32px;"></i>
+            </div>
+            <h2 style="color:var(--title-color);font-size:22px;margin-bottom:8px;">Muito obrigado!</h2>
+            <p style="font-size:14px;color:var(--text-color);margin-bottom:16px;">Sua doação foi recebida com sucesso e fará toda a diferença!</p>
+            <button class="btn-participar" onclick="window.doacaoApp.closeModal('modal-sucesso')">Concluir</button>
+        </div>
+    </div>
+
+    <!-- MODAL PIN ADMIN -->
+    <div class="modal-overlay" id="modal-pin">
+        <div class="modal-card" style="text-align: center; max-width: 320px;">
+            <h3 style="color:var(--title-color); margin-bottom:16px; font-size: 18px;">Acesso Administrativo</h3>
+            <input type="password" id="admin-pin" class="input-form" placeholder="PIN" maxlength="8" style="text-align:center; font-size:20px; letter-spacing:6px;">
+            <button class="btn-participar" onclick="window.doacaoApp.validarPin()">Entrar</button>
+            <button onclick="window.doacaoApp.closeModal('modal-pin')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); cursor: pointer;">Cancelar</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, set, get, update, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
+            authDomain: "vagner-34d5b.firebaseapp.com",
+            databaseURL: "https://vagner-34d5b.firebaseio.com",
+            projectId: "vagner-34d5b",
+            storageBucket: "vagner-34d5b.firebasestorage.app",
+            messagingSenderId: "711539772164",
+            appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const tenantId = new URLSearchParams(window.location.search).get("tenant") || "doacao_principal";
+        const dbPath = `doacoes/${tenantId}`;
+        const cfgRef = ref(db, `${dbPath}/config`);
+        const doacoesRef = ref(db, `${dbPath}/historico`);
+
+        const BACKEND_URL = "https://rifa-1-m8tv.onrender.com";
+
+        class DoacaoApp {
+            constructor() {
+                this.config = {
+                    titulo: "Ajude Nossa Causa",
+                    descricao: "Cada contribuição transforma realidades. Participe e apoie nossa meta!",
+                    meta: 5000,
+                    mpToken: "",
+                    handle: "",
+                    pin: "1234"
+                };
+                this.selectedAmount = 50;
+                this.payMethod = "pix";
+                this.doacoes = {};
+                this.init();
+            }
+
+            init() {
+                lucide.createIcons();
+                this.listenFirebase();
+            }
+
+            listenFirebase() {
+                onValue(cfgRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        this.config = { ...this.config, ...snapshot.val() };
+                        this.renderConfig();
+                    }
+                });
+
+                onValue(doacoesRef, (snapshot) => {
+                    this.doacoes = snapshot.exists() ? snapshot.val() : {};
+                    this.renderProgressAndMural();
+                });
+            }
+
+            renderConfig() {
+                document.getElementById("display-titulo").innerText = this.config.titulo;
+                document.getElementById("display-descricao").innerText = this.config.descricao;
+                document.getElementById("progresso-meta").innerText = (this.config.meta || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+            }
+
+            renderProgressAndMural() {
+                let total = 0;
+                let count = 0;
+                const muralList = document.getElementById("mural-list");
+                muralList.innerHTML = "";
+
+                const lista = Object.values(this.doacoes).filter(d => d.status === "paid");
+                lista.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                lista.forEach((d) => {
+                    total += Number(d.valor) || 0;
+                    count++;
+                });
+
+                lista.slice(0, 10).forEach(d => {
+                    muralList.innerHTML += `
+                        <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <b style="color:var(--title-color);">${d.nome || 'Apoiador Anônimo'}</b>
+                                ${d.mensagem ? `<p style="font-size:12px; color:var(--text-color); margin-top:3px;">"${d.mensagem}"</p>` : ''}
+                            </div>
+                            <span style="color:var(--paid); font-weight:800; font-size:14px;">+ ${Number(d.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                        </div>
+                    `;
+                });
+
+                if (lista.length === 0) {
+                    muralList.innerHTML = '<p style="text-align:center; font-size:13px; color:var(--text-color);">Seja o primeiro a doar!</p>';
+                }
+
+                document.getElementById("progresso-arrecadado").innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                document.getElementById("total-doadores").innerText = `${count} apoiadores`;
+
+                const meta = this.config.meta || 1;
+                const perc = Math.min(100, Math.round((total / meta) * 100));
+                document.getElementById("progress-fill").style.width = `${perc}%`;
+                document.getElementById("progresso-porcento").innerText = `${perc}% atingido`;
+            }
+
+            selectValue(val) {
+                this.selectedAmount = Number(val);
+                document.querySelectorAll(".btn-quick").forEach(btn => btn.classList.remove("selected"));
+                event.currentTarget.classList.add("selected");
+                document.getElementById("input-custom-val").value = "";
+                this.updateButtonLabel();
+            }
+
+            onCustomValueInput(val) {
+                const num = parseFloat(val);
+                if (num && num > 0) {
+                    this.selectedAmount = num;
+                    document.querySelectorAll(".btn-quick").forEach(btn => btn.classList.remove("selected"));
+                    this.updateButtonLabel();
+                }
+            }
+
+            updateButtonLabel() {
+                const label = this.selectedAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                document.getElementById("btn-val-label").innerText = label;
+                document.getElementById("checkout-display-val").innerText = label;
+            }
+
+            setMethod(method) {
+                this.payMethod = method;
+                const isPix = method === "pix";
+                document.getElementById("btn-pay-pix").style.borderColor = isPix ? "var(--primary-color)" : "var(--border-color)";
+                document.getElementById("btn-pay-pix").style.backgroundColor = isPix ? "var(--primary-color-15)" : "var(--gray-400)";
+                document.getElementById("btn-pay-card").style.borderColor = !isPix ? "var(--primary-color)" : "var(--border-color)";
+                document.getElementById("btn-pay-card").style.backgroundColor = !isPix ? "var(--primary-color-15)" : "var(--gray-400)";
+            }
+
+            abrirCheckout() {
+                document.getElementById("checkout-step-1").style.display = "block";
+                document.getElementById("checkout-step-2").style.display = "none";
+                document.getElementById("modal-checkout").style.display = "flex";
+            }
+
+            closeModal(id) {
+                document.getElementById(id).style.display = "none";
+                if (this.pixInterval) clearInterval(this.pixInterval);
+            }
+
+            showToast(msg) {
+                const t = document.getElementById("toast");
+                t.innerText = msg;
+                t.style.display = "block";
+                setTimeout(() => t.style.display = "none", 3000);
+            }
+
+            async processarPagamento() {
+                const nome = document.getElementById("cust-name").value.trim() || "Anônimo";
+                const tel = document.getElementById("cust-phone").value.replace(/\D/g, "");
+                const msg = document.getElementById("cust-msg").value.trim();
+                const valor = this.selectedAmount;
+
+                if (!valor || valor <= 0) return this.showToast("Informe um valor válido.");
+
+                const nsu = "DOA" + Date.now();
+                const payload = {
+                    nome,
+                    telefone: tel,
+                    mensagem: msg,
+                    valor,
+                    nsu,
+                    status: "reserved",
+                    timestamp: Date.now()
+                };
+
+                const docRef = push(doacoesRef);
+                await set(docRef, payload);
+
+                if (this.payMethod === "pix") {
+                    this.gerarPix(payload, docRef.key);
+                } else {
+                    this.gerarCartao(payload, docRef.key);
+                }
+            }
+
+            async gerarPix(data, key) {
+                try {
+                    this.showToast("Gerando PIX...");
+                    const res = await fetch(`${BACKEND_URL}/api/create-pix`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            tenantId,
+                            payData: {
+                                nsu: data.nsu,
+                                nome: data.nome,
+                                telefone: data.telefone,
+                                priceCents: Math.round(data.valor * 100),
+                                description: `Doacao ${this.config.titulo}`
+                            },
+                            mpToken: this.config.mpToken
+                        })
+                    });
+
+                    const resData = await res.json();
+                    if (!res.ok) throw new Error(resData.message || "Erro ao gerar PIX");
+
+                    document.getElementById("checkout-step-1").style.display = "none";
+                    document.getElementById("checkout-step-2").style.display = "block";
+                    document.getElementById("pix-qr-img").src = "data:image/jpeg;base64," + resData.qr_code_base64;
+                    document.getElementById("pix-copia-cola").value = resData.qr_code;
+
+                    this.pixInterval = setInterval(async () => {
+                        const check = await fetch(`${BACKEND_URL}/api/check-status/${resData.id}?token=${encodeURIComponent(this.config.mpToken)}`);
+                        const checkJson = await check.json();
+                        if (checkJson.status === "approved") {
+                            clearInterval(this.pixInterval);
+                            await update(ref(db, `${dbPath}/historico/${key}`), { status: "paid" });
+                            this.closeModal("modal-checkout");
+                            document.getElementById("modal-sucesso").style.display = "flex";
+                            confetti({ particleCount: 120, spread: 70 });
+                        }
+                    }, 3000);
+                } catch (e) {
+                    this.showToast(e.message || "Erro no pagamento PIX.");
+                }
+            }
+
+            async gerarCartao(data, key) {
+                try {
+                    const handle = String(this.config.handle || "").trim().replace(/^[@$]+/, "");
+                    const priceCents = Math.round(data.valor * 100);
+                    const items = encodeURIComponent(JSON.stringify([{ name: `Doação - ${data.nome}`, price: priceCents, quantity: 1 }]));
+                    const redirect = encodeURIComponent(window.location.href);
+                    const link = `https://checkout.infinitepay.io/${encodeURIComponent(handle)}?items=${items}&order_nsu=${data.nsu}&redirect_url=${redirect}`;
+                    window.location.href = link;
+                } catch (e) {
+                    this.showToast("Erro ao abrir checkout no cartão.");
+                }
+            }
+
+            copiarPix() {
+                const el = document.getElementById("pix-copia-cola");
+                el.select();
+                navigator.clipboard.writeText(el.value);
+                this.showToast("Chave PIX Copiada!");
+            }
+
+            switchTab(tab) {
+                document.querySelectorAll(".view-content").forEach(el => el.classList.remove("active"));
+                const target = document.getElementById(`view-${tab}`);
+                if (target) target.classList.add("active");
+                document.getElementById("fixed-checkout").style.display = tab === "doacao" ? "flex" : "none";
+                window.scrollTo(0, 0);
+            }
+
+            compartilhar() {
+                const text = `Apoie a campanha: *${this.config.titulo}*. Faça sua doação online: ${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+            }
+
+            askAdmin() {
+                document.getElementById("modal-pin").style.display = "flex";
+            }
+
+            validarPin() {
+                const pin = document.getElementById("admin-pin").value.trim();
+                if (pin === String(this.config.pin)) {
+                    this.closeModal("modal-pin");
+                    this.switchTab("admin");
+                    this.renderAdminView();
+                } else {
+                    this.showToast("PIN Incorreto!");
+                }
+            }
+
+            renderAdminView() {
+                const listEl = document.getElementById("admin-doacoes-list");
+                listEl.innerHTML = "";
+                let total = 0;
+                let count = 0;
+
+                Object.entries(this.doacoes).forEach(([k, d]) => {
+                    if (d.status === "paid") {
+                        total += Number(d.valor) || 0;
+                        count++;
+                    }
+                    listEl.innerHTML += `
+                        <div class="admin-item">
+                            <div style="display:flex; justify-content:space-between;">
+                                <b>${d.nome || 'Anônimo'} (${d.telefone || 'Sem Tel'})</b>
+                                <span style="color:${d.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}; font-weight:700;">
+                                    ${d.status === 'paid' ? 'Pago' : 'Pendente'}
+                                </span>
+                            </div>
+                            <p style="margin-top:4px; font-size:13px;">Valor: R$ ${Number(d.valor || 0).toFixed(2)} | NSU: ${d.nsu || '-'}</p>
+                            ${d.mensagem ? `<p style="font-size:12px; color:var(--text-color); margin-top:4px;">"${d.mensagem}"</p>` : ''}
+                        </div>
+                    `;
+                });
+
+                document.getElementById("admin-total-pago").innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                document.getElementById("admin-qtd-doadores").innerText = count;
+            }
+
+            async consultarDoacoes() {
+                const tel = document.getElementById("search-phone").value.replace(/\D/g, "");
+                const resEl = document.getElementById("results-area");
+                resEl.innerHTML = "";
+
+                if (tel.length < 10) return this.showToast("Informe DDD + Número.");
+
+                const encontradas = Object.values(this.doacoes).filter(d => d.telefone === tel);
+
+                if (encontradas.length === 0) {
+                    resEl.innerHTML = '<p style="text-align:center; padding:10px;">Nenhuma doação encontrada para este número.</p>';
+                    return;
+                }
+
+                encontradas.forEach(d => {
+                    resEl.innerHTML += `
+                        <div class="admin-item" style="border-color:${d.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'};">
+                            <b>${d.nome}</b> - R$ ${Number(d.valor).toFixed(2)}
+                            <p style="font-size:12px; margin-top:4px;">Status: <b>${d.status === 'paid' ? 'Confirmada' : 'Aguardando Pagamento'}</b></p>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        window.doacaoApp = new DoacaoApp();
+    </script>
+</body>
+</html>
