@@ -1,501 +1,1274 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="icon" href="img/favicon.png" type="image/x-icon">
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#151617">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5" />
+    <meta name="theme-color" content="#0d0e11">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <title>Campanha de Doação Solidária</title>
-    <meta name="description" content="Participe da nossa campanha de arrecadação. Sua contribuição faz toda a diferença!">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="description" content="Campanha oficial de arrecadação solidária. Transparência, segurança e impacto real.">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" href="img/favicon.png" type="image/x-icon">
+    <title>Doação Solidária — Juntos Mudamos Vidas</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Icons & Confetti -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://unpkg.com/lucide@latest" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js" defer></script>
+
     <style>
         :root {
-            --background-color: #1c1d1f;
-            --primary-color: #008b77;
-            --primary-text-color: #ffffff;
-            --primary-color-15: rgba(0, 139, 119, 0.15);
-            --header-color: #151617;
-            --header-border-color: #302f2f;
-            --border-color: #36383e;
-            --gray-50: #2f3238;
-            --gray-100: #444444;
-            --gray-200: #383c43;
-            --gray-300: #34343a;
-            --gray-400: #292b31;
-            --gray-500: #26282c;
-            --button-color: #303238;
-            --button-border: #3e4145;
-            --title-color: #eaeaef;
-            --text-color: #aaaaaa;
+            --background-color: #0b0c0e;
+            --surface-color: #13151b;
+            --surface-card: #181a22;
+            --surface-hover: #1f222c;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-highlight: rgba(0, 219, 135, 0.25);
+
+            --primary-color: #00db87;
+            --primary-dark: #00a866;
+            --primary-glow: rgba(0, 219, 135, 0.28);
+            --primary-light: rgba(0, 219, 135, 0.12);
+
+            --title-color: #f8fafc;
+            --text-color: #94a3b8;
+            --text-muted: #64748b;
+
             --paid: #00db87;
-            --reserved: #ffaa00;
-            --donated: #d63384;
-            --danger: #ff4d4d;
+            --reserved: #f59e0b;
+            --donated: #ec4899;
+            --danger: #ef4444;
+
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 18px;
+            --radius-xl: 22px;
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.25);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.3);
+            --shadow-lg: 0 16px 40px rgba(0,0,0,0.45);
+            --transition: 0.22s cubic-bezier(0.25, 1, 0.5, 1);
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
+
+        html { scroll-behavior: smooth; }
+
         body {
             background-color: var(--background-color);
             color: var(--text-color);
             font-size: 14px;
             overflow-x: hidden;
+            line-height: 1.5;
+            min-height: 100dvh;
         }
+
         button, input, select, textarea {
             outline: none;
             border: none;
             font-family: inherit;
         }
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* ========== HEADER ========== */
         .header-fixed {
             position: fixed;
             top: 0; left: 0; right: 0;
-            height: 66px;
-            background-color: var(--header-color);
-            border-bottom: 1px solid var(--header-border-color);
+            height: 60px;
+            background: rgba(13, 14, 17, 0.9);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 14px;
             z-index: 100;
+            padding-top: env(safe-area-inset-top);
+            transition: background 0.25s ease, border-color 0.25s ease;
         }
+
         .header-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--title-color);
+            padding: 7px 11px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .header-btn:hover, .header-btn:active {
+            background: var(--surface-hover);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .main-container {
+            padding-top: calc(60px + env(safe-area-inset-top));
+            position: relative;
+            min-height: 100dvh;
+            padding-bottom: calc(96px + env(safe-area-inset-bottom));
+        }
+
+        /* ========== HERO CAROUSEL ========== */
+        .hero-banner-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 12px 14px 0;
+        }
+
+        .hero-carousel-card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            background: var(--surface-card);
+        }
+
+        .hero-carousel-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.4s ease;
+        }
+
+        .hero-verified-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(13, 14, 17, 0.82);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 219, 135, 0.4);
+            color: var(--paid);
+            padding: 5px 12px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+        }
+
+        .carousel-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(13, 14, 17, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border-color);
+            color: #fff;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: none;
-            color: var(--text-color);
-            gap: 4px;
             cursor: pointer;
-            transition: 0.2s;
-        }
-        .header-btn:hover { color: var(--primary-color); }
-        .header-btn span { font-size: 10px; font-weight: 500; }
-        .main-container {
-            padding-top: 66px;
-            position: relative;
-            min-height: calc(100vh - 66px);
-            padding-bottom: 90px;
-        }
-        .hero-blur {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            width: 100%; height: 350px;
-            opacity: 0.35;
-            filter: blur(25px);
-            pointer-events: none;
-            mask-image: linear-gradient(to bottom, black, transparent);
-            -webkit-mask-image: linear-gradient(to bottom, black, transparent);
-            z-index: 0;
-        }
-        .hero-blur img { width: 100%; height: 100%; object-fit: cover; }
-        .hero-image-container {
-            position: relative;
-            width: 100%; max-width: 800px;
-            margin: 0 auto;
-            aspect-ratio: 20/9;
-            z-index: 15;
-            padding: 4px 16px 16px;
-        }
-        .hero-image-container img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-            border-radius: 14px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .content-wrapper {
-            position: relative;
             z-index: 10;
-            max-width: 800px;
-            margin: 0 auto 40px auto;
-            padding: 0 16px;
+            transition: all var(--transition);
+            font-size: 20px;
+            line-height: 1;
+        }
+        .carousel-nav-btn:hover {
+            background: rgba(0, 219, 135, 0.9);
+            color: #000;
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: 12px;
+            left: 0; right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            z-index: 10;
+        }
+        .carousel-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        .carousel-dot.active {
+            background: var(--primary-color);
+            width: 22px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .content-wrapper {
+            max-width: 820px;
+            margin: 18px auto 40px;
+            padding: 0 14px;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
+
+        /* ========== CARDS ========== */
         .card {
-            background-color: var(--gray-500);
+            background: var(--surface-card);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
         }
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
         .card-title {
-            font-size: 24px;
+            font-size: 21px;
             font-weight: 800;
             color: var(--title-color);
+            letter-spacing: -0.5px;
             line-height: 1.25;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-        .quick-select-grid {
+
+        /* ========== PROGRESS ========== */
+        .progress-box {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-top: 14px;
+        }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 10px;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 13px;
+            background: rgba(255,255,255,0.06);
+            border-radius: 99px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), #38ef7d);
+            border-radius: 99px;
+            box-shadow: 0 0 18px var(--primary-glow);
+            transition: width 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .progress-bar-fill::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+            animation: shine 2.4s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(120%); }
+        }
+
+        /* ========== IMPACT BANNER ========== */
+        .impact-banner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, rgba(0,219,135,0.1), rgba(0,219,135,0.02));
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            margin-top: 12px;
+            color: var(--title-color);
+            font-size: 13px;
+            transition: border-color var(--transition);
+        }
+
+        /* ========== NAV TABS ========== */
+        .nav-tabs-wrapper {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 14px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        .nav-tabs-wrapper::-webkit-scrollbar { display: none; }
+
+        .nav-tab-btn {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+        }
+        .nav-tab-btn.active {
+            background: var(--surface-hover);
+            color: var(--primary-color);
+            border: 1px solid rgba(0,219,135,0.3);
+        }
+        .nav-tab-btn:hover:not(.active) {
+            color: var(--title-color);
+            background: rgba(255,255,255,0.04);
+        }
+
+        /* ========== QUICK VALUES ========== */
+        .quick-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
+        @media (max-width: 400px) {
+            .quick-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
         .btn-quick {
-            background-color: var(--button-color);
-            border: 1px solid var(--button-border);
-            border-radius: 14px;
-            padding: 12px 6px;
+            background: var(--surface-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 6px 10px;
             text-align: center;
-            color: var(--title-color);
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: visible;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 70px;
+            min-height: 76px;
         }
-        .btn-quick:hover { filter: brightness(1.2); }
+        .btn-quick:hover {
+            border-color: rgba(255,255,255,0.28);
+            transform: translateY(-3px);
+            background: var(--surface-hover);
+            box-shadow: var(--shadow-sm);
+        }
         .btn-quick.selected {
-            border: 2px solid var(--primary-color);
-            background-color: var(--primary-color-15);
-            color: #fff;
+            border-color: var(--primary-color) !important;
+            background: linear-gradient(145deg, rgba(0,219,135,0.2), var(--surface-color));
+            box-shadow: 0 8px 24px var(--primary-glow);
+            transform: translateY(-3px);
         }
-        .btn-quick .val { font-size: 18px; font-weight: 800; }
-        .btn-quick .lbl { font-size: 10px; text-transform: uppercase; color: var(--text-color); margin-top: 2px; }
-        .custom-amount-row {
+        .btn-quick .val {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--title-color);
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+        .btn-quick .lbl {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .btn-quick.popular {
+            border-color: rgba(0, 219, 135, 0.55);
+            background: linear-gradient(180deg, rgba(0, 219, 135, 0.1), var(--surface-color));
+        }
+        .badge-popular {
+            position: absolute;
+            top: -9px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #00db87, #00b368);
+            color: #041d13;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 99px;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0, 219, 135, 0.4);
+        }
+
+        .custom-input-box {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: var(--background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px 14px;
-            margin-bottom: 16px;
+            gap: 12px;
+            background: var(--surface-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .custom-amount-row span { font-weight: 700; color: var(--primary-color); font-size: 16px; }
-        .custom-amount-row input {
+        .custom-input-box:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        .custom-input-box span {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+        .custom-input-box input {
             background: transparent;
-            color: var(--title-color);
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
+            color: var(--title-color);
             width: 100%;
         }
+
+        .btn-zerar-link {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 4px 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: color var(--transition);
+        }
+        .btn-zerar-link:hover { color: var(--danger); }
+
+        /* ========== ITENS DE DOAÇÃO ========== */
+        .doacoes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 10px;
+        }
+        .card-doacao-item {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+        .card-doacao-item:hover {
+            border-color: var(--donated);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.15);
+        }
+
+        /* ========== BOTTOM BAR ========== */
         .fixed-bottom-bar {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            background-color: var(--header-color);
-            border-top: 1px solid var(--header-border-color);
-            padding: 14px 16px;
+            background: rgba(13, 14, 17, 0.92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-top: 1px solid var(--border-color);
+            padding: 12px 14px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
             z-index: 200;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+            transition: background 0.25s ease, border-color 0.25s ease;
         }
-        .btn-participar {
+        .btn-cta {
             width: 100%;
-            max-width: 800px;
-            background-color: var(--primary-color);
-            color: #fff;
+            max-width: 820px;
+            background: linear-gradient(135deg, #00db87, #00b368);
+            color: #041d13;
             font-size: 15px;
             font-weight: 800;
-            padding: 16px;
-            border-radius: 12px;
+            padding: 15px;
+            border-radius: var(--radius-md);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
             text-transform: uppercase;
-            transition: 0.2s;
+            letter-spacing: 0.4px;
+            box-shadow: 0 8px 28px var(--primary-glow);
+            transition: all var(--transition);
+            border: none;
         }
-        .btn-participar:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-participar:not(:disabled):hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .progress-container { margin: 16px 0; }
-        .progress-info {
+        .btn-cta:hover:not(:disabled) {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+            box-shadow: 0 12px 32px var(--primary-glow);
+        }
+        .btn-cta:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+        .btn-cta.loading {
+            pointer-events: none;
+            opacity: 0.85;
+        }
+
+        /* ========== ADMIN ========== */
+        .admin-header-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .admin-metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .admin-metric-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            transition: border-color var(--transition);
+        }
+        .admin-metric-card .label {
+            font-size: 10px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }
+        .admin-metric-card .val {
+            display: block;
+            font-size: 20px;
+            font-weight: 900;
+            margin-top: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .donation-item-card {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            transition: border-color var(--transition);
+        }
+        .donation-item-card:hover {
+            border-color: rgba(255, 255, 255, 0.14);
+        }
+        .donation-item-card.is-paid { border-left: 3px solid var(--paid); }
+        .donation-item-card.is-pending { border-left: 3px solid var(--reserved); }
+
+        .donation-item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+        .donation-item-top .donor-name {
             font-size: 13px;
-            color: var(--text-color);
-            margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: 800;
+            color: var(--title-color);
+            line-height: 1.25;
         }
-        .progress-bar-bg {
-            width: 100%;
-            height: 12px;
-            background-color: var(--gray-300);
-            border-radius: 10px;
-            overflow: hidden;
+        .donation-item-top .donor-val {
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--title-color);
+            text-align: right;
+            white-space: nowrap;
         }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--paid));
-            border-radius: 10px;
-            transition: width 0.5s ease-in-out;
+        .donation-meta-text {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-wrap: wrap;
+            line-height: 1.3;
         }
+        .badge-status-pill {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 5px;
+            margin-top: 2px;
+        }
+        .badge-status-pill.paid {
+            background: rgba(0, 219, 135, 0.15);
+            color: var(--paid);
+        }
+        .badge-status-pill.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--reserved);
+        }
+        .donation-action-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+        .btn-card-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .btn-card-action.btn-confirm {
+            background: var(--paid);
+            color: #041d13;
+        }
+        .btn-card-action.btn-wa {
+            background: #25d366;
+            color: #fff;
+        }
+        .btn-card-action.btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            margin-left: auto;
+        }
+        .btn-card-action.btn-delete:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        .admin-filter-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .admin-filter-bar::-webkit-scrollbar { display: none; }
+
+        .filter-chip {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition);
+        }
+        .filter-chip.active {
+            background: var(--surface-hover);
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        /* ========== MODALS ========== */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             z-index: 10050;
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 16px;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .modal-card {
-            background-color: var(--gray-500);
-            width: 100%;
-            max-width: 420px;
-            border-radius: 16px;
-            padding: 24px;
+            background: var(--surface-card);
             border: 1px solid var(--border-color);
-            max-height: 90vh;
+            border-radius: 20px;
+            padding: 22px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90dvh;
             overflow-y: auto;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.7);
+            animation: slideUp 0.28s cubic-bezier(0.22, 1, 0.36, 1);
         }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
         .input-form {
             width: 100%;
-            padding: 14px;
-            background-color: var(--background-color);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
+            padding: 12px 14px;
+            background: var(--surface-color);
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
             color: var(--title-color);
             margin-bottom: 12px;
             font-size: 14px;
+            transition: border-color var(--transition), box-shadow var(--transition);
         }
-        .input-form:focus { border-color: var(--primary-color); }
+        .input-form:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* ========== TOASTS ========== */
+        .live-toast-notification {
+            position: fixed;
+            top: calc(70px + env(safe-area-inset-top));
+            right: 14px;
+            left: 14px;
+            max-width: 340px;
+            margin-left: auto;
+            background: var(--surface-card);
+            backdrop-filter: blur(14px);
+            border: 1px solid var(--border-highlight);
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 999;
+            box-shadow: var(--shadow-md);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .live-toast-notification.show {
+            transform: translateX(0);
+        }
+
         .toast {
             position: fixed;
             top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: var(--primary-color);
-            color: #fff;
-            padding: 14px 28px;
-            border-radius: 12px;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: var(--surface-card);
+            border: 1px solid var(--primary-color);
+            color: var(--title-color);
+            padding: 16px 28px;
+            border-radius: var(--radius-md);
             font-weight: 700;
             z-index: 10100;
             display: none;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            box-shadow: var(--shadow-lg);
             text-align: center;
+            opacity: 0;
+            transition: opacity 0.25s, transform 0.25s;
         }
-        .doacoes-grid-improved {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
+        .toast.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
         }
-        .btn-doacao {
-            background: var(--gray-400);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
+
+        .spinner {
+            border: 2.5px solid var(--reserved);
+            border-top: 2.5px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .view-content { display: none; }
+        .view-content.active { display: block; animation: fadeIn 0.25s ease; }
+
+        .cfg-tabs {
             display: flex;
-            flex-direction: column;
+            gap: 6px;
+            overflow-x: auto;
+            margin-bottom: 16px;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .cfg-tabs::-webkit-scrollbar { display: none; }
+
+        .cfg-tab {
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition);
+        }
+        .cfg-tab.active {
+            background: var(--primary-color);
+            color: #000;
+            border-color: var(--primary-color);
+        }
+
+        .cfg-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .cfg-list-item {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+        .remove-btn {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--danger);
+            border: none;
+            border-radius: 8px;
+            width: 32px;
+            height: 32px;
+            display: flex;
             align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .remove-btn:hover {
+            background: var(--danger);
+            color: #fff;
+        }
+
+        /* Social buttons */
+        .social-row {
+            display: flex;
+            flex-wrap: wrap;
             gap: 8px;
         }
-        .btn-doacao:hover { border-color: var(--donated); transform: translateY(-2px); }
-        .view-content { display: none; }
-        .view-content.active { display: block; }
-        .admin-item {
-            background: var(--background-color);
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--surface-color);
             border: 1px solid var(--border-color);
-            padding: 14px;
-            border-radius: 12px;
-            margin-bottom: 10px;
+            transition: all var(--transition);
         }
+        .social-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
+
+        /* Milestone toast */
+        .milestone-banner {
+            display: none;
+            background: linear-gradient(135deg, rgba(0,219,135,0.18), rgba(0,219,135,0.05));
+            border: 1px solid var(--primary-color);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            text-align: center;
+            margin-top: 12px;
+            animation: pulseGlow 1.5s ease infinite;
+        }
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0,219,135,0.3); }
+            50% { box-shadow: 0 0 20px 4px rgba(0,219,135,0.25); }
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--surface-color) 25%, var(--surface-hover) 50%, var(--surface-color) 75%);
+            background-size: 200% 100%;
+            animation: skeleton 1.4s ease infinite;
+            border-radius: 8px;
+        }
+        @keyframes skeleton {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Light mode overrides applied via JS */
     </style>
 </head>
 <body>
     <div id="toast" class="toast">Mensagem</div>
 
+    <div id="live-notification" class="live-toast-notification">
+        <div style="width:36px; height:36px; border-radius:50%; background:var(--primary-light); display:flex; align-items:center; justify-content:center; color:var(--primary-color); flex-shrink:0;">
+            <i data-lucide="heart" style="width:18px;"></i>
+        </div>
+        <div style="font-size:13px; min-width:0;">
+            <b id="live-notif-name" style="color:var(--title-color); display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Alguém</b>
+            <span id="live-notif-action" style="color:var(--text-muted); font-size:12px;">acabou de contribuir</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
     <header class="header-fixed">
-        <button type="button" class="header-btn" onclick="window.doacaoApp.askAdmin()">
-            <i data-lucide="shield" style="width: 22px;"></i>
+        <button type="button" class="header-btn" onclick="window.doacaoApp.askAdmin()" aria-label="Painel administrativo">
+            <i data-lucide="shield" style="width: 15px; color:var(--primary-color);"></i>
             <span>Painel</span>
         </button>
-        <span style="font-weight: 800; font-size: 17px; color: var(--title-color); letter-spacing: 0.5px;">DOAÇÃO SOLIDÁRIA</span>
-        <button type="button" class="header-btn" onclick="window.doacaoApp.switchTab('consulta')">
-            <i data-lucide="receipt" style="width: 22px;"></i>
-            <span>Minhas Doações</span>
+        <span style="font-weight: 800; font-size: 14px; color: var(--title-color); letter-spacing: 0.4px;">DOAÇÃO SOLIDÁRIA</span>
+        <button type="button" class="header-btn" onclick="window.doacaoApp.switchTab('consulta')" aria-label="Minhas doações">
+            <i data-lucide="receipt" style="width: 15px;"></i>
+            <span>Minhas</span>
         </button>
     </header>
 
     <div class="main-container">
-        <div class="hero-blur">
-            <img src="img/capa.jpg" id="img-blur" alt="Fundo">
-        </div>
-
-        <div class="hero-image-container">
-            <img src="img/capa.jpg" alt="Campanha" id="img-main">
+        <!-- HERO -->
+        <div class="hero-banner-wrapper" id="public-hero-section">
+            <div class="hero-carousel-card">
+                <img src="img/capa.jpg" alt="Campanha" id="img-main" onerror="this.src='https://placehold.co/1000x560/181a22/94a3b8?text=Campanha+Solidária'">
+                <div class="hero-verified-badge">
+                    <i data-lucide="shield-check" style="width:14px;"></i>
+                    <span>Causa Verificada & Segura</span>
+                </div>
+                <button type="button" class="carousel-nav-btn" style="left:10px;" onclick="window.doacaoApp.prevCapa()" aria-label="Anterior">‹</button>
+                <button type="button" class="carousel-nav-btn" style="right:10px;" onclick="window.doacaoApp.nextCapa()" aria-label="Próximo">›</button>
+                <div class="carousel-indicators" id="carousel-dots"></div>
+            </div>
         </div>
 
         <div class="content-wrapper">
-            <!-- TELA PRINCIPAL -->
+            <!-- TELA PÚBLICA -->
             <div id="view-doacao" class="view-content active">
+                <div class="card" id="card-countdown" style="display:none; padding:14px; text-align:center; border-color:rgba(0,219,135,0.35); background:linear-gradient(180deg, var(--primary-light), var(--surface-card));">
+                    <span style="font-size:11px; text-transform:uppercase; font-weight:800; color:var(--primary-color); letter-spacing:1px;">⏰ Encerramento da Campanha</span>
+                    <div id="countdown-timer" style="font-size:24px; font-weight:900; color:var(--title-color); margin-top:4px; letter-spacing:-0.5px;">--:--:--</div>
+                </div>
+
                 <div class="card">
-                    <h1 class="card-title" id="display-titulo">Carregando causa...</h1>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px;">
+                        <h1 class="card-title" id="display-titulo">Ajude Nossa Causa Solidária</h1>
+                        <span id="badge-status-campanha" style="display:none; padding:4px 8px; border-radius:8px; font-size:10px; font-weight:800; text-transform:uppercase; flex-shrink:0;"></span>
+                    </div>
                     <p style="font-size: 14px; color: var(--text-color); line-height: 1.6;" id="display-descricao">
-                        Contribua com a nossa arrecadação para apoiar este projeto.
+                        Cada contribuição transforma vidas. Participe e ajude a bater nossa meta de arrecadação!
                     </p>
 
-                    <!-- BARRA DE META -->
-                    <div class="progress-container">
-                        <div class="progress-info">
-                            <span>Arrecadado: <b id="progresso-arrecadado" style="color:var(--paid);">R$ 0,00</b></span>
-                            <span>Meta: <b id="progresso-meta">R$ 0,00</b></span>
+                    <div class="progress-box">
+                        <div class="progress-header">
+                            <div>
+                                <span style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Arrecadado</span>
+                                <div id="progresso-arrecadado" style="font-size:24px; font-weight:900; color:var(--paid); line-height:1.1;">R$ 0,00</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <span style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Meta</span>
+                                <div id="progresso-meta" style="font-size:15px; font-weight:700; color:var(--title-color);">R$ 5.000,00</div>
+                            </div>
                         </div>
+
                         <div class="progress-bar-bg">
                             <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
                         </div>
-                        <div style="display:flex; justify-content:space-between; margin-top:6px; font-size:12px;">
-                            <span id="progresso-porcento" style="font-weight:700; color:var(--primary-color);">0% atingido</span>
-                            <span id="total-doadores">0 apoiadores</span>
+
+                        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px;">
+                            <span id="progresso-porcento" style="font-weight:800; color:var(--primary-color);">0% da meta</span>
+                            <span id="total-doadores" style="color:var(--text-muted);">0 apoiadores</span>
                         </div>
                     </div>
+
+                    <div class="milestone-banner" id="milestone-banner">
+                        <div style="font-size:18px; margin-bottom:4px;">🎉</div>
+                        <b id="milestone-text" style="color:var(--title-color); font-size:14px;"></b>
+                    </div>
+
+                    <div class="impact-banner" id="banner-impacto">
+                        <div style="width:34px; height:34px; border-radius:50%; background:rgba(0,219,135,0.15); display:flex; align-items:center; justify-content:center; color:var(--paid); flex-shrink:0;">
+                            <i data-lucide="sparkles" style="width:16px;"></i>
+                        </div>
+                        <span id="impacto-texto" style="line-height:1.45;">Com as doações recebidas até agora, já garantimos suporte essencial a diversas famílias atendidas!</span>
+                    </div>
                 </div>
 
-                <!-- VALORES RÁPIDOS -->
+                <!-- SELETOR DE VALORES -->
                 <div class="card">
-                    <h2 style="font-size: 17px; color: var(--title-color); margin-bottom: 14px; display:flex; align-items:center; gap:8px;">
-                        <i data-lucide="heart" style="color:var(--primary-color); width:20px;"></i> Escolha um valor para doar
-                    </h2>
-                    <div class="quick-select-grid" id="quick-values">
-                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(10)"><span class="val">R$ 10</span><span class="lbl">Apoiar</span></div>
-                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(25)"><span class="val">R$ 25</span><span class="lbl">Apoiar</span></div>
-                        <div class="btn-quick selected" onclick="window.doacaoApp.selectValue(50)"><span class="val">R$ 50</span><span class="lbl">Popular</span></div>
-                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(100)"><span class="val">R$ 100</span><span class="lbl">Apoiar</span></div>
-                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(200)"><span class="val">R$ 200</span><span class="lbl">Apoiar</span></div>
-                        <div class="btn-quick" onclick="window.doacaoApp.selectValue(500)"><span class="val">R$ 500</span><span class="lbl">Benfeitor</span></div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+                        <h2 style="font-size: 15px; color: var(--title-color); display:flex; align-items:center; gap:8px;">
+                            <i data-lucide="heart-handshake" style="color:var(--primary-color); width:18px;"></i> Escolha um valor
+                        </h2>
+                        <button type="button" class="btn-zerar-link" onclick="window.doacaoApp.zerarValor()">
+                            <i data-lucide="rotate-ccw" style="width:13px;"></i> Limpar
+                        </button>
                     </div>
 
-                    <div class="custom-amount-row">
+                    <div class="quick-grid" id="quick-values"></div>
+
+                    <div class="custom-input-box">
                         <span>R$</span>
-                        <input type="number" id="input-custom-val" placeholder="Outro valor" min="1" step="any" oninput="window.doacaoApp.onCustomValueInput(this.value)">
+                        <input type="number" id="input-custom-val" placeholder="Outro valor" min="1" step="any" inputmode="decimal" oninput="window.doacaoApp.onCustomValueInput(this.value)">
+                    </div>
+
+                    <div style="text-align:center; margin-top:4px;">
+                        <button type="button" class="btn-zerar-link" onclick="window.doacaoApp.zerarValor()">
+                            <i data-lucide="x" style="width:14px;"></i> Zerar valor
+                        </button>
                     </div>
                 </div>
 
-                <!-- MURAL DE APOIADORES -->
-                <div class="card" id="mural-card">
-                    <h2 style="font-size: 16px; color: var(--title-color); margin-bottom: 12px; display:flex; align-items:center; gap:8px;">
-                        <i data-lucide="users" style="color:var(--paid); width:18px;"></i> Últimas Doações
+                <!-- ITENS DE DOAÇÃO (só aparece se houver itens configurados) -->
+                <div class="card" id="card-itens-doacao" style="display:none;">
+                    <h2 style="font-size: 15px; color: var(--title-color); display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                        <i data-lucide="gift" style="color:var(--donated); width:18px;"></i> Lista de Necessidades
                     </h2>
-                    <div id="mural-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+                    <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Financie itens específicos com valor exato:</p>
+                    <div class="doacoes-grid" id="doacoes-itens-grid"></div>
+                </div>
+
+                <!-- MURAL DE APOIO (últimos 10 doadores) -->
+                <div class="card" id="card-mural">
+                    <h2 style="font-size: 15px; color: var(--title-color); display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                        <i data-lucide="messages-square" style="color:var(--primary-color); width:18px;"></i> Mural de Apoio
+                    </h2>
+                    <p style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">Últimos 10 apoiadores confirmados</p>
+                    <div id="mural-list" style="display:flex; flex-direction:column; gap:6px;"></div>
+                </div>
+
+                <!-- PRESTAÇÃO DE CONTAS (feed no final) -->
+                <div class="card" id="card-prestacao">
+                    <h2 style="font-size: 15px; color: var(--title-color); display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                        <i data-lucide="clipboard-list" style="color:var(--primary-color); width:18px;"></i> Prestação de Contas
+                    </h2>
+                    <div id="timeline-list"></div>
+                </div>
+
+                <div class="card" id="card-redes" style="display:none;">
+                    <h3 style="font-size: 13px; color: var(--title-color); margin-bottom: 10px;">Acompanhe os trabalhos:</h3>
+                    <div class="social-row" id="social-links-row"></div>
                 </div>
 
                 <div style="display:flex; gap:10px;">
-                    <button type="button" class="btn-participar" style="background:var(--gray-400); color:var(--title-color);" onclick="window.doacaoApp.compartilhar()">
-                        <i data-lucide="share-2" style="width: 16px;"></i> Compartilhar
+                    <button type="button" class="btn-cta" style="background:var(--surface-card); color:var(--title-color); border:1px solid var(--border-color); box-shadow:none;" onclick="window.doacaoApp.compartilhar()">
+                        <i data-lucide="share-2" style="width: 16px;"></i> Compartilhar Campanha
                     </button>
                 </div>
             </div>
 
-            <!-- CONSULTA MINHAS CONTRIBUIÇÕES -->
+            <!-- CONSULTA -->
             <div id="view-consulta" class="view-content">
                 <div class="card" style="text-align: center;">
                     <button onclick="window.doacaoApp.switchTab('doacao')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer;">
-                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar para Início
+                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar
                     </button>
-                    <h2 style="color: var(--title-color); margin-bottom: 8px; font-size: 20px;">Consultar Doações</h2>
-                    <p style="color: var(--text-color); margin-bottom: 20px; font-size: 13px;">Informe seu WhatsApp para visualizar suas doações confirmadas ou pendentes.</p>
-                    <input type="tel" id="search-phone" class="input-form" placeholder="(00) 00000-0000" style="text-align: center; font-size: 18px;">
-                    <button class="btn-participar" onclick="window.doacaoApp.consultarDoacoes()">Buscar</button>
+                    <div style="width:52px; height:52px; border-radius:50%; background:var(--surface-color); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; color:var(--primary-color);">
+                        <i data-lucide="search" style="width:24px;"></i>
+                    </div>
+                    <h2 style="color: var(--title-color); margin-bottom: 6px; font-size: 20px;">Localizar Minhas Doações</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 12px; font-size: 13px; line-height:1.5;">
+                        Informe o <b style="color:var(--title-color);">mesmo WhatsApp</b> usado na doação para consultar histórico e comprovantes.
+                    </p>
+                    <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:12px; padding:12px 14px; margin-bottom:16px; text-align:left;">
+                        <p style="font-size:12px; color:var(--text-color); line-height:1.5; margin-bottom:6px;">
+                            <b style="color:var(--title-color);">ℹ️ Importante:</b> só é possível localizar doações em que o número de WhatsApp foi informado no momento da contribuição.
+                        </p>
+                        <p style="font-size:11px; color:var(--text-muted); line-height:1.45;">
+                            🔒 <b>Proteção de dados:</b> seu número é usado apenas para consulta e comprovante. Não compartilhamos com terceiros e não enviamos spam.
+                        </p>
+                    </div>
+                    <input type="tel" id="search-phone" class="input-form" placeholder="(00) 00000-0000" oninput="window.doacaoApp.maskPhone(this)" style="text-align: center; font-size: 18px; font-weight:700;" inputmode="tel">
+                    <button class="btn-cta" style="width:100%;" onclick="window.doacaoApp.consultarDoacoes()">Buscar Doações</button>
                     <div id="results-area" style="margin-top: 20px; text-align: left;"></div>
                 </div>
             </div>
 
             <!-- ADMIN -->
             <div id="view-admin" class="view-content">
-                <div class="card">
-                    <button onclick="window.doacaoApp.switchTab('doacao')" style="background: transparent; color: var(--text-color); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 20px; cursor: pointer;">
-                        <i data-lucide="arrow-left" style="width: 18px;"></i> Voltar
+                <div class="card" style="padding: 18px;">
+                    <button onclick="window.doacaoApp.switchTab('doacao')" style="background: transparent; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 16px; cursor: pointer;">
+                        <i data-lucide="arrow-left" style="width: 16px;"></i> Voltar à Campanha
                     </button>
-                    <h2 style="color: var(--title-color); font-size: 20px; margin-bottom: 16px;">Painel de Arrecadação</h2>
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;">
-                        <div class="admin-item">
-                            <span style="font-size:11px;">Total Arrecadado</span>
-                            <b id="admin-total-pago" style="display:block; color:var(--paid); font-size:18px; margin-top:4px;">R$ 0,00</b>
+
+                    <div class="admin-header-row">
+                        <div>
+                            <h2 style="color: var(--title-color); font-size: 20px; font-weight: 800; letter-spacing: -0.5px;">Painel de Arrecadação</h2>
+                            <p style="font-size: 12px; color: var(--text-muted);">Gestão em tempo real</p>
                         </div>
-                        <div class="admin-item">
-                            <span style="font-size:11px;">Doadores Únicos</span>
-                            <b id="admin-qtd-doadores" style="display:block; color:var(--title-color); font-size:18px; margin-top:4px;">0</b>
+                        <button type="button" class="header-btn" style="background:var(--primary-color); color:#041d13; font-weight:800; border:none; padding:9px 14px;" onclick="window.doacaoApp.abrirConfiguracoes()">
+                            <i data-lucide="settings" style="width:15px;"></i> Config
+                        </button>
+                    </div>
+
+                    <div class="admin-metrics-grid">
+                        <div class="admin-metric-card">
+                            <span class="label">Total Arrecadado</span>
+                            <span class="val" id="admin-total-pago" style="color:var(--paid);">R$ 0,00</span>
+                        </div>
+                        <div class="admin-metric-card">
+                            <span class="label">Confirmadas</span>
+                            <span class="val" id="admin-qtd-doadores" style="color:var(--title-color);">0</span>
+                        </div>
+                        <div class="admin-metric-card">
+                            <span class="label">Hoje</span>
+                            <span class="val" id="admin-hoje-total" style="color:var(--primary-color);">R$ 0,00</span>
+                        </div>
+                        <div class="admin-metric-card">
+                            <span class="label">Pendentes</span>
+                            <span class="val" id="admin-qtd-pendentes" style="color:var(--reserved);">0</span>
                         </div>
                     </div>
+
+                    <!-- ARRECADAÇÃO POR TIPO DE PAGAMENTO -->
+                    <div style="background:var(--surface-color); border:1px solid var(--border-color); border-radius:14px; padding:12px 14px; margin-bottom:16px;">
+                        <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--text-muted); letter-spacing:0.4px; margin-bottom:10px;">Arrecadado por tipo (confirmados)</div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                            <div style="text-align:center; padding:8px 6px; border-radius:10px; background:var(--surface-card); border:1px solid var(--border-color);">
+                                <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:2px;">PIX MP</div>
+                                <div id="admin-total-pix-mp" style="font-size:14px; font-weight:900; color:var(--paid);">R$ 0,00</div>
+                                <div id="admin-qtd-pix-mp" style="font-size:10px; color:var(--text-muted); margin-top:1px;">0</div>
+                            </div>
+                            <div style="text-align:center; padding:8px 6px; border-radius:10px; background:var(--surface-card); border:1px solid var(--border-color);">
+                                <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:2px;">PIX Código</div>
+                                <div id="admin-total-pix-static" style="font-size:14px; font-weight:900; color:var(--primary-color);">R$ 0,00</div>
+                                <div id="admin-qtd-pix-static" style="font-size:10px; color:var(--text-muted); margin-top:1px;">0</div>
+                            </div>
+                            <div style="text-align:center; padding:8px 6px; border-radius:10px; background:var(--surface-card); border:1px solid var(--border-color);">
+                                <div style="font-size:10px; color:var(--text-muted); font-weight:700; margin-bottom:2px;">Cartão</div>
+                                <div id="admin-total-card" style="font-size:14px; font-weight:900; color:var(--donated);">R$ 0,00</div>
+                                <div id="admin-qtd-card" style="font-size:10px; color:var(--text-muted); margin-top:1px;">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;">
+                        <button class="header-btn" style="flex:1; justify-content:center; padding:10px;" onclick="window.doacaoApp.exportarCSV()">
+                            <i data-lucide="download" style="width:14px;"></i> CSV
+                        </button>
+                        <button class="header-btn" style="flex:1; justify-content:center; background:#25d366; color:#fff; border:none; padding:10px;" onclick="window.doacaoApp.notificarPendentesWhatsApp()">
+                            <i data-lucide="message-circle" style="width:14px;"></i> Cobrar
+                        </button>
+                        <button class="header-btn" style="flex:1; justify-content:center; background:rgba(239,68,68,0.12); color:var(--danger); border:1px solid rgba(239,68,68,0.3); padding:10px;" onclick="window.doacaoApp.zerarCampanha()">
+                            <i data-lucide="trash-2" style="width:14px;"></i> Zerar
+                        </button>
+                    </div>
+
+                    <div class="admin-filter-bar">
+                        <button class="filter-chip active" onclick="window.doacaoApp.filtrarDoacoesAdmin('all', this)">Todas</button>
+                        <button class="filter-chip" onclick="window.doacaoApp.filtrarDoacoesAdmin('paid', this)">Confirmadas</button>
+                        <button class="filter-chip" onclick="window.doacaoApp.filtrarDoacoesAdmin('reserved', this)">Pendentes</button>
+                        <button class="filter-chip" onclick="window.doacaoApp.filtrarDoacoesAdmin('pix_mp', this)">PIX MP</button>
+                        <button class="filter-chip" onclick="window.doacaoApp.filtrarDoacoesAdmin('pix_static', this)">PIX Código</button>
+                        <button class="filter-chip" onclick="window.doacaoApp.filtrarDoacoesAdmin('card', this)">Cartão</button>
+                    </div>
+
                     <div id="admin-doacoes-list"></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- BOTÃO FIXO INFERIOR -->
+    <!-- BOTTOM CTA -->
     <div class="fixed-bottom-bar" id="fixed-checkout">
-        <button class="btn-participar" id="btn-doar-agora" onclick="window.doacaoApp.abrirCheckout()">
-            <i data-lucide="heart"></i> Fazer Doação (<span id="btn-val-label">R$ 50,00</span>)
+        <button class="btn-cta" id="btn-doar-agora" onclick="window.doacaoApp.abrirCheckout()">
+            <i data-lucide="heart"></i> Doar agora (<span id="btn-val-label">R$ 50,00</span>)
         </button>
     </div>
 
-    <!-- MODAL CHECKOUT / PAGAMENTO -->
+    <!-- MODAL CHECKOUT -->
     <div class="modal-overlay" id="modal-checkout">
         <div class="modal-card">
             <div id="checkout-step-1">
-                <h2 style="color:var(--title-color); margin-bottom:12px; font-size: 20px; text-align:center;">Finalizar Doação</h2>
-                <div style="background: var(--background-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 16px; text-align: center;">
-                    <span style="font-size: 12px; color: var(--text-color);">Valor da contribuição:</span>
-                    <p id="checkout-display-val" style="font-size: 28px; font-weight: 800; color: var(--paid); margin-top: 4px;">R$ 50,00</p>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                    <h2 style="color:var(--title-color); font-size: 18px; font-weight:800;">Finalizar Doação</h2>
+                    <button onclick="window.doacaoApp.closeModal('modal-checkout')" style="background:transparent; color:var(--text-muted); cursor:pointer; font-size:20px; line-height:1;" aria-label="Fechar">✕</button>
                 </div>
-                
-                <input type="text" id="cust-name" class="input-form" placeholder="Seu nome (ou 'Anônimo')">
-                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp (DDD + Número)">
-                <textarea id="cust-msg" class="input-form" rows="2" placeholder="Deixe uma mensagem de apoio (opcional)"></textarea>
 
-                <p style="font-size:12px; color:var(--text-color); text-align:center; margin-bottom:10px;">Forma de pagamento:</p>
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px; margin-bottom: 14px; text-align: center;">
+                    <span style="font-size: 11px; color: var(--text-muted); text-transform:uppercase; font-weight:700;">Valor da Contribuição</span>
+                    <p id="checkout-display-val" style="font-size: 32px; font-weight: 900; color: var(--paid); margin-top: 2px;">R$ 50,00</p>
+                    <span id="checkout-item-indicador" style="display:none; font-size:12px; color:var(--donated); font-weight:700; margin-top:4px;"></span>
+                </div>
+
+                <input type="text" id="cust-name" class="input-form" placeholder="Seu nome (deixe vazio para anônimo)" autocomplete="name">
+                <label style="display:flex; align-items:center; gap:8px; margin:-4px 0 12px; font-size:12px; color:var(--text-muted); cursor:pointer;">
+                    <input type="checkbox" id="check-anonimo" onchange="window.doacaoApp.onCheckAnonimo(this.checked)" style="width:16px; height:16px; accent-color:var(--primary-color);">
+                    Doar de forma 100% anônima
+                </label>
+
+                <label style="display:flex; align-items:flex-start; gap:10px; margin-bottom:14px; font-size:13px; color:var(--title-color); cursor:pointer; background:rgba(0,219,135,0.08); border:1px solid rgba(0,219,135,0.28); padding:12px 14px; border-radius:var(--radius-md);">
+                    <input type="checkbox" id="check-cobrir-taxas" onchange="window.doacaoApp.updateButtonLabel()" style="width:16px; height:16px; accent-color:var(--primary-color); margin-top:2px; flex-shrink:0;">
+                    <span>Cobrir taxa bancária (<b id="lbl-taxa-extra">+ R$ 1,50</b>) para que <b>100%</b> chegue à causa</span>
+                </label>
+
+                <input type="tel" id="cust-phone" class="input-form" placeholder="WhatsApp com DDD (opcional)" oninput="window.doacaoApp.maskPhone(this)" inputmode="tel" autocomplete="tel">
+                <textarea id="cust-msg" class="input-form" rows="2" placeholder="Mensagem de apoio (opcional)"></textarea>
+
+                <p style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:700; margin-bottom:8px;">Forma de pagamento</p>
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
-                    <button type="button" id="btn-pay-pix" onclick="window.doacaoApp.setMethod('pix')" style="padding:12px; border-radius:10px; border:2px solid var(--primary-color); background:var(--primary-color-15); color:var(--title-color); font-weight:700;">
-                        <i class="fa-brands fa-pix"></i> PIX
+                    <button type="button" id="btn-pay-pix" onclick="window.doacaoApp.setMethod('pix')" style="padding:14px 10px; border-radius:var(--radius-md); border:2px solid var(--primary-color); background:var(--primary-light); color:var(--title-color); font-weight:700; cursor:pointer; transition:all 0.2s;">
+                        <i class="fa-brands fa-pix" style="color:var(--primary-color); font-size:18px;"></i><br>
+                        <span style="font-size:13px;">PIX</span>
                     </button>
-                    <button type="button" id="btn-pay-card" onclick="window.doacaoApp.setMethod('card')" style="padding:12px; border-radius:10px; border:2px solid var(--border-color); background:var(--gray-400); color:var(--title-color); font-weight:700;">
-                        <i class="fa-solid fa-credit-card"></i> Cartão
+                    <button type="button" id="btn-pay-card" onclick="window.doacaoApp.setMethod('card')" style="padding:14px 10px; border-radius:var(--radius-md); border:1.5px solid var(--border-color); background:var(--surface-color); color:var(--title-color); font-weight:700; cursor:pointer; transition:all 0.2s;">
+                        <i class="fa-solid fa-credit-card" style="font-size:16px;"></i><br>
+                        <span style="font-size:13px;">Cartão</span>
                     </button>
                 </div>
 
-                <button class="btn-participar" id="btn-confirm-pay" onclick="window.doacaoApp.processarPagamento()">
+                <div id="card-pix-manual" style="display:none; background:var(--surface-color); border:1px dashed var(--primary-color); border-radius:var(--radius-md); padding:12px; margin-bottom:14px; text-align:center;">
+                    <span style="font-size:11px; color:var(--text-muted);">Chave PIX direta:</span>
+                    <p style="font-size:13px; font-weight:700; color:var(--title-color); margin:6px 0; word-break:break-all;" id="txt-chave-manual">—</p>
+                    <button type="button" class="header-btn" style="margin:0 auto; padding:6px 12px; font-size:11px;" onclick="window.doacaoApp.copiarChaveManual()">
+                        Copiar Chave
+                    </button>
+                </div>
+
+                <button class="btn-cta" id="btn-confirm-pay" onclick="window.doacaoApp.processarPagamento()">
                     Confirmar Contribuição
-                </button>
-                <button onclick="window.doacaoApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); cursor: pointer; padding: 8px;">
-                    Cancelar
                 </button>
             </div>
 
-            <!-- TELA DO QR CODE PIX -->
             <div id="checkout-step-2" style="display: none; text-align: center;">
-                <h2 style="color:var(--title-color); margin-bottom:14px; font-size: 20px;">Pagamento via PIX</h2>
-                <p style="font-size: 13px; color: var(--text-color); margin-bottom: 16px;">Abra o app do seu banco e escaneie o QR Code:</p>
-                <div style="background: #fff; padding: 10px; border-radius: 12px; display: inline-block; margin-bottom: 16px;">
+                <h2 style="color:var(--title-color); margin-bottom:8px; font-size: 20px;">Pagamento via PIX</h2>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">Abra o app do banco e escaneie o QR Code</p>
+                <div style="background: #fff; padding: 12px; border-radius: 16px; display: inline-block; margin-bottom: 16px; box-shadow:0 8px 28px rgba(0,0,0,0.4);">
                     <img id="pix-qr-img" src="" alt="QR Code PIX" style="width: 200px; height: 200px; display: block;">
                 </div>
-                <input type="text" id="pix-copia-cola" class="input-form" readonly style="text-align: center; font-size: 12px;">
-                <button class="btn-participar" onclick="window.doacaoApp.copiarPix()" style="margin-bottom: 16px; background-color: var(--gray-400); color: var(--title-color);">
+                <input type="text" id="pix-copia-cola" class="input-form" readonly style="text-align: center; font-size: 11px; font-family: monospace;">
+                <button class="btn-cta" onclick="window.doacaoApp.copiarPix()" style="margin-bottom: 14px; background:var(--surface-color); color:var(--title-color); border:1px solid var(--border-color); box-shadow:none;">
                     <i data-lucide="copy" style="width: 16px;"></i> Copiar Código PIX
                 </button>
-                <div id="pix-status" style="color: var(--reserved); font-weight: 700; font-size: 13px;">
-                    Aguardando confirmação do pagamento...
+                <div id="pix-status" style="display:flex; align-items:center; justify-content:center; gap:8px; color: var(--reserved); font-weight: 700; font-size: 13px;">
+                    <div class="spinner" style="width: 16px; height: 16px;"></div> Aguardando confirmação...
                 </div>
-                <button onclick="window.doacaoApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-color); cursor: pointer;">
+                <button onclick="window.doacaoApp.closeModal('modal-checkout')" style="width: 100%; margin-top: 16px; background: transparent; color: var(--text-muted); cursor: pointer; padding:10px; font-size:13px;">
                     Fechar
                 </button>
             </div>
@@ -505,28 +1278,223 @@
     <!-- MODAL SUCESSO -->
     <div class="modal-overlay" id="modal-sucesso">
         <div class="modal-card" style="text-align:center;">
-            <div style="width:64px;height:64px;border-radius:50%;background:rgba(0,219,135,0.15);border:2px solid var(--paid);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <div style="width:68px;height:68px;border-radius:50%;background:rgba(0,219,135,0.15);border:2px solid var(--paid);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
                 <i data-lucide="heart" style="color:var(--paid);width:32px;height:32px;"></i>
             </div>
-            <h2 style="color:var(--title-color);font-size:22px;margin-bottom:8px;">Muito obrigado!</h2>
-            <p style="font-size:14px;color:var(--text-color);margin-bottom:16px;">Sua doação foi recebida com sucesso e fará toda a diferença!</p>
-            <button class="btn-participar" onclick="window.doacaoApp.closeModal('modal-sucesso')">Concluir</button>
+            <h2 style="color:var(--title-color);font-size:22px;margin-bottom:8px;">Muito obrigado! 💚</h2>
+            <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">Sua doação foi recebida e fará toda a diferença.</p>
+
+            <div style="background:var(--surface-color); border:1px dashed var(--paid); border-radius:var(--radius-md); padding:14px; margin-bottom:16px; text-align:left;">
+                <span style="font-size:11px; color:var(--text-muted); font-weight:700;">COMPROVANTE</span>
+                <p id="sucesso-resumo" style="font-size:13px; color:var(--title-color); margin-top:6px; font-weight:600;"></p>
+            </div>
+
+            <button type="button" class="btn-cta" style="background:#25d366; color:#fff; box-shadow:none; margin-bottom:8px;" onclick="window.doacaoApp.compartilharApoioWhatsApp()">
+                <i class="fa-brands fa-whatsapp"></i> Compartilhar no WhatsApp
+            </button>
+            <button class="header-btn" style="width:100%; justify-content:center; padding:12px;" onclick="window.doacaoApp.closeModal('modal-sucesso')">Concluir</button>
         </div>
     </div>
 
-    <!-- MODAL PIN ADMIN -->
-    <div class="modal-overlay" id="modal-pin">
-        <div class="modal-card" style="text-align: center; max-width: 320px;">
-            <h3 style="color:var(--title-color); margin-bottom:16px; font-size: 18px;">Acesso Administrativo</h3>
-            <input type="password" id="admin-pin" class="input-form" placeholder="PIN" maxlength="8" style="text-align:center; font-size:20px; letter-spacing:6px;">
-            <button class="btn-participar" onclick="window.doacaoApp.validarPin()">Entrar</button>
-            <button onclick="window.doacaoApp.closeModal('modal-pin')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-color); cursor: pointer;">Cancelar</button>
+    <!-- MODAL CONFIG -->
+    <div class="modal-overlay" id="modal-config">
+        <div class="modal-card" style="max-width:560px; width:95%;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+                <h2 style="color:var(--title-color); font-size:18px; display:flex; align-items:center; gap:8px;">
+                    <i data-lucide="sliders" style="width:18px;"></i> Configurações
+                </h2>
+                <button onclick="window.doacaoApp.closeModal('modal-config')" style="background:transparent; color:var(--text-muted); cursor:pointer; font-size:18px;">✕</button>
+            </div>
+
+            <div class="cfg-tabs">
+                <button class="cfg-tab active" onclick="window.doacaoApp.switchConfigTab('geral', this)">Geral</button>
+                <button class="cfg-tab" onclick="window.doacaoApp.switchConfigTab('valores', this)">Valores</button>
+                <button class="cfg-tab" onclick="window.doacaoApp.switchConfigTab('itens', this)">Itens</button>
+                <button class="cfg-tab" onclick="window.doacaoApp.switchConfigTab('prestacao', this)">Prestação</button>
+                <button class="cfg-tab" onclick="window.doacaoApp.switchConfigTab('tema', this)">Tema</button>
+                <button class="cfg-tab" onclick="window.doacaoApp.switchConfigTab('pagamentos', this)">Pagamentos</button>
+                <button class="cfg-tab" onclick="window.doacaoApp.switchConfigTab('redes', this)">Redes</button>
+            </div>
+
+            <div id="cfg-tab-geral" class="cfg-content">
+                <label class="cfg-label">Título da Campanha</label>
+                <input type="text" id="cfg-titulo" class="input-form">
+
+                <label class="cfg-label">Descrição</label>
+                <textarea id="cfg-descricao" class="input-form" rows="3"></textarea>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <label class="cfg-label">Meta (R$)</label>
+                        <input type="number" id="cfg-meta" class="input-form" step="any">
+                    </div>
+                    <div>
+                        <label class="cfg-label">Status</label>
+                        <select id="cfg-status" class="input-form">
+                            <option value="active">Ativa</option>
+                            <option value="paused">Pausada</option>
+                            <option value="closed">Encerrada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="cfg-label">Data de Encerramento</label>
+                <input type="datetime-local" id="cfg-data-encerramento" class="input-form">
+
+                <label class="cfg-label">Imagens de Capa (1 link por linha)</label>
+                <textarea id="cfg-capas" class="input-form" rows="3"></textarea>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div>
+                        <label class="cfg-label">Tempo Carrossel (s)</label>
+                        <input type="number" id="cfg-carousel-tempo" class="input-form" min="2" max="60" value="5">
+                    </div>
+                    <div>
+                        <label class="cfg-label">PIN Admin</label>
+                        <input type="password" id="cfg-pin" class="input-form" placeholder="0000">
+                    </div>
+                </div>
+            </div>
+
+            <div id="cfg-tab-valores" class="cfg-content" style="display:none;">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Valores de seleção rápida:</p>
+                <div id="cfg-quick-list"></div>
+                <button type="button" class="header-btn" style="width:100%; justify-content:center; margin-top:8px;" onclick="window.doacaoApp.addQuickValueRow()">
+                    <i data-lucide="plus" style="width:14px;"></i> Adicionar Valor
+                </button>
+            </div>
+
+            <div id="cfg-tab-itens" class="cfg-content" style="display:none;">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Itens específicos para financiar:</p>
+                <div id="cfg-itens-list"></div>
+                <button type="button" class="header-btn" style="width:100%; justify-content:center; margin-top:8px; border-color:var(--donated); color:var(--donated);" onclick="window.doacaoApp.addItemDoacaoRow()">
+                    <i data-lucide="plus" style="width:14px;"></i> Adicionar Item
+                </button>
+            </div>
+
+            <div id="cfg-tab-prestacao" class="cfg-content" style="display:none;">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Atualizações da campanha:</p>
+                <div id="cfg-updates-list"></div>
+                <button type="button" class="header-btn" style="width:100%; justify-content:center; margin-top:8px;" onclick="window.doacaoApp.addUpdateRow()">
+                    <i data-lucide="plus" style="width:14px;"></i> Nova Atualização
+                </button>
+            </div>
+
+            <div id="cfg-tab-tema" class="cfg-content" style="display:none;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+                    <div>
+                        <label class="cfg-label">Cor Primária</label>
+                        <input type="color" id="cfg-theme-primary" class="input-form" style="height:42px; padding:4px;">
+                    </div>
+                    <div>
+                        <label class="cfg-label">Cor Sucesso</label>
+                        <input type="color" id="cfg-theme-paid" class="input-form" style="height:42px; padding:4px;">
+                    </div>
+                    <div>
+                        <label class="cfg-label">Cor Pendente</label>
+                        <input type="color" id="cfg-theme-reserved" class="input-form" style="height:42px; padding:4px;">
+                    </div>
+                    <div>
+                        <label class="cfg-label">Cor Destaque</label>
+                        <input type="color" id="cfg-theme-donated" class="input-form" style="height:42px; padding:4px;">
+                    </div>
+                </div>
+                <label class="cfg-label">Modo Visual</label>
+                <select id="cfg-theme-mode" class="input-form">
+                    <option value="dark">Escuro</option>
+                    <option value="light">Claro</option>
+                </select>
+            </div>
+
+            <div id="cfg-tab-pagamentos" class="cfg-content" style="display:none;">
+                <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Escolha <b>apenas um</b> modo de PIX. Cartão (InfinitePay) funciona em paralelo.</p>
+
+                <!-- SELETOR PIX: MP x CÓDIGO ESTÁTICO -->
+                <label class="cfg-label">Modo de PIX (escolha um)</label>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;">
+                    <label id="pix-mode-mp-label" style="display:flex; flex-direction:column; gap:6px; padding:12px; border-radius:12px; border:2px solid var(--primary-color); background:var(--primary-light); cursor:pointer;">
+                        <span style="display:flex; align-items:center; gap:8px; font-weight:800; color:var(--title-color); font-size:13px;">
+                            <input type="radio" name="pix_mode" id="cfg-pix-mode-mp" value="mp" checked onchange="window.doacaoApp.onPixModeChange('mp')" style="accent-color:var(--primary-color); width:16px; height:16px;">
+                            Mercado Pago
+                        </span>
+                        <span style="font-size:11px; color:var(--text-muted); line-height:1.35;">PIX dinâmico com confirmação automática</span>
+                    </label>
+                    <label id="pix-mode-static-label" style="display:flex; flex-direction:column; gap:6px; padding:12px; border-radius:12px; border:1.5px solid var(--border-color); background:var(--surface-color); cursor:pointer;">
+                        <span style="display:flex; align-items:center; gap:8px; font-weight:800; color:var(--title-color); font-size:13px;">
+                            <input type="radio" name="pix_mode" id="cfg-pix-mode-static" value="static" onchange="window.doacaoApp.onPixModeChange('static')" style="accent-color:var(--primary-color); width:16px; height:16px;">
+                            Código PIX
+                        </span>
+                        <span style="font-size:11px; color:var(--text-muted); line-height:1.35;">Copia e cola fixo + QR no checkout</span>
+                    </label>
+                </div>
+
+                <div id="cfg-block-mp">
+                    <label class="cfg-label">Mercado Pago — Access Token</label>
+                    <input type="text" id="cfg-mptoken" class="input-form" placeholder="APP_USR-...">
+                    <label class="cfg-label">Expiração PIX MP (minutos)</label>
+                    <input type="number" id="cfg-pix-timeout" class="input-form" min="5" max="120" value="15">
+                </div>
+
+                <div id="cfg-block-static" style="display:none;">
+                    <label class="cfg-label">Código PIX Copia e Cola (EMV / BR Code)</label>
+                    <textarea id="cfg-pix-copia-cola" class="input-form" rows="3" placeholder="Cole aqui o código PIX completo (copia e cola) gerado pelo seu banco..."></textarea>
+                    <p style="font-size:11px; color:var(--text-muted); margin-top:-6px; margin-bottom:12px;">Esse código será usado para gerar o QR Code no checkout. A confirmação do pagamento é <b>manual</b> no painel.</p>
+                </div>
+
+                <hr style="border:none; border-top:1px solid var(--border-color); margin:16px 0;">
+
+                <label class="cfg-label">InfinitePay — Handle (Cartão, sem @)</label>
+                <input type="text" id="cfg-handle" class="input-form" placeholder="sua_loja">
+
+                <label class="cfg-label">Chave PIX simples (exibição opcional no checkout)</label>
+                <input type="text" id="cfg-pix-manual" class="input-form" placeholder="CNPJ / e-mail / telefone (opcional)">
+            </div>
+
+            <div id="cfg-tab-redes" class="cfg-content" style="display:none;">
+                <label class="cfg-label">WhatsApp de Atendimento</label>
+                <input type="text" id="cfg-social-wa" class="input-form" placeholder="5511999999999">
+
+                <label class="cfg-label">Grupo WhatsApp</label>
+                <input type="url" id="cfg-social-wa-grupo" class="input-form" placeholder="https://chat.whatsapp.com/...">
+
+                <label class="cfg-label">Instagram</label>
+                <input type="url" id="cfg-social-ig" class="input-form" placeholder="https://instagram.com/...">
+
+                <label class="cfg-label">Facebook</label>
+                <input type="url" id="cfg-social-fb" class="input-form" placeholder="https://facebook.com/...">
+
+                <label class="cfg-label">Telegram</label>
+                <input type="url" id="cfg-social-tg" class="input-form" placeholder="https://t.me/...">
+            </div>
+
+            <div style="display:flex; gap:8px; margin-top:16px;">
+                <button type="button" class="btn-cta" style="flex:1;" onclick="window.doacaoApp.salvarConfiguracoes()">Salvar</button>
+                <button type="button" class="header-btn" style="padding:12px;" onclick="window.doacaoApp.closeModal('modal-config')">Fechar</button>
+            </div>
         </div>
     </div>
+
+    <!-- MODAL PIN -->
+    <div class="modal-overlay" id="modal-pin">
+        <div class="modal-card" style="text-align: center; max-width: 320px;">
+            <div style="width:52px; height:52px; border-radius:50%; background:var(--surface-color); border:1px solid var(--border-color); display:flex; align-items:center; justify-content:center; margin:0 auto 14px; color:var(--primary-color);">
+                <i data-lucide="lock" style="width:22px;"></i>
+            </div>
+            <h3 style="color:var(--title-color); margin-bottom:8px; font-size: 18px;">Acesso Administrativo</h3>
+            <p style="font-size:12px; color:var(--text-muted); margin-bottom:16px;">PIN padrão: <b>0000</b></p>
+            <input type="password" id="admin-pin" class="input-form" placeholder="••••" maxlength="8" style="text-align:center; font-size:22px; letter-spacing:8px;" autocomplete="off">
+            <button class="btn-cta" style="width:100%;" onclick="window.doacaoApp.validarPin()">Entrar</button>
+            <button onclick="window.doacaoApp.closeModal('modal-pin')" style="width: 100%; margin-top: 12px; background: transparent; color: var(--text-muted); cursor: pointer;">Cancelar</button>
+        </div>
+    </div>
+
+    <a id="fab-suporte" href="#" target="_blank" rel="noopener" style="display:none; position:fixed; right:14px; bottom:calc(90px + env(safe-area-inset-bottom)); z-index:150; background:#25d366; color:#fff; width:52px; height:52px; border-radius:50%; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(0,0,0,.4); text-decoration:none; font-size:26px;">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set, get, update, onValue, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, set, get, update, onValue, push, remove } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
@@ -538,177 +1506,877 @@
             appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        let db = null;
+        let cfgRef = null;
+        let doacoesRef = null;
+
         const tenantId = new URLSearchParams(window.location.search).get("tenant") || "doacao_principal";
         const dbPath = `doacoes/${tenantId}`;
-        const cfgRef = ref(db, `${dbPath}/config`);
-        const doacoesRef = ref(db, `${dbPath}/historico`);
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getDatabase(app);
+            cfgRef = ref(db, `${dbPath}/config`);
+            doacoesRef = ref(db, `${dbPath}/historico`);
+        } catch (err) {
+            console.warn("Firebase offline/local:", err);
+        }
 
         const BACKEND_URL = "https://rifa-1-m8tv.onrender.com";
 
         class DoacaoApp {
             constructor() {
+                const savedLocalConfig = localStorage.getItem("doacao_local_cfg");
+                const initialConfig = savedLocalConfig ? JSON.parse(savedLocalConfig) : {};
+
                 this.config = {
-                    titulo: "Ajude Nossa Causa",
-                    descricao: "Cada contribuição transforma realidades. Participe e apoie nossa meta!",
+                    titulo: "Ajude Nossa Causa Solidária",
+                    descricao: "Cada contribuição transforma vidas. Participe e ajude a bater nossa meta de arrecadação!",
                     meta: 5000,
+                    status: "active",
+                    dataEncerramento: "",
+                    capas: ["img/capa.jpg"],
+                    carouselTempo: 5,
                     mpToken: "",
                     handle: "",
-                    pin: "1234"
+                    pixManual: "",
+                    pixMode: "mp",
+                    pixCopiaCola: "",
+                    pin: "0000",
+                    pixTimeout: 15,
+                    quickValues: [
+                        { val: 10, popular: false },
+                        { val: 25, popular: false },
+                        { val: 50, popular: true },
+                        { val: 100, popular: false },
+                        { val: 200, popular: false },
+                        { val: 500, popular: false }
+                    ],
+                    itens: [
+                        { nome: "Cesta Básica", valor: 85 },
+                        { nome: "Kit Higiene", valor: 35 },
+                        { nome: "Agasalho", valor: 60 }
+                    ],
+                    updates: [
+                        { titulo: "Início da Campanha", texto: "Lançamento oficial da nossa arrecadação para ajudar as famílias da região.", data: "Outubro 2026" }
+                    ],
+                    social: {
+                        whatsapp: "",
+                        waGrupo: "",
+                        instagram: "",
+                        facebook: "",
+                        telegram: ""
+                    },
+                    theme: {
+                        mode: "dark",
+                        primary: "#00db87",
+                        paid: "#00db87",
+                        reserved: "#f59e0b",
+                        donated: "#ec4899"
+                    },
+                    ...initialConfig
                 };
+
                 this.selectedAmount = 50;
+                this.selectedItemName = "";
                 this.payMethod = "pix";
-                this.doacoes = {};
+                this.capaIndex = 0;
+                this.carouselTimer = null;
+                this.countdownTimer = null;
+                this.pixInterval = null;
+                this.lastDonation = null;
+                this.adminFilter = "all";
+                this.lastMilestone = 0;
+                this.socialProofIndex = 0;
+                this.socialProofTimer = null;
+                this.pinAttempts = 0;
+
+                const localSavedDoacoes = localStorage.getItem("doacao_local_historico");
+                this.doacoes = localSavedDoacoes ? JSON.parse(localSavedDoacoes) : {};
+
                 this.init();
             }
 
             init() {
-                lucide.createIcons();
+                if (typeof lucide !== "undefined") lucide.createIcons();
+                this.applyTheme(this.config.theme);
+                this.renderConfig();
+                this.renderQuickValues();
+                this.renderProgressAndMural();
+                this.setupCarousel();
+                this.setupCountdown();
+                this.startSocialProofNotifications();
                 this.listenFirebase();
+                this.updateButtonLabel();
             }
 
             listenFirebase() {
-                onValue(cfgRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        this.config = { ...this.config, ...snapshot.val() };
-                        this.renderConfig();
-                    }
-                });
+                if (!cfgRef || !doacoesRef) return;
+                try {
+                    onValue(cfgRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            this.config = { ...this.config, ...snapshot.val() };
+                            if (!this.config.pin) this.config.pin = "0000";
+                            localStorage.setItem("doacao_local_cfg", JSON.stringify(this.config));
+                            this.applyTheme(this.config.theme);
+                            this.renderConfig();
+                            this.setupCarousel();
+                            this.setupCountdown();
+                        }
+                    });
 
-                onValue(doacoesRef, (snapshot) => {
-                    this.doacoes = snapshot.exists() ? snapshot.val() : {};
-                    this.renderProgressAndMural();
+                    onValue(doacoesRef, (snapshot) => {
+                        if (snapshot.exists()) {
+                            this.doacoes = snapshot.val();
+                            localStorage.setItem("doacao_local_historico", JSON.stringify(this.doacoes));
+                            this.renderProgressAndMural();
+                            if (document.getElementById("view-admin")?.classList.contains("active")) {
+                                this.renderAdminView();
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.warn("Erro Firebase:", e);
+                }
+            }
+
+            applyTheme(theme = {}) {
+                const root = document.documentElement;
+                const isLight = theme.mode === "light";
+                const header = document.querySelector(".header-fixed");
+                const bottomBar = document.querySelector(".fixed-bottom-bar");
+
+                if (isLight) {
+                    root.style.setProperty("--background-color", "#f1f5f9");
+                    root.style.setProperty("--surface-color", "#e2e8f0");
+                    root.style.setProperty("--surface-card", "#ffffff");
+                    root.style.setProperty("--surface-hover", "#cbd5e1");
+                    root.style.setProperty("--border-color", "rgba(15, 23, 42, 0.12)");
+                    root.style.setProperty("--border-highlight", "rgba(0, 168, 102, 0.35)");
+                    root.style.setProperty("--title-color", "#0f172a");
+                    root.style.setProperty("--text-color", "#334155");
+                    root.style.setProperty("--text-muted", "#64748b");
+                    root.style.setProperty("--primary-glow", "rgba(0, 168, 102, 0.2)");
+                    root.style.setProperty("--primary-light", "rgba(0, 168, 102, 0.1)");
+                    if (header) {
+                        header.style.background = "rgba(255, 255, 255, 0.92)";
+                        header.style.borderBottomColor = "rgba(15, 23, 42, 0.1)";
+                    }
+                    if (bottomBar) {
+                        bottomBar.style.background = "rgba(255, 255, 255, 0.94)";
+                        bottomBar.style.borderTopColor = "rgba(15, 23, 42, 0.1)";
+                    }
+                } else {
+                    root.style.setProperty("--background-color", "#0b0c0e");
+                    root.style.setProperty("--surface-color", "#13151b");
+                    root.style.setProperty("--surface-card", "#181a22");
+                    root.style.setProperty("--surface-hover", "#1f222c");
+                    root.style.setProperty("--border-color", "rgba(255, 255, 255, 0.08)");
+                    root.style.setProperty("--border-highlight", "rgba(0, 219, 135, 0.25)");
+                    root.style.setProperty("--title-color", "#f8fafc");
+                    root.style.setProperty("--text-color", "#94a3b8");
+                    root.style.setProperty("--text-muted", "#64748b");
+                    root.style.setProperty("--primary-glow", "rgba(0, 219, 135, 0.28)");
+                    root.style.setProperty("--primary-light", "rgba(0, 219, 135, 0.12)");
+                    if (header) {
+                        header.style.background = "rgba(13, 14, 17, 0.9)";
+                        header.style.borderBottomColor = "rgba(255, 255, 255, 0.08)";
+                    }
+                    if (bottomBar) {
+                        bottomBar.style.background = "rgba(13, 14, 17, 0.92)";
+                        bottomBar.style.borderTopColor = "rgba(255, 255, 255, 0.08)";
+                    }
+                }
+
+                if (theme.primary) root.style.setProperty("--primary-color", theme.primary);
+                if (theme.paid) root.style.setProperty("--paid", theme.paid);
+                if (theme.reserved) root.style.setProperty("--reserved", theme.reserved);
+                if (theme.donated) root.style.setProperty("--donated", theme.donated);
+
+                // Força contraste de botões header no modo claro
+                document.querySelectorAll(".header-btn").forEach(btn => {
+                    if (isLight) {
+                        btn.style.background = "rgba(15, 23, 42, 0.05)";
+                        btn.style.color = "#0f172a";
+                    } else {
+                        btn.style.background = "";
+                        btn.style.color = "";
+                    }
                 });
             }
 
             renderConfig() {
-                document.getElementById("display-titulo").innerText = this.config.titulo;
-                document.getElementById("display-descricao").innerText = this.config.descricao;
-                document.getElementById("progresso-meta").innerText = (this.config.meta || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                const titulo = document.getElementById("display-titulo");
+                const desc = document.getElementById("display-descricao");
+                const meta = document.getElementById("progresso-meta");
+                if (titulo) titulo.innerText = this.config.titulo || "Campanha Solidária";
+                if (desc) desc.innerText = this.config.descricao || "";
+                if (meta) meta.innerText = (Number(this.config.meta) || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+                const badge = document.getElementById("badge-status-campanha");
+                if (badge) {
+                    if (this.config.status === "paused") {
+                        badge.style.display = "inline-block";
+                        badge.style.background = "rgba(245,158,11,0.15)";
+                        badge.style.color = "var(--reserved)";
+                        badge.innerText = "Pausada";
+                    } else if (this.config.status === "closed") {
+                        badge.style.display = "inline-block";
+                        badge.style.background = "rgba(239,68,68,0.15)";
+                        badge.style.color = "var(--danger)";
+                        badge.innerText = "Encerrada";
+                    } else {
+                        badge.style.display = "none";
+                    }
+                }
+
+                const manualPixCard = document.getElementById("card-pix-manual");
+                const manualPixTxt = document.getElementById("txt-chave-manual");
+                if (this.config.pixManual) {
+                    if (manualPixCard) manualPixCard.style.display = "block";
+                    if (manualPixTxt) manualPixTxt.innerText = this.config.pixManual;
+                } else {
+                    if (manualPixCard) manualPixCard.style.display = "none";
+                }
+
+                this.renderSocialLinks();
+                this.renderQuickValues();
+                this.renderItensDoacao();
+                this.renderPrestacaoContas();
+            }
+
+            setupCarousel() {
+                if (this.carouselTimer) clearInterval(this.carouselTimer);
+                const capas = (this.config.capas && this.config.capas.length) ? this.config.capas : ["img/capa.jpg"];
+                this.capaIndex = 0;
+                this.renderCapaAtual();
+
+                const dotsContainer = document.getElementById("carousel-dots");
+                if (dotsContainer) {
+                    dotsContainer.innerHTML = capas.length > 1
+                        ? capas.map((_, idx) => `<div class="carousel-dot ${idx === 0 ? "active" : ""}" onclick="window.doacaoApp.setCapa(${idx})"></div>`).join("")
+                        : "";
+                }
+
+                if (capas.length > 1) {
+                    const tempoSec = Math.max(2, Number(this.config.carouselTempo) || 5);
+                    this.carouselTimer = setInterval(() => this.nextCapa(), tempoSec * 1000);
+                }
+            }
+
+            renderCapaAtual() {
+                const capas = (this.config.capas && this.config.capas.length) ? this.config.capas : ["img/capa.jpg"];
+                const url = capas[this.capaIndex] || capas[0];
+                const imgMain = document.getElementById("img-main");
+                if (imgMain) {
+                    imgMain.style.opacity = "0.4";
+                    setTimeout(() => {
+                        imgMain.src = url;
+                        imgMain.style.opacity = "1";
+                    }, 120);
+                }
+                document.querySelectorAll(".carousel-dot").forEach((dot, idx) => {
+                    dot.classList.toggle("active", idx === this.capaIndex);
+                });
+            }
+
+            nextCapa() {
+                const capas = (this.config.capas && this.config.capas.length) ? this.config.capas : ["img/capa.jpg"];
+                this.capaIndex = (this.capaIndex + 1) % capas.length;
+                this.renderCapaAtual();
+            }
+
+            prevCapa() {
+                const capas = (this.config.capas && this.config.capas.length) ? this.config.capas : ["img/capa.jpg"];
+                this.capaIndex = (this.capaIndex - 1 + capas.length) % capas.length;
+                this.renderCapaAtual();
+            }
+
+            setCapa(idx) {
+                this.capaIndex = idx;
+                this.renderCapaAtual();
+            }
+
+            setupCountdown() {
+                if (this.countdownTimer) clearInterval(this.countdownTimer);
+                const card = document.getElementById("card-countdown");
+                const label = document.getElementById("countdown-timer");
+                const targetDate = this.config.dataEncerramento;
+
+                if (!targetDate) {
+                    if (card) card.style.display = "none";
+                    return;
+                }
+
+                const targetTime = new Date(targetDate).getTime();
+                if (isNaN(targetTime)) {
+                    if (card) card.style.display = "none";
+                    return;
+                }
+
+                if (card) card.style.display = "block";
+
+                const tick = () => {
+                    const diff = targetTime - Date.now();
+                    if (diff <= 0) {
+                        if (label) label.innerText = "Encerrada!";
+                        clearInterval(this.countdownTimer);
+                        return;
+                    }
+                    const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                    const m = Math.floor((diff / 1000 / 60) % 60);
+                    const s = Math.floor((diff / 1000) % 60);
+                    const pad = n => String(n).padStart(2, "0");
+                    if (label) {
+                        label.innerText = d > 0 ? `${d}d ${pad(h)}h ${pad(m)}m ${pad(s)}s` : `${pad(h)}:${pad(m)}:${pad(s)}`;
+                    }
+                };
+                tick();
+                this.countdownTimer = setInterval(tick, 1000);
+            }
+
+            renderSocialLinks() {
+                const row = document.getElementById("social-links-row");
+                const card = document.getElementById("card-redes");
+                const fab = document.getElementById("fab-suporte");
+                const s = this.config.social || {};
+
+                let html = "";
+                if (s.instagram) html += `<a href="${s.instagram}" target="_blank" rel="noopener" class="social-btn"><i class="fa-brands fa-instagram"></i> Instagram</a>`;
+                if (s.facebook) html += `<a href="${s.facebook}" target="_blank" rel="noopener" class="social-btn"><i class="fa-brands fa-facebook-f"></i> Facebook</a>`;
+                if (s.waGrupo) html += `<a href="${s.waGrupo}" target="_blank" rel="noopener" class="social-btn"><i class="fa-brands fa-whatsapp"></i> Grupo</a>`;
+                if (s.telegram) html += `<a href="${s.telegram}" target="_blank" rel="noopener" class="social-btn"><i class="fa-brands fa-telegram"></i> Telegram</a>`;
+
+                if (row && card) {
+                    row.innerHTML = html;
+                    card.style.display = html ? "block" : "none";
+                }
+
+                if (fab) {
+                    if (s.whatsapp) {
+                        const cleanTel = s.whatsapp.replace(/\D/g, "");
+                        const link = s.whatsapp.startsWith("http") ? s.whatsapp : `https://wa.me/${cleanTel.startsWith("55") ? cleanTel : "55" + cleanTel}`;
+                        fab.href = link;
+                        fab.style.display = "flex";
+                    } else {
+                        fab.style.display = "none";
+                    }
+                }
+            }
+
+            renderQuickValues() {
+                const container = document.getElementById("quick-values");
+                if (!container) return;
+                const vals = this.config.quickValues || [
+                    { val: 10 }, { val: 25 }, { val: 50, popular: true }, { val: 100 }, { val: 200 }, { val: 500 }
+                ];
+
+                container.innerHTML = vals.map(item => {
+                    const v = typeof item === "object" ? item.val : item;
+                    const pop = typeof item === "object" && item.popular;
+                    const isSelected = Number(v) === Number(this.selectedAmount);
+                    return `
+                        <div class="btn-quick ${isSelected ? "selected" : ""} ${pop ? "popular" : ""}" onclick="window.doacaoApp.selectValue(${v})">
+                            ${pop ? '<div class="badge-popular"><i class="fa-solid fa-star" style="font-size:8px;"></i> Mais escolhido</div>' : ""}
+                            <span class="val">R$ ${v}</span>
+                            <span class="lbl">${v >= 200 ? "Super Apoio" : "Contribuir"}</span>
+                        </div>
+                    `;
+                }).join("");
+            }
+
+            renderItensDoacao() {
+                const grid = document.getElementById("doacoes-itens-grid");
+                const card = document.getElementById("card-itens-doacao");
+                if (!grid) return;
+                const itens = this.config.itens || [];
+
+                // Oculta a seção inteira se não houver itens configurados
+                if (!itens.length) {
+                    if (card) card.style.display = "none";
+                    grid.innerHTML = "";
+                    return;
+                }
+
+                if (card) card.style.display = "block";
+                grid.innerHTML = itens.map((item, idx) => `
+                    <div class="card-doacao-item" onclick="window.doacaoApp.selectItemDoacao(${idx})">
+                        <div style="width:36px; height:36px; border-radius:50%; background:rgba(236, 72, 153, 0.12); display:flex; align-items:center; justify-content:center; color:var(--donated);">
+                            <i data-lucide="gift" style="width:16px;"></i>
+                        </div>
+                        <b style="font-size:13px; color:var(--title-color);">${item.nome}</b>
+                        <span style="font-size:14px; font-weight:800; color:var(--donated);">
+                            ${Number(item.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                        </span>
+                    </div>
+                `).join("");
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            renderPrestacaoContas() {
+                const list = document.getElementById("timeline-list");
+                const card = document.getElementById("card-prestacao");
+                if (!list) return;
+                const updates = this.config.updates || [];
+                if (!updates.length) {
+                    if (card) card.style.display = "none";
+                    list.innerHTML = "";
+                    return;
+                }
+                if (card) card.style.display = "block";
+                list.innerHTML = updates.map(u => `
+                    <div style="border-left: 3px solid var(--primary-color); padding-left: 12px; margin-left: 2px; margin-bottom: 12px;">
+                        <div style="font-size:10px; color:var(--primary-color); font-weight:800; text-transform:uppercase;">${u.data || "Atualização"}</div>
+                        <b style="font-size:13px; color:var(--title-color); display:block; margin:2px 0;">${u.titulo}</b>
+                        <p style="font-size:12px; color:var(--text-color); line-height:1.45;">${u.texto}</p>
+                    </div>
+                `).join("");
+            }
+
+            selectItemDoacao(idx) {
+                const item = (this.config.itens || [])[idx];
+                if (!item) return;
+                this.selectedItemName = item.nome;
+                this.selectedAmount = Number(item.valor);
+                document.querySelectorAll(".btn-quick").forEach(b => b.classList.remove("selected"));
+                const input = document.getElementById("input-custom-val");
+                if (input) input.value = item.valor;
+                this.updateButtonLabel();
+                this.abrirCheckout();
+            }
+
+            checkMilestones(perc) {
+                const milestones = [25, 50, 75, 100];
+                const banner = document.getElementById("milestone-banner");
+                const text = document.getElementById("milestone-text");
+                for (const m of milestones) {
+                    if (perc >= m && this.lastMilestone < m) {
+                        this.lastMilestone = m;
+                        if (banner && text) {
+                            const msgs = {
+                                25: "Meta de 25% atingida! Continuamos juntos 💪",
+                                50: "Metade do caminho! Vocês são incríveis 🎉",
+                                75: "Quase lá! 75% da meta conquistada 🚀",
+                                100: "META BATIDA! Obrigado a todos os apoiadores! 🏆"
+                            };
+                            text.innerText = msgs[m];
+                            banner.style.display = "block";
+                            if (typeof confetti === "function") {
+                                confetti({ particleCount: m === 100 ? 200 : 100, spread: 70, origin: { y: 0.6 } });
+                            }
+                            setTimeout(() => { if (banner) banner.style.display = "none"; }, 8000);
+                        }
+                        break;
+                    }
+                }
             }
 
             renderProgressAndMural() {
                 let total = 0;
                 let count = 0;
                 const muralList = document.getElementById("mural-list");
-                muralList.innerHTML = "";
+                if (muralList) muralList.innerHTML = "";
 
-                const lista = Object.values(this.doacoes).filter(d => d.status === "paid");
+                const lista = Object.values(this.doacoes || {}).filter(d => d.status === "paid");
                 lista.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-                lista.forEach((d) => {
+                lista.forEach(d => {
                     total += Number(d.valor) || 0;
                     count++;
                 });
 
-                lista.slice(0, 10).forEach(d => {
-                    muralList.innerHTML += `
-                        <div class="admin-item" style="display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <b style="color:var(--title-color);">${d.nome || 'Apoiador Anônimo'}</b>
-                                ${d.mensagem ? `<p style="font-size:12px; color:var(--text-color); margin-top:3px;">"${d.mensagem}"</p>` : ''}
+                if (muralList) {
+                    lista.slice(0, 10).forEach(d => {
+                        muralList.innerHTML += `
+                            <div style="display:flex; justify-content:space-between; align-items:center; background:var(--surface-color); border:1px solid var(--border-color); border-radius:10px; padding:8px 12px; gap:8px;">
+                                <div style="min-width:0; flex:1;">
+                                    <b style="color:var(--title-color); font-size:13px; line-height:1.2;">${d.nome || "Apoiador Anônimo"}</b>
+                                    ${d.item ? `<span style="display:block; font-size:10px; color:var(--donated); font-weight:700;">🎁 ${d.item}</span>` : ""}
+                                    ${d.mensagem ? `<p style="font-size:11px; color:var(--text-muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">"${d.mensagem}"</p>` : ""}
+                                </div>
+                                <span style="color:var(--paid); font-weight:800; font-size:13px; flex-shrink:0;">+ ${Number(d.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}</span>
                             </div>
-                            <span style="color:var(--paid); font-weight:800; font-size:14px;">+ ${Number(d.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                        </div>
-                    `;
-                });
-
-                if (lista.length === 0) {
-                    muralList.innerHTML = '<p style="text-align:center; font-size:13px; color:var(--text-color);">Seja o primeiro a doar!</p>';
+                        `;
+                    });
+                    if (lista.length === 0) {
+                        muralList.innerHTML = '<p style="text-align:center; font-size:13px; color:var(--text-muted); padding:12px 0;">Seja o primeiro a apoiar esta causa!</p>';
+                    }
                 }
 
-                document.getElementById("progresso-arrecadado").innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                document.getElementById("total-doadores").innerText = `${count} apoiadores`;
+                const elArrec = document.getElementById("progresso-arrecadado");
+                const elDoadores = document.getElementById("total-doadores");
+                if (elArrec) elArrec.innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                if (elDoadores) elDoadores.innerText = `${count} apoiador${count !== 1 ? "es" : ""}`;
 
-                const meta = this.config.meta || 1;
+                const meta = Number(this.config.meta) || 1;
                 const perc = Math.min(100, Math.round((total / meta) * 100));
-                document.getElementById("progress-fill").style.width = `${perc}%`;
-                document.getElementById("progresso-porcento").innerText = `${perc}% atingido`;
+                const fill = document.getElementById("progress-fill");
+                const percEl = document.getElementById("progresso-porcento");
+                if (fill) fill.style.width = `${perc}%`;
+                if (percEl) percEl.innerText = `${perc}% da meta`;
+
+                this.checkMilestones(perc);
+
+                const impactTxt = document.getElementById("impacto-texto");
+                if (impactTxt) {
+                    const cestas = Math.floor(total / 85);
+                    const kits = Math.floor(total / 35);
+                    if (cestas >= 1) {
+                        impactTxt.innerHTML = `Com este valor, já garantimos o equivalente a <b>${cestas} cesta${cestas > 1 ? "s" : ""} básica${cestas > 1 ? "s" : ""}</b> e <b>${kits} kit${kits > 1 ? "s" : ""} de higiene</b> para as famílias!`;
+                    } else if (total > 0) {
+                        impactTxt.innerHTML = `Cada real faz diferença. Continuamos juntos para atingir a meta!`;
+                    } else {
+                        impactTxt.innerHTML = `Seja o primeiro a transformar vidas com sua contribuição!`;
+                    }
+                }
+
+            }
+
+            startSocialProofNotifications() {
+                const notifEl = document.getElementById("live-notification");
+                if (!notifEl) return;
+
+                const showNext = () => {
+                    if (document.hidden) return;
+                    const paid = Object.values(this.doacoes || {})
+                        .filter(d => d.status === "paid")
+                        .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+                    let nome, val;
+                    if (paid.length > 0) {
+                        const d = paid[this.socialProofIndex % paid.length];
+                        nome = d.nome || "Apoiador Anônimo";
+                        val = Number(d.valor) || 0;
+                        this.socialProofIndex++;
+                    } else {
+                        // fallback leve enquanto não há doações reais
+                        const nomes = ["Mariana S.", "Lucas P.", "Família Dias", "Beatriz M.", "Carlos A."];
+                        const valores = [25, 50, 85, 100, 150];
+                        nome = nomes[Math.floor(Math.random() * nomes.length)];
+                        val = valores[Math.floor(Math.random() * valores.length)];
+                    }
+
+                    const nameEl = document.getElementById("live-notif-name");
+                    const actionEl = document.getElementById("live-notif-action");
+                    if (nameEl) nameEl.innerText = nome;
+                    if (actionEl) actionEl.innerText = `acabou de contribuir com R$ ${val.toFixed(0)}`;
+
+                    notifEl.classList.add("show");
+                    setTimeout(() => notifEl.classList.remove("show"), 4500);
+                };
+
+                // primeira notificação após 12s, depois a cada 20-28s
+                setTimeout(showNext, 12000);
+                this.socialProofTimer = setInterval(showNext, 22000 + Math.random() * 6000);
             }
 
             selectValue(val) {
+                this.selectedItemName = "";
                 this.selectedAmount = Number(val);
-                document.querySelectorAll(".btn-quick").forEach(btn => btn.classList.remove("selected"));
-                event.currentTarget.classList.add("selected");
-                document.getElementById("input-custom-val").value = "";
+                this.renderQuickValues();
+                const input = document.getElementById("input-custom-val");
+                if (input) input.value = "";
                 this.updateButtonLabel();
             }
 
             onCustomValueInput(val) {
                 const num = parseFloat(val);
                 if (num && num > 0) {
+                    this.selectedItemName = "";
                     this.selectedAmount = num;
                     document.querySelectorAll(".btn-quick").forEach(btn => btn.classList.remove("selected"));
+                    this.updateButtonLabel();
+                } else if (!val || val <= 0) {
+                    this.selectedAmount = 0;
                     this.updateButtonLabel();
                 }
             }
 
+            zerarValor() {
+                this.selectedItemName = "";
+                this.selectedAmount = 0;
+                document.querySelectorAll(".btn-quick").forEach(btn => btn.classList.remove("selected"));
+                const input = document.getElementById("input-custom-val");
+                if (input) input.value = "";
+                this.updateButtonLabel();
+                this.showToast("Valor zerado");
+            }
+
+            getValorFinal() {
+                const cobrirTaxas = document.getElementById("check-cobrir-taxas")?.checked;
+                const base = Number(this.selectedAmount) || 0;
+                return cobrirTaxas ? Math.round((base * 1.03) * 100) / 100 : base;
+            }
+
             updateButtonLabel() {
-                const label = this.selectedAmount.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                document.getElementById("btn-val-label").innerText = label;
-                document.getElementById("checkout-display-val").innerText = label;
+                const cobrirTaxas = document.getElementById("check-cobrir-taxas")?.checked;
+                const base = Number(this.selectedAmount) || 0;
+                const taxaExtra = Math.round((base * 0.03) * 100) / 100;
+                const taxaEl = document.getElementById("lbl-taxa-extra");
+                if (taxaEl) taxaEl.innerText = `+ R$ ${taxaExtra.toFixed(2)}`;
+
+                const finalVal = this.getValorFinal();
+                const label = finalVal.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                const btnLabel = document.getElementById("btn-val-label");
+                const checkoutVal = document.getElementById("checkout-display-val");
+                if (btnLabel) btnLabel.innerText = label;
+                if (checkoutVal) checkoutVal.innerText = label;
+
+                const btnDoarAgora = document.getElementById("btn-doar-agora");
+                if (btnDoarAgora) btnDoarAgora.disabled = finalVal <= 0;
+
+                const itemInd = document.getElementById("checkout-item-indicador");
+                if (itemInd) {
+                    if (this.selectedItemName) {
+                        itemInd.innerText = `Referente a: ${this.selectedItemName}`;
+                        itemInd.style.display = "block";
+                    } else {
+                        itemInd.style.display = "none";
+                    }
+                }
+            }
+
+            onCheckAnonimo(checked) {
+                const nameInput = document.getElementById("cust-name");
+                if (!nameInput) return;
+                if (checked) {
+                    nameInput.value = "Anônimo";
+                    nameInput.disabled = true;
+                } else {
+                    nameInput.value = "";
+                    nameInput.disabled = false;
+                }
             }
 
             setMethod(method) {
                 this.payMethod = method;
                 const isPix = method === "pix";
-                document.getElementById("btn-pay-pix").style.borderColor = isPix ? "var(--primary-color)" : "var(--border-color)";
-                document.getElementById("btn-pay-pix").style.backgroundColor = isPix ? "var(--primary-color-15)" : "var(--gray-400)";
-                document.getElementById("btn-pay-card").style.borderColor = !isPix ? "var(--primary-color)" : "var(--border-color)";
-                document.getElementById("btn-pay-card").style.backgroundColor = !isPix ? "var(--primary-color-15)" : "var(--gray-400)";
+                const btnPix = document.getElementById("btn-pay-pix");
+                const btnCard = document.getElementById("btn-pay-card");
+                if (btnPix) {
+                    btnPix.style.borderColor = isPix ? "var(--primary-color)" : "var(--border-color)";
+                    btnPix.style.backgroundColor = isPix ? "var(--primary-light)" : "var(--surface-color)";
+                }
+                if (btnCard) {
+                    btnCard.style.borderColor = !isPix ? "var(--primary-color)" : "var(--border-color)";
+                    btnCard.style.backgroundColor = !isPix ? "var(--primary-light)" : "var(--surface-color)";
+                }
             }
 
             abrirCheckout() {
+                if (this.getValorFinal() <= 0) {
+                    return this.showToast("Escolha ou digite um valor maior que R$ 0,00");
+                }
+                if (this.config.status === "closed") {
+                    return this.showToast("Campanha encerrada. Não é possível doar no momento.");
+                }
+                this.updateButtonLabel();
+                const nameInput = document.getElementById("cust-name");
+                if (nameInput) {
+                    nameInput.value = "";
+                    nameInput.disabled = false;
+                }
+                const checkAnon = document.getElementById("check-anonimo");
+                const checkTaxa = document.getElementById("check-cobrir-taxas");
+                if (checkAnon) checkAnon.checked = false;
+                if (checkTaxa) checkTaxa.checked = false;
+                const phone = document.getElementById("cust-phone");
+                const msg = document.getElementById("cust-msg");
+                if (phone) phone.value = "";
+                if (msg) msg.value = "";
                 document.getElementById("checkout-step-1").style.display = "block";
                 document.getElementById("checkout-step-2").style.display = "none";
                 document.getElementById("modal-checkout").style.display = "flex";
+                this.updateButtonLabel();
             }
 
             closeModal(id) {
-                document.getElementById(id).style.display = "none";
-                if (this.pixInterval) clearInterval(this.pixInterval);
+                const el = document.getElementById(id);
+                if (el) el.style.display = "none";
+                if (this.pixInterval) {
+                    clearInterval(this.pixInterval);
+                    this.pixInterval = null;
+                }
             }
 
             showToast(msg) {
                 const t = document.getElementById("toast");
+                if (!t) return;
                 t.innerText = msg;
+                t.classList.add("show");
                 t.style.display = "block";
-                setTimeout(() => t.style.display = "none", 3000);
+                setTimeout(() => {
+                    t.classList.remove("show");
+                    setTimeout(() => { t.style.display = "none"; }, 250);
+                }, 2800);
+            }
+
+            maskPhone(input) {
+                let v = input.value.replace(/\D/g, "");
+                if (v.length > 11) v = v.slice(0, 11);
+                if (v.length > 0) v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+                if (v.length > 10) v = v.replace(/(\d)(\d{4})$/, "$1-$2");
+                input.value = v;
+            }
+
+            setLoading(btn, loading) {
+                if (!btn) return;
+                if (loading) {
+                    btn.classList.add("loading");
+                    btn.dataset.originalText = btn.innerHTML;
+                    btn.innerHTML = `<div class="spinner" style="width:18px;height:18px;border-color:#041d13;border-top-color:transparent;"></div> Processando...`;
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove("loading");
+                    if (btn.dataset.originalText) btn.innerHTML = btn.dataset.originalText;
+                    btn.disabled = false;
+                }
             }
 
             async processarPagamento() {
-                const nome = document.getElementById("cust-name").value.trim() || "Anônimo";
-                const tel = document.getElementById("cust-phone").value.replace(/\D/g, "");
-                const msg = document.getElementById("cust-msg").value.trim();
-                const valor = this.selectedAmount;
+                const btn = document.getElementById("btn-confirm-pay");
+                this.setLoading(btn, true);
 
-                if (!valor || valor <= 0) return this.showToast("Informe um valor válido.");
+                try {
+                    const isAnonimo = document.getElementById("check-anonimo")?.checked;
+                    let nome = document.getElementById("cust-name")?.value.trim() || "";
+                    if (isAnonimo || !nome) nome = "Anônimo";
 
-                const nsu = "DOA" + Date.now();
-                const payload = {
-                    nome,
-                    telefone: tel,
-                    mensagem: msg,
-                    valor,
-                    nsu,
-                    status: "reserved",
-                    timestamp: Date.now()
-                };
+                    const tel = (document.getElementById("cust-phone")?.value || "").replace(/\D/g, "");
+                    const msg = document.getElementById("cust-msg")?.value.trim() || "";
+                    const valor = this.getValorFinal();
 
-                const docRef = push(doacoesRef);
-                await set(docRef, payload);
+                    if (!valor || valor <= 0) {
+                        this.showToast("Informe um valor válido.");
+                        return;
+                    }
 
-                if (this.payMethod === "pix") {
-                    this.gerarPix(payload, docRef.key);
+                    const nsu = "DOA" + Date.now();
+                    let paymentType = "card";
+                    if (this.payMethod === "pix") {
+                        paymentType = this.config.pixMode === "static" ? "pix_static" : "pix_mp";
+                    }
+
+                    const payload = {
+                        nome,
+                        telefone: tel,
+                        mensagem: msg,
+                        item: this.selectedItemName || null,
+                        valor,
+                        nsu,
+                        status: "reserved",
+                        timestamp: Date.now(),
+                        paymentType
+                    };
+
+                    this.lastDonation = payload;
+
+                    let docKey = nsu;
+                    if (doacoesRef) {
+                        try {
+                            const docRef = push(doacoesRef);
+                            docKey = docRef.key;
+                            await set(docRef, payload);
+                        } catch (e) {
+                            console.warn("Firebase fallback local:", e);
+                            this.doacoes[docKey] = payload;
+                            localStorage.setItem("doacao_local_historico", JSON.stringify(this.doacoes));
+                        }
+                    } else {
+                        this.doacoes[docKey] = payload;
+                        localStorage.setItem("doacao_local_historico", JSON.stringify(this.doacoes));
+                    }
+
+                    if (this.payMethod === "pix") {
+                        await this.gerarPix(payload, docKey);
+                    } else {
+                        await this.gerarCartao(payload, docKey);
+                    }
+                } catch (e) {
+                    this.showToast(e.message || "Erro ao processar. Tente novamente.");
+                } finally {
+                    this.setLoading(btn, false);
+                }
+            }
+
+            onPixModeChange(mode) {
+                const blockMp = document.getElementById("cfg-block-mp");
+                const blockStatic = document.getElementById("cfg-block-static");
+                const labelMp = document.getElementById("pix-mode-mp-label");
+                const labelStatic = document.getElementById("pix-mode-static-label");
+
+                if (mode === "static") {
+                    if (blockMp) blockMp.style.display = "none";
+                    if (blockStatic) blockStatic.style.display = "block";
+                    if (labelMp) {
+                        labelMp.style.borderColor = "var(--border-color)";
+                        labelMp.style.background = "var(--surface-color)";
+                    }
+                    if (labelStatic) {
+                        labelStatic.style.borderColor = "var(--primary-color)";
+                        labelStatic.style.background = "var(--primary-light)";
+                    }
                 } else {
-                    this.gerarCartao(payload, docRef.key);
+                    if (blockMp) blockMp.style.display = "block";
+                    if (blockStatic) blockStatic.style.display = "none";
+                    if (labelMp) {
+                        labelMp.style.borderColor = "var(--primary-color)";
+                        labelMp.style.background = "var(--primary-light)";
+                    }
+                    if (labelStatic) {
+                        labelStatic.style.borderColor = "var(--border-color)";
+                        labelStatic.style.background = "var(--surface-color)";
+                    }
                 }
             }
 
             async gerarPix(data, key) {
+                const mode = this.config.pixMode === "static" ? "static" : "mp";
+
+                // ===== MODO CÓDIGO PIX ESTÁTICO =====
+                if (mode === "static") {
+                    const code = (this.config.pixCopiaCola || "").trim();
+                    if (!code) {
+                        this.showToast("Configure o Código PIX Copia e Cola no painel.");
+                        return;
+                    }
+
+                    document.getElementById("checkout-step-1").style.display = "none";
+                    document.getElementById("checkout-step-2").style.display = "block";
+
+                    // QR gerado a partir do código EMV
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=8&data=${encodeURIComponent(code)}`;
+                    document.getElementById("pix-qr-img").src = qrUrl;
+                    document.getElementById("pix-copia-cola").value = code;
+
+                    const statusEl = document.getElementById("pix-status");
+                    if (statusEl) {
+                        statusEl.innerHTML = `
+                            <div style="text-align:center; color:var(--text-muted); font-weight:600; font-size:12px; line-height:1.45;">
+                                Após pagar, sua doação ficará <b style="color:var(--reserved);">pendente</b>.<br>
+                                O administrador confirma manualmente no painel.
+                            </div>
+                        `;
+                    }
+
+                    // Não faz polling — confirmação manual
+                    if (this.pixInterval) {
+                        clearInterval(this.pixInterval);
+                        this.pixInterval = null;
+                    }
+                    return;
+                }
+
+                // ===== MODO MERCADO PAGO (dinâmico + auto) =====
                 try {
+                    if (!this.config.mpToken) {
+                        throw new Error("Configure o token do Mercado Pago no painel.");
+                    }
                     this.showToast("Gerando PIX...");
+                    const controller = new AbortController();
+                    const timeout = setTimeout(() => controller.abort(), 20000);
+
                     const res = await fetch(`${BACKEND_URL}/api/create-pix`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -722,8 +2390,10 @@
                                 description: `Doacao ${this.config.titulo}`
                             },
                             mpToken: this.config.mpToken
-                        })
+                        }),
+                        signal: controller.signal
                     });
+                    clearTimeout(timeout);
 
                     const resData = await res.json();
                     if (!res.ok) throw new Error(resData.message || "Erro ao gerar PIX");
@@ -733,121 +2403,682 @@
                     document.getElementById("pix-qr-img").src = "data:image/jpeg;base64," + resData.qr_code_base64;
                     document.getElementById("pix-copia-cola").value = resData.qr_code;
 
+                    const statusEl = document.getElementById("pix-status");
+                    if (statusEl) {
+                        statusEl.innerHTML = `
+                            <div class="spinner" style="width:16px; height:16px;"></div>
+                            Aguardando confirmação automática...
+                        `;
+                        statusEl.style.color = "var(--reserved)";
+                        statusEl.style.fontWeight = "700";
+                        statusEl.style.fontSize = "13px";
+                        statusEl.style.display = "flex";
+                        statusEl.style.alignItems = "center";
+                        statusEl.style.justifyContent = "center";
+                        statusEl.style.gap = "8px";
+                    }
+
+                    if (this.pixInterval) clearInterval(this.pixInterval);
                     this.pixInterval = setInterval(async () => {
-                        const check = await fetch(`${BACKEND_URL}/api/check-status/${resData.id}?token=${encodeURIComponent(this.config.mpToken)}`);
-                        const checkJson = await check.json();
-                        if (checkJson.status === "approved") {
-                            clearInterval(this.pixInterval);
-                            await update(ref(db, `${dbPath}/historico/${key}`), { status: "paid" });
-                            this.closeModal("modal-checkout");
-                            document.getElementById("modal-sucesso").style.display = "flex";
-                            confetti({ particleCount: 120, spread: 70 });
-                        }
-                    }, 3000);
+                        try {
+                            const check = await fetch(`${BACKEND_URL}/api/check-status/${resData.id}?token=${encodeURIComponent(this.config.mpToken)}`);
+                            const checkJson = await check.json();
+                            if (checkJson.status === "approved") {
+                                clearInterval(this.pixInterval);
+                                this.pixInterval = null;
+                                if (db) {
+                                    await update(ref(db, `${dbPath}/historico/${key}`), { status: "paid" });
+                                } else if (this.doacoes[key]) {
+                                    this.doacoes[key].status = "paid";
+                                    localStorage.setItem("doacao_local_historico", JSON.stringify(this.doacoes));
+                                }
+                                this.closeModal("modal-checkout");
+                                this.mostrarModalSucesso(data);
+                                if (typeof confetti === "function") {
+                                    confetti({ particleCount: 140, spread: 70, origin: { y: 0.65 } });
+                                }
+                            }
+                        } catch (e) { /* silencioso */ }
+                    }, 3500);
                 } catch (e) {
-                    this.showToast(e.message || "Erro no pagamento PIX.");
+                    if (e.name === "AbortError") {
+                        this.showToast("Tempo esgotado. Tente novamente.");
+                    } else {
+                        this.showToast(e.message || "Configure o token do Mercado Pago no painel.");
+                    }
                 }
             }
 
             async gerarCartao(data, key) {
                 try {
                     const handle = String(this.config.handle || "").trim().replace(/^[@$]+/, "");
+                    if (!handle) throw new Error("InfinitePay não configurado no painel.");
                     const priceCents = Math.round(data.valor * 100);
                     const items = encodeURIComponent(JSON.stringify([{ name: `Doação - ${data.nome}`, price: priceCents, quantity: 1 }]));
                     const redirect = encodeURIComponent(window.location.href);
                     const link = `https://checkout.infinitepay.io/${encodeURIComponent(handle)}?items=${items}&order_nsu=${data.nsu}&redirect_url=${redirect}`;
                     window.location.href = link;
                 } catch (e) {
-                    this.showToast("Erro ao abrir checkout no cartão.");
+                    this.showToast(e.message || "Erro ao abrir checkout.");
                 }
+            }
+
+            mostrarModalSucesso(data) {
+                const resumo = document.getElementById("sucesso-resumo");
+                if (resumo) {
+                    resumo.innerText = `Valor: ${Number(data.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}${data.item ? " | Item: " + data.item : ""} — ID: ${data.nsu}`;
+                }
+                document.getElementById("modal-sucesso").style.display = "flex";
+            }
+
+            compartilharApoioWhatsApp() {
+                const d = this.lastDonation;
+                const valor = d ? Number(d.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "";
+                const text = `Acabei de fazer uma doação de ${valor} para a campanha: *${this.config.titulo}*! Ajude você também: ${window.location.href}`;
+                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
             }
 
             copiarPix() {
                 const el = document.getElementById("pix-copia-cola");
+                if (!el) return;
                 el.select();
-                navigator.clipboard.writeText(el.value);
-                this.showToast("Chave PIX Copiada!");
+                try {
+                    navigator.clipboard.writeText(el.value);
+                } catch (e) {
+                    document.execCommand("copy");
+                }
+                this.showToast("Código PIX copiado!");
+            }
+
+            copiarChaveManual() {
+                if (!this.config.pixManual) return;
+                try {
+                    navigator.clipboard.writeText(this.config.pixManual);
+                } catch (e) {
+                    const t = document.createElement("input");
+                    t.value = this.config.pixManual;
+                    document.body.appendChild(t);
+                    t.select();
+                    document.execCommand("copy");
+                    t.remove();
+                }
+                this.showToast("Chave PIX copiada!");
             }
 
             switchTab(tab) {
                 document.querySelectorAll(".view-content").forEach(el => el.classList.remove("active"));
                 const target = document.getElementById(`view-${tab}`);
                 if (target) target.classList.add("active");
-                document.getElementById("fixed-checkout").style.display = tab === "doacao" ? "flex" : "none";
-                window.scrollTo(0, 0);
+
+                const heroSection = document.getElementById("public-hero-section");
+                const bottomCheckout = document.getElementById("fixed-checkout");
+                if (tab === "doacao") {
+                    if (heroSection) heroSection.style.display = "block";
+                    if (bottomCheckout) bottomCheckout.style.display = "flex";
+                } else {
+                    if (heroSection) heroSection.style.display = "none";
+                    if (bottomCheckout) bottomCheckout.style.display = "none";
+                }
+
+                if (tab === "admin") this.renderAdminView();
+                window.scrollTo({ top: 0, behavior: "smooth" });
             }
 
             compartilhar() {
-                const text = `Apoie a campanha: *${this.config.titulo}*. Faça sua doação online: ${window.location.href}`;
-                window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+                const text = `Apoie a nossa causa: *${this.config.titulo}*. Faça uma doação: ${window.location.href}`;
+                if (navigator.share) {
+                    navigator.share({
+                        title: this.config.titulo,
+                        text: text,
+                        url: window.location.href
+                    }).catch(() => {
+                        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+                    });
+                } else {
+                    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+                }
             }
 
             askAdmin() {
+                const pinInput = document.getElementById("admin-pin");
+                if (pinInput) pinInput.value = "";
                 document.getElementById("modal-pin").style.display = "flex";
             }
 
             validarPin() {
-                const pin = document.getElementById("admin-pin").value.trim();
-                if (pin === String(this.config.pin)) {
+                const pin = document.getElementById("admin-pin")?.value.trim() || "";
+                const expectedPin = String(this.config.pin || "0000");
+
+                if (this.pinAttempts >= 5) {
+                    return this.showToast("Muitas tentativas. Aguarde alguns minutos.");
+                }
+
+                if (pin === expectedPin) {
+                    this.pinAttempts = 0;
                     this.closeModal("modal-pin");
                     this.switchTab("admin");
-                    this.renderAdminView();
                 } else {
-                    this.showToast("PIN Incorreto!");
+                    this.pinAttempts++;
+                    this.showToast(`PIN incorreto (${this.pinAttempts}/5)`);
                 }
+            }
+
+            switchConfigTab(tabName, btnEl) {
+                document.querySelectorAll(".cfg-content").forEach(c => c.style.display = "none");
+                const target = document.getElementById(`cfg-tab-${tabName}`);
+                if (target) target.style.display = "block";
+                document.querySelectorAll(".cfg-tab").forEach(b => b.classList.remove("active"));
+                if (btnEl) btnEl.classList.add("active");
+            }
+
+            abrirConfiguracoes() {
+                document.getElementById("cfg-titulo").value = this.config.titulo || "";
+                document.getElementById("cfg-descricao").value = this.config.descricao || "";
+                document.getElementById("cfg-meta").value = this.config.meta || 0;
+                document.getElementById("cfg-status").value = this.config.status || "active";
+                document.getElementById("cfg-data-encerramento").value = this.config.dataEncerramento || "";
+                document.getElementById("cfg-capas").value = (this.config.capas || []).join("\n");
+                document.getElementById("cfg-carousel-tempo").value = this.config.carouselTempo || 5;
+                document.getElementById("cfg-pin").value = this.config.pin || "0000";
+
+                this.renderConfigQuickValues();
+                this.renderConfigItens();
+                this.renderConfigUpdates();
+
+                const t = this.config.theme || {};
+                document.getElementById("cfg-theme-primary").value = t.primary || "#00db87";
+                document.getElementById("cfg-theme-paid").value = t.paid || "#00db87";
+                document.getElementById("cfg-theme-reserved").value = t.reserved || "#f59e0b";
+                document.getElementById("cfg-theme-donated").value = t.donated || "#ec4899";
+                document.getElementById("cfg-theme-mode").value = t.mode || "dark";
+
+                document.getElementById("cfg-mptoken").value = this.config.mpToken || "";
+                document.getElementById("cfg-handle").value = this.config.handle || "";
+                document.getElementById("cfg-pix-manual").value = this.config.pixManual || "";
+                document.getElementById("cfg-pix-timeout").value = this.config.pixTimeout || 15;
+                document.getElementById("cfg-pix-copia-cola").value = this.config.pixCopiaCola || "";
+                const mode = this.config.pixMode === "static" ? "static" : "mp";
+                const radioMp = document.getElementById("cfg-pix-mode-mp");
+                const radioStatic = document.getElementById("cfg-pix-mode-static");
+                if (radioMp) radioMp.checked = mode === "mp";
+                if (radioStatic) radioStatic.checked = mode === "static";
+                this.onPixModeChange(mode);
+
+                const s = this.config.social || {};
+                document.getElementById("cfg-social-wa").value = s.whatsapp || "";
+                document.getElementById("cfg-social-wa-grupo").value = s.waGrupo || "";
+                document.getElementById("cfg-social-ig").value = s.instagram || "";
+                document.getElementById("cfg-social-fb").value = s.facebook || "";
+                document.getElementById("cfg-social-tg").value = s.telegram || "";
+
+                this.switchConfigTab("geral", document.querySelector(".cfg-tab"));
+                document.getElementById("modal-config").style.display = "flex";
+            }
+
+            renderConfigQuickValues() {
+                const list = document.getElementById("cfg-quick-list");
+                if (!list) return;
+                const vals = this.config.quickValues || [];
+                list.innerHTML = vals.map(q => `
+                    <div class="cfg-list-item" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                        <span style="font-weight:700; color:var(--title-color);">R$ <input type="number" class="input-form q-val" value="${q.val}" style="width:90px; display:inline-block; margin:0; padding:6px 10px;"></span>
+                        <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer;">
+                            <input type="radio" name="pop_quick" class="q-pop" ${q.popular ? "checked" : ""}> ⭐ Popular
+                        </label>
+                        <button type="button" class="remove-btn" onclick="this.closest('.cfg-list-item').remove()">
+                            <i data-lucide="trash-2" style="width:12px;"></i>
+                        </button>
+                    </div>
+                `).join("");
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            addQuickValueRow() {
+                const list = document.getElementById("cfg-quick-list");
+                if (!list) return;
+                const div = document.createElement("div");
+                div.className = "cfg-list-item";
+                div.style.cssText = "display:flex; justify-content:space-between; align-items:center; gap:8px;";
+                div.innerHTML = `
+                    <span style="font-weight:700; color:var(--title-color);">R$ <input type="number" class="input-form q-val" value="30" style="width:90px; display:inline-block; margin:0; padding:6px 10px;"></span>
+                    <label style="font-size:11px; display:flex; align-items:center; gap:4px; color:var(--text-muted); cursor:pointer;">
+                        <input type="radio" name="pop_quick" class="q-pop"> ⭐ Popular
+                    </label>
+                    <button type="button" class="remove-btn" onclick="this.closest('.cfg-list-item').remove()">
+                        <i data-lucide="trash-2" style="width:12px;"></i>
+                    </button>
+                `;
+                list.appendChild(div);
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            renderConfigItens() {
+                const list = document.getElementById("cfg-itens-list");
+                if (!list) return;
+                const itens = this.config.itens || [];
+                list.innerHTML = itens.map(i => `
+                    <div class="cfg-list-item" style="display:grid; grid-template-columns:1fr 100px 36px; gap:8px; align-items:center;">
+                        <input type="text" class="input-form item-nome" value="${i.nome}" placeholder="Nome" style="margin:0; padding:6px 10px;">
+                        <input type="number" class="input-form item-valor" value="${i.valor}" placeholder="R$" style="margin:0; padding:6px 10px;">
+                        <button type="button" class="remove-btn" onclick="this.closest('.cfg-list-item').remove()">
+                            <i data-lucide="trash-2" style="width:12px;"></i>
+                        </button>
+                    </div>
+                `).join("");
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            addItemDoacaoRow() {
+                const list = document.getElementById("cfg-itens-list");
+                if (!list) return;
+                const div = document.createElement("div");
+                div.className = "cfg-list-item";
+                div.style.cssText = "display:grid; grid-template-columns:1fr 100px 36px; gap:8px; align-items:center;";
+                div.innerHTML = `
+                    <input type="text" class="input-form item-nome" placeholder="Novo item" style="margin:0; padding:6px 10px;">
+                    <input type="number" class="input-form item-valor" value="50" placeholder="R$" style="margin:0; padding:6px 10px;">
+                    <button type="button" class="remove-btn" onclick="this.closest('.cfg-list-item').remove()">
+                        <i data-lucide="trash-2" style="width:12px;"></i>
+                    </button>
+                `;
+                list.appendChild(div);
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            renderConfigUpdates() {
+                const list = document.getElementById("cfg-updates-list");
+                if (!list) return;
+                const updates = this.config.updates || [];
+                list.innerHTML = updates.map(u => `
+                    <div class="cfg-list-item">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <input type="text" class="input-form update-titulo" value="${u.titulo}" placeholder="Título" style="margin:0; flex:1; font-weight:700;">
+                            <button type="button" class="remove-btn" style="margin-left:8px;" onclick="this.closest('.cfg-list-item').remove()">
+                                <i data-lucide="trash-2" style="width:12px;"></i>
+                            </button>
+                        </div>
+                        <input type="text" class="input-form update-data" value="${u.data || ""}" placeholder="Data" style="margin-bottom:6px; font-size:12px;">
+                        <textarea class="input-form update-texto" rows="2" placeholder="Texto..." style="margin:0; font-size:12px;">${u.texto}</textarea>
+                    </div>
+                `).join("");
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            addUpdateRow() {
+                const list = document.getElementById("cfg-updates-list");
+                if (!list) return;
+                const div = document.createElement("div");
+                div.className = "cfg-list-item";
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <input type="text" class="input-form update-titulo" placeholder="Título" style="margin:0; flex:1; font-weight:700;">
+                        <button type="button" class="remove-btn" style="margin-left:8px;" onclick="this.closest('.cfg-list-item').remove()">
+                            <i data-lucide="trash-2" style="width:12px;"></i>
+                        </button>
+                    </div>
+                    <input type="text" class="input-form update-data" placeholder="Data" style="margin-bottom:6px; font-size:12px;">
+                    <textarea class="input-form update-texto" rows="2" placeholder="Texto..." style="margin:0; font-size:12px;"></textarea>
+                `;
+                list.appendChild(div);
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            async salvarConfiguracoes() {
+                const capas = document.getElementById("cfg-capas").value.split("\n").map(l => l.trim()).filter(Boolean);
+
+                const quickValues = [];
+                document.querySelectorAll("#cfg-quick-list .cfg-list-item").forEach(item => {
+                    const val = parseFloat(item.querySelector(".q-val")?.value) || 0;
+                    const popular = item.querySelector(".q-pop")?.checked;
+                    if (val > 0) quickValues.push({ val, popular });
+                });
+
+                const itens = [];
+                document.querySelectorAll("#cfg-itens-list .cfg-list-item").forEach(item => {
+                    const nome = item.querySelector(".item-nome")?.value.trim();
+                    const valor = parseFloat(item.querySelector(".item-valor")?.value) || 0;
+                    if (nome && valor > 0) itens.push({ nome, valor });
+                });
+
+                const updates = [];
+                document.querySelectorAll("#cfg-updates-list .cfg-list-item").forEach(item => {
+                    const titulo = item.querySelector(".update-titulo")?.value.trim();
+                    const data = item.querySelector(".update-data")?.value.trim();
+                    const texto = item.querySelector(".update-texto")?.value.trim();
+                    if (titulo && texto) updates.push({ titulo, data, texto });
+                });
+
+                const novosDados = {
+                    ...this.config,
+                    titulo: document.getElementById("cfg-titulo").value.trim(),
+                    descricao: document.getElementById("cfg-descricao").value.trim(),
+                    meta: parseFloat(document.getElementById("cfg-meta").value) || 0,
+                    status: document.getElementById("cfg-status").value,
+                    dataEncerramento: document.getElementById("cfg-data-encerramento").value,
+                    capas: capas.length ? capas : ["img/capa.jpg"],
+                    carouselTempo: parseInt(document.getElementById("cfg-carousel-tempo").value) || 5,
+                    pin: document.getElementById("cfg-pin").value.trim() || "0000",
+                    quickValues: quickValues.length ? quickValues : this.config.quickValues,
+                    itens,
+                    updates,
+                    theme: {
+                        primary: document.getElementById("cfg-theme-primary").value,
+                        paid: document.getElementById("cfg-theme-paid").value,
+                        reserved: document.getElementById("cfg-theme-reserved").value,
+                        donated: document.getElementById("cfg-theme-donated").value,
+                        mode: document.getElementById("cfg-theme-mode").value
+                    },
+                    mpToken: document.getElementById("cfg-mptoken").value.trim(),
+                    handle: document.getElementById("cfg-handle").value.trim(),
+                    pixManual: document.getElementById("cfg-pix-manual").value.trim(),
+                    pixTimeout: parseInt(document.getElementById("cfg-pix-timeout").value) || 15,
+                    pixMode: document.getElementById("cfg-pix-mode-static")?.checked ? "static" : "mp",
+                    pixCopiaCola: document.getElementById("cfg-pix-copia-cola")?.value.trim() || "",
+                    social: {
+                        whatsapp: document.getElementById("cfg-social-wa").value.trim(),
+                        waGrupo: document.getElementById("cfg-social-wa-grupo").value.trim(),
+                        instagram: document.getElementById("cfg-social-ig").value.trim(),
+                        facebook: document.getElementById("cfg-social-fb").value.trim(),
+                        telegram: document.getElementById("cfg-social-tg").value.trim()
+                    }
+                };
+
+                this.config = novosDados;
+                localStorage.setItem("doacao_local_cfg", JSON.stringify(this.config));
+
+                if (cfgRef) {
+                    try {
+                        await set(cfgRef, novosDados);
+                    } catch (e) {
+                        console.warn("Gravado localmente:", e);
+                    }
+                }
+
+                this.applyTheme(this.config.theme);
+                this.renderConfig();
+                this.setupCarousel();
+                this.setupCountdown();
+                this.closeModal("modal-config");
+                this.showToast("Configurações salvas!");
+            }
+
+            async confirmarManual(key) {
+                if (db) {
+                    try {
+                        await update(ref(db, `${dbPath}/historico/${key}`), { status: "paid" });
+                    } catch (e) {}
+                }
+                if (this.doacoes[key]) {
+                    this.doacoes[key].status = "paid";
+                    localStorage.setItem("doacao_local_historico", JSON.stringify(this.doacoes));
+                }
+                this.showToast("Doação confirmada!");
+                this.renderProgressAndMural();
+                this.renderAdminView();
+            }
+
+            async excluirDoacao(key) {
+                if (!confirm("Tem certeza que deseja apagar esta doação?")) return;
+
+                if (db) {
+                    try {
+                        await remove(ref(db, `${dbPath}/historico/${key}`));
+                    } catch (e) {
+                        console.warn("Erro ao excluir:", e);
+                    }
+                }
+                if (this.doacoes[key]) {
+                    delete this.doacoes[key];
+                    localStorage.setItem("doacao_local_historico", JSON.stringify(this.doacoes));
+                }
+                this.showToast("Doação removida");
+                this.renderProgressAndMural();
+                this.renderAdminView();
+                const searchPhone = document.getElementById("search-phone");
+                if (searchPhone?.value) this.consultarDoacoes();
+            }
+
+            async zerarCampanha() {
+                const ok = confirm("⚠️ ZERAR CAMPANHA?\n\nIsso apaga TODAS as doações e reinicia o progresso do zero.\nEsta ação não pode ser desfeita.");
+                if (!ok) return;
+
+                const ok2 = confirm("Confirma definitivamente? Todos os registros de doação serão removidos.");
+                if (!ok2) return;
+
+                try {
+                    if (db && doacoesRef) {
+                        await set(doacoesRef, null);
+                    }
+                    this.doacoes = {};
+                    localStorage.setItem("doacao_local_historico", JSON.stringify({}));
+                    this.lastMilestone = 0;
+                    this.renderProgressAndMural();
+                    this.renderAdminView();
+                    this.showToast("Campanha zerada com sucesso!");
+                    if (typeof confetti === "function") {
+                        confetti({ particleCount: 40, spread: 50, colors: ["#ef4444", "#f59e0b"] });
+                    }
+                } catch (e) {
+                    this.showToast("Erro ao zerar. Tente novamente.");
+                    console.warn(e);
+                }
+            }
+
+            filtrarDoacoesAdmin(status, btnEl) {
+                this.adminFilter = status;
+                document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+                if (btnEl) btnEl.classList.add("active");
+                this.renderAdminView();
+            }
+
+            enviarAgradecimentoWhatsApp(tel, nome, valor) {
+                if (!tel) return this.showToast("Doador sem telefone.");
+                const clean = tel.replace(/\D/g, "");
+                const msg = encodeURIComponent(`Olá ${nome || "Amigo(a)"}! Agradecemos de coração a sua doação de R$ ${Number(valor).toFixed(2)} para "${this.config.titulo}". Seu apoio faz toda a diferença! 🙏`);
+                window.open(`https://wa.me/${clean.startsWith("55") ? clean : "55" + clean}?text=${msg}`, "_blank");
+            }
+
+            notificarPendentesWhatsApp() {
+                const pendentes = Object.values(this.doacoes || {}).filter(d => d.status !== "paid" && d.telefone);
+                if (!pendentes.length) return this.showToast("Nenhuma pendente com WhatsApp.");
+                const d = pendentes[0];
+                const clean = d.telefone.replace(/\D/g, "");
+                const msg = encodeURIComponent(`Olá ${d.nome || "Amigo(a)"}! Sua doação de ${Number(d.valor).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })} para "${this.config.titulo}" ainda aguarda confirmação. Posso reenviar o PIX?`);
+                window.open(`https://wa.me/${clean.startsWith("55") ? clean : "55" + clean}?text=${msg}`, "_blank");
+            }
+
+            getPaymentTypeLabel(type) {
+                const map = {
+                    pix_mp: "PIX MP",
+                    pix_static: "PIX Código",
+                    card: "Cartão",
+                    pix: "PIX"
+                };
+                return map[type] || type || "—";
             }
 
             renderAdminView() {
                 const listEl = document.getElementById("admin-doacoes-list");
+                if (!listEl) return;
                 listEl.innerHTML = "";
-                let total = 0;
-                let count = 0;
+                let total = 0, count = 0, hojeTotal = 0, pendentesQtd = 0;
+                let totalPixMp = 0, qtdPixMp = 0;
+                let totalPixStatic = 0, qtdPixStatic = 0;
+                let totalCard = 0, qtdCard = 0;
 
-                Object.entries(this.doacoes).forEach(([k, d]) => {
-                    if (d.status === "paid") {
-                        total += Number(d.valor) || 0;
+                const hojeStart = new Date();
+                hojeStart.setHours(0, 0, 0, 0);
+                const hojeTimestamp = hojeStart.getTime();
+
+                const entries = Object.entries(this.doacoes || {});
+                entries.sort((a, b) => (b[1].timestamp || 0) - (a[1].timestamp || 0));
+
+                let renderedItems = 0;
+
+                entries.forEach(([key, d]) => {
+                    const isPaid = d.status === "paid";
+                    const val = Number(d.valor) || 0;
+                    const pType = d.paymentType || (d.payMethod === "card" ? "card" : "pix_mp");
+
+                    if (isPaid) {
+                        total += val;
                         count++;
+                        if (d.timestamp && d.timestamp >= hojeTimestamp) hojeTotal += val;
+
+                        if (pType === "pix_static") {
+                            totalPixStatic += val;
+                            qtdPixStatic++;
+                        } else if (pType === "card") {
+                            totalCard += val;
+                            qtdCard++;
+                        } else {
+                            // pix_mp ou legado "pix"
+                            totalPixMp += val;
+                            qtdPixMp++;
+                        }
+                    } else {
+                        pendentesQtd++;
                     }
+
+                    if (this.adminFilter === "paid" && !isPaid) return;
+                    if (this.adminFilter === "reserved" && isPaid) return;
+                    if (this.adminFilter === "pix_mp" && pType !== "pix_mp" && pType !== "pix") return;
+                    if (this.adminFilter === "pix_static" && pType !== "pix_static") return;
+                    if (this.adminFilter === "card" && pType !== "card") return;
+
+                    renderedItems++;
+                    const typeLabel = this.getPaymentTypeLabel(pType);
                     listEl.innerHTML += `
-                        <div class="admin-item">
-                            <div style="display:flex; justify-content:space-between;">
-                                <b>${d.nome || 'Anônimo'} (${d.telefone || 'Sem Tel'})</b>
-                                <span style="color:${d.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'}; font-weight:700;">
-                                    ${d.status === 'paid' ? 'Pago' : 'Pendente'}
-                                </span>
+                        <div class="donation-item-card ${isPaid ? "is-paid" : "is-pending"}">
+                            <div class="donation-item-top">
+                                <div style="min-width:0; flex:1;">
+                                    <div class="donor-name">${d.nome || "Apoiador Anônimo"}</div>
+                                    <div class="donation-meta-text">
+                                        <span>${d.telefone || "—"}</span>
+                                        <span>• ${typeLabel}</span>
+                                        ${d.item ? `<span style="color:var(--donated);">• ${d.item}</span>` : ""}
+                                    </div>
+                                    ${d.mensagem ? `<p style="font-size:11px; color:var(--text-muted); margin-top:2px; font-style:italic; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">"${d.mensagem}"</p>` : ""}
+                                </div>
+                                <div style="text-align:right; flex-shrink:0;">
+                                    <div class="donor-val">R$ ${val.toFixed(2)}</div>
+                                    <span class="badge-status-pill ${isPaid ? "paid" : "pending"}">${isPaid ? "Pago" : "Pendente"}</span>
+                                </div>
                             </div>
-                            <p style="margin-top:4px; font-size:13px;">Valor: R$ ${Number(d.valor || 0).toFixed(2)} | NSU: ${d.nsu || '-'}</p>
-                            ${d.mensagem ? `<p style="font-size:12px; color:var(--text-color); margin-top:4px;">"${d.mensagem}"</p>` : ''}
+                            <div class="donation-action-row">
+                                ${!isPaid ? `
+                                    <button type="button" class="btn-card-action btn-confirm" onclick="window.doacaoApp.confirmarManual('${key}')">
+                                        <i data-lucide="check" style="width:12px;"></i> Confirmar
+                                    </button>
+                                ` : ""}
+                                ${d.telefone ? `
+                                    <button type="button" class="btn-card-action btn-wa" onclick="window.doacaoApp.enviarAgradecimentoWhatsApp('${d.telefone}', '${(d.nome || "").replace(/'/g, "\\'")}', ${val})">
+                                        <i class="fa-brands fa-whatsapp"></i>
+                                    </button>
+                                ` : ""}
+                                <button type="button" class="btn-card-action btn-delete" onclick="window.doacaoApp.excluirDoacao('${key}')">
+                                    <i data-lucide="trash-2" style="width:12px;"></i>
+                                </button>
+                            </div>
                         </div>
                     `;
                 });
 
-                document.getElementById("admin-total-pago").innerText = total.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-                document.getElementById("admin-qtd-doadores").innerText = count;
+                if (renderedItems === 0) {
+                    listEl.innerHTML = '<p style="text-align:center; padding:24px 0; font-size:13px; color:var(--text-muted);">Nenhuma doação neste filtro.</p>';
+                }
+
+                const fmt = v => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+                const elTotal = document.getElementById("admin-total-pago");
+                const elQtd = document.getElementById("admin-qtd-doadores");
+                const elHoje = document.getElementById("admin-hoje-total");
+                const elPend = document.getElementById("admin-qtd-pendentes");
+                if (elTotal) elTotal.innerText = fmt(total);
+                if (elQtd) elQtd.innerText = count;
+                if (elHoje) elHoje.innerText = fmt(hojeTotal);
+                if (elPend) elPend.innerText = pendentesQtd;
+
+                const setType = (idVal, idQtd, val, qtd) => {
+                    const e1 = document.getElementById(idVal);
+                    const e2 = document.getElementById(idQtd);
+                    if (e1) e1.innerText = fmt(val);
+                    if (e2) e2.innerText = `${qtd} doação${qtd !== 1 ? "ões" : ""}`;
+                };
+                setType("admin-total-pix-mp", "admin-qtd-pix-mp", totalPixMp, qtdPixMp);
+                setType("admin-total-pix-static", "admin-qtd-pix-static", totalPixStatic, qtdPixStatic);
+                setType("admin-total-card", "admin-qtd-card", totalCard, qtdCard);
+
+                if (typeof lucide !== "undefined") lucide.createIcons();
+            }
+
+            exportarCSV() {
+                const rows = [["Nome", "Telefone", "Valor", "Status", "Tipo Pagamento", "Item", "Mensagem", "NSU", "Data"]];
+                Object.values(this.doacoes || {}).forEach(d => {
+                    rows.push([
+                        d.nome || "Anônimo",
+                        d.telefone || "",
+                        Number(d.valor || 0).toFixed(2),
+                        d.status || "",
+                        this.getPaymentTypeLabel(d.paymentType || "pix_mp"),
+                        d.item || "",
+                        (d.mensagem || "").replace(/\n/g, " "),
+                        d.nsu || "",
+                        d.timestamp ? new Date(d.timestamp).toLocaleString("pt-BR") : ""
+                    ]);
+                });
+                const csvContent = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+                const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `doacoes_${Date.now()}.csv`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showToast("CSV exportado!");
             }
 
             async consultarDoacoes() {
-                const tel = document.getElementById("search-phone").value.replace(/\D/g, "");
+                const tel = (document.getElementById("search-phone")?.value || "").replace(/\D/g, "");
                 const resEl = document.getElementById("results-area");
+                if (!resEl) return;
                 resEl.innerHTML = "";
 
-                if (tel.length < 10) return this.showToast("Informe DDD + Número.");
+                if (tel.length < 10) return this.showToast("Informe DDD + Número completo.");
 
-                const encontradas = Object.values(this.doacoes).filter(d => d.telefone === tel);
+                const encontradas = Object.entries(this.doacoes || {}).filter(([_, d]) =>
+                    (d.telefone || "").replace(/\D/g, "") === tel
+                );
 
                 if (encontradas.length === 0) {
-                    resEl.innerHTML = '<p style="text-align:center; padding:10px;">Nenhuma doação encontrada para este número.</p>';
+                    resEl.innerHTML = '<p style="text-align:center; padding:14px; color:var(--text-muted); background:var(--surface-color); border-radius:12px;">Nenhuma doação encontrada.</p>';
                     return;
                 }
 
-                encontradas.forEach(d => {
+                encontradas.forEach(([key, d]) => {
+                    const isPaid = d.status === "paid";
                     resEl.innerHTML += `
-                        <div class="admin-item" style="border-color:${d.status === 'paid' ? 'var(--paid)' : 'var(--reserved)'};">
-                            <b>${d.nome}</b> - R$ ${Number(d.valor).toFixed(2)}
-                            <p style="font-size:12px; margin-top:4px;">Status: <b>${d.status === 'paid' ? 'Confirmada' : 'Aguardando Pagamento'}</b></p>
+                        <div class="donation-item-card ${isPaid ? "is-paid" : "is-pending"}" style="margin-bottom:10px;">
+                            <div class="donation-item-top">
+                                <div>
+                                    <div class="donor-name">${d.nome || "Anônimo"}</div>
+                                    <div class="donation-meta-text">
+                                        <span>Status: <b style="color:${isPaid ? "var(--paid)" : "var(--reserved)"};">${isPaid ? "Confirmada" : "Aguardando"}</b></span>
+                                        ${d.item ? `<span>•</span> <span style="color:var(--donated); font-weight:700;">🎁 ${d.item}</span>` : ""}
+                                    </div>
+                                </div>
+                                <div class="donor-val" style="color:var(--primary-color);">R$ ${Number(d.valor).toFixed(2)}</div>
+                            </div>
+                            ${!isPaid ? `
+                                <div class="donation-action-row">
+                                    <button type="button" class="btn-card-action btn-delete" style="margin-left:0;" onclick="window.doacaoApp.excluirDoacao('${key}')">
+                                        <i data-lucide="trash-2" style="width:13px;"></i> Cancelar Pendente
+                                    </button>
+                                </div>
+                            ` : ""}
                         </div>
                     `;
                 });
+                if (typeof lucide !== "undefined") lucide.createIcons();
             }
         }
 
