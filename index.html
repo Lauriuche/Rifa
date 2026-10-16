@@ -1,915 +1,1321 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5, user-scalable=no" />
-    <meta name="theme-color" content="#0b0c0e">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="description" content="Central de Campanhas Solidárias e Rifas">
-    <link rel="manifest" href="./manifest-home.json">
-    <link rel="icon" href="img/favicon.png" type="image/x-icon">
-    <title>Central de Campanhas</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5, user-scalable=no" />
+  <meta name="theme-color" content="#0b0c0e" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f1f5f9" media="(prefers-color-scheme: light)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Central de Campanhas Solidárias e Rifas — Transparência e impacto real">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="./manifest-home.json">
+  <link rel="icon" href="img/favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="img/icon-192.png">
+  <title>Central de Campanhas</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://unpkg.com/lucide@latest" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://unpkg.com/lucide@latest" defer></script>
 
-    <style>
-        :root {
-            --bg: #0b0c0e;
-            --surface: #13151b;
-            --card: #181a22;
-            --hover: #1f222c;
-            --border: rgba(255,255,255,0.08);
-            --primary: #00db87;
-            --primary-dark: #00a866;
-            --primary-glow: rgba(0,219,135,0.28);
-            --primary-light: rgba(0,219,135,0.12);
-            --title: #f8fafc;
-            --text: #94a3b8;
-            --muted: #64748b;
-            --danger: #ef4444;
-            --rifa: #8b5cf6;
-            --doacao: #00db87;
-            --radius: 16px;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-            --safe-top: env(safe-area-inset-top, 0px);
-            --nav-h: 64px;
-            --header-h: 56px;
-        }
+  <style>
+    :root {
+      --bg: #0b0c0e;
+      --surface: #13151b;
+      --card: #181a22;
+      --hover: #1f222c;
+      --border: rgba(255,255,255,0.08);
+      --primary: #00db87;
+      --primary-dark: #00a866;
+      --primary-glow: rgba(0,219,135,0.28);
+      --primary-light: rgba(0,219,135,0.12);
+      --title: #f8fafc;
+      --text: #94a3b8;
+      --muted: #64748b;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --rifa: #8b5cf6;
+      --doacao: #00db87;
+      --radius: 16px;
+      --radius-sm: 12px;
+      --safe-b: env(safe-area-inset-bottom, 0px);
+      --safe-t: env(safe-area-inset-top, 0px);
+      --nav-h: 64px;
+      --header-h: 56px;
+      --shadow: 0 8px 28px rgba(0,0,0,0.35);
+      --transition: 0.22s cubic-bezier(0.25,1,0.5,1);
+    }
+    [data-theme="light"] {
+      --bg: #f1f5f9;
+      --surface: #e2e8f0;
+      --card: #ffffff;
+      --hover: #cbd5e1;
+      --border: rgba(15,23,42,0.1);
+      --title: #0f172a;
+      --text: #334155;
+      --muted: #64748b;
+      --primary-glow: rgba(0,168,102,0.2);
+      --primary-light: rgba(0,168,102,0.1);
+      --shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
 
-        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-        html, body { height:100%; }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
-            overflow-x: hidden;
-            overscroll-behavior: none;
-        }
-        button, input, select, textarea { font-family: inherit; border:none; outline:none; }
-        a { text-decoration:none; color:inherit; }
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html, body { height:100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      overflow-x: hidden;
+      overscroll-behavior-y: contain;
+    }
+    button, input, select, textarea { font-family: inherit; border:none; outline:none; background:none; }
+    a { text-decoration:none; color:inherit; }
+    img { max-width:100%; display:block; }
 
-        /* ===== APP SHELL ===== */
-        .app {
-            min-height: 100dvh;
-            display: flex;
-            flex-direction: column;
-            padding-top: var(--safe-top);
-            padding-bottom: calc(var(--nav-h) + var(--safe-bottom));
-        }
+    /* ===== APP SHELL ===== */
+    .app {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding-top: var(--safe-t);
+      padding-bottom: calc(var(--nav-h) + var(--safe-b));
+    }
 
-        /* Header */
-        .header {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            height: var(--header-h);
-            background: rgba(11,12,14,0.92);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
-        }
-        .header-title {
-            font-weight: 800;
-            font-size: 16px;
-            color: var(--title);
-            letter-spacing: 0.3px;
-        }
-        .header-btn {
-            width: 40px; height: 40px;
-            border-radius: 12px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--title);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .header-btn:active { background: var(--hover); border-color: var(--primary); color: var(--primary); }
+    /* Header */
+    .header {
+      position: sticky; top: 0; z-index: 60;
+      height: var(--header-h);
+      background: color-mix(in srgb, var(--bg) 92%, transparent);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 14px;
+    }
+    .header-title { font-weight:800; font-size:16px; color:var(--title); letter-spacing:0.2px; }
+    .header-actions { display:flex; gap:8px; }
+    .icon-btn {
+      width:40px; height:40px; border-radius:12px;
+      background: var(--surface); border:1px solid var(--border);
+      color: var(--title); display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition: var(--transition);
+    }
+    .icon-btn:active { transform:scale(0.94); background:var(--hover); }
+    .icon-btn.primary { color:var(--primary); border-color:rgba(0,219,135,0.3); }
 
-        /* Main content */
-        .main {
-            flex: 1;
-            padding: 16px 14px 24px;
-            max-width: 640px;
-            width: 100%;
-            margin: 0 auto;
-        }
+    /* Main */
+    .main { flex:1; padding:14px 14px 28px; max-width:640px; width:100%; margin:0 auto; }
 
-        /* Hero */
-        .hero {
-            background: linear-gradient(145deg, rgba(0,219,135,0.12), rgba(0,219,135,0.02));
-            border: 1px solid rgba(0,219,135,0.25);
-            border-radius: var(--radius);
-            padding: 20px 18px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--title);
-            letter-spacing: -0.4px;
-            margin-bottom: 6px;
-        }
-        .hero p { font-size: 13px; color: var(--text); }
+    /* Hero */
+    .hero {
+      background: linear-gradient(145deg, var(--primary-light), transparent);
+      border:1px solid color-mix(in srgb, var(--primary) 30%, transparent);
+      border-radius: var(--radius);
+      padding:18px 16px; margin-bottom:16px; text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .hero h1 { font-size:21px; font-weight:800; color:var(--title); letter-spacing:-0.4px; margin-bottom:4px; }
+    .hero p { font-size:13px; color:var(--text); }
+    .hero-stats {
+      display:flex; justify-content:center; gap:18px; margin-top:14px; flex-wrap:wrap;
+    }
+    .hero-stat { text-align:center; }
+    .hero-stat .n { font-size:18px; font-weight:900; color:var(--primary); }
+    .hero-stat .l { font-size:10px; text-transform:uppercase; font-weight:700; color:var(--muted); letter-spacing:0.4px; }
 
-        /* Section title */
-        .section-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        .section-head h2 {
-            font-size: 14px;
-            font-weight: 800;
-            color: var(--title);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex; align-items: center; gap: 8px;
-        }
+    /* Search + Filters */
+    .toolbar { margin-bottom:14px; }
+    .search-box {
+      display:flex; align-items:center; gap:10px;
+      background:var(--surface); border:1.5px solid var(--border);
+      border-radius:14px; padding:11px 14px; margin-bottom:10px;
+      transition: border-color var(--transition);
+    }
+    .search-box:focus-within { border-color:var(--primary); }
+    .search-box input {
+      flex:1; background:transparent; color:var(--title); font-size:15px; font-weight:500;
+    }
+    .search-box input::placeholder { color:var(--muted); }
+    .filters {
+      display:flex; gap:8px; overflow-x:auto; padding-bottom:4px;
+      scrollbar-width:none; -ms-overflow-style:none;
+    }
+    .filters::-webkit-scrollbar { display:none; }
+    .chip {
+      flex-shrink:0; padding:7px 14px; border-radius:99px;
+      background:var(--surface); border:1px solid var(--border);
+      font-size:12px; font-weight:700; color:var(--muted); cursor:pointer;
+      transition: var(--transition); white-space:nowrap;
+    }
+    .chip.active { background:var(--primary-light); color:var(--primary); border-color:var(--primary); }
+    .chip:active { transform:scale(0.96); }
 
-        /* Campaign cards */
-        .campaigns-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .camp-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            overflow: hidden;
-            transition: transform 0.2s, border-color 0.2s;
-            cursor: pointer;
-        }
-        .camp-card:active { transform: scale(0.985); }
-        .camp-card:hover { border-color: rgba(255,255,255,0.14); }
+    /* Campaign cards — grid 2 colunas */
+    .campaigns {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .camp-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:14px; overflow:hidden;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      cursor:pointer; position:relative;
+      display: flex; flex-direction: column;
+    }
+    .camp-card:active { transform:scale(0.97); }
+    .camp-card.inactive { opacity:0.55; filter:grayscale(0.4); }
+    .camp-cover-wrap { position:relative; aspect-ratio:1/1; background:var(--surface); overflow:hidden; }
+    .camp-cover {
+      width:100%; height:100%; object-fit:cover;
+      transition: opacity 0.35s;
+    }
+    .camp-cover.loading { opacity:0; }
+    .camp-badges {
+      position:absolute; top:6px; left:6px; right:6px;
+      display:flex; justify-content:space-between; align-items:flex-start; gap:4px;
+      flex-wrap:wrap;
+    }
+    .badge {
+      display:inline-flex; align-items:center; gap:3px;
+      font-size:9px; font-weight:800; text-transform:uppercase;
+      padding:3px 6px; border-radius:6px; backdrop-filter:blur(10px);
+      background:rgba(13,14,17,0.82); border:1px solid rgba(255,255,255,0.1);
+    }
+    .badge.doacao { color:var(--doacao); border-color:rgba(0,219,135,0.35); }
+    .badge.rifa { color:var(--rifa); border-color:rgba(139,92,246,0.4); }
+    .badge.status-active { color:var(--primary); }
+    .badge.status-ending { color:var(--warning); }
+    .badge.status-closed { color:var(--danger); }
+    .badge.status-paused { color:var(--muted); }
+    .badge.new { background:linear-gradient(135deg,#00db87,#00b368); color:#041d13; border:none; }
 
-        .camp-cover {
-            width: 100%;
-            aspect-ratio: 16/9;
-            object-fit: cover;
-            background: var(--surface);
-            display: block;
-        }
-        .camp-body { padding: 14px 14px 16px; }
-        .camp-type {
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 10px;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 3px 8px;
-            border-radius: 6px;
-            margin-bottom: 8px;
-        }
-        .camp-type.doacao { background: rgba(0,219,135,0.15); color: var(--doacao); }
-        .camp-type.rifa { background: rgba(139,92,246,0.15); color: var(--rifa); }
-        .camp-title {
-            font-size: 17px;
-            font-weight: 800;
-            color: var(--title);
-            letter-spacing: -0.3px;
-            margin-bottom: 4px;
-            line-height: 1.25;
-        }
-        .camp-desc {
-            font-size: 13px;
-            color: var(--text);
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 12px;
-        }
-        .camp-cta {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            width: 100%;
-            padding: 12px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #041d13;
-            border: none;
-            cursor: pointer;
-        }
-        .camp-cta.rifa {
-            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
-            color: #fff;
-        }
+    .camp-body {
+      padding:10px; display:flex; flex-direction:column; flex:1;
+    }
+    .camp-title {
+      font-size:13px; font-weight:800; color:var(--title);
+      letter-spacing:-0.2px; margin-bottom:3px; line-height:1.25;
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+    }
+    .camp-desc {
+      font-size:11px; color:var(--text);
+      display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+      overflow:hidden; margin-bottom:8px; flex:1;
+    }
 
-        /* Empty state */
-        .empty {
-            text-align: center;
-            padding: 48px 20px;
-            color: var(--muted);
-        }
-        .empty i { font-size: 42px; margin-bottom: 12px; opacity: 0.5; }
-        .empty p { font-size: 14px; }
+    /* Progress compacto */
+    .progress-wrap { margin-bottom:8px; }
+    .progress-meta {
+      display:flex; justify-content:space-between; font-size:10px; margin-bottom:4px;
+    }
+    .progress-meta .arrec { font-weight:800; color:var(--primary); }
+    .progress-meta .meta { color:var(--muted); font-size:9px; }
+    .progress-bg {
+      height:6px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden;
+    }
+    [data-theme="light"] .progress-bg { background:rgba(15,23,42,0.08); }
+    .progress-fill {
+      height:100%; border-radius:99px;
+      background:linear-gradient(90deg,var(--primary),#38ef7d);
+      box-shadow:0 0 10px var(--primary-glow);
+      transition:width 0.8s cubic-bezier(0.22,1,0.36,1);
+      position:relative; overflow:hidden;
+    }
+    .progress-fill::after {
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+      animation:shine 2.2s infinite;
+    }
+    @keyframes shine { 0%{transform:translateX(-120%)} 100%{transform:translateX(120%)} }
+    .progress-foot {
+      display:flex; justify-content:space-between; font-size:9px; margin-top:3px; color:var(--muted);
+    }
 
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: calc(var(--nav-h) + var(--safe-bottom));
-            padding-bottom: var(--safe-bottom);
-            background: rgba(13,14,17,0.94);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-top: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            z-index: 100;
-        }
-        .nav-item {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            padding: 8px 4px;
-            color: var(--muted);
-            font-size: 10px;
-            font-weight: 700;
-            background: none;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .nav-item.active { color: var(--primary); }
-        .nav-item i, .nav-item svg { width: 22px; height: 22px; }
+    .camp-actions { display:flex; gap:6px; margin-top:auto; }
+    .btn-cta {
+      flex:1; display:flex; align-items:center; justify-content:center; gap:4px;
+      padding:9px 6px; border-radius:10px; font-weight:800; font-size:11px;
+      text-transform:uppercase; letter-spacing:0.2px; cursor:pointer;
+      transition: var(--transition); border:none;
+    }
+    .btn-cta.doacao {
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#041d13; box-shadow:0 4px 14px var(--primary-glow);
+    }
+    .btn-cta.rifa {
+      background:linear-gradient(135deg,#8b5cf6,#6d28d9); color:#fff;
+      box-shadow:0 4px 14px rgba(139,92,246,0.35);
+    }
+    .btn-share {
+      width:36px; flex-shrink:0; border-radius:10px;
+      background:var(--surface); border:1px solid var(--border);
+      color:var(--title); display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+    }
 
-        /* Views */
-        .view { display: none; }
-        .view.active { display: block; animation: fadeIn 0.25s ease; }
-        @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    /* Empty / Skeleton (2 colunas) */
+    .empty {
+      grid-column: 1 / -1;
+      text-align:center; padding:48px 20px; color:var(--muted);
+    }
+    .empty svg, .empty i { width:48px; height:48px; margin-bottom:12px; opacity:0.45; }
+    .skeleton-card {
+      background:var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden;
+    }
+    .skeleton-img {
+      aspect-ratio:1/1;
+      background:linear-gradient(90deg,var(--surface) 25%,var(--hover) 50%,var(--surface) 75%);
+      background-size:200% 100%; animation:skel 1.4s ease infinite;
+    }
+    .skeleton-body { padding:10px; }
+    .skel-line {
+      height:10px; border-radius:5px; margin-bottom:8px;
+      background:linear-gradient(90deg,var(--surface) 25%,var(--hover) 50%,var(--surface) 75%);
+      background-size:200% 100%; animation:skel 1.4s ease infinite;
+    }
+    @keyframes skel { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-        /* Admin / Config */
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .admin-header h2 { font-size: 18px; font-weight: 800; color: var(--title); }
+    /* Bottom Nav */
+    .bottom-nav {
+      position:fixed; bottom:0; left:0; right:0; z-index:100;
+      height:calc(var(--nav-h) + var(--safe-b));
+      padding-bottom:var(--safe-b);
+      background:color-mix(in srgb, var(--bg) 94%, transparent);
+      backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+      border-top:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-around;
+    }
+    .nav-item {
+      flex:1; display:flex; flex-direction:column; align-items:center; gap:3px;
+      padding:8px 4px; color:var(--muted); font-size:10px; font-weight:700;
+      cursor:pointer; transition:color 0.2s; background:none; border:none;
+    }
+    .nav-item.active { color:var(--primary); }
+    .nav-item svg, .nav-item i { width:22px; height:22px; }
 
-        .cfg-list { display: flex; flex-direction: column; gap: 10px; }
-        .cfg-item {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .cfg-item img {
-            width: 56px; height: 56px;
-            border-radius: 10px;
-            object-fit: cover;
-            background: var(--card);
-            flex-shrink: 0;
-        }
-        .cfg-item-info { flex:1; min-width:0; }
-        .cfg-item-info b { display:block; color:var(--title); font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-        .cfg-item-info span { font-size:11px; color:var(--muted); }
-        .cfg-item-actions { display:flex; gap:6px; }
-        .icon-btn {
-            width: 36px; height: 36px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer;
-            background: var(--card);
-            border: 1px solid var(--border);
-            color: var(--text);
-        }
-        .icon-btn.danger { color: var(--danger); border-color: rgba(239,68,68,0.3); }
+    /* Views */
+    .view { display:none; }
+    .view.active { display:block; animation:fadeIn 0.28s ease; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none} }
 
-        .btn-add {
-            width: 100%;
-            padding: 14px;
-            border-radius: 14px;
-            background: var(--primary-light);
-            border: 1.5px dashed var(--primary);
-            color: var(--primary);
-            font-weight: 800;
-            font-size: 14px;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            cursor: pointer;
-            margin-top: 12px;
-        }
+    /* Admin */
+    .admin-header {
+      display:flex; justify-content:space-between; align-items:center;
+      margin-bottom:14px; gap:10px; flex-wrap:wrap;
+    }
+    .admin-header h2 { font-size:18px; font-weight:800; color:var(--title); }
+    .admin-metrics {
+      display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;
+    }
+    .metric-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:14px; padding:12px 14px;
+    }
+    .metric-card .l { font-size:10px; text-transform:uppercase; font-weight:700; color:var(--muted); letter-spacing:0.4px; }
+    .metric-card .v { font-size:18px; font-weight:900; color:var(--title); margin-top:2px; }
 
-        /* Modal */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.88);
-            backdrop-filter: blur(8px);
-            z-index: 200;
-            display: none;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 0;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-sheet {
-            background: var(--card);
-            border-radius: 24px 24px 0 0;
-            width: 100%;
-            max-width: 640px;
-            max-height: 92dvh;
-            overflow-y: auto;
-            padding: 20px 18px calc(24px + var(--safe-bottom));
-            animation: slideUp 0.3s cubic-bezier(0.22,1,0.36,1);
-        }
-        @keyframes slideUp {
-            from { transform: translateY(40px); opacity: 0.6; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-handle {
-            width: 40px; height: 4px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 4px;
-            margin: 0 auto 16px;
-        }
-        .modal-title {
-            font-size: 18px;
-            font-weight: 800;
-            color: var(--title);
-            margin-bottom: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .input-label {
-            display: block;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: var(--muted);
-            margin-bottom: 6px;
-        }
-        .input-field {
-            width: 100%;
-            padding: 13px 14px;
-            background: var(--surface);
-            border: 1.5px solid var(--border);
-            border-radius: 12px;
-            color: var(--title);
-            font-size: 15px;
-            margin-bottom: 14px;
-            transition: border-color 0.2s;
-        }
-        .input-field:focus { border-color: var(--primary); }
-        .select-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 14px;
-        }
-        .type-btn {
-            padding: 12px;
-            border-radius: 12px;
-            border: 1.5px solid var(--border);
-            background: var(--surface);
-            color: var(--text);
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            text-align: center;
-            transition: 0.2s;
-        }
-        .type-btn.active.doacao { border-color: var(--doacao); background: var(--primary-light); color: var(--doacao); }
-        .type-btn.active.rifa { border-color: var(--rifa); background: rgba(139,92,246,0.12); color: var(--rifa); }
+    .cfg-list { display:flex; flex-direction:column; gap:10px; }
+    .cfg-item {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:14px; padding:12px; display:flex; gap:12px; align-items:center;
+      transition: border-color 0.2s;
+    }
+    .cfg-item.dragging { opacity:0.6; border-color:var(--primary); }
+    .cfg-item img {
+      width:56px; height:56px; border-radius:10px; object-fit:cover;
+      background:var(--card); flex-shrink:0;
+    }
+    .cfg-item-info { flex:1; min-width:0; }
+    .cfg-item-info b {
+      display:block; color:var(--title); font-size:14px;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .cfg-item-info span { font-size:11px; color:var(--muted); }
+    .cfg-item-actions { display:flex; gap:6px; flex-shrink:0; }
+    .icon-btn-sm {
+      width:34px; height:34px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      background:var(--card); border:1px solid var(--border);
+      color:var(--text); cursor:pointer; font-size:13px;
+    }
+    .icon-btn-sm.danger { color:var(--danger); border-color:rgba(239,68,68,0.3); }
+    .icon-btn-sm.success { color:var(--primary); }
 
-        .btn-primary {
-            width: 100%;
-            padding: 15px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: #041d13;
-            font-weight: 800;
-            font-size: 15px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            cursor: pointer;
-            border: none;
-            margin-top: 8px;
-        }
-        .btn-secondary {
-            width: 100%;
-            padding: 13px;
-            border-radius: 14px;
-            background: transparent;
-            color: var(--muted);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            margin-top: 8px;
-        }
+    .btn-add {
+      width:100%; padding:14px; border-radius:14px; margin-top:12px;
+      background:var(--primary-light); border:1.5px dashed var(--primary);
+      color:var(--primary); font-weight:800; font-size:14px;
+      display:flex; align-items:center; justify-content:center; gap:8px;
+      cursor:pointer;
+    }
 
-        /* PIN modal centered */
-        .modal-center {
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-center .modal-sheet {
-            border-radius: 20px;
-            max-width: 340px;
-            padding: 28px 22px;
-            text-align: center;
-        }
+    /* Modal (bottom sheet) */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:200;
+      background:rgba(0,0,0,0.85); backdrop-filter:blur(8px);
+      display:none; align-items:flex-end; justify-content:center;
+    }
+    .modal-overlay.show { display:flex; }
+    .modal-sheet {
+      background:var(--card); border-radius:24px 24px 0 0;
+      width:100%; max-width:640px; max-height:92dvh; overflow-y:auto;
+      padding:12px 18px calc(24px + var(--safe-b));
+      animation:slideUp 0.32s cubic-bezier(0.22,1,0.36,1);
+    }
+    @keyframes slideUp {
+      from{transform:translateY(48px); opacity:0.5}
+      to{transform:none; opacity:1}
+    }
+    .modal-handle {
+      width:40px; height:4px; background:rgba(255,255,255,0.2);
+      border-radius:4px; margin:4px auto 16px;
+    }
+    [data-theme="light"] .modal-handle { background:rgba(0,0,0,0.15); }
+    .modal-title {
+      font-size:18px; font-weight:800; color:var(--title);
+      margin-bottom:16px; display:flex; justify-content:space-between; align-items:center;
+    }
+    .input-label {
+      display:block; font-size:11px; font-weight:700; text-transform:uppercase;
+      letter-spacing:0.4px; color:var(--muted); margin-bottom:6px;
+    }
+    .input-field {
+      width:100%; padding:13px 14px; background:var(--surface);
+      border:1.5px solid var(--border); border-radius:12px;
+      color:var(--title); font-size:15px; margin-bottom:14px;
+      transition:border-color 0.2s;
+    }
+    .input-field:focus { border-color:var(--primary); }
+    textarea.input-field { resize:vertical; min-height:70px; }
+    .select-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+    .type-btn {
+      padding:12px; border-radius:12px; border:1.5px solid var(--border);
+      background:var(--surface); color:var(--text); font-weight:700; font-size:13px;
+      cursor:pointer; text-align:center; transition:0.2s;
+    }
+    .type-btn.active.doacao { border-color:var(--doacao); background:var(--primary-light); color:var(--doacao); }
+    .type-btn.active.rifa { border-color:var(--rifa); background:rgba(139,92,246,0.12); color:var(--rifa); }
 
-        /* Toast */
-        .toast {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%,-50%) scale(0.9);
-            background: var(--card);
-            border: 1px solid var(--primary);
-            color: var(--title);
-            padding: 14px 24px;
-            border-radius: 14px;
-            font-weight: 700;
-            z-index: 300;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.25s;
-            text-align: center;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.5);
-        }
-        .toast.show { opacity:1; transform: translate(-50%,-50%) scale(1); }
+    .btn-primary {
+      width:100%; padding:15px; border-radius:14px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-dark));
+      color:#041d13; font-weight:800; font-size:15px; text-transform:uppercase;
+      letter-spacing:0.3px; cursor:pointer; border:none; margin-top:6px;
+    }
+    .btn-secondary {
+      width:100%; padding:13px; border-radius:14px; background:transparent;
+      color:var(--muted); font-weight:600; font-size:14px; cursor:pointer; margin-top:6px;
+    }
 
-        /* About */
-        .about-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            text-align: center;
-        }
-        .about-card h3 { color: var(--title); font-size: 18px; margin-bottom: 8px; }
-        .about-card p { font-size: 13px; color: var(--text); margin-bottom: 16px; }
-    </style>
+    /* PIN centered */
+    .modal-center { align-items:center; padding:20px; }
+    .modal-center .modal-sheet {
+      border-radius:20px; max-width:340px; padding:28px 22px; text-align:center;
+    }
+
+    /* Toast */
+    .toast {
+      position:fixed; top:50%; left:50%;
+      transform:translate(-50%,-50%) scale(0.92);
+      background:var(--card); border:1px solid var(--primary);
+      color:var(--title); padding:14px 26px; border-radius:14px;
+      font-weight:700; z-index:400; opacity:0; pointer-events:none;
+      transition:0.25s; text-align:center; box-shadow:var(--shadow);
+    }
+    .toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+
+    /* About */
+    .about-card {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:var(--radius); padding:24px 20px; text-align:center;
+    }
+    .about-card h3 { color:var(--title); font-size:18px; margin-bottom:8px; }
+    .about-card p { font-size:13px; color:var(--text); margin-bottom:12px; }
+
+    /* Pull indicator */
+    .pull-indicator {
+      text-align:center; padding:8px; color:var(--muted); font-size:12px;
+      opacity:0; transition:opacity 0.2s; height:0; overflow:hidden;
+    }
+    .pull-indicator.show { opacity:1; height:auto; }
+
+    /* Live toast social proof */
+    .live-toast {
+      position:fixed; top:calc(var(--header-h) + var(--safe-t) + 10px);
+      left:14px; right:14px; max-width:360px; margin-left:auto;
+      background:var(--card); border:1px solid color-mix(in srgb, var(--primary) 35%, transparent);
+      border-radius:14px; padding:12px 14px; display:flex; gap:12px; align-items:center;
+      z-index:90; box-shadow:var(--shadow);
+      transform:translateX(120%); transition:transform 0.4s cubic-bezier(0.2,0.8,0.2,1);
+    }
+    .live-toast.show { transform:translateX(0); }
+
+    /* Switch */
+    .switch-row {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 0; margin-bottom:8px;
+    }
+    .switch {
+      width:46px; height:26px; border-radius:99px; background:var(--surface);
+      border:1px solid var(--border); position:relative; cursor:pointer; transition:0.2s;
+    }
+    .switch.on { background:var(--primary); border-color:var(--primary); }
+    .switch::after {
+      content:""; position:absolute; width:20px; height:20px; border-radius:50%;
+      background:#fff; top:2px; left:2px; transition:0.2s; box-shadow:0 1px 4px rgba(0,0,0,0.3);
+    }
+    .switch.on::after { left:22px; }
+  </style>
 </head>
 <body>
-    <div class="app" id="app">
-        <!-- HEADER -->
-        <header class="header">
-            <div class="header-title" id="header-title">Campanhas</div>
-            <button class="header-btn" id="btn-admin" onclick="App.askPin()" aria-label="Admin">
-                <i data-lucide="shield" style="width:18px;color:var(--primary)"></i>
-            </button>
-        </header>
+  <div class="app" id="app">
+    <header class="header">
+      <div class="header-title" id="header-title">Campanhas</div>
+      <div class="header-actions">
+        <button class="icon-btn" id="btn-theme" onclick="App.toggleTheme()" aria-label="Tema" title="Alternar tema">
+          <i data-lucide="moon" style="width:18px"></i>
+        </button>
+        <button class="icon-btn primary" onclick="App.askPin()" aria-label="Admin">
+          <i data-lucide="shield" style="width:18px"></i>
+        </button>
+      </div>
+    </header>
 
-        <!-- MAIN -->
-        <main class="main">
-            <!-- VIEW: HOME -->
-            <div id="view-home" class="view active">
-                <div class="hero">
-                    <h1 id="home-titulo">Central de Campanhas</h1>
-                    <p id="home-subtitulo">Escolha uma causa e faça a diferença</p>
-                </div>
+    <div class="pull-indicator" id="pull-indicator">Solte para atualizar</div>
 
-                <div class="section-head">
-                    <h2><i data-lucide="heart" style="width:16px;color:var(--primary)"></i> Ativas</h2>
-                    <span id="camp-count" style="font-size:12px;color:var(--muted)">0</span>
-                </div>
-
-                <div class="campaigns-grid" id="campaigns-list">
-                    <!-- preenchido via JS -->
-                </div>
-            </div>
-
-            <!-- VIEW: ADMIN -->
-            <div id="view-admin" class="view">
-                <div class="admin-header">
-                    <h2>Gerenciar Campanhas</h2>
-                    <button class="header-btn" onclick="App.openConfigGeral()" title="Configurações gerais">
-                        <i data-lucide="settings" style="width:16px"></i>
-                    </button>
-                </div>
-
-                <div class="cfg-list" id="admin-list"></div>
-                <button class="btn-add" onclick="App.openEditCampanha(null)">
-                    <i data-lucide="plus" style="width:18px"></i> Adicionar Campanha
-                </button>
-            </div>
-
-            <!-- VIEW: SOBRE -->
-            <div id="view-sobre" class="view">
-                <div class="about-card">
-                    <div style="width:64px;height:64px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--primary)">
-                        <i data-lucide="heart-handshake" style="width:28px"></i>
-                    </div>
-                    <h3 id="sobre-titulo">Central de Campanhas</h3>
-                    <p id="sobre-texto">Aqui você encontra todas as nossas campanhas de doação e rifas solidárias. Cada contribuição transforma vidas.</p>
-                    <p style="font-size:12px;color:var(--muted)">Transparência • Segurança • Impacto real</p>
-                </div>
-            </div>
-        </main>
-
-        <!-- BOTTOM NAV -->
-        <nav class="bottom-nav">
-            <button class="nav-item active" data-view="home" onclick="App.switchView('home')">
-                <i data-lucide="home"></i>
-                <span>Início</span>
-            </button>
-            <button class="nav-item" data-view="admin" onclick="App.switchView('admin')" id="nav-admin" style="display:none">
-                <i data-lucide="layout-dashboard"></i>
-                <span>Painel</span>
-            </button>
-            <button class="nav-item" data-view="sobre" onclick="App.switchView('sobre')">
-                <i data-lucide="info"></i>
-                <span>Sobre</span>
-            </button>
-        </nav>
-    </div>
-
-    <!-- MODAL PIN -->
-    <div class="modal-overlay modal-center" id="modal-pin">
-        <div class="modal-sheet">
-            <div style="width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--primary)">
-                <i data-lucide="lock" style="width:22px"></i>
-            </div>
-            <h3 style="color:var(--title);margin-bottom:6px;font-size:17px">Acesso Admin</h3>
-            <p style="font-size:12px;color:var(--muted);margin-bottom:16px">PIN padrão: <b>0000</b></p>
-            <input type="password" id="pin-input" class="input-field" placeholder="••••" maxlength="8" style="text-align:center;font-size:22px;letter-spacing:8px" inputmode="numeric">
-            <button class="btn-primary" onclick="App.validarPin()">Entrar</button>
-            <button class="btn-secondary" onclick="App.closeModal('modal-pin')">Cancelar</button>
+    <main class="main">
+      <!-- HOME -->
+      <div id="view-home" class="view active">
+        <div class="hero">
+          <h1 id="home-titulo">Central de Campanhas</h1>
+          <p id="home-subtitulo">Escolha uma causa e faça a diferença</p>
+          <div class="hero-stats" id="hero-stats">
+            <div class="hero-stat"><div class="n" id="stat-camps">0</div><div class="l">Campanhas</div></div>
+            <div class="hero-stat"><div class="n" id="stat-apoiadores">0</div><div class="l">Apoiadores</div></div>
+            <div class="hero-stat"><div class="n" id="stat-arrecadado">R$ 0</div><div class="l">Arrecadado</div></div>
+          </div>
         </div>
-    </div>
 
-    <!-- MODAL EDIT CAMPANHA -->
-    <div class="modal-overlay" id="modal-edit">
-        <div class="modal-sheet">
-            <div class="modal-handle"></div>
-            <div class="modal-title">
-                <span id="edit-title">Nova Campanha</span>
-                <button onclick="App.closeModal('modal-edit')" style="background:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
-            </div>
-
-            <label class="input-label">Tipo</label>
-            <div class="select-row">
-                <button type="button" class="type-btn active doacao" id="type-doacao" onclick="App.setTipo('doacao')">💚 Doação</button>
-                <button type="button" class="type-btn rifa" id="type-rifa" onclick="App.setTipo('rifa')">🎫 Rifa</button>
-            </div>
-
-            <label class="input-label">Título</label>
-            <input type="text" id="edit-titulo" class="input-field" placeholder="Ex: Ajude as famílias de Grajaú">
-
-            <label class="input-label">Descrição curta</label>
-            <textarea id="edit-desc" class="input-field" rows="2" placeholder="Uma frase sobre a campanha"></textarea>
-
-            <label class="input-label">URL da Campanha</label>
-            <input type="url" id="edit-url" class="input-field" placeholder="https://seusite.com/doacao.html?tenant=xxx">
-
-            <label class="input-label">URL da Imagem (capa)</label>
-            <input type="url" id="edit-img" class="input-field" placeholder="https://... ou img/capa.jpg">
-
-            <label class="input-label">Ordem (número menor aparece primeiro)</label>
-            <input type="number" id="edit-ordem" class="input-field" value="0" min="0">
-
-            <button class="btn-primary" onclick="App.salvarCampanha()">Salvar</button>
-            <button class="btn-secondary" onclick="App.closeModal('modal-edit')">Cancelar</button>
+        <div class="toolbar">
+          <div class="search-box">
+            <i data-lucide="search" style="width:18px;color:var(--muted)"></i>
+            <input type="search" id="search-input" placeholder="Buscar campanha..." oninput="App.onSearch(this.value)" autocomplete="off">
+          </div>
+          <div class="filters" id="filters">
+            <button class="chip active" data-filter="all" onclick="App.setFilter('all',this)">Todas</button>
+            <button class="chip" data-filter="doacao" onclick="App.setFilter('doacao',this)">💚 Doações</button>
+            <button class="chip" data-filter="rifa" onclick="App.setFilter('rifa',this)">🎫 Rifas</button>
+            <button class="chip" data-filter="active" onclick="App.setFilter('active',this)">Ativas</button>
+            <button class="chip" data-filter="ending" onclick="App.setFilter('ending',this)">Encerrando</button>
+          </div>
         </div>
-    </div>
 
-    <!-- MODAL CONFIG GERAL -->
-    <div class="modal-overlay" id="modal-config">
-        <div class="modal-sheet">
-            <div class="modal-handle"></div>
-            <div class="modal-title">
-                <span>Configurações da Home</span>
-                <button onclick="App.closeModal('modal-config')" style="background:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
-            </div>
+        <div class="campaigns" id="campaigns-list"></div>
+      </div>
 
-            <label class="input-label">Título da Home</label>
-            <input type="text" id="cfg-titulo" class="input-field" placeholder="Central de Campanhas">
-
-            <label class="input-label">Subtítulo</label>
-            <input type="text" id="cfg-subtitulo" class="input-field" placeholder="Escolha uma causa...">
-
-            <label class="input-label">Texto Sobre</label>
-            <textarea id="cfg-sobre" class="input-field" rows="3"></textarea>
-
-            <label class="input-label">PIN Admin</label>
-            <input type="password" id="cfg-pin" class="input-field" placeholder="0000">
-
-            <button class="btn-primary" onclick="App.salvarConfigGeral()">Salvar</button>
-            <button class="btn-secondary" onclick="App.closeModal('modal-config')">Fechar</button>
+      <!-- ADMIN -->
+      <div id="view-admin" class="view">
+        <div class="admin-header">
+          <h2>Painel</h2>
+          <div style="display:flex;gap:8px">
+            <button class="icon-btn" onclick="App.openConfigGeral()" title="Configurações">
+              <i data-lucide="settings" style="width:16px"></i>
+            </button>
+            <button class="icon-btn" onclick="App.exportJSON()" title="Exportar">
+              <i data-lucide="download" style="width:16px"></i>
+            </button>
+          </div>
         </div>
+
+        <div class="admin-metrics">
+          <div class="metric-card"><div class="l">Campanhas</div><div class="v" id="adm-total-camps">0</div></div>
+          <div class="metric-card"><div class="l">Ativas</div><div class="v" id="adm-ativas" style="color:var(--primary)">0</div></div>
+          <div class="metric-card"><div class="l">Arrecadado</div><div class="v" id="adm-arrecadado" style="color:var(--primary)">R$ 0</div></div>
+          <div class="metric-card"><div class="l">Apoiadores</div><div class="v" id="adm-apoiadores">0</div></div>
+        </div>
+
+        <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Segure e arraste para reordenar</p>
+        <div class="cfg-list" id="admin-list"></div>
+        <button class="btn-add" onclick="App.openEditCampanha(null)">
+          <i data-lucide="plus" style="width:18px"></i> Adicionar Campanha
+        </button>
+      </div>
+
+      <!-- SOBRE -->
+      <div id="view-sobre" class="view">
+        <div class="about-card">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--primary)">
+            <i data-lucide="heart-handshake" style="width:28px"></i>
+          </div>
+          <h3 id="sobre-titulo">Central de Campanhas</h3>
+          <p id="sobre-texto">Aqui você encontra todas as nossas campanhas de doação e rifas solidárias. Cada contribuição transforma vidas.</p>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:16px">Transparência • Segurança • Impacto real</p>
+          <button class="btn-cta doacao" style="width:100%" onclick="App.compartilharHome()">
+            <i data-lucide="share-2" style="width:16px"></i> Compartilhar
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-view="home" onclick="App.switchView('home')">
+        <i data-lucide="home"></i><span>Início</span>
+      </button>
+      <button class="nav-item" data-view="admin" id="nav-admin" style="display:none" onclick="App.switchView('admin')">
+        <i data-lucide="layout-dashboard"></i><span>Painel</span>
+      </button>
+      <button class="nav-item" data-view="sobre" onclick="App.switchView('sobre')">
+        <i data-lucide="info"></i><span>Sobre</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Live social proof -->
+  <div class="live-toast" id="live-toast">
+    <div style="width:36px;height:36px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0">
+      <i data-lucide="heart" style="width:16px"></i>
     </div>
+    <div style="min-width:0;font-size:13px">
+      <b id="live-name" style="color:var(--title);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Alguém</b>
+      <span id="live-action" style="color:var(--muted);font-size:12px">acabou de apoiar</span>
+    </div>
+  </div>
 
-    <div class="toast" id="toast">Mensagem</div>
+  <!-- MODAL PIN -->
+  <div class="modal-overlay modal-center" id="modal-pin">
+    <div class="modal-sheet">
+      <div style="width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;color:var(--primary)">
+        <i data-lucide="lock" style="width:22px"></i>
+      </div>
+      <h3 style="color:var(--title);margin-bottom:6px;font-size:17px">Acesso Admin</h3>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:16px">PIN padrão: <b>0000</b></p>
+      <input type="password" id="pin-input" class="input-field" placeholder="••••" maxlength="8" style="text-align:center;font-size:22px;letter-spacing:8px" inputmode="numeric" autocomplete="off">
+      <button class="btn-primary" onclick="App.validarPin()">Entrar</button>
+      <button class="btn-secondary" onclick="App.closeModal('modal-pin')">Cancelar</button>
+    </div>
+  </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  <!-- MODAL EDIT -->
+  <div class="modal-overlay" id="modal-edit">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">
+        <span id="edit-title">Nova Campanha</span>
+        <button onclick="App.closeModal('modal-edit')" style="background:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+      </div>
 
-        // Mesmo projeto Firebase da sua campanha de doação
-        const firebaseConfig = {
-            apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
-            authDomain: "vagner-34d5b.firebaseapp.com",
-            databaseURL: "https://vagner-34d5b.firebaseio.com",
-            projectId: "vagner-34d5b",
-            storageBucket: "vagner-34d5b.firebasestorage.app",
-            messagingSenderId: "711539772164",
-            appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
-        };
+      <label class="input-label">Tipo</label>
+      <div class="select-row">
+        <button type="button" class="type-btn active doacao" id="type-doacao" onclick="App.setTipo('doacao')">💚 Doação</button>
+        <button type="button" class="type-btn rifa" id="type-rifa" onclick="App.setTipo('rifa')">🎫 Rifa</button>
+      </div>
 
-        let db = null;
-        let homeRef = null;
+      <label class="input-label">Título *</label>
+      <input type="text" id="edit-titulo" class="input-field" placeholder="Nome da campanha">
 
+      <label class="input-label">Descrição curta</label>
+      <textarea id="edit-desc" class="input-field" rows="2" placeholder="Uma frase sobre a causa"></textarea>
+
+      <label class="input-label">URL da Campanha *</label>
+      <input type="url" id="edit-url" class="input-field" placeholder="https://seusite.com/doacao.html?tenant=xxx">
+
+      <label class="input-label">Tenant ID (para progresso automático)</label>
+      <input type="text" id="edit-tenant" class="input-field" placeholder="doacao_principal (opcional)">
+
+      <label class="input-label">URL da Imagem de capa</label>
+      <input type="url" id="edit-img" class="input-field" placeholder="https://... ou img/capa.jpg">
+
+      <label class="input-label">Meta (R$) — opcional</label>
+      <input type="number" id="edit-meta" class="input-field" placeholder="5000" step="any" min="0">
+
+      <label class="input-label">Data de encerramento</label>
+      <input type="datetime-local" id="edit-encerramento" class="input-field">
+
+      <label class="input-label">Ordem (menor = primeiro)</label>
+      <input type="number" id="edit-ordem" class="input-field" value="0" min="0">
+
+      <div class="switch-row">
+        <span style="font-size:13px;color:var(--title);font-weight:600">Campanha ativa</span>
+        <div class="switch on" id="edit-ativo" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div class="switch-row">
+        <span style="font-size:13px;color:var(--title);font-weight:600">Destacar no topo</span>
+        <div class="switch" id="edit-destaque" onclick="this.classList.toggle('on')"></div>
+      </div>
+
+      <button class="btn-primary" onclick="App.salvarCampanha()">Salvar</button>
+      <button class="btn-secondary" onclick="App.closeModal('modal-edit')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- MODAL CONFIG -->
+  <div class="modal-overlay" id="modal-config">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">
+        <span>Configurações</span>
+        <button onclick="App.closeModal('modal-config')" style="background:none;color:var(--muted);font-size:20px;cursor:pointer">✕</button>
+      </div>
+
+      <label class="input-label">Título da Home</label>
+      <input type="text" id="cfg-titulo" class="input-field">
+
+      <label class="input-label">Subtítulo</label>
+      <input type="text" id="cfg-subtitulo" class="input-field">
+
+      <label class="input-label">Texto Sobre</label>
+      <textarea id="cfg-sobre" class="input-field" rows="3"></textarea>
+
+      <label class="input-label">PIN Admin</label>
+      <input type="password" id="cfg-pin" class="input-field" placeholder="0000">
+
+      <div class="switch-row">
+        <span style="font-size:13px;color:var(--title);font-weight:600">Prova social (toasts)</span>
+        <div class="switch on" id="cfg-social-proof" onclick="this.classList.toggle('on')"></div>
+      </div>
+
+      <button class="btn-primary" onclick="App.salvarConfigGeral()">Salvar</button>
+      <button class="btn-secondary" onclick="App.closeModal('modal-config')">Fechar</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Mensagem</div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, set, get, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
+      authDomain: "vagner-34d5b.firebaseapp.com",
+      databaseURL: "https://vagner-34d5b.firebaseio.com",
+      projectId: "vagner-34d5b",
+      storageBucket: "vagner-34d5b.firebasestorage.app",
+      messagingSenderId: "711539772164",
+      appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
+    };
+
+    let db = null;
+    let homeRef = null;
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      homeRef = ref(db, "home");
+    } catch (e) {
+      console.warn("Firebase offline:", e);
+    }
+
+    const App = {
+      config: {
+        titulo: "Central de Campanhas",
+        subtitulo: "Escolha uma causa e faça a diferença",
+        sobre: "Aqui você encontra todas as nossas campanhas de doação e rifas solidárias. Cada contribuição transforma vidas.",
+        pin: "0000",
+        socialProof: true,
+        campanhas: []
+      },
+      isAdmin: false,
+      editId: null,
+      editTipo: "doacao",
+      filter: "all",
+      search: "",
+      progressCache: {},
+      pinAttempts: 0,
+      socialTimer: null,
+      dragSrc: null,
+
+      init() {
+        const theme = localStorage.getItem("home_theme") || "dark";
+        document.documentElement.setAttribute("data-theme", theme);
+        this.updateThemeIcon(theme);
+
+        const local = localStorage.getItem("home_cfg");
+        if (local) {
+          try { this.config = { ...this.config, ...JSON.parse(local) }; } catch(e){}
+        }
+        if (!Array.isArray(this.config.campanhas)) this.config.campanhas = [];
+
+        this.renderSkeletons();
+        this.listenFirebase();
+        this.setupPullToRefresh();
+        this.startSocialProof();
+        if (typeof lucide !== "undefined") lucide.createIcons();
+
+        // Service Worker registration (PWA)
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("./sw-home.js").catch(() => {});
+        }
+      },
+
+      listenFirebase() {
+        if (!homeRef) {
+          this.render();
+          this.loadAllProgress();
+          return;
+        }
+        onValue(homeRef, (snap) => {
+          if (snap.exists()) {
+            this.config = { ...this.config, ...snap.val() };
+            if (!Array.isArray(this.config.campanhas)) this.config.campanhas = [];
+            localStorage.setItem("home_cfg", JSON.stringify(this.config));
+          }
+          this.render();
+          this.loadAllProgress();
+        }, () => {
+          this.render();
+          this.loadAllProgress();
+        });
+      },
+
+      async loadAllProgress() {
+        const camps = this.config.campanhas || [];
+        const promises = camps.filter(c => c.tenantId && c.ativo !== false).map(c => this.fetchProgress(c));
+        await Promise.allSettled(promises);
+        this.render();
+      },
+
+      async fetchProgress(camp) {
+        if (!db || !camp.tenantId) return;
         try {
-            const app = initializeApp(firebaseConfig);
-            db = getDatabase(app);
-            homeRef = ref(db, "home");
+          const histRef = ref(db, `doacoes/${camp.tenantId}/historico`);
+          const cfgRef = ref(db, `doacoes/${camp.tenantId}/config`);
+          const [histSnap, cfgSnap] = await Promise.all([get(histRef), get(cfgRef)]);
+
+          let total = 0, count = 0;
+          if (histSnap.exists()) {
+            Object.values(histSnap.val()).forEach(d => {
+              if (d.status === "paid") {
+                total += Number(d.valor) || 0;
+                count++;
+              }
+            });
+          }
+          let meta = camp.meta || 0;
+          if (cfgSnap.exists()) {
+            const cfg = cfgSnap.val();
+            if (cfg.meta) meta = Number(cfg.meta) || meta;
+            if (cfg.status) camp._status = cfg.status;
+            if (cfg.dataEncerramento) camp._encerramento = cfg.dataEncerramento;
+          }
+          this.progressCache[camp.id] = { total, count, meta };
         } catch (e) {
-            console.warn("Firebase offline:", e);
+          console.warn("Progress fail", camp.tenantId, e);
+        }
+      },
+
+      renderSkeletons() {
+        const list = document.getElementById("campaigns-list");
+        list.innerHTML = Array(4).fill(0).map(() => `
+          <div class="skeleton-card">
+            <div class="skeleton-img"></div>
+            <div class="skeleton-body">
+              <div class="skel-line" style="width:50%"></div>
+              <div class="skel-line" style="width:85%"></div>
+              <div class="skel-line" style="width:65%"></div>
+            </div>
+          </div>
+        `).join("");
+      },
+
+      getFilteredCamps() {
+        let camps = [...(this.config.campanhas || [])];
+        camps.sort((a, b) => {
+          if (a.destaque && !b.destaque) return -1;
+          if (!a.destaque && b.destaque) return 1;
+          return (a.ordem || 0) - (b.ordem || 0);
+        });
+
+        if (this.filter === "doacao") camps = camps.filter(c => c.tipo === "doacao");
+        if (this.filter === "rifa") camps = camps.filter(c => c.tipo === "rifa");
+        if (this.filter === "active") camps = camps.filter(c => c.ativo !== false && (c._status || "active") === "active");
+        if (this.filter === "ending") {
+          camps = camps.filter(c => {
+            const end = c.encerramento || c._encerramento;
+            if (!end) return false;
+            const diff = new Date(end).getTime() - Date.now();
+            return diff > 0 && diff < 7 * 24 * 60 * 60 * 1000;
+          });
         }
 
-        const App = {
-            config: {
-                titulo: "Central de Campanhas",
-                subtitulo: "Escolha uma causa e faça a diferença",
-                sobre: "Aqui você encontra todas as nossas campanhas de doação e rifas solidárias. Cada contribuição transforma vidas.",
-                pin: "0000",
-                campanhas: []
-            },
-            isAdmin: false,
-            editId: null,
-            editTipo: "doacao",
+        if (this.search) {
+          const q = this.search.toLowerCase();
+          camps = camps.filter(c =>
+            (c.titulo || "").toLowerCase().includes(q) ||
+            (c.desc || "").toLowerCase().includes(q)
+          );
+        }
+        return camps;
+      },
 
-            init() {
-                // Local fallback
-                const local = localStorage.getItem("home_cfg");
-                if (local) {
-                    try { this.config = { ...this.config, ...JSON.parse(local) }; } catch(e){}
-                }
-                this.render();
-                this.listenFirebase();
-                if (typeof lucide !== "undefined") lucide.createIcons();
-            },
+      getStatus(camp) {
+        const st = camp._status || (camp.ativo === false ? "closed" : "active");
+        const end = camp.encerramento || camp._encerramento;
+        if (st === "closed" || st === "paused") return st;
+        if (end) {
+          const diff = new Date(end).getTime() - Date.now();
+          if (diff <= 0) return "closed";
+          if (diff < 3 * 24 * 60 * 60 * 1000) return "ending";
+        }
+        return "active";
+      },
 
-            listenFirebase() {
-                if (!homeRef) return;
-                onValue(homeRef, (snap) => {
-                    if (snap.exists()) {
-                        this.config = { ...this.config, ...snap.val() };
-                        if (!Array.isArray(this.config.campanhas)) this.config.campanhas = [];
-                        localStorage.setItem("home_cfg", JSON.stringify(this.config));
-                        this.render();
-                    }
-                });
-            },
+      formatMoney(v) {
+        return Number(v || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      },
 
-            render() {
-                document.getElementById("home-titulo").textContent = this.config.titulo || "Central de Campanhas";
-                document.getElementById("home-subtitulo").textContent = this.config.subtitulo || "";
-                document.getElementById("sobre-titulo").textContent = this.config.titulo || "Central de Campanhas";
-                document.getElementById("sobre-texto").textContent = this.config.sobre || "";
+      render() {
+        const camps = this.getFilteredCamps();
+        const all = this.config.campanhas || [];
+        const list = document.getElementById("campaigns-list");
 
-                const list = document.getElementById("campaigns-list");
-                const countEl = document.getElementById("camp-count");
-                const camps = (this.config.campanhas || []).slice().sort((a,b) => (a.ordem||0) - (b.ordem||0));
+        // Hero stats
+        let totalArrec = 0, totalApoi = 0;
+        all.forEach(c => {
+          const p = this.progressCache[c.id];
+          if (p) { totalArrec += p.total; totalApoi += p.count; }
+        });
+        document.getElementById("stat-camps").textContent = all.filter(c => c.ativo !== false).length;
+        document.getElementById("stat-apoiadores").textContent = totalApoi;
+        document.getElementById("stat-arrecadado").textContent = totalArrec >= 1000
+          ? "R$ " + (totalArrec / 1000).toFixed(1).replace(".", ",") + "k"
+          : this.formatMoney(totalArrec);
 
-                countEl.textContent = camps.length;
+        document.getElementById("home-titulo").textContent = this.config.titulo || "Central de Campanhas";
+        document.getElementById("home-subtitulo").textContent = this.config.subtitulo || "";
+        document.getElementById("sobre-titulo").textContent = this.config.titulo || "Central de Campanhas";
+        document.getElementById("sobre-texto").textContent = this.config.sobre || "";
 
-                if (!camps.length) {
-                    list.innerHTML = `
-                        <div class="empty">
-                            <i data-lucide="inbox"></i>
-                            <p>Nenhuma campanha cadastrada ainda.<br>Acesse o painel para adicionar.</p>
-                        </div>`;
-                } else {
-                    list.innerHTML = camps.map(c => `
-                        <article class="camp-card" onclick="App.abrirCampanha('${c.id}')">
-                            <img class="camp-cover" src="${c.img || 'https://placehold.co/800x450/181a22/94a3b8?text=Campanha'}" 
-                                 alt="${c.titulo}" onerror="this.src='https://placehold.co/800x450/181a22/94a3b8?text=Campanha'">
-                            <div class="camp-body">
-                                <span class="camp-type ${c.tipo || 'doacao'}">
-                                    ${c.tipo === 'rifa' ? '🎫 Rifa' : '💚 Doação'}
-                                </span>
-                                <h3 class="camp-title">${c.titulo || 'Campanha'}</h3>
-                                <p class="camp-desc">${c.desc || ''}</p>
-                                <button class="camp-cta ${c.tipo === 'rifa' ? 'rifa' : ''}" onclick="event.stopPropagation();App.abrirCampanha('${c.id}')">
-                                    ${c.tipo === 'rifa' ? 'Participar da Rifa' : 'Apoiar agora'}
-                                    <i data-lucide="arrow-right" style="width:16px"></i>
-                                </button>
-                            </div>
-                        </article>
-                    `).join("");
-                }
+        if (!camps.length) {
+          list.innerHTML = `
+            <div class="empty">
+              <i data-lucide="inbox"></i>
+              <p>${this.search || this.filter !== "all" ? "Nenhuma campanha encontrada com esse filtro." : "Nenhuma campanha cadastrada ainda."}</p>
+            </div>`;
+        } else {
+          list.innerHTML = camps.map(c => {
+            const status = this.getStatus(c);
+            const prog = this.progressCache[c.id] || { total: 0, count: 0, meta: c.meta || 0 };
+            const perc = prog.meta > 0 ? Math.min(100, Math.round((prog.total / prog.meta) * 100)) : 0;
+            const isNew = c.createdAt && (Date.now() - c.createdAt < 7 * 24 * 60 * 60 * 1000);
+            const inactive = c.ativo === false || status === "closed";
 
-                // Admin list
-                if (this.isAdmin) {
-                    const adminList = document.getElementById("admin-list");
-                    if (!camps.length) {
-                        adminList.innerHTML = `<p style="text-align:center;color:var(--muted);padding:20px 0">Nenhuma campanha. Clique em adicionar.</p>`;
-                    } else {
-                        adminList.innerHTML = camps.map(c => `
-                            <div class="cfg-item">
-                                <img src="${c.img || 'https://placehold.co/112x112/181a22/94a3b8?text=+'}" alt="">
-                                <div class="cfg-item-info">
-                                    <b>${c.titulo}</b>
-                                    <span>${c.tipo === 'rifa' ? 'Rifa' : 'Doação'} • ordem ${c.ordem||0}</span>
-                                </div>
-                                <div class="cfg-item-actions">
-                                    <button class="icon-btn" onclick="App.openEditCampanha('${c.id}')">
-                                        <i data-lucide="pencil" style="width:15px"></i>
-                                    </button>
-                                    <button class="icon-btn danger" onclick="App.excluirCampanha('${c.id}')">
-                                        <i data-lucide="trash-2" style="width:15px"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        `).join("");
-                    }
-                }
+            return `
+              <article class="camp-card ${inactive ? "inactive" : ""}" onclick="App.abrirCampanha('${c.id}')">
+                <div class="camp-cover-wrap">
+                  <img class="camp-cover loading" src="${c.img || "https://placehold.co/800x450/181a22/94a3b8?text=Campanha"}"
+                       alt="${c.titulo || ""}" loading="lazy"
+                       onload="this.classList.remove('loading')"
+                       onerror="this.src='https://placehold.co/800x450/181a22/94a3b8?text=Campanha';this.classList.remove('loading')">
+                  <div class="camp-badges">
+                    <div style="display:flex;gap:6px;flex-wrap:wrap">
+                      <span class="badge ${c.tipo || "doacao"}">${c.tipo === "rifa" ? "🎫 Rifa" : "💚 Doação"}</span>
+                      ${isNew ? '<span class="badge new">Nova</span>' : ""}
+                    </div>
+                    <span class="badge status-${status}">
+                      ${status === "active" ? "Ativa" : status === "ending" ? "Encerrando" : status === "paused" ? "Pausada" : "Encerrada"}
+                    </span>
+                  </div>
+                </div>
+                <div class="camp-body">
+                  <h3 class="camp-title">${c.titulo || "Campanha"}</h3>
+                  <p class="camp-desc">${c.desc || ""}</p>
+                  ${prog.meta > 0 || prog.total > 0 ? `
+                    <div class="progress-wrap">
+                      <div class="progress-meta">
+                        <span class="arrec">${this.formatMoney(prog.total)}</span>
+                        <span class="meta">Meta ${this.formatMoney(prog.meta || 0)}</span>
+                      </div>
+                      <div class="progress-bg"><div class="progress-fill" style="width:${perc}%"></div></div>
+                      <div class="progress-foot">
+                        <span>${perc}% da meta</span>
+                        <span>${prog.count} apoiador${prog.count !== 1 ? "es" : ""}</span>
+                      </div>
+                    </div>
+                  ` : ""}
+                  <div class="camp-actions">
+                    <button class="btn-cta ${c.tipo === "rifa" ? "rifa" : "doacao"}" onclick="event.stopPropagation();App.abrirCampanha('${c.id}')">
+                      ${c.tipo === "rifa" ? "Rifa" : "Doar"}
+                    </button>
+                    <button class="btn-share" onclick="event.stopPropagation();App.compartilharCampanha('${c.id}')" aria-label="Compartilhar">
+                      <i data-lucide="share-2" style="width:14px"></i>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join("");
+        }
 
-                if (typeof lucide !== "undefined") lucide.createIcons();
-            },
+        // Admin
+        if (this.isAdmin) {
+          document.getElementById("adm-total-camps").textContent = all.length;
+          document.getElementById("adm-ativas").textContent = all.filter(c => c.ativo !== false).length;
+          document.getElementById("adm-arrecadado").textContent = this.formatMoney(totalArrec);
+          document.getElementById("adm-apoiadores").textContent = totalApoi;
 
-            switchView(name) {
-                if (name === "admin" && !this.isAdmin) {
-                    this.askPin();
-                    return;
-                }
-                document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
-                document.getElementById(`view-${name}`)?.classList.add("active");
+          const adminList = document.getElementById("admin-list");
+          const sorted = [...all].sort((a,b) => (a.ordem||0) - (b.ordem||0));
+          if (!sorted.length) {
+            adminList.innerHTML = `<p style="text-align:center;color:var(--muted);padding:20px 0">Nenhuma campanha. Clique em adicionar.</p>`;
+          } else {
+            adminList.innerHTML = sorted.map((c, idx) => `
+              <div class="cfg-item" draggable="true" data-id="${c.id}"
+                   ondragstart="App.onDragStart(event)" ondragover="App.onDragOver(event)" ondrop="App.onDrop(event)" ondragend="App.onDragEnd(event)">
+                <img src="${c.img || "https://placehold.co/112x112/181a22/94a3b8?text=+"}" alt="" loading="lazy">
+                <div class="cfg-item-info">
+                  <b>${c.titulo || "Sem título"}</b>
+                  <span>${c.tipo === "rifa" ? "Rifa" : "Doação"} • ordem ${c.ordem ?? idx} ${c.ativo === false ? "• inativa" : ""} ${c.destaque ? "• ⭐" : ""}</span>
+                </div>
+                <div class="cfg-item-actions">
+                  <button class="icon-btn-sm" onclick="App.moveCampanha('${c.id}',-1)" title="Subir">↑</button>
+                  <button class="icon-btn-sm" onclick="App.moveCampanha('${c.id}',1)" title="Descer">↓</button>
+                  <button class="icon-btn-sm success" onclick="App.toggleAtivo('${c.id}')" title="Ativar/Desativar">
+                    <i data-lucide="${c.ativo === false ? "eye-off" : "eye"}" style="width:14px"></i>
+                  </button>
+                  <button class="icon-btn-sm" onclick="App.openEditCampanha('${c.id}')">
+                    <i data-lucide="pencil" style="width:14px"></i>
+                  </button>
+                  <button class="icon-btn-sm danger" onclick="App.excluirCampanha('${c.id}')">
+                    <i data-lucide="trash-2" style="width:14px"></i>
+                  </button>
+                </div>
+              </div>
+            `).join("");
+          }
+        }
 
-                document.querySelectorAll(".nav-item").forEach(n => {
-                    n.classList.toggle("active", n.dataset.view === name);
-                });
+        if (typeof lucide !== "undefined") lucide.createIcons();
+      },
 
-                const titles = { home: "Campanhas", admin: "Painel", sobre: "Sobre" };
-                document.getElementById("header-title").textContent = titles[name] || "Campanhas";
+      setFilter(f, btn) {
+        this.filter = f;
+        document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+        this.render();
+        if (navigator.vibrate) navigator.vibrate(8);
+      },
 
-                if (name === "admin") this.render();
-                window.scrollTo({ top: 0, behavior: "smooth" });
-            },
+      onSearch(val) {
+        this.search = val.trim();
+        this.render();
+      },
 
-            askPin() {
-                document.getElementById("pin-input").value = "";
-                this.openModal("modal-pin");
-                setTimeout(() => document.getElementById("pin-input")?.focus(), 200);
-            },
+      switchView(name) {
+        if (name === "admin" && !this.isAdmin) {
+          this.askPin();
+          return;
+        }
+        document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+        document.getElementById(`view-${name}`)?.classList.add("active");
+        document.querySelectorAll(".nav-item").forEach(n => n.classList.toggle("active", n.dataset.view === name));
+        const titles = { home: "Campanhas", admin: "Painel", sobre: "Sobre" };
+        document.getElementById("header-title").textContent = titles[name] || "Campanhas";
+        if (name === "admin") this.render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
 
-            validarPin() {
-                const pin = document.getElementById("pin-input")?.value.trim() || "";
-                if (pin === String(this.config.pin || "0000")) {
-                    this.isAdmin = true;
-                    document.getElementById("nav-admin").style.display = "flex";
-                    this.closeModal("modal-pin");
-                    this.switchView("admin");
-                    this.showToast("Acesso liberado");
-                } else {
-                    this.showToast("PIN incorreto");
-                }
-            },
+      askPin() {
+        document.getElementById("pin-input").value = "";
+        this.openModal("modal-pin");
+        setTimeout(() => document.getElementById("pin-input")?.focus(), 180);
+      },
 
-            openModal(id) {
-                document.getElementById(id).classList.add("show");
-            },
-            closeModal(id) {
-                document.getElementById(id).classList.remove("show");
-            },
+      validarPin() {
+        if (this.pinAttempts >= 5) return this.showToast("Muitas tentativas. Aguarde.");
+        const pin = document.getElementById("pin-input")?.value.trim() || "";
+        if (pin === String(this.config.pin || "0000")) {
+          this.pinAttempts = 0;
+          this.isAdmin = true;
+          document.getElementById("nav-admin").style.display = "flex";
+          this.closeModal("modal-pin");
+          this.switchView("admin");
+          this.showToast("Acesso liberado");
+          if (navigator.vibrate) navigator.vibrate([10, 30, 10]);
+        } else {
+          this.pinAttempts++;
+          this.showToast(`PIN incorreto (${this.pinAttempts}/5)`);
+        }
+      },
 
-            setTipo(tipo) {
-                this.editTipo = tipo;
-                document.getElementById("type-doacao").classList.toggle("active", tipo === "doacao");
-                document.getElementById("type-doacao").classList.toggle("doacao", tipo === "doacao");
-                document.getElementById("type-rifa").classList.toggle("active", tipo === "rifa");
-                document.getElementById("type-rifa").classList.toggle("rifa", tipo === "rifa");
-            },
+      openModal(id) { document.getElementById(id).classList.add("show"); },
+      closeModal(id) { document.getElementById(id).classList.remove("show"); },
 
-            openEditCampanha(id) {
-                this.editId = id;
-                const camp = id ? (this.config.campanhas || []).find(c => c.id === id) : null;
+      setTipo(tipo) {
+        this.editTipo = tipo;
+        document.getElementById("type-doacao").classList.toggle("active", tipo === "doacao");
+        document.getElementById("type-doacao").classList.toggle("doacao", tipo === "doacao");
+        document.getElementById("type-rifa").classList.toggle("active", tipo === "rifa");
+        document.getElementById("type-rifa").classList.toggle("rifa", tipo === "rifa");
+      },
 
-                document.getElementById("edit-title").textContent = camp ? "Editar Campanha" : "Nova Campanha";
-                document.getElementById("edit-titulo").value = camp?.titulo || "";
-                document.getElementById("edit-desc").value = camp?.desc || "";
-                document.getElementById("edit-url").value = camp?.url || "";
-                document.getElementById("edit-img").value = camp?.img || "";
-                document.getElementById("edit-ordem").value = camp?.ordem ?? 0;
-                this.setTipo(camp?.tipo || "doacao");
+      openEditCampanha(id) {
+        this.editId = id;
+        const camp = id ? (this.config.campanhas || []).find(c => c.id === id) : null;
+        document.getElementById("edit-title").textContent = camp ? "Editar Campanha" : "Nova Campanha";
+        document.getElementById("edit-titulo").value = camp?.titulo || "";
+        document.getElementById("edit-desc").value = camp?.desc || "";
+        document.getElementById("edit-url").value = camp?.url || "";
+        document.getElementById("edit-tenant").value = camp?.tenantId || "";
+        document.getElementById("edit-img").value = camp?.img || "";
+        document.getElementById("edit-meta").value = camp?.meta || "";
+        document.getElementById("edit-encerramento").value = camp?.encerramento || "";
+        document.getElementById("edit-ordem").value = camp?.ordem ?? 0;
+        document.getElementById("edit-ativo").classList.toggle("on", camp?.ativo !== false);
+        document.getElementById("edit-destaque").classList.toggle("on", !!camp?.destaque);
+        this.setTipo(camp?.tipo || "doacao");
+        this.openModal("modal-edit");
+      },
 
-                this.openModal("modal-edit");
-            },
+      async salvarCampanha() {
+        const titulo = document.getElementById("edit-titulo").value.trim();
+        const url = document.getElementById("edit-url").value.trim();
+        if (!titulo || !url) return this.showToast("Título e URL são obrigatórios");
 
-            async salvarCampanha() {
-                const titulo = document.getElementById("edit-titulo").value.trim();
-                const desc = document.getElementById("edit-desc").value.trim();
-                const url = document.getElementById("edit-url").value.trim();
-                const img = document.getElementById("edit-img").value.trim();
-                const ordem = parseInt(document.getElementById("edit-ordem").value) || 0;
-
-                if (!titulo || !url) {
-                    return this.showToast("Título e URL são obrigatórios");
-                }
-
-                let camps = [...(this.config.campanhas || [])];
-
-                if (this.editId) {
-                    const idx = camps.findIndex(c => c.id === this.editId);
-                    if (idx >= 0) {
-                        camps[idx] = { ...camps[idx], titulo, desc, url, img, ordem, tipo: this.editTipo };
-                    }
-                } else {
-                    camps.push({
-                        id: "c" + Date.now(),
-                        titulo, desc, url, img, ordem,
-                        tipo: this.editTipo
-                    });
-                }
-
-                this.config.campanhas = camps;
-                await this.persist();
-                this.closeModal("modal-edit");
-                this.render();
-                this.showToast("Campanha salva!");
-            },
-
-            async excluirCampanha(id) {
-                if (!confirm("Remover esta campanha da home?")) return;
-                this.config.campanhas = (this.config.campanhas || []).filter(c => c.id !== id);
-                await this.persist();
-                this.render();
-                this.showToast("Removida");
-            },
-
-            openConfigGeral() {
-                document.getElementById("cfg-titulo").value = this.config.titulo || "";
-                document.getElementById("cfg-subtitulo").value = this.config.subtitulo || "";
-                document.getElementById("cfg-sobre").value = this.config.sobre || "";
-                document.getElementById("cfg-pin").value = this.config.pin || "0000";
-                this.openModal("modal-config");
-            },
-
-            async salvarConfigGeral() {
-                this.config.titulo = document.getElementById("cfg-titulo").value.trim() || "Central de Campanhas";
-                this.config.subtitulo = document.getElementById("cfg-subtitulo").value.trim();
-                this.config.sobre = document.getElementById("cfg-sobre").value.trim();
-                this.config.pin = document.getElementById("cfg-pin").value.trim() || "0000";
-                await this.persist();
-                this.closeModal("modal-config");
-                this.render();
-                this.showToast("Configurações salvas!");
-            },
-
-            async persist() {
-                localStorage.setItem("home_cfg", JSON.stringify(this.config));
-                if (homeRef) {
-                    try {
-                        await set(homeRef, this.config);
-                    } catch (e) {
-                        console.warn("Salvo só localmente:", e);
-                    }
-                }
-            },
-
-            abrirCampanha(id) {
-                const camp = (this.config.campanhas || []).find(c => c.id === id);
-                if (camp?.url) {
-                    window.location.href = camp.url;
-                }
-            },
-
-            showToast(msg) {
-                const t = document.getElementById("toast");
-                t.textContent = msg;
-                t.classList.add("show");
-                setTimeout(() => t.classList.remove("show"), 2400);
-            }
+        const data = {
+          titulo,
+          desc: document.getElementById("edit-desc").value.trim(),
+          url,
+          tenantId: document.getElementById("edit-tenant").value.trim() || null,
+          img: document.getElementById("edit-img").value.trim(),
+          meta: parseFloat(document.getElementById("edit-meta").value) || 0,
+          encerramento: document.getElementById("edit-encerramento").value || "",
+          ordem: parseInt(document.getElementById("edit-ordem").value) || 0,
+          tipo: this.editTipo,
+          ativo: document.getElementById("edit-ativo").classList.contains("on"),
+          destaque: document.getElementById("edit-destaque").classList.contains("on")
         };
 
-        window.App = App;
-        document.addEventListener("DOMContentLoaded", () => App.init());
-        // Enter no PIN
-        document.getElementById("pin-input")?.addEventListener("keydown", e => {
-            if (e.key === "Enter") App.validarPin();
+        let camps = [...(this.config.campanhas || [])];
+        if (this.editId) {
+          const idx = camps.findIndex(c => c.id === this.editId);
+          if (idx >= 0) camps[idx] = { ...camps[idx], ...data };
+        } else {
+          camps.push({ id: "c" + Date.now(), createdAt: Date.now(), ...data });
+        }
+        this.config.campanhas = camps;
+        await this.persist();
+        this.closeModal("modal-edit");
+        this.render();
+        this.loadAllProgress();
+        this.showToast("Campanha salva!");
+      },
+
+      async excluirCampanha(id) {
+        if (!confirm("Remover esta campanha da home?")) return;
+        this.config.campanhas = (this.config.campanhas || []).filter(c => c.id !== id);
+        await this.persist();
+        this.render();
+        this.showToast("Removida");
+      },
+
+      async toggleAtivo(id) {
+        const c = (this.config.campanhas || []).find(x => x.id === id);
+        if (!c) return;
+        c.ativo = c.ativo === false;
+        await this.persist();
+        this.render();
+        this.showToast(c.ativo ? "Ativada" : "Desativada");
+      },
+
+      async moveCampanha(id, dir) {
+        const camps = [...(this.config.campanhas || [])].sort((a,b) => (a.ordem||0)-(b.ordem||0));
+        const idx = camps.findIndex(c => c.id === id);
+        if (idx < 0) return;
+        const newIdx = idx + dir;
+        if (newIdx < 0 || newIdx >= camps.length) return;
+        const tmp = camps[idx].ordem ?? idx;
+        camps[idx].ordem = camps[newIdx].ordem ?? newIdx;
+        camps[newIdx].ordem = tmp;
+        // swap
+        [camps[idx], camps[newIdx]] = [camps[newIdx], camps[idx]];
+        camps.forEach((c, i) => c.ordem = i);
+        this.config.campanhas = camps;
+        await this.persist();
+        this.render();
+      },
+
+      // Drag and drop
+      onDragStart(e) {
+        this.dragSrc = e.currentTarget;
+        e.currentTarget.classList.add("dragging");
+        e.dataTransfer.effectAllowed = "move";
+      },
+      onDragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+      },
+      onDrop(e) {
+        e.preventDefault();
+        const target = e.currentTarget;
+        if (!this.dragSrc || this.dragSrc === target) return;
+        const camps = [...(this.config.campanhas || [])].sort((a,b) => (a.ordem||0)-(b.ordem||0));
+        const fromId = this.dragSrc.dataset.id;
+        const toId = target.dataset.id;
+        const fromIdx = camps.findIndex(c => c.id === fromId);
+        const toIdx = camps.findIndex(c => c.id === toId);
+        if (fromIdx < 0 || toIdx < 0) return;
+        const [item] = camps.splice(fromIdx, 1);
+        camps.splice(toIdx, 0, item);
+        camps.forEach((c, i) => c.ordem = i);
+        this.config.campanhas = camps;
+        this.persist().then(() => this.render());
+      },
+      onDragEnd(e) {
+        e.currentTarget.classList.remove("dragging");
+        this.dragSrc = null;
+      },
+
+      openConfigGeral() {
+        document.getElementById("cfg-titulo").value = this.config.titulo || "";
+        document.getElementById("cfg-subtitulo").value = this.config.subtitulo || "";
+        document.getElementById("cfg-sobre").value = this.config.sobre || "";
+        document.getElementById("cfg-pin").value = this.config.pin || "0000";
+        document.getElementById("cfg-social-proof").classList.toggle("on", this.config.socialProof !== false);
+        this.openModal("modal-config");
+      },
+
+      async salvarConfigGeral() {
+        this.config.titulo = document.getElementById("cfg-titulo").value.trim() || "Central de Campanhas";
+        this.config.subtitulo = document.getElementById("cfg-subtitulo").value.trim();
+        this.config.sobre = document.getElementById("cfg-sobre").value.trim();
+        this.config.pin = document.getElementById("cfg-pin").value.trim() || "0000";
+        this.config.socialProof = document.getElementById("cfg-social-proof").classList.contains("on");
+        await this.persist();
+        this.closeModal("modal-config");
+        this.render();
+        this.showToast("Configurações salvas!");
+      },
+
+      async persist() {
+        localStorage.setItem("home_cfg", JSON.stringify(this.config));
+        if (homeRef) {
+          try { await set(homeRef, this.config); } catch (e) { console.warn("Local only", e); }
+        }
+      },
+
+      abrirCampanha(id) {
+        const camp = (this.config.campanhas || []).find(c => c.id === id);
+        if (camp?.url) {
+          if (navigator.vibrate) navigator.vibrate(12);
+          window.location.href = camp.url;
+        }
+      },
+
+      compartilharCampanha(id) {
+        const camp = (this.config.campanhas || []).find(c => c.id === id);
+        if (!camp) return;
+        const text = `Apoie: *${camp.titulo}*\n${camp.desc || ""}\n${camp.url || window.location.href}`;
+        if (navigator.share) {
+          navigator.share({ title: camp.titulo, text, url: camp.url }).catch(() => {
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+          });
+        } else {
+          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+        }
+      },
+
+      compartilharHome() {
+        const text = `${this.config.titulo}\n${this.config.subtitulo}\n${window.location.href}`;
+        if (navigator.share) {
+          navigator.share({ title: this.config.titulo, text, url: window.location.href }).catch(() => {});
+        } else {
+          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+        }
+      },
+
+      exportJSON() {
+        const blob = new Blob([JSON.stringify(this.config, null, 2)], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `home-campanhas-${Date.now()}.json`;
+        a.click();
+        this.showToast("JSON exportado");
+      },
+
+      toggleTheme() {
+        const cur = document.documentElement.getAttribute("data-theme") || "dark";
+        const next = cur === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", next);
+        localStorage.setItem("home_theme", next);
+        this.updateThemeIcon(next);
+        if (navigator.vibrate) navigator.vibrate(8);
+      },
+
+      updateThemeIcon(theme) {
+        const btn = document.getElementById("btn-theme");
+        if (btn) btn.innerHTML = theme === "dark"
+          ? '<i data-lucide="sun" style="width:18px"></i>'
+          : '<i data-lucide="moon" style="width:18px"></i>';
+        if (typeof lucide !== "undefined") lucide.createIcons();
+      },
+
+      setupPullToRefresh() {
+        let startY = 0, pulling = false;
+        const ind = document.getElementById("pull-indicator");
+        document.addEventListener("touchstart", e => {
+          if (window.scrollY <= 0) { startY = e.touches[0].clientY; pulling = true; }
+        }, { passive: true });
+        document.addEventListener("touchmove", e => {
+          if (!pulling) return;
+          const dy = e.touches[0].clientY - startY;
+          if (dy > 60) ind.classList.add("show");
+        }, { passive: true });
+        document.addEventListener("touchend", () => {
+          if (ind.classList.contains("show")) {
+            ind.classList.remove("show");
+            this.showToast("Atualizando...");
+            this.loadAllProgress();
+          }
+          pulling = false;
         });
-    </script>
+      },
+
+      startSocialProof() {
+        if (this.socialTimer) clearInterval(this.socialTimer);
+        const show = () => {
+          if (!this.config.socialProof || document.hidden) return;
+          const all = this.config.campanhas || [];
+          const withProg = all.filter(c => this.progressCache[c.id]?.count > 0);
+          let name = "Um apoiador", action = "acabou de contribuir";
+          if (withProg.length) {
+            const c = withProg[Math.floor(Math.random() * withProg.length)];
+            const p = this.progressCache[c.id];
+            name = c.titulo?.split(" ")[0] || "Campanha";
+            action = `${p.count} apoiadores • ${this.formatMoney(p.total)}`;
+          } else {
+            const nomes = ["Mariana", "Lucas", "Família Silva", "Beatriz", "Carlos"];
+            name = nomes[Math.floor(Math.random() * nomes.length)];
+            action = "acabou de apoiar uma causa";
+          }
+          document.getElementById("live-name").textContent = name;
+          document.getElementById("live-action").textContent = action;
+          const el = document.getElementById("live-toast");
+          el.classList.add("show");
+          setTimeout(() => el.classList.remove("show"), 4200);
+        };
+        setTimeout(show, 14000);
+        this.socialTimer = setInterval(show, 28000 + Math.random() * 8000);
+      },
+
+      showToast(msg) {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 2400);
+      }
+    };
+
+    window.App = App;
+    document.addEventListener("DOMContentLoaded", () => App.init());
+    document.getElementById("pin-input")?.addEventListener("keydown", e => {
+      if (e.key === "Enter") App.validarPin();
+    });
+  </script>
 </body>
 </html>
