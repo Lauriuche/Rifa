@@ -133,6 +133,7 @@
             max-width: 820px;
             margin: 0 auto;
             padding: 12px 14px 0;
+            margin-bottom: 8px;
         }
 
         .hero-carousel-card {
@@ -222,11 +223,19 @@
 
         .content-wrapper {
             max-width: 820px;
-            margin: 18px auto 40px;
+            margin: 24px auto 48px;
             padding: 0 14px;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            gap: 32px;
+        }
+
+        /* Espaço extra entre cada bloco (fallback além do gap) */
+        .content-wrapper > .card {
+            margin-bottom: 0;
+        }
+        .content-wrapper > .card + .card {
+            margin-top: 0;
         }
 
         /* ========== CARDS ========== */
@@ -809,7 +818,12 @@
         }
 
         .view-content { display: none; }
-        .view-content.active { display: block; animation: fadeIn 0.25s ease; }
+        .view-content.active {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            animation: fadeIn 0.25s ease;
+        }
 
         .cfg-tabs {
             display: flex;
