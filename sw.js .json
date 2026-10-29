@@ -1,17 +1,28 @@
 // Mude este número da versão sempre que quiser forçar uma atualização no celular dos clientes!
-const CACHE_VERSION = 'v3.00.0'; 
+const CACHE_VERSION = 'v3.01.1-checkout-fix';
 
 self.addEventListener('install', (event) => {
     console.log('Service Worker instalado: ', CACHE_VERSION);
+    self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+    event.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', (event) => {
-    // O site carrega normalmente
+    // Rede primeiro para HTML (evita tela antiga em cache)
+    const req = event.request;
+    if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
+        event.respondWith(
+            fetch(req).catch(() => caches.match(req))
+        );
+        return;
+    }
 });
 
-// AQUI ESTÁ O SEGREDO: Ouve o clique do botão "Atualizar"
 self.addEventListener('message', (event) => {
     if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting(); // Força a nova versão a assumir o controle
+        self.skipWaiting();
     }
 });
