@@ -1,5 +1,6 @@
-// Mude este número da versão sempre que quiser forçar uma atualização no celular dos clientes!
-const CACHE_VERSION = 'v3.01.1-checkout-fix';
+
+// Force update when config save fix ships
+const CACHE_VERSION = 'v3.02.0-save-fix';
 
 self.addEventListener('install', (event) => {
     console.log('Service Worker instalado: ', CACHE_VERSION);
@@ -11,12 +12,9 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-    // Rede primeiro para HTML (evita tela antiga em cache)
     const req = event.request;
     if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
-        event.respondWith(
-            fetch(req).catch(() => caches.match(req))
-        );
+        event.respondWith(fetch(req).catch(() => caches.match(req)));
         return;
     }
 });
