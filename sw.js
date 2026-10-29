@@ -1,26 +1,9 @@
-
-// Force update when config save fix ships
-const CACHE_VERSION = 'v3.02.0-save-fix';
-
-self.addEventListener('install', (event) => {
-    console.log('Service Worker instalado: ', CACHE_VERSION);
-    self.skipWaiting();
-});
-
-self.addEventListener('activate', (event) => {
-    event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (event) => {
-    const req = event.request;
-    if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
-        event.respondWith(fetch(req).catch(() => caches.match(req)));
-        return;
-    }
-});
-
-self.addEventListener('message', (event) => {
-    if (event.data && event.data.type === 'SKIP_WAITING') {
-        self.skipWaiting();
-    }
+const CACHE_VERSION = 'v3.03.0-progress-admin';
+self.addEventListener('install', (e) => { console.log('SW', CACHE_VERSION); self.skipWaiting(); });
+self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
+self.addEventListener('fetch', (e) => {
+  const req = e.request;
+  if (req.mode === 'navigate' || (req.headers.get('accept') || '').includes('text/html')) {
+    e.respondWith(fetch(req).catch(() => caches.match(req)));
+  }
 });
