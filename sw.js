@@ -1,4 +1,3 @@
-
-const CACHE_VERSION='v3.05.0-feed-fict';
+const CACHE_VERSION='v3.06.0-admin-gate';
 self.addEventListener('install',e=>self.skipWaiting());
-self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
+self.addEventListener('a
