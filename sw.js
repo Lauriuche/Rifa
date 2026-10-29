@@ -1,3 +1,3 @@
-const CACHE_VERSION='v3.06.0-admin-gate';
+const CACHE_VERSION='v3.07.0-lote-1-5';
 self.addEventListener('install',e=>self.skipWaiting());
-self.addEventListener('a
+self.addEventListener('activate',e=>e.waitUntil(self.clients.claim()));
