@@ -1431,7 +1431,7 @@ import{initializeApp}from"https://www.gstatic.com/firebasejs/11.0.1/firebase-app
         <button id="btn-atualizar-app" style="background-color: #ffaa00; color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer;">Atualizar</button>
     </div>
     <script>
-let deferredPrompt;const installBanner=document.getElementById("pwa-install-banner"),btnSim=document.getElementById("btn-instalar-sim"),btnNao=document.getElementById("btn-instalar-nao");let newWorker;const updateBanner=document.getElementById("pwa-update-banner"),btnAtualizar=document.getElementById("btn-atualizar-app");if("serviceWorker"in navigator){let e;window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js",{updateViaCache:"none"}).then(e=>{e.update().catch(()=>{});document.addEventListener("visibilitychange",()=>{if("visible"===document.visibilityState)e.update().catch(()=>{})});e.addEventListener("updatefound",()=>{newWorker=e.installing,newWorker.addEventListener("statechange",()=>{"installed"===newWorker.state&&navigator.serviceWorker.controller&&(updateBanner.style.display="flex",window.lucide&&window.lucide.createIcons())})})}).catch(e=>console.log("Erro SW:",e))}),btnAtualizar.addEventListener("click",()=>{newWorker&&newWorker.postMessage({type:"SKIP_WAITING"})}),navigator.serviceWorker.addEventListener("controllerchange",()=>{e||(window.location.reload(),e=!0)})}window.addEventListener("beforeinstallprompt",e=>{e.preventDefault(),deferredPrompt=e,installBanner.style.display="flex",window.lucide&&window.lucide.createIcons()}),btnSim.addEventListener("click",async()=>{if(installBanner.style.display="none",deferredPrompt){deferredPrompt.prompt();const{outcome:e}=await deferredPrompt.userChoice;"accepted"===e&&console.log("Usuário aceitou a instalação"),deferredPrompt=null}}),btnNao.addEventListener("click",()=>{installBanner.style.display="none"}),window.addEventListener("appinstalled",()=>{installBanner.style.display="none",deferredPrompt=null});
+let deferredPrompt;const installBanner=document.getElementById("pwa-install-banner"),btnSim=document.getElementById("btn-instalar-sim"),btnNao=document.getElementById("btn-instalar-nao");let newWorker;const updateBanner=document.getElementById("pwa-update-banner"),btnAtualizar=document.getElementById("btn-atualizar-app");if("serviceWorker"in navigator){let e;window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js").then(e=>{e.addEventListener("updatefound",()=>{newWorker=e.installing,newWorker.addEventListener("statechange",()=>{"installed"===newWorker.state&&navigator.serviceWorker.controller&&(updateBanner.style.display="flex",window.lucide&&window.lucide.createIcons())})})}).catch(e=>console.log("Erro SW:",e))}),btnAtualizar.addEventListener("click",()=>{newWorker&&newWorker.postMessage({type:"SKIP_WAITING"})}),navigator.serviceWorker.addEventListener("controllerchange",()=>{e||(window.location.reload(),e=!0)})}window.addEventListener("beforeinstallprompt",e=>{e.preventDefault(),deferredPrompt=e,installBanner.style.display="flex",window.lucide&&window.lucide.createIcons()}),btnSim.addEventListener("click",async()=>{if(installBanner.style.display="none",deferredPrompt){deferredPrompt.prompt();const{outcome:e}=await deferredPrompt.userChoice;"accepted"===e&&console.log("Usuário aceitou a instalação"),deferredPrompt=null}}),btnNao.addEventListener("click",()=>{installBanner.style.display="none"}),window.addEventListener("appinstalled",()=>{installBanner.style.display="none",deferredPrompt=null});
 </script>
 <script>
 // ============================================
@@ -1679,86 +1679,5 @@ if (document.readyState === 'loading') {
     window.themeManager.init();
 }
 </script>
-<style>
-.campaign-status-pill{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--border-color);border-radius:999px;background:var(--gray-400);font-size:11px;font-weight:800;letter-spacing:.25px;color:var(--title-color);margin-bottom:10px}
-.campaign-status-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 10px currentColor}
-.campaign-status-pill[data-status="active"]{color:var(--paid);border-color:var(--paid);background:rgba(0,219,135,.09)}
-.campaign-status-pill[data-status="paused"]{color:var(--reserved);border-color:var(--reserved);background:rgba(255,170,0,.09)}
-.campaign-status-pill[data-status="closed"]{color:var(--text-color);border-color:var(--border-color)}
-.campaign-status-pill[data-status="ending"]{color:#ff7043;border-color:#ff7043;background:rgba(255,112,67,.1)}
-#progress-money-raised{display:block;text-align:center;margin-top:6px;font-size:12px;font-weight:700;color:var(--title-color)}
-.health-card{margin:0 0 16px;padding:14px;border:1px solid var(--border-color);border-radius:12px;background:var(--background-color)}
-.health-card h3{font-size:14px;color:var(--title-color);margin-bottom:10px}
-.health-row{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px solid var(--border-color);font-size:12px}
-.health-row:last-of-type{border-bottom:0}
-.health-label{color:var(--text-color)}.health-value{color:var(--title-color);font-weight:700;text-align:right}
-.health-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--reserved)}
-.health-dot.ok{background:var(--paid)}.health-dot.bad{background:var(--danger)}
-#health-run{width:100%;margin-top:10px;background:var(--gray-400);color:var(--title-color);border:1px solid var(--border-color);border-radius:9px;padding:10px;font-weight:700;cursor:pointer}
-@media(max-width:600px){#modal-checkout{padding:env(safe-area-inset-top) 0 0!important;align-items:stretch!important;justify-content:stretch!important}#modal-checkout .modal-card{width:100%!important;max-width:none!important;height:100dvh!important;max-height:100dvh!important;border-radius:0!important;overflow-y:auto!important;padding:calc(18px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))!important}#btn-copiar-pix{position:sticky;bottom:calc(8px + env(safe-area-inset-bottom));z-index:5;width:100%;box-shadow:0 4px 20px rgba(0,0,0,.35);}}
-</style>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-const waitForApp = (tries=0) => {
-  const app=window.rifaApp, cart=window.cartManager, admin=window.adminPanel;
-  if(!app||!cart||!admin){if(tries<40)setTimeout(()=>waitForApp(tries+1),100);return}
-  install(app,cart,admin);
-};
-function install(app,cart,admin){
-  if(window.__rifaInlineEnhancementsInstalled)return;
-  window.__rifaInlineEnhancementsInstalled=true;
-  const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-  const normPhone=v=>String(v||'').replace(/\D/g,'');
-  const statusHost=document.getElementById('display-premio');
-  if(statusHost&&!document.getElementById('campaign-status-pill')){
-    const badge=document.createElement('div');badge.id='campaign-status-pill';badge.className='campaign-status-pill';badge.setAttribute('role','status');badge.setAttribute('aria-live','polite');statusHost.parentNode.insertBefore(badge,statusHost);
-  }
-  const progressInfo=document.getElementById('cotas-restantes-info');
-  if(progressInfo&&!document.getElementById('progress-money-raised')){const amount=document.createElement('span');amount.id='progress-money-raised';progressInfo.insertAdjacentElement('afterend',amount)}
-
-  const cfgStatus=document.getElementById('cfg-status-campanha');
-  const cfgSection=cfgStatus?.closest('.cfg-section');
-  if(cfgSection&&!document.getElementById('cfg-max-cotas-phone')){
-    const extra=document.createElement('div');extra.className='cfg-section';extra.innerHTML=`<div class="cfg-section-title"><i data-lucide="shield-check" style="width:16px"></i> Limites e meta</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div><label class="cfg-label" for="cfg-max-cotas-phone">Máximo de cotas por WhatsApp</label><input type="number" id="cfg-max-cotas-phone" class="input-form" min="0" step="1" value="0" style="margin-bottom:0"><p style="font-size:10px;color:var(--text-color);margin-top:5px">0 = sem limite. Validação no navegador; reforce também no backend.</p></div><div><label class="cfg-label" for="cfg-meta-arrecadacao">Meta de arrecadação (R$)</label><input type="number" id="cfg-meta-arrecadacao" class="input-form" min="0" step="0.01" value="0" style="margin-bottom:0"><p style="font-size:10px;color:var(--text-color);margin-top:5px">0 = exibir apenas o total arrecadado calculado.</p></div></div>`;
-    cfgSection.insertAdjacentElement('afterend',extra);window.lucide?.createIcons?.();
-  }
-  const adminRoot=document.querySelector('#view-admin .card');
-  if(adminRoot&&!document.getElementById('health-card')){
-    const health=document.createElement('section');health.id='health-card';health.className='health-card';health.innerHTML=`<h3><i data-lucide="activity" style="width:16px;vertical-align:-3px;margin-right:5px"></i> Saúde dos serviços</h3><div class="health-row"><span class="health-label">Firebase</span><span class="health-value" id="health-firebase"><i class="health-dot"></i>Aguardando conexão</span></div><div class="health-row"><span class="health-label">Backend de pagamentos</span><span class="health-value" id="health-backend">Não verificado</span></div><div class="health-row"><span class="health-label">Último log local</span><span class="health-value" id="health-last-log">Sem registro local</span></div><p style="font-size:10px;color:var(--text-color);line-height:1.45;margin-top:8px">A checagem do backend é feita pelo navegador e pode ser limitada por CORS. O último log mostrado é local, não confirma o recebimento de webhook.</p><button id="health-run" type="button">Verificar backend agora</button>`;
-    const h2=adminRoot.querySelector('h2');(h2||adminRoot.firstChild)?.insertAdjacentElement('afterend',health);window.lucide?.createIcons?.();
-  }
-
-  function updateCampaign(){
-    const cfg=app.config||{},status=String(cfg.statusCampanha||'active').toLowerCase(),total=Math.max(0,parseInt(cfg.total)||0),entries=Object.values(app.dbNumbers||{}).filter(Boolean),sold=entries.filter(x=>['paid','reserved','donated','donated_pending'].includes(x.status)).length,available=Math.max(0,total-sold);
-    const badge=document.getElementById('campaign-status-pill');
-    if(badge){const isEnding=status==='active'&&total>0&&available>0&&available<=Math.max(5,Math.ceil(total*.1));const key=isEnding?'ending':status;badge.dataset.status=key;badge.textContent=isEnding?'Esgotando':status==='paused'?'Pausada':status==='closed'?'Encerrada':'Ativa';badge.setAttribute('aria-label',`Status da campanha: ${badge.textContent}`)}
-    const stopped=status==='paused'||status==='closed';
-    ['btn-checkout','btn-adquirir-bilhete'].forEach(id=>{const b=document.getElementById(id);if(!b)return;b.disabled=stopped;b.setAttribute('aria-disabled',String(stopped));if(id==='btn-checkout'&&stopped)b.innerHTML=status==='paused'?'Campanha pausada':'Campanha encerrada';else if(id==='btn-checkout'&&!stopped)b.innerHTML='<i data-lucide="shopping-cart"></i> Participar';});
-    const paid=entries.filter(x=>x.status==='paid').reduce((sum,x)=>sum+(Number(x.valor_pago_unidade??x.valor_fixado_unidade??cfg.valor)||0),0),goal=Math.max(0,Number(cfg.metaArrecadacao)||0),moneyEl=document.getElementById('progress-money-raised');
-    if(moneyEl)moneyEl.textContent=goal>0?`${money(paid)} arrecadados de ${money(goal)}`:`${money(paid)} arrecadados`;
-    window.lucide?.createIcons?.();
-  }
-  const oldRenderUI=app.renderUI?.bind(app);if(oldRenderUI)app.renderUI=function(...args){const result=oldRenderUI(...args);updateCampaign();return result};
-  const oldRenderGrid=app.renderGrid?.bind(app);if(oldRenderGrid)app.renderGrid=function(...args){const result=oldRenderGrid(...args);updateCampaign();return result};
-  updateCampaign();
-
-  const oldOpenConfig=admin.openConfig?.bind(admin);if(oldOpenConfig)admin.openConfig=function(...args){const r=oldOpenConfig(...args);const a=document.getElementById('cfg-max-cotas-phone'),b=document.getElementById('cfg-meta-arrecadacao');if(a)a.value=Math.max(0,parseInt(this.app.config.maxCotasPorTelefone)||0);if(b)b.value=Math.max(0,Number(this.app.config.metaArrecadacao)||0);return r};
-  const oldSave=admin.save?.bind(admin);if(oldSave)admin.save=async function(...args){const limit=Math.max(0,parseInt(document.getElementById('cfg-max-cotas-phone')?.value)||0),goal=Math.max(0,Number(document.getElementById('cfg-meta-arrecadacao')?.value)||0);this.app.config.maxCotasPorTelefone=limit;this.app.config.metaArrecadacao=goal;return oldSave(...args)};
-
-  const originalCheckout=cart.abrirCheckout?.bind(cart);if(originalCheckout)cart.abrirCheckout=function(...args){const status=String(app.config?.statusCampanha||'active').toLowerCase();if(status==='paused'||status==='closed'){app.showToast(status==='paused'?'A campanha está pausada no momento.':'Esta campanha foi encerrada.');return}const result=originalCheckout(...args);const code=new URLSearchParams(location.search).get('cupom');if(code){const input=document.getElementById('checkout-cupom'),wrap=document.getElementById('checkout-cupom-wrap');if(input){if(wrap)wrap.style.display='flex';input.value=code.trim().toUpperCase();setTimeout(()=>cart.aplicarCupom?.(),0)}}return result};
-  const originalConfirm=cart.confirmarReserva?.bind(cart);if(originalConfirm)cart.confirmarReserva=async function(...args){const status=String(app.config?.statusCampanha||'active').toLowerCase();if(status==='paused'||status==='closed'){app.showToast(status==='paused'?'A campanha está pausada no momento.':'Esta campanha foi encerrada.');return}if(!this._pagamentoExistente){const limit=Math.max(0,parseInt(app.config?.maxCotasPorTelefone)||0),phone=normPhone(document.getElementById('cust-phone')?.value),selected=app.selected?.size||0;if(limit>0&&phone&&selected){const timeout=typeof app.getReservaTimeoutMs==='function'?app.getReservaTimeoutMs():15*60*1000,now=Date.now();const already=Object.values(app.dbNumbers||{}).filter(row=>row&&normPhone(row.telefone)===phone&&(row.status==='paid'||(row.status==='reserved'&&(!row.reservedAt||now-Number(row.reservedAt)<timeout)))).length;if(already+selected>limit){app.showToast(`Limite: até ${limit} cotas por WhatsApp. Você já tem ${already} ativa(s).`);return}}}return originalConfirm(...args)};
-
-  const originalSuccess=app.mostrarSucessoPagamento?.bind(app);if(originalSuccess)app.mostrarSucessoPagamento=function(payload={}){const result=originalSuccess(payload);const numbers=Array.isArray(payload.numeros)?payload.numeros.slice().sort((a,b)=>Number(a)-Number(b)).join(', '):String(payload.numeros||'');const cfg=this.config||{},draw=cfg.dataSorteio?new Date(`${cfg.dataSorteio}T12:00:00`).toLocaleDateString('pt-BR'):'A divulgar';const msg=[`Comprovante — ${cfg.premio||'Rifa'}`,`Números: ${numbers}`,`Valor pago: ${money(payload.valor)}`,`NSU: ${payload.nsu||'não informado'}`,`Data do sorteio: ${draw}`,`Campanha: ${location.href}`].join('\n');const link=document.getElementById('sucesso-whatsapp');if(link){const phone=normPhone(payload.telefone),waPhone=phone?(phone.startsWith('55')?phone:'55'+phone):'';link.href=`https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;link.target='_blank';link.rel='noopener'}return result};
-
-  // Firebase connection health signal using Realtime Database's built-in connection state.
-  try{const firebaseConfig={apiKey:'AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng',authDomain:'vagner-34d5b.firebaseapp.com',databaseURL:'https://vagner-34d5b.firebaseio.com',projectId:'vagner-34d5b',storageBucket:'vagner-34d5b.firebasestorage.app',messagingSenderId:'711539772164',appId:'1:711539772164:web:e5c0457cb69f8e7d0bde51'};const healthApp=initializeApp(firebaseConfig,'rifa-health-monitor');const healthDb=getDatabase(healthApp);onValue(ref(healthDb,'/.info/connected'),snap=>{const el=document.getElementById('health-firebase');if(!el)return;const connected=snap.val()===true;el.innerHTML=`<i class="health-dot ${connected?'ok':'bad'}"></i>${connected?'Conectado':'Desconectado'}`})}catch(error){console.warn('Health Firebase:',error)}
-  function updateLocalLog(){const el=document.getElementById('health-last-log');if(!el)return;try{const logs=JSON.parse(localStorage.getItem('rifa_pay_logs')||'[]');el.textContent=logs.length?new Date(logs[0].at).toLocaleString('pt-BR'):'Sem registro local'}catch(_){el.textContent='Indisponível'}}
-  updateLocalLog();document.getElementById('health-run')?.addEventListener('click',async e=>{const btn=e.currentTarget;btn.disabled=true;btn.textContent='Verificando…';const el=document.getElementById('health-backend');try{const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);const response=await fetch('https://rifa-z7bz.onrender.com/',{method:'GET',cache:'no-store',signal:controller.signal});clearTimeout(timer);el.innerHTML=`<i class="health-dot ${response.status<500?'ok':'bad'}"></i>Resposta HTTP ${response.status}`}catch(_){el.innerHTML='<i class="health-dot bad"></i>Sem resposta (ou bloqueio CORS)'}finally{btn.disabled=false;btn.textContent='Verificar backend agora';updateLocalLog()}});
-}
-waitForApp();
-</script>
-
 </body>
 </html>
