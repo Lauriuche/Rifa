@@ -1,140 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="robots" content="noindex,nofollow" />
-  <title>Admin — Rifa Master</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root { --bg:#1c1d1f; --card:#26282c; --border:#36383e; --title:#eaeaef; --text:#aaaaaa; --primary:#008b77; --danger:#ff4d4d; }
-    * { box-sizing: border-box; margin:0; padding:0; }
-    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 20px; }
-    .box { width:100%; max-width:380px; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px 22px; box-shadow:0 12px 40px rgba(0,0,0,.4); }
-    h1 { color:var(--title); font-size:20px; font-weight:800; margin-bottom:6px; text-align:center; }
-    p.sub { font-size:12px; text-align:center; margin-bottom:20px; line-height:1.4; }
-    label { display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--title); }
-    input { width:100%; padding:14px 12px; border-radius:10px; border:1px solid var(--border); background:#1c1d1f; color:var(--title); font-size:16px; margin-bottom:14px; }
-    input:focus { outline:2px solid var(--primary); border-color:var(--primary); }
-    button { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(135deg,var(--primary),#00db87); color:#fff; font-weight:800; font-size:14px; cursor:pointer; }
-    button:disabled { opacity:.5; cursor:not-allowed; }
-    .err { color:var(--danger); font-size:12px; min-height:18px; margin-bottom:8px; text-align:center; }
-    .hint { font-size:11px; text-align:center; margin-top:14px; opacity:.7; }
-    a { color:var(--primary); }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="robots" content="noindex"/>
+<title>Admin — Rifa Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#1c1d1f;--card:#26282c;--border:#36383e;--title:#eaeaef;--text:#aaaaaa;--primary:#008b77;--danger:#ff4d4d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.box{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 22px}
+h1{color:var(--title);font-size:20px;font-weight:800;text-align:center;margin-bottom:6px}
+.sub{font-size:12px;text-align:center;margin-bottom:18px}
+label{display:block;font-size:12px;font-weight:700;color:var(--title);margin-bottom:6px}
+input{width:100%;padding:14px 12px;border-radius:10px;border:1px solid var(--border);background:#1c1d1f;color:var(--title);font-size:16px;margin-bottom:12px}
+button{width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--primary),#00db87);color:#fff;font-weight:800;cursor:pointer}
+button:disabled{opacity:.5}
+.err{color:var(--danger);font-size:12px;min-height:18px;text-align:center;margin-bottom:8px}
+.hint{font-size:11px;text-align:center;margin-top:14px;opacity:.75}
+a{color:var(--primary)}
+</style>
 </head>
 <body>
-  <div class="box">
-    <h1>Acesso Admin</h1>
-    <p class="sub">Digite o PIN da campanha para abrir o painel.</p>
-    <div class="err" id="err"></div>
-    <label for="pin">PIN</label>
-    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="32" placeholder="••••••" />
-    <button id="btn" type="button">Entrar</button>
-    <p class="hint"><a href="./">← Voltar ao site</a></p>
-  </div>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+<div class="box">
+  <h1>Acesso Admin</h1>
+  <p class="sub">Use o PIN salvo em Configurações da rifa.</p>
+  <div class="err" id="err"></div>
+  <label for="pin">PIN</label>
+  <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="32" placeholder="••••••"/>
+  <button id="btn" type="button">Entrar</button>
+  <p class="hint"><a href="./">← Voltar ao site</a></p>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
+  authDomain: "vagner-34d5b.firebaseapp.com",
+  databaseURL: "https://vagner-34d5b.firebaseio.com",
+  projectId: "vagner-34d5b",
+  storageBucket: "vagner-34d5b.firebasestorage.app",
+  messagingSenderId: "711539772164",
+  appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
+};
+initializeApp(firebaseConfig);
+const db = getDatabase();
+const params = new URLSearchParams(location.search);
+const tenantId = params.get("tenant") || "rifa_master";
+const rifaId = params.get("rifa") || "padrao";
+const dbPath = tenantId === "rifa_master" ? "rifa_master" : `tenants/${tenantId}/rifas/${rifaId}`;
 
-    const BACKEND_URL = "https://rifa-z7bz.onrender.com";
-    const firebaseConfig = {
-      apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
-      authDomain: "vagner-34d5b.firebaseapp.com",
-      databaseURL: "https://vagner-34d5b.firebaseio.com",
-      projectId: "vagner-34d5b",
-      storageBucket: "vagner-34d5b.firebasestorage.app",
-      messagingSenderId: "711539772164",
-      appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
-    };
-    initializeApp(firebaseConfig);
-    const db = getDatabase();
-    const urlParams = new URLSearchParams(location.search);
-    const tenantId = urlParams.get("tenant") || "rifa_master";
-    const rifaId = urlParams.get("rifa") || "padrao";
-    const dbPath = tenantId === "rifa_master" ? "rifa_master" : `tenants/${tenantId}/rifas/${rifaId}`;
+const pinEl = document.getElementById("pin");
+const err = document.getElementById("err");
+const btn = document.getElementById("btn");
+const failsKey = "rifa_pin_fails";
+const lockKey = "rifa_pin_lock";
 
-    const pinEl = document.getElementById("pin");
-    const err = document.getElementById("err");
-    const btn = document.getElementById("btn");
-    const failsKey = "rifa_pin_fails";
-    const lockKey = "rifa_pin_lock";
+function locked(){
+  const until = parseInt(localStorage.getItem(lockKey)||"0")||0;
+  if (Date.now() < until) {
+    err.textContent = `Bloqueado. Tente em ${Math.ceil((until-Date.now())/60000)} min.`;
+    btn.disabled = true;
+    return true;
+  }
+  btn.disabled = false;
+  return false;
+}
+locked();
 
-    function checkLock(){
-      const until = parseInt(localStorage.getItem(lockKey)||"0")||0;
-      if (Date.now() < until) {
-        err.textContent = `PIN bloqueado. Tente em ${Math.ceil((until-Date.now())/60000)} min.`;
-        btn.disabled = true;
-        return true;
-      }
+btn.onclick = async () => {
+  if (locked()) return;
+  const pin = pinEl.value.trim();
+  if (!pin) { err.textContent = "Digite o PIN."; return; }
+  btn.disabled = true;
+  err.textContent = "Verificando…";
+  try {
+    const snap = await get(ref(db, `${dbPath}/config/pin`));
+    const real = String(snap.val() ?? "").trim();
+    if (!real) {
+      err.textContent = "PIN vazio no Firebase. Defina em /rifa_master/config/pin";
       btn.disabled = false;
-      return false;
+      return;
     }
-    checkLock();
-
-    async function tryBackend(pin){
-      try {
-        const r = await fetch(BACKEND_URL + "/api/admin-auth", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pin, path: dbPath })
-        });
-        if (r.status === 404) return null;
-        const j = await r.json().catch(()=>({}));
-        if (r.status === 429) return { ok:false, locked:true, retryMin: j.retryMin||30 };
-        if (!r.ok || !j.ok) return { ok:false };
-        return { ok:true, exp: j.exp || (Date.now()+7*24*60*60*1000) };
-      } catch { return null; }
-    }
-
-    btn.onclick = async () => {
-      if (checkLock()) return;
-      const pin = pinEl.value.trim();
-      if (!pin) { err.textContent = "Digite o PIN."; return; }
-      btn.disabled = true;
-      err.textContent = "Verificando…";
-      try {
-        let ok = false;
-        let exp = Date.now() + 7*24*60*60*1000;
-        const backend = await tryBackend(pin);
-        if (backend && backend.locked) {
-          localStorage.setItem(lockKey, String(Date.now()+(backend.retryMin||30)*60000));
-          err.textContent = `Bloqueado no servidor. ${backend.retryMin||30} min.`;
-          return;
-        }
-        if (backend && backend.ok) {
-          ok = true;
-          if (backend.exp) exp = backend.exp;
-        } else {
-          const snap = await get(ref(db, `${dbPath}/config/pin`));
-          const real = String(snap.val()||"").trim();
-          if (!real) throw new Error("PIN não configurado no painel.");
-          ok = pin === real;
-        }
-        if (!ok) {
-          let fails = (parseInt(localStorage.getItem(failsKey)||"0")||0)+1;
-          localStorage.setItem(failsKey, String(fails));
-          if (fails >= 5) {
-            localStorage.setItem(lockKey, String(Date.now()+30*60*1000));
-            localStorage.setItem(failsKey, "0");
-            err.textContent = "5 erros. Bloqueado 30 min.";
-          } else {
-            err.textContent = `PIN incorreto (${fails}/5)`;
-            btn.disabled = false;
-          }
-          return;
-        }
+    if (pin !== real) {
+      let fails = (parseInt(localStorage.getItem(failsKey)||"0")||0)+1;
+      localStorage.setItem(failsKey, String(fails));
+      if (fails >= 5) {
+        localStorage.setItem(lockKey, String(Date.now()+30*60*1000));
         localStorage.setItem(failsKey, "0");
-        localStorage.setItem("rifa_admin_session", JSON.stringify({ ok:true, exp }));
-        const params = new URLSearchParams(location.search);
-        params.set("admin", "1");
-        location.href = "./?" + params.toString();
-      } catch(e) {
-        err.textContent = e.message || "Erro ao validar PIN";
+        err.textContent = "5 erros. Bloqueado 30 min.";
+      } else {
+        err.textContent = `PIN incorreto (${fails}/5)`;
         btn.disabled = false;
       }
-    };
-    pinEl.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
-  </script>
+      return;
+    }
+    localStorage.setItem(failsKey, "0");
+    localStorage.setItem("rifa_admin_session", JSON.stringify({ ok:true, exp: Date.now()+7*24*60*60*1000 }));
+    const p = new URLSearchParams(location.search);
+    p.set("admin","1");
+    location.href = "./?" + p.toString();
+  } catch(e) {
+    err.textContent = e.message || "Erro ao ler Firebase";
+    btn.disabled = false;
+  }
+};
+pinEl.addEventListener("keydown", e => { if (e.key==="Enter") btn.click(); });
+</script>
 </body>
 </html>
