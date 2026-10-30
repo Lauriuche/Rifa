@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="index,follow" />
+  <title>Rifas — Vagner Sorteios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#1c1d1f; --card:#26282c; --border:#36383e; --title:#eaeaef; --text:#aaaaaa; --primary:#008b77; --paid:#00db87; }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
+    header { padding: 20px 16px; text-align:center; border-bottom:1px solid var(--border); background:#151617; }
+    header h1 { color: var(--title); font-size:22px; font-weight:800; }
+    header p { font-size:13px; margin-top:6px; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 20px 16px 40px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+    .card { background: var(--card); border:1px solid var(--border); border-radius:14px; overflow:hidden; transition: transform .2s, border-color .2s; text-decoration:none; color:inherit; display:flex; flex-direction:column; }
+    .card:hover { transform: translateY(-3px); border-color: var(--primary); }
+    .card img { width:100%; aspect-ratio: 16/9; object-fit:cover; background:#111; }
+    .card .body { padding:14px; flex:1; display:flex; flex-direction:column; gap:8px; }
+    .card h2 { color: var(--title); font-size:16px; font-weight:800; line-height:1.3; }
+    .price { color: var(--paid); font-weight:800; font-size:14px; }
+    .badge { display:inline-block; font-size:10px; font-weight:800; padding:4px 8px; border-radius:999px; text-transform:uppercase; }
+    .badge.active { background:rgba(0,219,135,.15); color:var(--paid); }
+    .badge.paused { background:rgba(255,170,0,.15); color:#ffaa00; }
+    .badge.closed { background:rgba(255,77,77,.15); color:#ff4d4d; }
+    .empty, .loading { text-align:center; padding:40px 16px; color:var(--text); }
+    footer { text-align:center; font-size:12px; padding:20px; opacity:.7; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Rifas ativas</h1>
+    <p>Escolha uma campanha para participar</p>
+  </header>
+  <div class="wrap">
+    <div id="grid" class="grid"><div class="loading">Carregando catálogo…</div></div>
+  </div>
+  <footer>© 2026 Vagner Sorteios</footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
+      authDomain: "vagner-34d5b.firebaseapp.com",
+      databaseURL: "https://vagner-34d5b.firebaseio.com",
+      projectId: "vagner-34d5b",
+      storageBucket: "vagner-34d5b.firebasestorage.app",
+      messagingSenderId: "711539772164",
+      appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const grid = document.getElementById("grid");
+    try {
+      const snap = await get(ref(db, "rifa_catalog"));
+      if (!snap.exists()) {
+        grid.innerHTML = '<div class="empty">Nenhuma rifa no catálogo ainda.<br><small>No painel admin, use “Catálogo rifas”.</small></div>';
+      } else {
+        const items = Object.values(snap.val() || {}).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+        if (!items.length) {
+          grid.innerHTML = '<div class="empty">Catálogo vazio.</div>';
+        } else {
+          grid.innerHTML = items.map(it => {
+            const st = it.status || "active";
+            const badge = st === "active" ? "active" : st === "paused" ? "paused" : "closed";
+            const badgeTxt = st === "active" ? "Ativa" : st === "paused" ? "Pausada" : "Encerrada";
+            const price = Number(it.valor||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+            const href = it.url || ("./index.html" + (it.tenant && it.tenant !== "rifa_master" ? `?tenant=${encodeURIComponent(it.tenant)}&rifa=${encodeURIComponent(it.rifa||"padrao")}` : ""));
+            const img = it.capa || "https://placehold.co/600x340/1c1d1f/aaaaaa?text=Rifa";
+            return `<a class="card" href="${href}">
+              <img src="${img}" alt="" loading="lazy" onerror="this.src='https://placehold.co/600x340/1c1d1f/aaaaaa?text=Rifa'"/>
+              <div class="body">
+                <span class="badge ${badge}">${badgeTxt}</span>
+                <h2>${(it.titulo||"Rifa").replace(/</g,"&lt;")}</h2>
+                <div class="price">${price}</div>
+              </div>
+            </a>`;
+          }).join("");
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      grid.innerHTML = '<div class="empty">Erro ao carregar catálogo. Verifique as rules do Firebase para <code>rifa_catalog</code>.</div>';
+    }
+  </script>
+</body>
+</html>

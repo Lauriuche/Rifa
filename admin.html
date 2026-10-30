@@ -2,125 +2,42 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="robots" content="noindex, nofollow" />
-  <title>Acesso</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Admin — Rifa Master</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #121314;
-      --card: #1c1d1f;
-      --border: #2e3035;
-      --text: #9a9aa3;
-      --title: #eeeef2;
-      --primary: #008b77;
-      --danger: #ff4d4d;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background: radial-gradient(ellipse at top, #1a2220 0%, var(--bg) 55%);
-      color: var(--title);
-      padding: 20px;
-    }
-    .card {
-      width: 100%;
-      max-width: 360px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 28px 22px 22px;
-      box-shadow: 0 16px 48px rgba(0,0,0,.35);
-    }
-    .icon {
-      width: 56px; height: 56px;
-      margin: 0 auto 16px;
-      border-radius: 50%;
-      background: #2a2c31;
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 22px;
-    }
-    h1 { text-align: center; font-size: 18px; margin-bottom: 6px; }
-    p.sub { text-align: center; font-size: 12px; color: var(--text); margin-bottom: 20px; }
-    label { display: block; font-size: 12px; color: var(--text); margin-bottom: 6px; }
-    input[type="password"], input[type="text"] {
-      width: 100%;
-      padding: 14px 12px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #151617;
-      color: var(--title);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 10px;
-      text-align: center;
-      outline: none;
-    }
-    input:focus { border-color: var(--primary); }
-    .row {
-      display: flex; align-items: center; gap: 8px;
-      margin: 14px 0 18px;
-      font-size: 13px; color: var(--text);
-    }
-    .row input { width: 16px; height: 16px; accent-color: var(--primary); letter-spacing: 0; }
-    button {
-      width: 100%;
-      border: none;
-      border-radius: 10px;
-      padding: 14px;
-      font-weight: 800;
-      font-size: 14px;
-      cursor: pointer;
-      background: var(--primary);
-      color: #fff;
-    }
-    button:disabled { opacity: .55; cursor: not-allowed; }
-    .msg {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 13px;
-      min-height: 18px;
-      color: var(--text);
-    }
-    .msg.err { color: var(--danger); }
-    .msg.ok { color: #00db87; }
-    .hint {
-      margin-top: 18px;
-      font-size: 11px;
-      color: var(--text);
-      text-align: center;
-      line-height: 1.4;
-      opacity: .75;
-    }
+    :root { --bg:#1c1d1f; --card:#26282c; --border:#36383e; --title:#eaeaef; --text:#aaaaaa; --primary:#008b77; --danger:#ff4d4d; }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body { font-family: Inter, system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display:flex; align-items:center; justify-content:center; padding: 20px; }
+    .box { width:100%; max-width:380px; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:28px 22px; box-shadow:0 12px 40px rgba(0,0,0,.4); }
+    h1 { color:var(--title); font-size:20px; font-weight:800; margin-bottom:6px; text-align:center; }
+    p.sub { font-size:12px; text-align:center; margin-bottom:20px; line-height:1.4; }
+    label { display:block; font-size:12px; font-weight:700; margin-bottom:6px; color:var(--title); }
+    input { width:100%; padding:14px 12px; border-radius:10px; border:1px solid var(--border); background:#1c1d1f; color:var(--title); font-size:16px; margin-bottom:14px; }
+    input:focus { outline:2px solid var(--primary); border-color:var(--primary); }
+    button { width:100%; padding:14px; border:none; border-radius:10px; background:linear-gradient(135deg,var(--primary),#00db87); color:#fff; font-weight:800; font-size:14px; cursor:pointer; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    .err { color:var(--danger); font-size:12px; min-height:18px; margin-bottom:8px; text-align:center; }
+    .hint { font-size:11px; text-align:center; margin-top:14px; opacity:.7; }
+    a { color:var(--primary); }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="icon">🔒</div>
-    <h1>Acesso restrito</h1>
-    <p class="sub">Digite o PIN de administrador</p>
-
+  <div class="box">
+    <h1>Acesso Admin</h1>
+    <p class="sub">Digite o PIN da campanha para abrir o painel.</p>
+    <div class="err" id="err"></div>
     <label for="pin">PIN</label>
-    <input id="pin" type="password" maxlength="12" inputmode="numeric" autocomplete="current-password" autofocus />
-
-    <label class="row">
-      <input id="remember" type="checkbox" checked />
-      Lembrar neste aparelho (7 dias)
-    </label>
-
+    <input id="pin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="32" placeholder="••••••" />
     <button id="btn" type="button">Entrar</button>
-    <div class="msg" id="msg"></div>
-    <p class="hint">Após validar, você será levado ao painel da rifa.</p>
+    <p class="hint"><a href="./">← Voltar ao site</a></p>
   </div>
-
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
+    const BACKEND_URL = "https://rifa-z7bz.onrender.com";
     const firebaseConfig = {
       apiKey: "AIzaSyBfiZPr24kg4O04VFYh6SXdHE257N6Xwng",
       authDomain: "vagner-34d5b.firebaseapp.com",
@@ -130,122 +47,94 @@
       messagingSenderId: "711539772164",
       appId: "1:711539772164:web:e5c0457cb69f8e7d0bde51"
     };
-
-    const params = new URLSearchParams(location.search);
-    const tenantId = params.get("tenant") || "rifa_master";
-    const rifaId = params.get("rifa") || "padrao";
+    initializeApp(firebaseConfig);
+    const db = getDatabase();
+    const urlParams = new URLSearchParams(location.search);
+    const tenantId = urlParams.get("tenant") || "rifa_master";
+    const rifaId = urlParams.get("rifa") || "padrao";
     const dbPath = tenantId === "rifa_master" ? "rifa_master" : `tenants/${tenantId}/rifas/${rifaId}`;
 
-    // Destino após login (mesma pasta / site)
-    const INDEX_URL = (() => {
-      const base = location.pathname.replace(/[^/]+$/, "") || "/";
-      const q = new URLSearchParams();
-      if (tenantId && tenantId !== "rifa_master") q.set("tenant", tenantId);
-      if (rifaId && rifaId !== "padrao") q.set("rifa", rifaId);
-      q.set("admin", "1");
-      const qs = q.toString();
-      return base + "index.html" + (qs ? "?" + qs : "");
-    })();
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
     const pinEl = document.getElementById("pin");
+    const err = document.getElementById("err");
     const btn = document.getElementById("btn");
-    const msg = document.getElementById("msg");
-    const rememberEl = document.getElementById("remember");
+    const failsKey = "rifa_pin_fails";
+    const lockKey = "rifa_pin_lock";
 
-    const FAIL_KEY = "rifa_pin_fails";
-    const LOCK_KEY = "rifa_pin_lock";
-    const SESSION_KEY = "rifa_admin_session";
-
-    function setMsg(text, type) {
-      msg.textContent = text || "";
-      msg.className = "msg" + (type ? " " + type : "");
-    }
-
-    function isLocked() {
-      const until = parseInt(localStorage.getItem(LOCK_KEY) || "0", 10) || 0;
-      return Date.now() < until ? until : 0;
-    }
-
-    async function loadPin() {
-      const snap = await get(ref(db, `${dbPath}/config/pin`));
-      return snap.exists() ? String(snap.val() || "").trim() : "";
-    }
-
-    async function tryLogin() {
-      const until = isLocked();
-      if (until) {
-        const min = Math.ceil((until - Date.now()) / 60000);
-        setMsg(`PIN bloqueado. Tente em ${min} min.`, "err");
-        return;
+    function checkLock(){
+      const until = parseInt(localStorage.getItem(lockKey)||"0")||0;
+      if (Date.now() < until) {
+        err.textContent = `PIN bloqueado. Tente em ${Math.ceil((until-Date.now())/60000)} min.`;
+        btn.disabled = true;
+        return true;
       }
+      btn.disabled = false;
+      return false;
+    }
+    checkLock();
 
-      const typed = (pinEl.value || "").trim();
-      if (!typed) {
-        setMsg("Digite o PIN.", "err");
-        pinEl.focus();
-        return;
-      }
-
-      btn.disabled = true;
-      setMsg("Validando…");
-
+    async function tryBackend(pin){
       try {
-        const realPin = await loadPin();
-        if (!realPin) {
-          setMsg("PIN do admin ainda não foi definido nas configurações.", "err");
-          btn.disabled = false;
+        const r = await fetch(BACKEND_URL + "/api/admin-auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ pin, path: dbPath })
+        });
+        if (r.status === 404) return null;
+        const j = await r.json().catch(()=>({}));
+        if (r.status === 429) return { ok:false, locked:true, retryMin: j.retryMin||30 };
+        if (!r.ok || !j.ok) return { ok:false };
+        return { ok:true, exp: j.exp || (Date.now()+7*24*60*60*1000) };
+      } catch { return null; }
+    }
+
+    btn.onclick = async () => {
+      if (checkLock()) return;
+      const pin = pinEl.value.trim();
+      if (!pin) { err.textContent = "Digite o PIN."; return; }
+      btn.disabled = true;
+      err.textContent = "Verificando…";
+      try {
+        let ok = false;
+        let exp = Date.now() + 7*24*60*60*1000;
+        const backend = await tryBackend(pin);
+        if (backend && backend.locked) {
+          localStorage.setItem(lockKey, String(Date.now()+(backend.retryMin||30)*60000));
+          err.textContent = `Bloqueado no servidor. ${backend.retryMin||30} min.`;
           return;
         }
-
-        if (typed === realPin) {
-          localStorage.setItem(FAIL_KEY, "0");
-          localStorage.setItem(LOCK_KEY, "0");
-          if (rememberEl.checked) {
-            localStorage.setItem(SESSION_KEY, JSON.stringify({ ok: true, exp: Date.now() + 7 * 24 * 60 * 60 * 1000 }));
-          } else {
-            // sessão curta (aba atual): 2h
-            localStorage.setItem(SESSION_KEY, JSON.stringify({ ok: true, exp: Date.now() + 2 * 60 * 60 * 1000 }));
-          }
-          setMsg("Acesso liberado. Abrindo painel…", "ok");
-          setTimeout(() => { location.href = INDEX_URL; }, 400);
-          return;
-        }
-
-        let fails = (parseInt(localStorage.getItem(FAIL_KEY) || "0", 10) || 0) + 1;
-        localStorage.setItem(FAIL_KEY, String(fails));
-        if (fails >= 5) {
-          const lockUntil = Date.now() + 15 * 60 * 1000;
-          localStorage.setItem(LOCK_KEY, String(lockUntil));
-          setMsg("Muitas tentativas. Bloqueado por 15 min.", "err");
+        if (backend && backend.ok) {
+          ok = true;
+          if (backend.exp) exp = backend.exp;
         } else {
-          setMsg(`PIN incorreto. (${fails}/5)`, "err");
+          const snap = await get(ref(db, `${dbPath}/config/pin`));
+          const real = String(snap.val()||"").trim();
+          if (!real) throw new Error("PIN não configurado no painel.");
+          ok = pin === real;
         }
-        pinEl.value = "";
-        pinEl.focus();
-      } catch (e) {
-        console.error(e);
-        setMsg("Erro ao conectar. Tente de novo.", "err");
-      } finally {
+        if (!ok) {
+          let fails = (parseInt(localStorage.getItem(failsKey)||"0")||0)+1;
+          localStorage.setItem(failsKey, String(fails));
+          if (fails >= 5) {
+            localStorage.setItem(lockKey, String(Date.now()+30*60*1000));
+            localStorage.setItem(failsKey, "0");
+            err.textContent = "5 erros. Bloqueado 30 min.";
+          } else {
+            err.textContent = `PIN incorreto (${fails}/5)`;
+            btn.disabled = false;
+          }
+          return;
+        }
+        localStorage.setItem(failsKey, "0");
+        localStorage.setItem("rifa_admin_session", JSON.stringify({ ok:true, exp }));
+        const params = new URLSearchParams(location.search);
+        params.set("admin", "1");
+        location.href = "./?" + params.toString();
+      } catch(e) {
+        err.textContent = e.message || "Erro ao validar PIN";
         btn.disabled = false;
       }
-    }
-
-    // Já logado? vai direto
-    try {
-      const s = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
-      if (s && s.ok && s.exp > Date.now()) {
-        setMsg("Sessão ativa. Abrindo…", "ok");
-        location.replace(INDEX_URL);
-      }
-    } catch (_) {}
-
-    btn.addEventListener("click", tryLogin);
-    pinEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") tryLogin();
-    });
+    };
+    pinEl.addEventListener("keydown", e => { if (e.key === "Enter") btn.click(); });
   </script>
 </body>
 </html>
